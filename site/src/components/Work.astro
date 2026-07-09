@@ -1,0 +1,49 @@
+---
+const projects = [
+  {
+    code: "Ox", ac: "var(--oxfam)", role: "UX Research & Design", loc: "Melbourne, AU",
+    title: "Oxfam Support Redesign",
+    body: "Restructured Oxfam Australia's support pages and the MyOxfam portal — new information architecture, wireframes, usability testing, and a final design presented to stakeholders.",
+  },
+  {
+    code: "Or", ac: "var(--origins)", role: "UX Researcher & Designer", loc: "Redmond, WA",
+    title: "Origins App Redesign",
+    body: "Interviewed real dispensary customers in person to learn why the app failed them, then rebuilt the product display and information architecture — validated through hands-on usability testing.",
+  },
+  {
+    code: "Pr", ac: "var(--premier)", role: "CX Researcher", loc: "Scottsdale, AZ",
+    title: "Premier CX Analysis",
+    body: "Partnered with the CEO to map the customer journey of a fire & flood contents company — surfacing pain points across packing, storage, cleaning, and pack-back to deliver a white-glove service.",
+  },
+];
+---
+<section class="section alt" id="work">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Selected Work</span>
+      <h2>Three clients, three worlds</h2>
+      <p>Every project meant meeting real people where they were — from a Melbourne charity to an Arizona pack-out crew.</p>
+    </div>
+    <div class="projects">
+      {projects.map((p, i) => (
+        <a class="proj reveal" href="#contact" style={`--ac:${p.ac}`} data-delay={i * 70} aria-label={`${p.title} — case study`}>
+          <div class="pbody">
+            <div class="ptags">
+              <span class="pill">{p.role}</span>
+              <span class="loc">{p.loc}</span>
+            </div>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+            <span class="go">View study
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+          <div class="art" aria-hidden="true">
+            <span class="ring"></span>
+            <span class="code">{p.code}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

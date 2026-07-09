@@ -1,0 +1,6 @@
+---
+import { readFileSync } from "node:fs";
+// Inlined so it inherits `currentColor` and can animate. Traced from the source PNG.
+const svg = readFileSync("public/brand/logo.svg", "utf-8");
+---
+<span class="mark" set:html={svg}></span>
