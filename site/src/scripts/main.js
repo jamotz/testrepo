@@ -1,176 +1,212 @@
-import gsap from "gsap";
 import Lenis from "lenis";
 
 const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const finePointer = window.matchMedia("(pointer: fine)").matches;
+const fine = window.matchMedia("(pointer: fine)").matches;
+const css = (name, el = document.documentElement) =>
+  getComputedStyle(el).getPropertyValue(name).trim();
+function hexA(hex, a) {
+  hex = (hex || "#7C5CFF").replace("#", "");
+  if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
+  const n = parseInt(hex, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
 
 /* ---------------- Theme ---------------- */
-const THEME_KEY = "motz-theme";
-function applyTheme(t) {
-  const root = document.documentElement;
-  if (t === "light" || t === "dark") root.setAttribute("data-theme", t);
-  else root.removeAttribute("data-theme");
-}
 function currentTheme() {
-  const explicit = document.documentElement.getAttribute("data-theme");
-  if (explicit) return explicit;
+  const ex = document.documentElement.getAttribute("data-theme");
+  if (ex) return ex;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 window.addEventListener("DOMContentLoaded", () => {
   const btn = document.querySelector(".theme-toggle");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      const next = currentTheme() === "dark" ? "light" : "dark";
-      applyTheme(next);
-      try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-    });
-  }
+  btn?.addEventListener("click", () => {
+    const next = currentTheme() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("motz-theme", next); } catch (e) {}
+    window.dispatchEvent(new Event("themechange"));
+  });
 });
 
 /* ---------------- Smooth scroll ---------------- */
 if (!reduce) {
   const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
-  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
   requestAnimationFrame(raf);
-  // anchor links -> lenis
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener("click", (e) => {
       const id = a.getAttribute("href");
       if (id.length > 1) {
         const el = document.querySelector(id);
-        if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -80 }); }
+        if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -76 }); }
       }
     });
   });
 }
 
-/* ---------------- Nav scrolled state ---------------- */
+/* ---------------- Nav scrolled ---------------- */
 const nav = document.querySelector(".nav");
-const onScroll = () => { if (nav) nav.classList.toggle("scrolled", window.scrollY > 12); };
+const onScroll = () => nav && nav.classList.toggle("scrolled", window.scrollY > 12);
 onScroll();
 window.addEventListener("scroll", onScroll, { passive: true });
 
-/* ---------------- Scroll reveals ---------------- */
+/* ---------------- Reveals ---------------- */
 (() => {
   const els = document.querySelectorAll(".reveal");
-  if (reduce) { els.forEach((el) => el.classList.add("in")); return; }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((en) => {
+  if (reduce) return els.forEach((el) => el.classList.add("in"));
+  const io = new IntersectionObserver((ents) => {
+    ents.forEach((en) => {
       if (en.isIntersecting) {
-        const el = en.target;
-        const delay = parseInt(el.dataset.delay || "0", 10);
-        el.style.transitionDelay = delay + "ms";
-        el.classList.add("in");
-        io.unobserve(el);
+        en.target.style.transitionDelay = (parseInt(en.target.dataset.delay || "0", 10)) + "ms";
+        en.target.classList.add("in");
+        io.unobserve(en.target);
       }
     });
   }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
   els.forEach((el) => io.observe(el));
 })();
 
-/* ---------------- Hero intro ---------------- */
-window.addEventListener("DOMContentLoaded", () => {
-  if (reduce) return;
-  const q = (s) => document.querySelector(s);
-  const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-  if (q(".hero .kicker")) tl.from(".hero .kicker", { y: 18, opacity: 0, duration: 0.6 });
-  if (q(".hero h1")) tl.from(".hero h1", { y: 28, opacity: 0, duration: 0.85 }, "-=0.3");
-  if (q(".hero .lede")) tl.from(".hero .lede", { y: 22, opacity: 0, duration: 0.7 }, "-=0.5");
-  if (q(".hero .cta-row")) tl.from(".hero .cta-row > *", { y: 16, opacity: 0, duration: 0.5, stagger: 0.1 }, "-=0.4");
-  if (q(".hero .proof")) tl.from(".hero .proof .p", { y: 14, opacity: 0, duration: 0.5, stagger: 0.08 }, "-=0.3");
-  const path = q(".hero h1 .accent path");
-  if (path) {
-    const len = path.getTotalLength();
-    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
-    tl.to(path, { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }, "-=0.9");
-  }
-  const mark = q(".brand .mark");
-  if (mark) tl.from(mark, { rotate: -30, scale: 0.6, opacity: 0, duration: 0.6, ease: "back.out(1.7)" }, 0);
-});
-
-/* ---------------- Card 3D tilt ---------------- */
-if (finePointer && !reduce) {
-  document.querySelectorAll(".proj").forEach((c) => {
-    c.addEventListener("mousemove", (e) => {
-      const r = c.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
-      c.style.transform = `perspective(900px) rotateX(${-py * 4}deg) rotateY(${px * 5}deg) translateY(-5px)`;
+/* ---------------- Magnetic buttons ---------------- */
+if (fine && !reduce) {
+  document.querySelectorAll(".btn-primary, .theme-toggle").forEach((b) => {
+    b.addEventListener("mousemove", (e) => {
+      const r = b.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      b.style.transform = `translate(${x * 0.25}px, ${y * 0.3}px)`;
     });
-    c.addEventListener("mouseleave", () => { c.style.transform = ""; });
+    b.addEventListener("mouseleave", () => { b.style.transform = ""; });
   });
 }
 
-/* ---------------- Custom cursor ---------------- */
-if (finePointer && !reduce) {
+/* ---------------- Custom cursor + coordinate readout ---------------- */
+if (fine && !reduce) {
   document.body.classList.add("has-cursor");
   const dot = document.querySelector(".cursor");
   const ring = document.querySelector(".cursor-ring");
-  if (dot && ring) {
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    window.addEventListener("mousemove", (e) => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.transform = `translate(${mx}px,${my}px)`;
-    });
-    const loop = () => { rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
-      ring.style.transform = `translate(${rx}px,${ry}px)`; requestAnimationFrame(loop); };
-    loop();
-    document.querySelectorAll("a,button,.proj,.ecard").forEach((el) => {
-      el.addEventListener("mouseenter", () => ring.classList.add("hot"));
-      el.addEventListener("mouseleave", () => ring.classList.remove("hot"));
-    });
-  }
+  const coords = document.querySelector(".coords");
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  window.addEventListener("mousemove", (e) => {
+    mx = e.clientX; my = e.clientY;
+    if (dot) dot.style.transform = `translate(${mx}px,${my}px)`;
+    if (coords) coords.textContent =
+      `x:${String(mx).padStart(4, "0")}  y:${String(my).padStart(4, "0")}`;
+  });
+  const loop = () => {
+    rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+    if (ring) ring.style.transform = `translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(loop);
+  };
+  loop();
+  document.querySelectorAll("a,button,.proj,.ecard").forEach((el) => {
+    el.addEventListener("mouseenter", () => ring?.classList.add("hot"));
+    el.addEventListener("mouseleave", () => ring?.classList.remove("hot"));
+  });
 }
 
-/* ---------------- Hero aura canvas ---------------- */
+/* ---------------- Hero signal-map ---------------- */
 (() => {
   if (reduce) return;
-  const cv = document.querySelector("canvas.aura");
+  const cv = document.querySelector("canvas.signal");
   if (!cv) return;
   const ctx = cv.getContext("2d");
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
-  let W, H, dots;
-  const palette = () => {
-    const cs = getComputedStyle(document.documentElement);
-    return [cs.getPropertyValue("--primary").trim() || "#7A55F0",
-            cs.getPropertyValue("--gold-bright").trim() || "#C9962A"];
-  };
-  let colors = palette();
+  let W, H, nodes, accent, signal, mouse = { x: -9999, y: -9999 };
+  function readColors() {
+    accent = css("--accent") || "#7C5CFF";
+    signal = css("--signal") || accent;
+  }
   function size() {
-    const rect = cv.getBoundingClientRect();
-    W = cv.width = rect.width * DPR; H = cv.height = rect.height * DPR;
-    const n = Math.min(26, Math.floor(rect.width / 46));
-    dots = Array.from({ length: n }, () => ({
+    const r = cv.getBoundingClientRect();
+    W = cv.width = Math.max(1, r.width * DPR);
+    H = cv.height = Math.max(1, r.height * DPR);
+    cv.style.width = r.width + "px"; cv.style.height = r.height + "px";
+    const n = Math.min(56, Math.floor(r.width / 26));
+    nodes = Array.from({ length: n }, () => ({
       x: Math.random() * W, y: Math.random() * H,
-      r: (30 + Math.random() * 60) * DPR,
-      vx: (Math.random() - 0.5) * 0.14 * DPR, vy: (Math.random() - 0.5) * 0.14 * DPR,
-      c: Math.random() > 0.5 ? 0 : 1,
+      vx: (Math.random() - 0.5) * 0.22 * DPR, vy: (Math.random() - 0.5) * 0.22 * DPR,
     }));
   }
-  size();
-  window.addEventListener("resize", () => { size(); colors = palette(); });
-  document.querySelector(".theme-toggle")?.addEventListener("click",
-    () => setTimeout(() => { colors = palette(); }, 60));
-  function draw() {
+  readColors(); size();
+  window.addEventListener("resize", () => { size(); readColors(); });
+  window.addEventListener("themechange", () => setTimeout(readColors, 60));
+  cv.parentElement.addEventListener("mousemove", (e) => {
+    const r = cv.getBoundingClientRect();
+    mouse.x = (e.clientX - r.left) * DPR; mouse.y = (e.clientY - r.top) * DPR;
+  });
+  cv.parentElement.addEventListener("mouseleave", () => { mouse.x = mouse.y = -9999; });
+  const LINK = 132 * DPR, PULL = 150 * DPR;
+  function frame() {
     ctx.clearRect(0, 0, W, H);
-    ctx.globalCompositeOperation = "lighter";
-    for (const d of dots) {
-      d.x += d.vx; d.y += d.vy;
-      if (d.x < -d.r) d.x = W + d.r; if (d.x > W + d.r) d.x = -d.r;
-      if (d.y < -d.r) d.y = H + d.r; if (d.y > H + d.r) d.y = -d.r;
-      const g = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r);
-      const col = colors[d.c];
-      g.addColorStop(0, hexA(col, 0.10)); g.addColorStop(1, hexA(col, 0));
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
+    for (const p of nodes) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+      const md = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+      const near = md < PULL;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, (near ? 2.6 : 1.6) * DPR, 0, 6.29);
+      ctx.fillStyle = hexA(accent, near ? 0.95 : 0.55);
+      ctx.fill();
     }
-    ctx.globalCompositeOperation = "source-over";
-    requestAnimationFrame(draw);
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < LINK) {
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = hexA(signal, (1 - d / LINK) * 0.26);
+          ctx.lineWidth = DPR * 0.6; ctx.stroke();
+        }
+      }
+      // link to cursor
+      const a = nodes[i];
+      const dm = Math.hypot(a.x - mouse.x, a.y - mouse.y);
+      if (dm < PULL) {
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = hexA(accent, (1 - dm / PULL) * 0.4);
+        ctx.lineWidth = DPR * 0.7; ctx.stroke();
+      }
+    }
+    requestAnimationFrame(frame);
   }
-  function hexA(hex, a) {
-    hex = hex.replace("#", "");
-    if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
-    const n = parseInt(hex, 16);
-    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
-  }
-  draw();
+  frame();
+})();
+
+/* ---------------- Project mini node clusters ---------------- */
+(() => {
+  if (reduce) return;
+  document.querySelectorAll(".proj .art canvas").forEach((cv) => {
+    const proj = cv.closest(".proj");
+    const ctx = cv.getContext("2d");
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let W, H, pts;
+    const color = () => css("--ac", proj) || css("--accent");
+    function size() {
+      const r = cv.getBoundingClientRect();
+      W = cv.width = Math.max(1, r.width * DPR); H = cv.height = Math.max(1, r.height * DPR);
+      pts = Array.from({ length: 9 }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.12 * DPR, vy: (Math.random() - 0.5) * 0.12 * DPR,
+      }));
+    }
+    size(); window.addEventListener("resize", size);
+    function frame() {
+      const c = color();
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i]; p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 2 * DPR, 0, 6.29); ctx.fillStyle = hexA(c, 0.8); ctx.fill();
+        for (let j = i + 1; j < pts.length; j++) {
+          const q = pts[j], d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < 70 * DPR) {
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = hexA(c, (1 - d / (70 * DPR)) * 0.5); ctx.lineWidth = DPR * 0.5; ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    frame();
+  });
 })();

@@ -1,16 +1,23 @@
 ---
 const email = "hello@jackmotzkin.com";
 ---
-<section class="section" id="contact">
-  <div class="wrap">
-    <div class="contact-card reveal">
-      <span class="cglow" aria-hidden="true"></span>
-      <h2>Let's make something people love.</h2>
-      <p>If you want a researcher who leads with empathy and evidence, I'd love to hear what you're building.</p>
-      <a class="btn" href={`mailto:${email}`}>Get in touch
-        <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a class="contact-mail" href={`mailto:${email}`}>{email}</a>
+<section class="section" id="contact" style="border-bottom:none">
+  <div class="wrap shell">
+    <aside class="spine reveal">
+      <span class="idx">03</span>
+      <span class="slabel">Contact</span>
+    </aside>
+    <div class="content">
+      <div class="contact-card reveal">
+        <span class="cglow" aria-hidden="true"></span>
+        <span class="label" style="display:block;margin-bottom:14px">// let's build something</span>
+        <h2>Let's make something people love.</h2>
+        <p>Want a researcher who leads with empathy and evidence? Tell me what you're building.</p>
+        <a class="btn btn-primary" href={`mailto:${email}`}>Get in touch
+          <svg width="16" height="11" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <div><a class="contact-mail" href={`mailto:${email}`}>{email}</a></div>
+      </div>
     </div>
   </div>
 </section>

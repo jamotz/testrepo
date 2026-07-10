@@ -1,34 +1,46 @@
 ---
-const chips = ["BCS UX Certified", "IBM Data Science", "PeakXD Program", "Psychology & Sociology", "Eagle Scout"];
+const tags = ["BCS UX Certified", "IBM Data Science", "PeakXD Program", "Psychology & Sociology", "Eagle Scout"];
 ---
 <section class="section" id="about">
-  <div class="wrap about-grid">
-    <div class="reveal">
-      <span class="eyebrow">About Jack</span>
-      <h2>From understanding people to designing for them.</h2>
-      <p>
-        I'm an Eagle Scout with a Bachelor's in Psychology and a minor in Sociology.
-        In my senior year I pointed that human-behavior foundation at UX, completed an
-        international research &amp; design program, and earned my <b>BCS UX</b> and
-        <b>IBM Data Science</b> certifications.
-      </p>
-      <p>
-        I want to help companies create intuitive, integrated, and accessible
-        experiences — digital and physical — by truly understanding customers'
-        behaviors, preferences, and needs.
-      </p>
-      <div class="chips">
-        {chips.map((c) => <span>{c}</span>)}
+  <div class="wrap shell">
+    <aside class="spine reveal">
+      <span class="idx">02</span>
+      <span class="slabel">Profile</span>
+    </aside>
+    <div class="content">
+      <div class="about-grid">
+        <div class="reveal">
+          <span class="label" style="display:block;margin-bottom:12px">// about jack</span>
+          <h2>From understanding people to designing for them.</h2>
+          <p>
+            I'm an Eagle Scout with a Bachelor's in Psychology and a minor in Sociology.
+            In my senior year I pointed that human-behavior foundation at UX, completed an
+            international research &amp; design program, and earned my <b>BCS UX</b> and
+            <b>IBM Data Science</b> certifications.
+          </p>
+          <p>
+            I help companies create intuitive, integrated, and accessible experiences —
+            digital and physical — by truly understanding customers' behaviors,
+            preferences, and needs.
+          </p>
+          <div class="tags">
+            {tags.map((t) => <span>{t}</span>)}
+          </div>
+        </div>
+        <div class="terminal reveal" data-delay="100">
+          <div class="bar"><i></i><i></i><i></i><span class="fn">jack@motz ~ whoami</span></div>
+          <div class="body">
+            <div><span class="c">$</span> <span class="fn2">whoami</span></div>
+            <div><span class="s">jack_motzkin</span> <span class="c">— ux researcher &amp; designer</span></div>
+            <div>&nbsp;</div>
+            <div><span class="k">focus</span>    = [<span class="s">"research"</span>, <span class="s">"a11y"</span>, <span class="s">"cx"</span>]</div>
+            <div><span class="k">certs</span>    = [<span class="s">"BCS UX"</span>, <span class="s">"IBM Data Sci"</span>]</div>
+            <div><span class="k">program</span>  = <span class="s">"PeakXD"</span></div>
+            <div><span class="k">based</span>    = <span class="s">"Southwest, USA"</span></div>
+            <div><span class="k">status</span>   = <span class="s">"open_to_work"</span> <span class="c"># let's talk</span></div>
+          </div>
+        </div>
       </div>
     </div>
-    <figure class="quote reveal" data-delay="100">
-      <span class="mk" aria-hidden="true">&ldquo;</span>
-      <blockquote>
-        To design for someone, you have to
-        <span class="hl">walk in their shoes</span> — understand how they live,
-        what they prefer, and what they need.
-      </blockquote>
-      <cite>— My approach to every project</cite>
-    </figure>
   </div>
 </section>
