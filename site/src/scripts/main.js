@@ -49,6 +49,29 @@ const onScroll = () => nav && nav.classList.toggle("scrolled", window.scrollY > 
 onScroll();
 window.addEventListener("scroll", onScroll, { passive: true });
 
+/* ---------------- Mobile menu ---------------- */
+(() => {
+  const toggle = document.querySelector(".nav-toggle");
+  const menu = document.querySelector("#mobile-menu");
+  if (!toggle || !menu || !nav) return;
+  const open = () => {
+    menu.classList.add("open");
+    nav.setAttribute("data-menu", "");
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.setAttribute("aria-label", "Close menu");
+  };
+  const close = () => {
+    menu.classList.remove("open");
+    nav.removeAttribute("data-menu");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+  };
+  toggle.addEventListener("click", () =>
+    toggle.getAttribute("aria-expanded") === "true" ? close() : open());
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+})();
+
 /* ---------------- Reveals ---------------- */
 (() => {
   const els = document.querySelectorAll(".reveal");

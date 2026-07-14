@@ -17,5 +17,18 @@ import Logo from "./Logo.astro";
       </button>
       <a class="btn btn-primary" href="#contact">Let's talk</a>
     </nav>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
   </div>
 </header>
+<!-- Outside <header> on purpose: the nav's backdrop-filter would otherwise
+     become the containing block for this fixed panel. -->
+<div class="mobile-menu" id="mobile-menu">
+  <nav aria-label="Mobile">
+    <a class="mlink" href="#work"><span>01</span>Work</a>
+    <a class="mlink" href="#about"><span>02</span>About</a>
+    <a class="mlink" href="#contact"><span>03</span>Contact</a>
+    <a class="btn btn-primary mcta" href="#contact">Let's talk</a>
+  </nav>
+</div>
