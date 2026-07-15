@@ -45,8 +45,20 @@ Order to build every case page in:
 9. **High-fidelity prototype** — embed slot for a **Figma** prototype (owner may want an
    interactive "site-within-a-site"; iframe embed or clickable image walkthrough).
 
-Reference for the exact static template (green, both themes):
-https://claude.ai/code/artifact/0ee77719-44c0-4936-9399-f4694ca3c675
+Reference for the exact static templates (both themes) — all three case studies
+share this 9-section spine:
+- Oxfam (green): https://claude.ai/code/artifact/0ee77719-44c0-4936-9399-f4694ca3c675
+- Origins (amber): https://claude.ai/code/artifact/4276cca8-22bc-4ba0-b536-a5fa21d82dc3
+- Premier (blue): https://claude.ai/code/artifact/e57494f4-247e-4b18-9d66-430e0bba60c0
+
+### Per-project variation (approved: "same bones, project-appropriate details")
+Keep the 9-section spine identical for scannability; vary texture by project type:
+- **Oxfam** (charity, web/portal) & **Origins** (cannabis app) use the default labels;
+  Origins' section 9 prototype is a **phone/app frame**.
+- **Premier** is a **CX / service** engagement — no app. It relabels section 4
+  "Design decisions" -> **Recommendations**, section 5 -> **Service improvements**, and
+  section 9 -> **Journey map & deliverable** (a Pack -> Store -> Clean -> Pack-back ->
+  Return journey strip instead of a Figma prototype).
 
 ## Next steps (in order)
 1. Fold the recruiter-optimized 9-section structure into the real Astro page
@@ -54,7 +66,10 @@ https://claude.ai/code/artifact/0ee77719-44c0-4936-9399-f4694ca3c675
 2. Wire landing **Work cards → `/work/<slug>`** (currently they point to `#contact`)
    so page-to-page navigation works.
 3. Replicate for **Origins** (`accent="origins"`, amber) and **Premier**
-   (`accent="premier"`, blue) at `/work/origins`, `/work/premier`.
+   (`accent="premier"`, blue) at `/work/origins`, `/work/premier`. Static templates
+   for both already exist (see artifact links above) — port their content/labels into
+   Astro. Premier keeps its CX relabels (Recommendations / Service improvements /
+   Journey map & deliverable).
 4. Drop in **real images**: owner will commit their downloaded site (or images) into
    a `reference/` folder; use those in hero/gallery/prototype slots.
 5. Embed the **Figma prototype** in section 9 once the owner provides the link.
