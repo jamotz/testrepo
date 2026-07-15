@@ -81,6 +81,14 @@
   color-scheme:light;
 }
 
+/* ---- Per-project accent (case-study pages override the gold accent) ---- */
+:root[data-accent="oxfam"]{--gold:#77B36A;--gold-soft:#9BD08F;--gold-glow:rgba(119,179,106,.35);--grid-glow-rgb:119,179,106}
+:root[data-accent="origins"]{--gold:#E4A23C;--gold-soft:#F1BE68;--gold-glow:rgba(228,162,60,.35);--grid-glow-rgb:228,162,60}
+:root[data-accent="premier"]{--gold:#6E86EE;--gold-soft:#93A6F4;--gold-glow:rgba(110,134,238,.35);--grid-glow-rgb:110,134,238}
+:root[data-theme="light"][data-accent="oxfam"]{--gold:#41693B;--gold-soft:#5C8A54;--gold-glow:rgba(65,105,59,.28);--grid-glow-rgb:65,105,59}
+:root[data-theme="light"][data-accent="origins"]{--gold:#8A5A10;--gold-soft:#A9761C;--gold-glow:rgba(138,90,16,.28);--grid-glow-rgb:138,90,16}
+:root[data-theme="light"][data-accent="premier"]{--gold:#3A55B4;--gold-soft:#5872D0;--gold-glow:rgba(58,85,180,.28);--grid-glow-rgb:58,85,180}
+
 /* ---- Reset-ish ---- */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}

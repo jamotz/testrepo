@@ -1,20 +1,22 @@
 ---
 import Logo from './Logo.astro';
 const year = new Date().getFullYear();
+const home = Astro.url.pathname === '/';
+const base = home ? '' : '/';
 ---
 <footer class="footer">
   <div class="wrap footer-inner">
-    <a class="footer-brand" href="#top" aria-label="Back to top">
+    <a class="footer-brand" href={home ? '#top' : '/'} aria-label="Back to top">
       <span class="footer-mark"><Logo /></span>
       <span>Jack Motzkin</span>
     </a>
     <p class="footer-tag">UX Researcher &amp; Designer · Southwest, USA</p>
     <nav class="footer-links" aria-label="Footer">
-      <a href="#work">Work</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
+      <a href={`${base}#work`}>Work</a>
+      <a href={`${base}#about`}>About</a>
+      <a href={`${base}#contact`}>Contact</a>
     </nav>
-    <p class="footer-copy mono-label">© {year} Jack Motzkin — Back to top ↑</p>
+    <p class="footer-copy mono-label">© {year} Jack Motzkin</p>
   </div>
 </footer>
 

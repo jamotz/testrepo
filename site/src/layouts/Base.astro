@@ -4,15 +4,17 @@ import '../styles/global.css';
 export interface Props {
   title?: string;
   description?: string;
+  accent?: 'oxfam' | 'origins' | 'premier';
 }
 const {
   title = 'Jack Motzkin — UX Researcher & Designer',
   description = 'Jack Motzkin is a UX researcher and designer with a psychology background — evidence-led research and accessible design for real-world clients including Oxfam Australia, Origins Cannabis, and Premier Packout.',
+  accent,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-accent={accent}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

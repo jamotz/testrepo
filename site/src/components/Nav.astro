@@ -1,21 +1,25 @@
 ---
 import Logo from './Logo.astro';
+// On the landing page use in-page anchors (smooth scroll); on subpages point home.
+const home = Astro.url.pathname === '/';
+const base = home ? '' : '/';
 const links = [
-  { href: '#work', label: 'Work' },
-  { href: '#about', label: 'About' },
-  { href: '#contact', label: 'Contact' },
+  { href: `${base}#work`, label: 'Work' },
+  { href: `${base}#about`, label: 'About' },
+  { href: `${base}#contact`, label: 'Contact' },
 ];
+const homeHref = home ? '#top' : '/';
 ---
 <header class="nav" data-nav>
   <div class="wrap nav-inner">
-    <a class="brand" href="#top" aria-label="Jack Motzkin — home">
+    <a class="brand" href={homeHref} aria-label="Jack Motzkin — home">
       <span class="brand-mark"><Logo /></span>
       <span class="brand-word">MOTZ</span>
     </a>
     <div class="nav-right">
       <nav class="nav-links" aria-label="Primary">
         {links.map((l) => <a href={l.href}>{l.label}</a>)}
-        <a class="btn btn-primary nav-cta" href="#contact">Get in touch</a>
+        <a class="btn btn-primary nav-cta" href={`${base}#contact`}>Get in touch</a>
       </nav>
       <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle light and dark theme">
         <svg class="i-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -32,7 +36,7 @@ const links = [
 <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
   <nav aria-label="Mobile">
     {links.map((l) => <a class="mlink" href={l.href} data-mobile-link>{l.label}</a>)}
-    <a class="btn btn-primary mcta" href="#contact" data-mobile-link>Get in touch</a>
+    <a class="btn btn-primary mcta" href={`${base}#contact`} data-mobile-link>Get in touch</a>
   </nav>
 </div>
 
