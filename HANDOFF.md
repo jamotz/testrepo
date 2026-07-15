@@ -87,3 +87,17 @@ will provide images and any deeper copy. Do NOT invent metrics — use real evid
 ## Environment note
 Containers are ephemeral and reclaim on inactivity — **commit and push often**; don't
 rely on `/tmp` or un-pushed files surviving between turns.
+
+## Reference assets — UPLOADED (as of this note)
+Oxfam source material is staged in `reference/oxfam/`:
+- Button pages map top->bottom: page-01 FAQ, page-02 Feedback, page-03 MyOxfam,
+  page-04 Fundraising, page-05 Media, page-06 Report (each folder has the page screenshot).
+- Flow: Landing -> each button -> its page. Only tertiary: Landing -> MyOxfam ->
+  MyOxfam Portal (Portal screenshot goes in page-03).
+- `reference/oxfam/process/` — 26 mixed items (lo/mid-fi prototypes, stock photos,
+  assets, Oxfam logos). Not pre-sorted; classify + place while building (view once).
+- `reference/current-site/` — 6 screenshots of the existing jackmotzkin.com homepage
+  (Top #1 -> Bottom #6).
+Next: build /work/oxfam from the recruiter-optimized 9-section template, wire the
+Landing->6-buttons->(MyOxfam Portal) flow as a clickable prototype in section 9,
+place real images, and tighten copy to the layered/scannable format.
