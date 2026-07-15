@@ -46,7 +46,39 @@
   --ease-out:cubic-bezier(.16,1,.3,1);
   --dur:.6s;
 
+  /* grid colors consumed by motion.js (rgb triplets) */
+  --grid-line-rgb:255,255,255;
+  --grid-glow-rgb:240,178,74;
+
   color-scheme:dark;
+}
+
+/* ---- Light theme (opt-in via toggle; dark is the brand default) ---- */
+:root[data-theme="light"]{
+  --bg:#F4F5F3;
+  --bg-2:#EAEBE7;
+  --panel:#FFFFFF;
+  --panel-2:#F1F2EF;
+  --ink:#15171C;
+  --ink-soft:#585C64;
+  --muted-fg:#888C94;
+  --line:rgba(21,23,28,.10);
+  --line-2:rgba(21,23,28,.17);
+  --line-3:rgba(21,23,28,.26);
+
+  --gold:#A9761C;
+  --gold-soft:#C79433;
+  --gold-glow:rgba(169,118,28,.28);
+  --acid:#5C7A16;
+
+  --ac-oxfam:#4E7A47;
+  --ac-origins:#986213;
+  --ac-premier:#3A55B4;
+
+  --grid-line-rgb:21,23,28;
+  --grid-glow-rgb:200,140,40;
+
+  color-scheme:light;
 }
 
 /* ---- Reset-ish ---- */
@@ -57,6 +89,7 @@ body{
   font-family:var(--body);font-size:17px;line-height:1.65;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   overflow-x:hidden;
+  transition:background-color .4s var(--ease-out),color .4s var(--ease-out);
 }
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}

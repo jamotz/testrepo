@@ -20,6 +20,19 @@ if (!reduce) {
   gsap.ticker.lagSmoothing(0);
 }
 
+/* ---------------- Theme toggle ---------------- */
+(function theme() {
+  const btn = document.querySelector('[data-theme-toggle]');
+  if (!btn) return;
+  const current = () => document.documentElement.getAttribute('data-theme') || 'dark';
+  btn.addEventListener('click', () => {
+    const next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('motz-theme', next); } catch (e) {}
+    window.dispatchEvent(new Event('themechange'));
+  });
+})();
+
 /* ---------------- Nav: scrolled state + mobile menu ---------------- */
 const nav = document.querySelector('[data-nav]');
 const setScrolled = () => {
@@ -107,6 +120,12 @@ if (!coarse && !reduce) {
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
   const GAP = 54, RADIUS = 118, CORE = 44;
   let W, H, mx = -9999, my = -9999, cx = -9999, cy = -9999, hasMouse = false;
+  let lineRGB = '255,255,255', glowRGB = '240,178,74';
+  function readColors() {
+    const s = getComputedStyle(document.documentElement);
+    lineRGB = (s.getPropertyValue('--grid-line-rgb') || '255,255,255').trim();
+    glowRGB = (s.getPropertyValue('--grid-glow-rgb') || '240,178,74').trim();
+  }
 
   function resize() {
     W = canvas.width = window.innerWidth * DPR;
@@ -117,7 +136,7 @@ if (!coarse && !reduce) {
   function baseGrid(alpha) {
     const g = GAP * DPR;
     ctx.lineWidth = DPR;
-    ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+    ctx.strokeStyle = 'rgba(' + lineRGB + ',' + alpha + ')';
     ctx.beginPath();
     for (let x = 0; x <= W; x += g) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
     for (let y = 0; y <= H; y += g) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
@@ -125,8 +144,9 @@ if (!coarse && !reduce) {
   }
   function drawStatic() { ctx.clearRect(0, 0, W, H); baseGrid(0.05); }
 
-  resize();
+  resize(); readColors();
   window.addEventListener('resize', () => { resize(); if (reduce || coarse) drawStatic(); });
+  window.addEventListener('themechange', () => { readColors(); if (reduce || coarse) drawStatic(); });
 
   if (reduce || coarse) { drawStatic(); return; }
 
@@ -144,9 +164,9 @@ if (!coarse && !reduce) {
       ctx.save();
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.clip();
       const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-      grd.addColorStop(0, 'rgba(240,178,74,0.55)');
-      grd.addColorStop(core / rad, 'rgba(240,178,74,0.28)');
-      grd.addColorStop(1, 'rgba(240,178,74,0)');
+      grd.addColorStop(0, 'rgba(' + glowRGB + ',0.55)');
+      grd.addColorStop(core / rad, 'rgba(' + glowRGB + ',0.28)');
+      grd.addColorStop(1, 'rgba(' + glowRGB + ',0)');
       ctx.lineWidth = DPR * 1.1;
       ctx.strokeStyle = grd;
       ctx.beginPath();
@@ -164,14 +184,14 @@ if (!coarse && !reduce) {
             const a = 1 - d / rad;
             ctx.beginPath();
             ctx.arc(x, y, DPR * (0.8 + a * 1.8), 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(240,178,74,' + (a * a * 0.9) + ')';
+            ctx.fillStyle = 'rgba(' + glowRGB + ',' + (a * a * 0.9) + ')';
             ctx.fill();
           }
         }
       }
       const amb = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-      amb.addColorStop(0, 'rgba(240,178,74,0.07)');
-      amb.addColorStop(1, 'rgba(240,178,74,0)');
+      amb.addColorStop(0, 'rgba(' + glowRGB + ',0.07)');
+      amb.addColorStop(1, 'rgba(' + glowRGB + ',0)');
       ctx.fillStyle = amb;
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
     }

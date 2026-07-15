@@ -30,6 +30,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
     <link rel="preload" href="/fonts/space-grotesk-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/ibm-plex-mono-500.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- No-flash theme: dark is the default; a saved choice wins. Runs before paint. -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('motz-theme');
+          document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
   </head>
   <body id="top">
     <a class="skip" href="#work">Skip to content</a>
