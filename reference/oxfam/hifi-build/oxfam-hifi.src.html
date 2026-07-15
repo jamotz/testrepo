@@ -341,14 +341,14 @@ document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribu
   document.getElementById("toggle").addEventListener("click",function(){var n=r.getAttribute("data-theme")==="light"?"dark":"light";r.setAttribute("data-theme",n);try{localStorage.setItem("motz-theme",n);}catch(e){}});
 })();
 (function(){
-  var names={home:"Contact landing",faq:"FAQ",feedback:"Feedback",myoxfam:"MyOxfam · Create account",portal:"MyOxfam Portal",fundraising:"Fundraising",media:"Media",report:"Report"};
+  var names={home:"Contact landing",faq:"FAQ",feedback:"Feedback",myoxfam:"MyOxfam \u00B7 Create account",portal:"MyOxfam Portal",fundraising:"Fundraising",media:"Media",report:"Report"};
   var img=document.getElementById("expimg"),view=document.getElementById("expview"),crumb=document.getElementById("crumb"),back=document.getElementById("expback"),portalbtn=document.getElementById("portalbtn");
   var path=["home"];
   function render(){
     var cur=path[path.length-1];
     if(IMG[cur]) img.src=IMG[cur];
     view.scrollTop=0;
-    crumb.textContent=path.map(function(k){return names[k].split(" · ")[0];}).join("  ›  ");
+    crumb.textContent=path.map(function(k){return names[k].split(" \u00B7 ")[0];}).join("  \u203A  ");
     back.disabled=path.length<2;
     portalbtn.style.display=(cur==="myoxfam"||cur==="portal")?"inline-block":"none";
     document.querySelectorAll("#expnav button").forEach(function(b){b.classList.toggle("on",b.dataset.k===cur);});
