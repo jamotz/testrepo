@@ -1,23 +1,105 @@
 ---
-const email = "hello@jackmotzkin.com";
+// The form works out-of-the-box via a mailto: fallback (no backend needed).
+// To collect submissions in an inbox on Hostinger static hosting, create a free
+// Web3Forms access key (https://web3forms.com) and set data-endpoint below to
+// "https://api.web3forms.com/submit" plus add a hidden access_key input.
+const email = 'hello@jackmotzkin.com';
 ---
-<section class="section" id="contact" style="border-bottom:none">
-  <div class="wrap shell">
-    <aside class="spine reveal">
-      <span class="idx">03</span>
-      <span class="slabel">Contact</span>
-    </aside>
-    <div class="content">
-      <div class="contact-card reveal">
-        <span class="cglow" aria-hidden="true"></span>
-        <span class="label" style="display:block;margin-bottom:14px">// let's build something</span>
-        <h2>Let's make something people love.</h2>
-        <p>Want a researcher who leads with empathy and evidence? Tell me what you're building.</p>
-        <a class="btn btn-primary" href={`mailto:${email}`}>Get in touch
-          <svg width="16" height="11" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <div><a class="contact-mail" href={`mailto:${email}`}>{email}</a></div>
-      </div>
+<section class="section contact" id="contact">
+  <div class="wrap">
+    <div class="contact-head">
+      <p class="eyebrow" data-reveal>03 — Contact</p>
+      <h2 data-reveal>Let’s talk about<br /><span class="grad">your users.</span></h2>
+      <p class="contact-lede" data-reveal>
+        Looking for a researcher who genuinely cares how people experience your product?
+        Tell me what you’re building.
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <form class="contact-form" data-contact data-endpoint="mailto" novalidate data-reveal>
+        <div class="field">
+          <label for="cf-name">Name <span aria-hidden="true">*</span></label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" required placeholder="Your name" />
+          <p class="err" data-err-for="name" hidden></p>
+        </div>
+        <div class="field">
+          <label for="cf-email">Email <span aria-hidden="true">*</span></label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required placeholder="you@company.com" />
+          <p class="err" data-err-for="email" hidden></p>
+        </div>
+        <div class="field">
+          <label for="cf-message">Message <span aria-hidden="true">*</span></label>
+          <textarea id="cf-message" name="message" rows="5" required placeholder="A sentence or two about your project…"></textarea>
+          <p class="err" data-err-for="message" hidden></p>
+        </div>
+        <button class="btn btn-primary contact-submit" type="submit">
+          Send message
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11m0 0-4-4m4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="form-status" data-form-status role="status" aria-live="polite"></p>
+      </form>
+
+      <aside class="contact-side" data-reveal>
+        <div class="contact-direct">
+          <span class="mono-label">Direct</span>
+          <a class="contact-email" href={`mailto:${email}`}>{email}</a>
+        </div>
+        <div class="contact-avail">
+          <span class="dot"></span>
+          <span>Currently open to UX research &amp; design roles and freelance projects.</span>
+        </div>
+        <div class="contact-links">
+          <a href="#" aria-label="LinkedIn">LinkedIn</a>
+          <a href="#" aria-label="Résumé">Résumé</a>
+          <a href={`mailto:${email}`} aria-label="Email">Email</a>
+        </div>
+      </aside>
     </div>
   </div>
 </section>
+
+<style>
+  .contact-head{max-width:760px;margin-bottom:clamp(36px,5vw,60px)}
+  .contact-head h2{font-size:clamp(2.6rem,8vw,5.5rem);text-transform:uppercase;margin:16px 0 20px}
+  .contact-head .grad{background:linear-gradient(96deg,var(--gold),var(--gold-soft) 55%,var(--acid));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .contact-lede{color:var(--ink-soft);max-width:46ch;font-size:1.1rem}
+
+  .contact-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,56px);align-items:start}
+  @media (max-width:860px){.contact-grid{grid-template-columns:1fr;gap:36px}}
+
+  .contact-form{display:flex;flex-direction:column;gap:18px}
+  .field{display:flex;flex-direction:column;gap:8px}
+  .field label{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  .field label span{color:var(--gold)}
+  .field input,.field textarea{width:100%;background:var(--panel);border:1px solid var(--line-2);
+    border-radius:12px;padding:14px 16px;color:var(--ink);font-family:var(--body);font-size:16px;
+    transition:border-color .2s,box-shadow .2s;resize:vertical}
+  .field input::placeholder,.field textarea::placeholder{color:var(--muted-fg)}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-glow)}
+  .field[data-invalid] input,.field[data-invalid] textarea{border-color:#E5673E}
+  .err{margin:0;color:#F0916E;font-size:13px;font-family:var(--mono)}
+  .contact-submit{align-self:flex-start;margin-top:4px}
+  .contact-submit[disabled]{opacity:.6;pointer-events:none}
+  .form-status{margin:4px 0 0;font-size:14px;min-height:1.2em}
+  .form-status[data-ok]{color:var(--acid)}
+  .form-status[data-bad]{color:#F0916E}
+
+  .contact-side{display:flex;flex-direction:column;gap:26px;padding:26px;
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));border:1px solid var(--line);
+    border-radius:var(--radius)}
+  .contact-direct{display:flex;flex-direction:column;gap:10px}
+  .contact-email{font-family:var(--display);font-weight:700;font-size:clamp(1.2rem,2.6vw,1.6rem);
+    color:var(--ink);word-break:break-word;transition:color .2s}
+  .contact-email:hover{color:var(--gold)}
+  .contact-avail{display:flex;gap:12px;align-items:flex-start;color:var(--ink-soft);font-size:14.5px;
+    line-height:1.5;padding-top:22px;border-top:1px solid var(--line)}
+  .contact-avail .dot{flex:none;width:9px;height:9px;margin-top:6px;border-radius:50%;
+    background:var(--acid);box-shadow:0 0 10px var(--acid)}
+  .contact-links{display:flex;gap:8px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line)}
+  .contact-links a{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);border:1px solid var(--line-2);border-radius:8px;padding:9px 14px;transition:.2s}
+  .contact-links a:hover{color:var(--gold);border-color:var(--gold)}
+</style>

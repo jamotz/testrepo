@@ -1,8 +1,8 @@
-import { defineConfig } from "astro/config";
+import { defineConfig } from 'astro/config';
 
-// Static build → outputs to ./dist, which you upload to Hostinger's public_html.
+// Static output — build to ./dist and upload to Hostinger (File Manager / FTP).
 export default defineConfig({
-  site: "https://jackmotzkin.com",
-  build: { inlineStylesheets: "auto" },
+  site: 'https://jackmotzkin.com',
+  build: { assets: 'assets' },
   compressHTML: true,
 });

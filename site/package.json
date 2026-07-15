@@ -1,5 +1,5 @@
 {
-  "name": "motz-portfolio",
+  "name": "jack-motzkin-portfolio",
   "type": "module",
   "version": "1.0.0",
   "private": true,
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "astro": "^4.16.18",
+    "gsap": "^3.12.5",
     "lenis": "^1.1.18"
   }
 }

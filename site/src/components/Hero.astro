@@ -1,28 +1,139 @@
 ---
+import Logo from './Logo.astro';
+const ticker = [
+  { a: 'Oxfam Australia', b: 'User Research & Design' },
+  { a: 'Origins Cannabis', b: 'App Redesign' },
+  { a: 'Premier Packout', b: 'CX Analysis' },
+  { a: 'BCS UX Certified', b: 'IBM Data Science' },
+];
 ---
-<section class="hero" id="top">
-  <canvas class="signal" aria-hidden="true"></canvas>
-  <span class="glow" aria-hidden="true"></span>
-  <div class="wrap">
-    <span class="status"><span class="dot"></span>UX Researcher &amp; Designer — Open to work</span>
-    <h1>
-      Research-led UX,<br />built for <span class="u">real people<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M5 14 Q86 3 158 10 T295 8" /></svg></span>.
-    </h1>
-    <p class="lede">
-      I'm <b>Jack Motzkin</b> — a UX researcher &amp; designer with a psychology background.
-      I turn how people actually behave into intuitive, accessible products.
-      <b>Evidence first. Empathy always.</b>
-    </p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#work">View the work
-        <svg width="16" height="11" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a class="btn btn-ghost" href="#contact">Get in touch</a>
+<section class="hero" id="hero">
+  <span class="hero-watermark" aria-hidden="true"><Logo /></span>
+
+  <div class="wrap hero-inner">
+    <div class="hero-top mono-label">
+      <span>[ Portfolio / ’26 ]</span>
+      <span class="hero-top-right">
+        <span>Southwest · USA</span>
+        <span class="live"><span class="dot"></span>Open to work</span>
+      </span>
     </div>
-    <div class="proof">
-      <div class="p"><div class="n"><em>03</em></div><div class="t">Real-world clients</div></div>
-      <div class="p"><div class="n">BCS·IBM</div><div class="t">Certified UX / Data Sci</div></div>
-      <div class="p"><div class="n">Psych·Soc</div><div class="t">Behavioral foundation</div></div>
+
+    <div class="hero-body">
+      <p class="hero-eyebrow"><span class="hero-idx">01</span><span class="rule"></span>UX Research &amp; Design</p>
+
+      <h1 class="hero-name" data-hero-name>
+        <span class="line"><span>Jack</span></span>
+        <span class="line"><span class="accent">Motzkin</span></span>
+      </h1>
+
+      <div class="hero-sub" data-reveal>
+        <span class="role">UX Researcher <span class="slash">/</span> Designer</span>
+        <span class="tag">Psychology-led</span>
+        <span class="tag">Accessibility</span>
+        <span class="tag">CX Research</span>
+      </div>
+
+      <p class="hero-desc" data-reveal>
+        I study how real people actually behave, then design intuitive, <b>accessible</b>
+        experiences around what they need. <b>Evidence in, clarity out</b> — for three
+        real-world clients and counting.
+      </p>
+
+      <div class="hero-actions" data-reveal>
+        <a class="btn btn-primary" href="#work">
+          View selected work
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-4-4m4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="hero-ticker" aria-hidden="true">
+      <div class="ticker-track">
+        {[0, 1].map(() => (
+          <div class="ticker-run">
+            {ticker.map((t) => (
+              <span class="ticker-item"><span class="star">✦</span>{t.a}<em>{t.b}</em></span>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   </div>
+
+  <a class="hero-scroll" href="#work" aria-label="Scroll to work">
+    <span>Scroll</span>
+    <svg width="14" height="22" viewBox="0 0 14 22" fill="none" aria-hidden="true"><rect x="1" y="1" width="12" height="20" rx="6" stroke="currentColor" stroke-width="1.4"/><circle class="scroll-dot" cx="7" cy="7" r="2" fill="currentColor"/></svg>
+  </a>
 </section>
+
+<style>
+  .hero{position:relative;min-height:100dvh;display:flex;align-items:stretch;
+    padding-top:74px;overflow:hidden}
+  .hero-inner{flex:1;display:flex;flex-direction:column;width:100%}
+  .hero-watermark{position:absolute;right:-8%;top:50%;transform:translateY(-50%);
+    width:min(58vw,720px);aspect-ratio:1;color:#fff;opacity:.04;pointer-events:none;z-index:0}
+
+  .hero-top{display:flex;justify-content:space-between;align-items:center;padding:24px 0;gap:16px}
+  .hero-top-right{display:flex;gap:22px}
+  .live{display:inline-flex;align-items:center;gap:8px;color:var(--acid)}
+  .live .dot{width:7px;height:7px;border-radius:50%;background:var(--acid);
+    box-shadow:0 0 0 0 rgba(198,242,78,.6);animation:live-pulse 2.4s infinite}
+  @keyframes live-pulse{0%{box-shadow:0 0 0 0 rgba(198,242,78,.55)}70%{box-shadow:0 0 0 8px rgba(198,242,78,0)}100%{box-shadow:0 0 0 0 rgba(198,242,78,0)}}
+
+  .hero-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 0}
+  .hero-eyebrow{display:flex;align-items:center;gap:14px;font-family:var(--mono);
+    font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+  .hero-idx{font-family:var(--display);font-weight:700;color:var(--ink);font-size:14px}
+  .hero-eyebrow .rule{height:1px;width:min(120px,16vw);background:var(--line-2)}
+
+  .hero-name{font-size:clamp(3.4rem,15.5vw,13rem);text-transform:uppercase;
+    letter-spacing:-.035em;line-height:.82}
+  .hero-name .line{display:block;overflow:hidden;padding-bottom:.02em}
+  .hero-name .accent{color:var(--gold)}
+
+  .hero-sub{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;margin-top:28px}
+  .hero-sub .role{font-family:var(--display);font-weight:500;
+    font-size:clamp(1.1rem,2.4vw,1.7rem);text-transform:uppercase;letter-spacing:-.01em}
+  .hero-sub .slash{color:var(--muted-fg)}
+  .hero-sub .tag{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-soft);border:1px solid var(--line-2);border-radius:100px;padding:7px 14px}
+
+  .hero-desc{max-width:52ch;margin-top:26px;font-size:clamp(1rem,1.6vw,1.15rem);
+    line-height:1.7;color:var(--ink-soft)}
+  .hero-desc b{color:var(--ink);font-weight:600}
+
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+
+  .hero-ticker{margin-top:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .ticker-track{display:flex;width:max-content;animation:ticker 34s linear infinite}
+  .ticker-run{display:flex;flex-shrink:0}
+  .ticker-item{display:inline-flex;align-items:center;gap:14px;padding:16px 28px;
+    font-family:var(--display);font-weight:500;font-size:14px;text-transform:uppercase;
+    letter-spacing:.02em;color:var(--ink);white-space:nowrap;border-right:1px solid var(--line)}
+  .ticker-item em{font-style:normal;color:var(--ink-soft);font-family:var(--mono);
+    font-size:11.5px;letter-spacing:.08em}
+  .ticker-item .star{color:var(--gold)}
+  @keyframes ticker{to{transform:translateX(-50%)}}
+  .hero:hover .ticker-track{animation-play-state:paused}
+
+  .hero-scroll{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted-fg);
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;z-index:2}
+  .hero-scroll:hover{color:var(--ink-soft)}
+  .scroll-dot{animation:scroll-dot 2s var(--ease-out) infinite}
+  @keyframes scroll-dot{0%{transform:translateY(0);opacity:1}60%{transform:translateY(6px);opacity:0}100%{opacity:0}}
+
+  @media (max-width:760px){
+    .hero-scroll{display:none}
+    .hero-top-right .live{display:none}
+    .hero-name{letter-spacing:-.02em}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ticker-track{animation:none}
+    .scroll-dot,.live .dot{animation:none}
+  }
+</style>

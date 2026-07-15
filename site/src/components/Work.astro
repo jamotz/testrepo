@@ -1,57 +1,103 @@
 ---
 const projects = [
   {
-    num: "01", ac: "var(--oxfam)", code: "OXFAM", role: "UX Research & Design", client: "Oxfam Australia", loc: "Melbourne, AU",
-    title: "Oxfam Support Redesign",
-    body: "Restructured Oxfam Australia's support pages and the MyOxfam portal — new information architecture, wireframes, usability testing, and a final design presented to stakeholders.",
+    n: '01', mono: 'Ox', accent: 'var(--ac-oxfam)',
+    title: 'Oxfam Support Redesign',
+    role: 'UX Research & Design', client: 'Oxfam Australia', location: 'Melbourne, AU',
+    desc: 'Restructured Oxfam Australia’s support pages and the MyOxfam portal — new information architecture, wireframes, usability testing, and a final design presented to stakeholders.',
   },
   {
-    num: "02", ac: "var(--origins)", code: "ORIGINS", role: "UX Researcher & Designer", client: "Origins Cannabis", loc: "Redmond, WA",
-    title: "Origins App Redesign",
-    body: "Interviewed real dispensary customers in person to learn why the app failed them, then rebuilt the product display and information architecture — validated through hands-on usability testing.",
+    n: '02', mono: 'Or', accent: 'var(--ac-origins)',
+    title: 'Origins App Redesign',
+    role: 'UX Researcher & Designer', client: 'Origins Cannabis', location: 'Redmond, WA',
+    desc: 'Interviewed real dispensary customers in person to learn why the app failed them, then rebuilt the product display and information architecture — validated through hands-on usability testing.',
   },
   {
-    num: "03", ac: "var(--premier)", code: "PREMIER", role: "CX Researcher", client: "Premier Packout", loc: "Scottsdale, AZ",
-    title: "Premier CX Analysis",
-    body: "Partnered with the CEO to map the customer journey of a fire & flood contents company — surfacing pain points across packing, storage, cleaning, and pack-back to deliver a white-glove service.",
+    n: '03', mono: 'Pr', accent: 'var(--ac-premier)',
+    title: 'Premier CX Analysis',
+    role: 'CX Researcher', client: 'Premier Packout', location: 'Scottsdale, AZ',
+    desc: 'Partnered with the CEO to map the customer journey of a fire & flood contents company — surfacing pain points across packing, storage, cleaning, and pack-back to shape a white-glove service.',
   },
 ];
 ---
-<section class="section" id="work">
-  <div class="wrap shell">
-    <aside class="spine reveal">
-      <span class="idx">01</span>
-      <span class="slabel">Selected Work</span>
-    </aside>
-    <div class="content">
-      <div class="head reveal">
-        <span class="label">// three clients, three worlds</span>
-        <h2>Selected work</h2>
-        <p>Every project meant meeting real people where they were — from a Melbourne charity to an Arizona pack-out crew.</p>
-      </div>
-      <div class="work-list">
-        {projects.map((p, i) => (
-          <a class="proj reveal" href="#contact" style={`--ac:${p.ac}`} data-delay={i * 60} aria-label={`${p.title} — case study`}>
-            <span class="num">{p.num}</span>
-            <div class="info">
-              <h3>{p.title}</h3>
-              <div class="meta">
-                <span class="m"><b>role</b> {p.role}</span>
-                <span class="m"><b>client</b> {p.client}</span>
-                <span class="m"><b>loc</b> {p.loc}</span>
-              </div>
-              <p>{p.body}</p>
-              <span class="go">View study
-                <svg width="16" height="11" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </div>
-            <div class="art" aria-hidden="true">
-              <canvas></canvas>
-              <span class="code">{p.code}</span>
-            </div>
-          </a>
-        ))}
-      </div>
+<section class="section work" id="work">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <h2>Selected<br />Work</h2>
+      <span class="idx">03 — Case studies · 2022–24</span>
     </div>
+
+    <div class="work-grid">
+      {projects.map((p) => (
+        <a class="pcard" href="#contact" style={`--ac:${p.accent}`} data-reveal data-tilt>
+          <div class="pcard-visual" aria-hidden="true">
+            <span class="pcard-mono">{p.mono}</span>
+            <span class="pcard-n mono-label">{p.n} / 03</span>
+          </div>
+          <div class="pcard-body">
+            <span class="pcard-role">{p.role}</span>
+            <h3 class="pcard-title">{p.title}</h3>
+            <p class="pcard-desc">{p.desc}</p>
+            <div class="pcard-meta">
+              <span><i class="k">Client</i>{p.client}</span>
+              <span><i class="k">Location</i>{p.location}</span>
+            </div>
+            <span class="pcard-go">
+              View study
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <p class="work-note" data-reveal>
+      <span class="mono-label">Note</span>
+      Full case studies — methods, artifacts, and outcomes — are coming to individual project pages.
+    </p>
   </div>
 </section>
+
+<style>
+  .work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media (max-width:960px){.work-grid{grid-template-columns:1fr;gap:18px}}
+
+  .pcard{position:relative;display:flex;flex-direction:column;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    transition:border-color .4s,box-shadow .4s;will-change:transform}
+  .pcard:hover{border-color:color-mix(in srgb,var(--ac) 55%,var(--line-2));
+    box-shadow:0 30px 70px -30px rgba(0,0,0,.7),0 0 0 1px color-mix(in srgb,var(--ac) 25%,transparent)}
+
+  .pcard-visual{position:relative;height:172px;display:grid;place-items:center;overflow:hidden;
+    background:
+      radial-gradient(120% 130% at 78% 15%,color-mix(in srgb,var(--ac) 60%,transparent),transparent 62%),
+      color-mix(in srgb,var(--ac) 14%,var(--panel-2))}
+  .pcard-visual::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+    background-size:26px 26px;
+    -webkit-mask:radial-gradient(80% 80% at 78% 20%,#000,transparent 75%);
+    mask:radial-gradient(80% 80% at 78% 20%,#000,transparent 75%)}
+  .pcard-mono{font-family:var(--display);font-weight:700;font-size:4.4rem;line-height:1;
+    color:color-mix(in srgb,var(--ac) 82%,#fff);mix-blend-mode:screen;
+    transition:transform .5s var(--ease-out)}
+  .pcard:hover .pcard-mono{transform:scale(1.06) rotate(-2deg)}
+  .pcard-n{position:absolute;top:14px;left:16px;color:color-mix(in srgb,var(--ink) 70%,var(--ac))}
+
+  .pcard-body{padding:24px;display:flex;flex-direction:column;flex:1}
+  .pcard-role{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ac);margin-bottom:12px}
+  .pcard-title{font-size:1.5rem;line-height:1.05;margin-bottom:12px}
+  .pcard-desc{color:var(--ink-soft);font-size:14.5px;line-height:1.6;flex:1}
+  .pcard-meta{display:flex;gap:26px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+  .pcard-meta span{display:flex;flex-direction:column;gap:3px;font-size:13.5px;color:var(--ink)}
+  .pcard-meta .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted-fg);font-style:normal}
+  .pcard-go{display:inline-flex;align-items:center;gap:9px;margin-top:20px;
+    font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--ac)}
+  .pcard-go svg{transition:transform .3s var(--ease-out)}
+  .pcard:hover .pcard-go svg{transform:translateX(5px)}
+
+  .work-note{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:36px;
+    color:var(--ink-soft);font-size:14px}
+</style>

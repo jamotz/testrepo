@@ -1,46 +1,93 @@
 ---
-const tags = ["BCS UX Certified", "IBM Data Science", "PeakXD Program", "Psychology & Sociology", "Eagle Scout"];
+const spec = [
+  { k: 'Based', v: 'Southwest, USA' },
+  { k: 'Foundation', v: 'B.A. Psychology · Sociology minor' },
+  { k: 'Methods', v: 'Interviews · Journeys · Usability testing' },
+  { k: 'Certified', v: 'BCS UX · IBM Data Science' },
+  { k: 'Program', v: 'PeakXD Research & Design' },
+  { k: 'Status', v: 'Open to work', live: true },
+];
+const chips = ['BCS UX Certified', 'IBM Data Science', 'PeakXD Program', 'Psychology & Sociology', 'Eagle Scout'];
 ---
-<section class="section" id="about">
-  <div class="wrap shell">
-    <aside class="spine reveal">
-      <span class="idx">02</span>
-      <span class="slabel">Profile</span>
-    </aside>
-    <div class="content">
-      <div class="about-grid">
-        <div class="reveal">
-          <span class="label" style="display:block;margin-bottom:12px">// about jack</span>
-          <h2>From understanding people to designing for them.</h2>
-          <p>
-            I'm an Eagle Scout with a Bachelor's in Psychology and a minor in Sociology.
-            In my senior year I pointed that human-behavior foundation at UX, completed an
-            international research &amp; design program, and earned my <b>BCS UX</b> and
-            <b>IBM Data Science</b> certifications.
-          </p>
-          <p>
-            I help companies create intuitive, integrated, and accessible experiences —
-            digital and physical — by truly understanding customers' behaviors,
-            preferences, and needs.
-          </p>
-          <div class="tags">
-            {tags.map((t) => <span>{t}</span>)}
-          </div>
-        </div>
-        <div class="terminal reveal" data-delay="100">
-          <div class="bar"><i></i><i></i><i></i><span class="fn">jack@motz ~ whoami</span></div>
-          <div class="body">
-            <div><span class="c">$</span> <span class="fn2">whoami</span></div>
-            <div><span class="s">jack_motzkin</span> <span class="c">— ux researcher &amp; designer</span></div>
-            <div>&nbsp;</div>
-            <div><span class="k">focus</span>    = [<span class="s">"research"</span>, <span class="s">"a11y"</span>, <span class="s">"cx"</span>]</div>
-            <div><span class="k">certs</span>    = [<span class="s">"BCS UX"</span>, <span class="s">"IBM Data Sci"</span>]</div>
-            <div><span class="k">program</span>  = <span class="s">"PeakXD"</span></div>
-            <div><span class="k">based</span>    = <span class="s">"Southwest, USA"</span></div>
-            <div><span class="k">status</span>   = <span class="s">"open_to_work"</span> <span class="c"># let's talk</span></div>
-          </div>
-        </div>
-      </div>
+<section class="section about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-lead">
+      <p class="eyebrow" data-reveal>02 — About</p>
+      <h2 data-reveal>Behavior is the interface.</h2>
+
+      <p class="about-p" data-reveal>
+        I’m Jack — an Eagle Scout with a Bachelor’s in Psychology and a minor in Sociology.
+        In my senior year I pointed that human-behavior foundation at User Experience:
+        an international research &amp; design program, then <b>BCS UX</b> and
+        <b>IBM Data Science</b> certifications.
+      </p>
+      <p class="about-p" data-reveal>
+        My edge is reading people. I start with research — interviews, journey maps, usability
+        tests — and let the evidence drive intuitive, integrated design across digital
+        <em>and</em> physical experiences.
+      </p>
+
+      <blockquote class="about-pull" data-reveal>
+        A grandmother with macular degeneration is why accessibility isn’t a checkbox to me —
+        <span class="hl">it’s the point.</span>
+      </blockquote>
+
+      <ul class="about-chips" data-reveal>
+        {chips.map((c) => <li>{c}</li>)}
+      </ul>
     </div>
+
+    <aside class="about-spec" data-reveal aria-label="Profile">
+      <div class="spec-head">
+        <span class="mono-label">profile.json</span>
+        <span class="spec-dots"><i></i><i></i><i></i></span>
+      </div>
+      <dl class="spec-list">
+        {spec.map((s) => (
+          <div class="spec-row">
+            <dt>{s.k}</dt>
+            <dd class={s.live ? 'live' : ''}>{s.live && <span class="dot"></span>}{s.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </aside>
   </div>
 </section>
+
+<style>
+  .about-grid{display:grid;grid-template-columns:1.3fr .95fr;gap:clamp(32px,5vw,64px);align-items:start}
+  @media (max-width:900px){.about-grid{grid-template-columns:1fr;gap:36px}}
+
+  .about-lead h2{font-size:clamp(2.2rem,6vw,4rem);text-transform:uppercase;margin:18px 0 26px}
+  .about-p{max-width:56ch;color:var(--ink-soft);margin-bottom:18px;font-size:1.05rem}
+  .about-p b{color:var(--ink);font-weight:600}
+  .about-p em{color:var(--gold);font-style:normal}
+
+  .about-pull{margin:30px 0;padding:0 0 0 24px;border-left:2px solid var(--gold);
+    font-family:var(--display);font-weight:500;font-size:clamp(1.3rem,2.6vw,1.9rem);
+    line-height:1.28;color:var(--ink);max-width:24ch}
+  .about-pull .hl{color:var(--gold)}
+
+  .about-chips{list-style:none;display:flex;flex-wrap:wrap;gap:10px;padding:0;margin:30px 0 0}
+  .about-chips li{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-soft);
+    border:1px solid var(--line-2);border-radius:100px;padding:8px 14px;background:rgba(255,255,255,.02)}
+
+  .about-spec{position:sticky;top:100px;background:linear-gradient(180deg,var(--panel),var(--bg-2));
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .spec-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
+    border-bottom:1px solid var(--line)}
+  .spec-dots{display:flex;gap:6px}
+  .spec-dots i{width:9px;height:9px;border-radius:50%;background:var(--line-3)}
+  .spec-dots i:first-child{background:var(--gold)}
+  .spec-dots i:nth-child(2){background:var(--acid)}
+  .spec-list{margin:0;padding:8px 18px}
+  .spec-row{display:grid;grid-template-columns:1fr 1.5fr;gap:14px;padding:14px 0;
+    border-bottom:1px solid var(--line)}
+  .spec-row:last-child{border-bottom:none}
+  .spec-row dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted-fg);margin:0}
+  .spec-row dd{margin:0;font-size:14.5px;color:var(--ink)}
+  .spec-row dd.live{display:inline-flex;align-items:center;gap:8px;color:var(--acid)}
+  .spec-row dd .dot{width:7px;height:7px;border-radius:50%;background:var(--acid);
+    box-shadow:0 0 8px var(--acid)}
+</style>
