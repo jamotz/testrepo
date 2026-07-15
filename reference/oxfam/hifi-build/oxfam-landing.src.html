@@ -1,0 +1,189 @@
+<style>
+/*FONTS*/
+:root{
+  --green:#4d5a2b; --green-2:#5c6b34; --green-d:#3d4922; --green-line:#6f7d45;
+  --bg:#e9e9e6; --panel:#ffffff; --ink:#211f18; --ink-soft:#4a4636; --muted:#6f6b5c;
+  --field:#d9d9d4; --map:#dfe6d8;
+  --head:"Oswald",system-ui,sans-serif; --body:"Open Sans",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+.page{max-width:1040px;margin:0 auto;background:var(--bg);box-shadow:0 0 60px rgba(0,0,0,.12)}
+.wrap{padding:0 40px}
+.center{text-align:center}
+
+/* hero */
+.hero{position:relative;min-height:230px;overflow:hidden;background:#2a2620}
+.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero .green{position:absolute;inset:0;background:var(--green);
+  clip-path:polygon(0 0, 60% 0, 42% 100%, 0 100%)}
+.hero .txt{position:relative;z-index:2;padding:40px 40px;color:#fff;max-width:60%}
+.hero h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1;margin-bottom:14px}
+.hero p{font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:13px;letter-spacing:.03em;line-height:1.5;color:#eef0e6;margin:0}
+
+/* section headings */
+.sec{padding:44px 0}
+.sec-h{font-size:clamp(1.5rem,3.4vw,2.1rem);color:var(--ink);text-align:center;margin-bottom:26px}
+.sec-h.left{display:flex;align-items:center;gap:12px;justify-content:center}
+.sec-h .pin{width:34px;height:34px;color:var(--ink)}
+
+/* search */
+.search{display:flex;justify-content:center;gap:10px}
+.search input{width:min(340px,60%);border:1px solid #b9b9b2;border-radius:5px;padding:11px 14px;font-family:var(--body);font-size:14px;background:#fff}
+.btn{font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:13px;
+  background:var(--green-2);color:#fff;border:0;border-radius:6px;padding:11px 20px;cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--green-d)}
+
+/* quick links */
+.ql{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 22px;max-width:820px;margin:0 auto}
+.ql .item{text-align:center}
+.ql .lnk{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:180px;max-width:100%;
+  background:var(--green-2);color:#fff;border-radius:8px;padding:11px 16px;font-family:var(--head);font-weight:600;
+  text-transform:uppercase;letter-spacing:.03em;font-size:15px;text-decoration:none;transition:background .2s}
+.ql .lnk:hover{background:var(--green-d)}
+.ql .lnk svg{width:20px;height:20px}
+.ql .sub{color:var(--ink-soft);font-size:13px;margin-top:9px;max-width:200px;margin-left:auto;margin-right:auto}
+
+/* locations */
+.loc{display:grid;grid-template-columns:1fr 1.25fr;gap:34px;align-items:start;margin-top:8px}
+.loc .office h3{font-size:clamp(1.4rem,3vw,1.9rem);color:var(--green);line-height:1.02;margin-bottom:16px}
+.loc .office p{font-size:13.5px;color:var(--ink);margin:0 0 12px}
+.loc .office .lab{font-weight:700}
+.loc .map{border-radius:8px;overflow:hidden;border:1px solid #c7ccc0;background:var(--map)}
+.loc .map img{width:100%;display:block}
+.map-btn{margin-top:18px}
+.states{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:34px;text-align:center}
+.states .st b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:13px;color:var(--ink);display:block;margin-bottom:6px;letter-spacing:.02em}
+.states .st p{font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.5}
+
+/* contact panel */
+.contact{margin:12px 0 48px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:.85fr 1.15fr;background:#cfcfca}
+.contact .side{background:var(--green);color:#fff;padding:26px 24px}
+.contact .side h3{font-size:1.35rem;margin-bottom:12px;line-height:1.05}
+.contact .side p{font-size:13.5px;color:#eef0e6;margin:0 0 14px}
+.contact .side .call{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:14px}
+.contact .form{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.contact .form .f{display:flex;flex-direction:column;gap:6px}
+.contact .form label{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.03em;color:#2a2820}
+.contact .form label i{color:#b23b2e;font-style:normal}
+.contact .form input,.contact .form textarea{border:0;border-radius:4px;background:var(--field);padding:10px 12px;font-family:var(--body);font-size:14px}
+.contact .form .inq{grid-row:1 / span 3;display:flex;flex-direction:column;gap:6px}
+.contact .form .inq textarea{flex:1;min-height:150px;resize:vertical}
+.contact .form .submit{grid-column:2;justify-self:end;align-self:end}
+
+/* chat fab */
+.chat{position:fixed;right:20px;bottom:20px;display:inline-flex;align-items:center;gap:8px;background:var(--green-2);
+  color:#fff;border-radius:100px;padding:11px 18px;font-family:var(--head);font-weight:600;text-transform:uppercase;
+  font-size:14px;letter-spacing:.03em;box-shadow:0 8px 24px rgba(0,0,0,.25);text-decoration:none}
+.chat svg{width:20px;height:20px}
+
+@media(max-width:820px){
+  .ql{grid-template-columns:repeat(2,1fr)}
+  .loc{grid-template-columns:1fr}
+  .states{grid-template-columns:1fr 1fr 1fr}
+  .contact{grid-template-columns:1fr}
+  .contact .form{grid-template-columns:1fr}
+  .contact .form .inq{grid-row:auto}
+  .contact .form .submit{grid-column:1;justify-self:start}
+  .hero .txt{max-width:78%}
+}
+</style>
+
+<div class="page">
+  <!-- HERO -->
+  <div class="hero">
+    <img class="bg" src="%%HEADER_IMG%%" alt="Sunset over the Australian outback">
+    <div class="green"></div>
+    <div class="txt">
+      <h1>Contact Us</h1>
+      <p>Have any questions or concerns?<br>Let us know.<br><br>We are committed to helping everyone.</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- SEARCH -->
+    <section class="sec">
+      <h2 class="sec-h">Search for Topics</h2>
+      <form class="search" onsubmit="return false">
+        <input type="text" placeholder="Search for help within our FAQ" aria-label="Search FAQ">
+        <button class="btn" type="submit">Submit</button>
+      </form>
+    </section>
+
+    <!-- QUICK LINKS -->
+    <section class="sec">
+      <h2 class="sec-h">Quick Links</h2>
+      <div class="ql">
+        <div class="item">
+          <a class="lnk" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>FAQ</a>
+          <p class="sub">Here are some frequently asked questions</p>
+        </div>
+        <div class="item">
+          <a class="lnk" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Feedback</a>
+          <p class="sub">Have any feedback or concerns</p>
+        </div>
+        <div class="item">
+          <a class="lnk" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>MyOxfam</a>
+          <p class="sub">Manage your account details and donations</p>
+        </div>
+        <div class="item">
+          <a class="lnk" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Fundraising</a>
+          <p class="sub">Want to get hands on with helping</p>
+        </div>
+        <div class="item">
+          <a class="lnk" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Media</a>
+          <p class="sub">Have an inquiry relating to media</p>
+        </div>
+        <div class="item">
+          <a class="lnk" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Report</a>
+          <p class="sub">Report an incident regarding Oxfam</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOCATIONS -->
+    <section class="sec">
+      <h2 class="sec-h left"><svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Locations</h2>
+      <p class="center" style="margin:-14px 0 26px;font-family:var(--head);text-transform:uppercase;font-size:13px;color:var(--muted);letter-spacing:.03em">Here are our locations</p>
+      <div class="loc">
+        <div class="office">
+          <h3>National Office &mdash; Victoria</h3>
+          <p>355 William St<br>West Melbourne VIC 3003</p>
+          <p><span class="lab">Postal address:</span><br>Oxfam Australia, Locked Bag 20004,<br>Melbourne VIC 3001</p>
+          <p><span class="lab">Phone:</span> 1800 088 110</p>
+          <button class="btn map-btn" type="button">Map</button>
+        </div>
+        <div class="map"><img src="%%MAP_IMG%%" alt="Map of Oxfam Australia office locations"></div>
+      </div>
+      <div class="states">
+        <div class="st"><b>New South Wales</b><p>Desk Space Level 3, 85 William Street, Darlinghurst NSW</p></div>
+        <div class="st"><b>Queensland</b><p>Cove, 59 Doggett Street, Newstead, Qld 4006</p></div>
+        <div class="st"><b>Canberra</b><p>CARE Australia Suite G.06 Ground Floor, 243 Northbourne Avenue, Lyneham ACT</p></div>
+        <div class="st"><b>Perth</b><p>Liberty Work Space Level 12, 197 St Georges Terrace, Perth 6000</p></div>
+        <div class="st"><b>South Australia</b><p>Oxfam Bookshop Adelaide, 5&ndash;7 Hutt St, Adelaide SA 5000</p></div>
+      </div>
+    </section>
+
+    <!-- CONTACT DIRECTLY -->
+    <section>
+      <div class="contact">
+        <div class="side">
+          <h3>Contact Us Directly</h3>
+          <p>Leave your information and we&rsquo;ll get back to you as soon as possible through our support.</p>
+          <p class="call">Call 1800 088 110</p>
+        </div>
+        <form class="form" onsubmit="return false">
+          <div class="f"><label>Name <i>*</i></label><input type="text" required></div>
+          <div class="inq"><label>Inquiry <i>*</i></label><textarea required></textarea></div>
+          <div class="f"><label>Email <i>*</i></label><input type="email" required></div>
+          <div class="f"><label>Phone</label><input type="tel"></div>
+          <button class="btn submit" type="submit">Submit</button>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>
+
+<a class="chat" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Chat</a>
