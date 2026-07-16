@@ -176,29 +176,17 @@ const results = [
       <!-- Explore -->
       <section class="csec" id="explore">
         <div class="shead" data-reveal><span class="n">09</span><h2>Explore the prototype</h2></div>
-        <p class="lead" data-reveal>Click through the real screens the way a supporter would. The contact landing branches to six pages; MyOxfam goes one level deeper to the portal.</p>
+        <p class="lead" data-reveal>A live rebuild of the real site — click the buttons <em>inside</em> the pages to move through it. The contact landing branches to six pages; MyOxfam goes one level deeper (Submit → the portal).</p>
         <div class="explorer" data-reveal>
           <div class="exp">
             <div class="exp-bar">
               <span class="dots"><i></i><i></i><i></i></span>
-              <span class="exp-crumb" id="crumb">Contact landing</span>
-              <button class="exp-back" id="expback" type="button" disabled>← Back</button>
+              <span class="exp-crumb">oxfam-australia.org · prototype</span>
+              <button class="exp-back" id="protohome" type="button">⟲ Home</button>
             </div>
-            <div class="exp-view" id="expview"><img id="expimg" src="/work/oxfam/home.jpg" alt="Current screen" /></div>
+            <iframe id="proto-frame" class="exp-frame" title="Oxfam support prototype — click through the real pages" src="/work/oxfam/proto.html" loading="lazy"></iframe>
           </div>
-          <div>
-            <div class="exp-nav" id="expnav">
-              <button class="home" data-k="home" type="button">● Home</button>
-              <button data-k="faq" type="button">FAQ</button>
-              <button data-k="feedback" type="button">Feedback</button>
-              <button data-k="myoxfam" type="button">MyOxfam</button>
-              <button data-k="fundraising" type="button">Fundraising</button>
-              <button data-k="media" type="button">Media</button>
-              <button data-k="report" type="button">Report</button>
-              <button data-k="portal" id="portalbtn" type="button">MyOxfam Portal →</button>
-            </div>
-            <p class="exp-hint">Tip: open <b>MyOxfam</b> then <b>MyOxfam Portal</b> to see the only tertiary (3-level) path.</p>
-          </div>
+          <p class="exp-hint">Tip: open <b>MyOxfam</b>, then hit <b>Submit</b> to reach the MyOxfam Portal — the only three-level path.</p>
         </div>
       </section>
     </div>
@@ -370,15 +358,7 @@ const results = [
   .exp-back:disabled{opacity:.4;cursor:default}
   .exp-back:not(:disabled):hover{border-color:var(--gold);color:var(--gold)}
   .exp-crumb{color:var(--ink)}
-  .exp-view{height:clamp(460px,80vh,860px);overflow-y:auto;background:var(--bg-2);scroll-behavior:smooth}
-  .exp-view img{width:100%;display:block}
-  .exp-nav{display:flex;flex-wrap:wrap;gap:8px}
-  .exp-nav button{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
-    color:var(--ink-soft);border:1px solid var(--line-2);background:var(--panel);border-radius:100px;padding:9px 15px;
-    cursor:pointer;transition:.2s}
-  .exp-nav button:hover{border-color:var(--gold);color:var(--gold)}
-  .exp-nav button.on{background:var(--gold);color:#0b120b;border-color:var(--gold);font-weight:500}
-  .exp-nav .home{color:var(--ink)}
+  .exp-frame{width:100%;height:clamp(460px,80vh,860px);border:0;display:block;background:#e9e9e6}
   .exp-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted-fg);margin-top:12px}
   .exp-hint b{color:var(--gold)}
 
@@ -410,39 +390,12 @@ const results = [
 </style>
 
 <script>
-  // Explorer — click through the real screens
+  // Prototype — reset the embedded mini-site to its home page
   (function () {
-    const names = {
-      home: 'Contact landing', faq: 'FAQ', feedback: 'Feedback',
-      myoxfam: 'MyOxfam · Create account', portal: 'MyOxfam Portal',
-      fundraising: 'Fundraising', media: 'Media', report: 'Report',
-    };
-    const src = (k) => '/work/oxfam/' + k + '.jpg';
-    const img = document.getElementById('expimg');
-    const view = document.getElementById('expview');
-    const crumb = document.getElementById('crumb');
-    const back = document.getElementById('expback');
-    const portalbtn = document.getElementById('portalbtn');
-    if (!img) return;
-    let path = ['home'];
-    function render() {
-      const cur = path[path.length - 1];
-      img.src = src(cur);
-      view.scrollTop = 0;
-      crumb.textContent = path.map((k) => names[k].split(' · ')[0]).join('  ›  ');
-      back.disabled = path.length < 2;
-      portalbtn.style.display = (cur === 'myoxfam' || cur === 'portal') ? 'inline-block' : 'none';
-      document.querySelectorAll('#expnav button').forEach((b) => b.classList.toggle('on', b.dataset.k === cur));
-    }
-    function go(k) {
-      if (k === 'home') path = ['home'];
-      else if (k === 'portal') path = ['home', 'myoxfam', 'portal'];
-      else path = ['home', k];
-      render();
-    }
-    document.querySelectorAll('#expnav button').forEach((b) => b.addEventListener('click', () => go(b.dataset.k)));
-    back.addEventListener('click', () => { if (path.length > 1) { path.pop(); render(); } });
-    render();
+    const frame = document.getElementById('proto-frame');
+    const home = document.getElementById('protohome');
+    if (!frame || !home) return;
+    home.addEventListener('click', () => { frame.src = frame.src; });
   })();
 
   // Lightbox — full-page, scrollable view for any screenshot
