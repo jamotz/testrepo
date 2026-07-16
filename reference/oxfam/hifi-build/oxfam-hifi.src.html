@@ -6,6 +6,7 @@
   --line:rgba(255,255,255,.07);--line-2:rgba(255,255,255,.14);
   --ac:#77B36A;--ac-soft:#9BD08F;--ac-glow:rgba(119,179,106,.30);
   --grid:rgba(255,255,255,.05);
+  --grid-line-rgb:255,255,255;--grid-glow-rgb:119,179,106;
   --display:"Space Grotesk",system-ui,sans-serif;
   --body:"IBM Plex Sans",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,monospace;
@@ -17,7 +18,7 @@
   --ink:#15171C;--ink-soft:#585C64;--muted:#888C94;
   --line:rgba(21,23,28,.10);--line-2:rgba(21,23,28,.17);
   --ac:#41693B;--ac-soft:#5C8A54;--ac-glow:rgba(65,105,59,.25);
-  --grid:rgba(21,23,28,.06);color-scheme:light;
+  --grid:rgba(21,23,28,.06);--grid-line-rgb:21,23,28;--grid-glow-rgb:65,105,59;color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -165,6 +166,17 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 .badge{position:fixed;left:14px;bottom:14px;z-index:80;background:var(--ac);color:#0b120b;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:8px 12px;border-radius:6px;font-weight:600}
 #results .shead h2{color:var(--ac)}
 
+/* cursor-reactive technical grid (matches the landing) */
+.grid-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:54px 54px}
+.grid-canvas[data-live]{background-image:none}
+.grid-vignette{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(130% 100% at 50% -5%,transparent 42%,var(--bg) 94%)}
+.page{position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){.grid-canvas{background-image:
+  linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px)}}
+
 /* view-full hint */
 .viewhint{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;
   text-transform:uppercase;color:var(--muted);margin-top:16px}
@@ -186,6 +198,8 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 </style>
 
 <div class="badge">Oxfam · hi-fi</div>
+<canvas id="grid-canvas" class="grid-canvas" aria-hidden="true"></canvas>
+<div class="grid-vignette" aria-hidden="true"></div>
 <div class="page">
 <header class="nav"><div class="wrap row">
   <a class="brand" href="#top"><span class="mark"><!--LOGO--></span>MOTZ</a>
@@ -378,7 +392,7 @@ document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribu
 (function(){
   var r=document.documentElement;
   try{var t=localStorage.getItem("motz-theme");r.setAttribute("data-theme",t==="light"?"light":"dark");}catch(e){r.setAttribute("data-theme","dark");}
-  document.getElementById("toggle").addEventListener("click",function(){var n=r.getAttribute("data-theme")==="light"?"dark":"light";r.setAttribute("data-theme",n);try{localStorage.setItem("motz-theme",n);}catch(e){}});
+  document.getElementById("toggle").addEventListener("click",function(){var n=r.getAttribute("data-theme")==="light"?"dark":"light";r.setAttribute("data-theme",n);try{localStorage.setItem("motz-theme",n);}catch(e){}window.dispatchEvent(new Event("themechange"));});
 })();
 (function(){
   var names={home:"Contact landing",faq:"FAQ",feedback:"Feedback",myoxfam:"MyOxfam \u00B7 Create account",portal:"MyOxfam Portal",fundraising:"Fundraising",media:"Media",report:"Report"};
@@ -424,5 +438,53 @@ document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribu
   document.getElementById("lbclose").addEventListener("click",close);
   lb.addEventListener("click",function(e){if(e.target===lb)close();});
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&lb.classList.contains("open"))close();});
+})();
+(function grid(){
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var coarse=window.matchMedia("(pointer: coarse)").matches;
+  var canvas=document.getElementById("grid-canvas"); if(!canvas) return;
+  var ctx=canvas.getContext("2d"); canvas.setAttribute("data-live","");
+  var DPR=Math.min(window.devicePixelRatio||1,2), GAP=54, RADIUS=118, CORE=44;
+  var W,H,mx=-9999,my=-9999,cx=-9999,cy=-9999,hasMouse=false,lineRGB="255,255,255",glowRGB="119,179,106";
+  function readColors(){var s=getComputedStyle(document.documentElement);
+    lineRGB=(s.getPropertyValue("--grid-line-rgb")||"255,255,255").trim();
+    glowRGB=(s.getPropertyValue("--grid-glow-rgb")||"119,179,106").trim();}
+  function resize(){W=canvas.width=window.innerWidth*DPR;H=canvas.height=window.innerHeight*DPR;
+    canvas.style.width=window.innerWidth+"px";canvas.style.height=window.innerHeight+"px";}
+  function baseGrid(alpha){var g=GAP*DPR;ctx.lineWidth=DPR;ctx.strokeStyle="rgba("+lineRGB+","+alpha+")";ctx.beginPath();
+    for(var x=0;x<=W;x+=g){ctx.moveTo(x,0);ctx.lineTo(x,H);} for(var y=0;y<=H;y+=g){ctx.moveTo(0,y);ctx.lineTo(W,y);} ctx.stroke();}
+  function drawStatic(){ctx.clearRect(0,0,W,H);baseGrid(0.05);}
+  resize();readColors();
+  window.addEventListener("resize",function(){resize();if(reduce||coarse)drawStatic();});
+  window.addEventListener("themechange",function(){readColors();if(reduce||coarse)drawStatic();});
+  if(reduce||coarse){drawStatic();return;}
+  window.addEventListener("mousemove",function(e){mx=e.clientX*DPR;my=e.clientY*DPR;hasMouse=true;},{passive:true});
+  document.addEventListener("mouseleave",function(){hasMouse=false;});
+  function frame(){
+    cx+=(mx-cx)*0.18; cy+=(my-cy)*0.18;
+    ctx.clearRect(0,0,W,H); baseGrid(0.045);
+    if(hasMouse){
+      var g=GAP*DPR, rad=RADIUS*DPR, core=CORE*DPR;
+      ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.clip();
+      var grd=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
+      grd.addColorStop(0,"rgba("+glowRGB+",0.55)"); grd.addColorStop(core/rad,"rgba("+glowRGB+",0.28)"); grd.addColorStop(1,"rgba("+glowRGB+",0)");
+      ctx.lineWidth=DPR*1.1; ctx.strokeStyle=grd; ctx.beginPath();
+      var sx=Math.floor((cx-rad)/g)*g, sy=Math.floor((cy-rad)/g)*g;
+      for(var x=sx;x<=cx+rad;x+=g){ctx.moveTo(x,cy-rad);ctx.lineTo(x,cy+rad);}
+      for(var y=sy;y<=cy+rad;y+=g){ctx.moveTo(cx-rad,y);ctx.lineTo(cx+rad,y);}
+      ctx.stroke(); ctx.restore();
+      var ix=Math.floor((cx-rad)/g)*g, iy=Math.floor((cy-rad)/g)*g;
+      for(var xx=ix;xx<=cx+rad;xx+=g){for(var yy=iy;yy<=cy+rad;yy+=g){
+        var d=Math.hypot(xx-cx,yy-cy);
+        if(d<rad){var a=1-d/rad; ctx.beginPath(); ctx.arc(xx,yy,DPR*(0.8+a*1.8),0,Math.PI*2);
+          ctx.fillStyle="rgba("+glowRGB+","+(a*a*0.9)+")"; ctx.fill();}
+      }}
+      var amb=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
+      amb.addColorStop(0,"rgba("+glowRGB+",0.07)"); amb.addColorStop(1,"rgba("+glowRGB+",0)");
+      ctx.fillStyle=amb; ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 </script>
