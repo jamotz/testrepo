@@ -1,0 +1,445 @@
+<style>
+/*FONTS*/
+:root{
+  --green:#4d5a2b;--green-2:#5c6b34;--green-d:#3d4922;--green-line:#6f7d45;
+  --bg:#e9e9e6;--panel:#fff;--ink:#211f18;--ink-soft:#4a4636;--muted:#6f6b5c;
+  --field:#d9d9d4;--map:#dfe6d8;--foot:#4d5a2b;
+  --head:"Oswald",system-ui,sans-serif;--body:"Open Sans",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+h1,h2,h3,h4{margin:0;font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.01em;line-height:1.05}
+button,input,textarea{font-family:inherit}
+a{color:inherit;text-decoration:none;cursor:pointer}
+.site{max-width:1000px;margin:0 auto;background:var(--bg);min-height:100%;box-shadow:0 0 50px rgba(0,0,0,.10)}
+.wrap{padding:0 clamp(18px,3.4vw,34px)}
+.center{text-align:center}
+
+/* top nav */
+.nav{display:flex;align-items:center;gap:18px;padding:12px clamp(18px,3.4vw,34px);background:#fff;border-bottom:1px solid #e4e4df}
+.logo{display:flex;align-items:center;gap:9px}
+.logo .mk{width:36px;height:36px;border-radius:50%;background:var(--green);display:grid;place-items:center;flex:none}
+.logo .mk svg{width:22px;height:22px;color:#fff}
+.logo b{font-family:var(--head);font-weight:700;font-size:20px;color:var(--green);line-height:.9;letter-spacing:.02em}
+.logo b span{display:block;font-size:11px;color:var(--ink-soft);font-weight:500}
+.tagline{border-left:1px solid #d8d8d2;padding-left:14px;font-size:11.5px;color:var(--ink-soft);line-height:1.35}
+.nav-menu{display:flex;gap:18px;margin-left:8px}
+.nav-menu a{font-size:12.5px;color:#33312a;white-space:nowrap}
+.nav-menu a:hover{color:var(--green)}
+.nav-menu a::after{content:" \25BE";color:#9a978c;font-size:9px}
+.donate{margin-left:auto;background:var(--green);color:#fff;font-family:var(--head);font-weight:600;text-transform:uppercase;
+  font-size:12.5px;letter-spacing:.03em;padding:10px 18px;border:0;border-radius:5px}
+.donate:hover{background:var(--green-d)}
+@media(max-width:720px){.tagline,.nav-menu{display:none}}
+
+/* heroes */
+.hero{position:relative;min-height:190px;overflow:hidden;background:#2a2620;display:flex;align-items:center}
+.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero .grn{position:absolute;inset:0;background:var(--green);clip-path:polygon(0 0,58% 0,40% 100%,0 100%)}
+.hero.solid .grn{clip-path:none;background:var(--green)}
+.hero .in{position:relative;z-index:2;color:#fff;padding:30px clamp(18px,3.4vw,34px);max-width:60%}
+.hero h1{font-size:clamp(1.9rem,4.4vw,2.9rem);margin-bottom:10px}
+.hero p{font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:12.5px;letter-spacing:.02em;line-height:1.5;color:#eef0e6;margin:0}
+@media(max-width:720px){.hero .in{max-width:82%}.hero .grn{clip-path:polygon(0 0,80% 0,64% 100%,0 100%)}}
+
+/* centered page title (light bg) */
+.ptitle{text-align:center;padding:34px clamp(18px,3.4vw,34px) 6px}
+.ptitle h1{font-size:clamp(1.9rem,4.6vw,3rem)}
+.ptitle p{max-width:60ch;margin:12px auto 0;font-weight:600;color:var(--ink)}
+
+/* sections */
+.sec{padding:30px 0}
+.sec-h{font-size:clamp(1.4rem,3.2vw,2rem);text-align:center;margin-bottom:20px}
+.sec-h.left{display:flex;gap:11px;align-items:center;justify-content:center}
+.sec-h .pin{width:30px;height:30px}
+.sub-h{text-align:center;font-family:var(--head);text-transform:uppercase;font-size:12px;color:var(--muted);letter-spacing:.03em;margin:-12px 0 20px}
+
+/* buttons + fields */
+.btn{font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.03em;font-size:12.5px;
+  background:var(--green-2);color:#fff;border:0;border-radius:6px;padding:11px 18px;cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--green-d)}
+.search{display:flex;justify-content:center;gap:9px}
+.search input{width:min(330px,60%);border:2px solid var(--ink);border-radius:5px;padding:10px 13px;font-size:13px;background:#fff}
+input.fld,textarea.fld{border:0;border-radius:4px;background:var(--field);padding:9px 11px;font-size:13px;width:100%}
+label{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.02em;color:#2a2820;display:block;margin-bottom:5px}
+label i{color:#b23b2e;font-style:normal}
+
+/* quick links grid (landing) */
+.ql{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 20px;max-width:820px;margin:0 auto}
+.ql .item{text-align:center}
+.ql .lnk{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:180px;max-width:100%;background:var(--green-2);
+  color:#fff;border-radius:8px;padding:11px 14px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.03em;font-size:14px}
+.ql .lnk:hover{background:var(--green-d)}
+.ql .lnk svg{width:19px;height:19px}
+.ql .sub{color:var(--ink-soft);font-size:12.5px;margin:8px auto 0;max-width:200px}
+
+/* locations */
+.loc{display:grid;grid-template-columns:1fr 1.25fr;gap:30px;align-items:start}
+.office h3{font-size:clamp(1.3rem,2.8vw,1.8rem);color:var(--green);line-height:1.02;margin-bottom:14px}
+.office p{font-size:13px;margin:0 0 11px}.office .lab{font-weight:700}
+.map{border-radius:8px;overflow:hidden;border:1px solid #c7ccc0;background:var(--map)}
+.states{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:30px;text-align:center}
+.states b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12.5px;display:block;margin-bottom:5px}
+.states p{font-size:12px;color:var(--ink-soft);margin:0}
+@media(max-width:820px){.loc{grid-template-columns:1fr}.states{grid-template-columns:repeat(3,1fr)}.ql{grid-template-columns:repeat(2,1fr)}}
+
+/* contact / form panels */
+.panel{display:grid;grid-template-columns:.8fr 1.2fr;border:2px solid var(--ink);border-radius:4px;overflow:hidden;margin:6px 0 30px}
+.panel .side{background:var(--green);color:#fff;padding:24px 22px}
+.panel .side h3{font-size:1.3rem;margin-bottom:11px;line-height:1.05}
+.panel .side p{font-size:13px;color:#eef0e6;margin:0}
+.panel .body{padding:22px;background:#fff}
+.form2{display:grid;grid-template-columns:1fr 1.1fr;gap:13px 16px}
+.form2 .inq{grid-column:2;grid-row:1/span 3;display:flex;flex-direction:column}
+.form2 .inq textarea{flex:1;min-height:130px;resize:vertical}
+.form2 .sub{grid-column:2;justify-self:end}
+@media(max-width:720px){.panel{grid-template-columns:1fr}.form2{grid-template-columns:1fr}.form2 .inq{grid-column:1;grid-row:auto}.form2 .sub{grid-column:1;justify-self:start}}
+
+/* faq */
+.faqgrid{display:grid;grid-template-columns:1fr 1.3fr;gap:40px;max-width:900px;margin:0 auto}
+.qlist{display:flex;flex-direction:column;gap:16px}
+.qbtn{background:var(--green-2);color:#fff;border:0;border-radius:8px;padding:14px 16px;font-family:var(--head);font-weight:600;
+  text-transform:uppercase;font-size:14px;text-align:center;cursor:pointer;line-height:1.15}
+.qbtn:hover{background:var(--green-d)}
+.topics{display:flex;flex-direction:column;gap:0;border:1px solid #cfcfc8;border-radius:6px;overflow:hidden}
+.topics a{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid #dcdcd5;font-size:13.5px;background:#fff}
+.topics a:last-child{border-bottom:0}.topics a:hover{background:#f2f2ec}
+.topics a b{color:var(--green);font-family:var(--head);font-size:15px}
+.help{display:grid;grid-template-columns:1fr 1.1fr;border:2px solid var(--ink);border-radius:4px;overflow:hidden;max-width:900px;margin:26px auto 0}
+.help .ph{background:linear-gradient(135deg,#7a5230,#3d2a18);min-height:190px}
+.help .tx{padding:22px;background:#fff}
+.help .tx h3{font-size:1.4rem;margin-bottom:12px}
+.help .tx p{font-size:13px;margin:0 0 12px}
+@media(max-width:720px){.faqgrid,.help{grid-template-columns:1fr}}
+
+/* create account */
+.acc{display:grid;grid-template-columns:1fr;border:2px solid var(--ink);border-radius:4px;overflow:hidden;max-width:860px;margin:0 auto 30px}
+.acc .top{background:var(--green);color:#fff;text-align:center;padding:14px}
+.acc .top h3{font-size:1.4rem}
+.acc .cols{display:grid;grid-template-columns:.75fr 1.25fr}
+.acc .side{background:var(--green);color:#fff;padding:22px}
+.acc .side p{font-weight:700;margin:0 0 10px}
+.acc .side ul{margin:0;padding-left:18px;font-size:13px}
+.acc .side li{margin-bottom:7px}
+.acc .body{padding:22px;background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px 16px}
+.chk{display:flex;gap:9px;align-items:flex-start;font-size:11.5px;font-family:var(--head);text-transform:uppercase;color:#33312a;margin-top:6px}
+.chk i{width:15px;height:15px;border:1px solid #b7b7af;background:#eee;flex:none;margin-top:1px}
+.chk a{color:var(--green);text-decoration:underline}
+@media(max-width:720px){.acc .cols,.grid2{grid-template-columns:1fr}}
+
+/* portal */
+.pbar{background:var(--green);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-radius:6px;margin-top:4px}
+.pbar h2{font-size:1.3rem}
+.pchip{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--green);border-radius:100px;padding:6px 14px;font-size:12.5px;font-weight:700}
+.portal{display:grid;grid-template-columns:.9fr 1.1fr;gap:26px;margin:20px 0 6px}
+.menu{border:1px solid #cfcfc8;border-radius:6px;overflow:hidden}
+.menu .mh{background:#f4f4ee;padding:11px 14px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12.5px;display:flex;justify-content:space-between;border-bottom:1px solid #e0e0d8}
+.menu a{display:block;padding:10px 22px;font-size:13px;border-bottom:1px solid #ecece5;background:#fff}
+.menu a:hover{background:#f2f2ec;color:var(--green)}
+.menu.g2{margin-top:16px}
+.pcards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pcard{background:var(--green);color:#fff;border-radius:8px;padding:20px;text-align:center;min-height:120px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.pcard b{font-family:var(--head);font-size:1.2rem;letter-spacing:.02em}
+.pcard span{font-family:var(--head);text-transform:uppercase;font-size:12px;color:#dfe6cf}
+.pvol{grid-column:1/-1;margin-top:4px}
+.pvol .ph{border-radius:8px;min-height:140px;background:linear-gradient(120deg,#5c6b34,#8a9b57)}
+.pvol h3{color:var(--green);font-size:1.5rem;text-align:center;margin-top:12px}
+@media(max-width:820px){.portal{grid-template-columns:1fr}.pcards{grid-template-columns:1fr}}
+
+/* fundraising */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center}
+.two .txt h2{margin-bottom:12px}
+.two .txt p{font-size:13.5px;color:var(--ink-soft);margin:0 0 16px;max-width:44ch}
+.btnrow{display:flex;flex-wrap:wrap;gap:12px}
+.btn.dark{background:var(--green)}
+.thumb{position:relative;border-radius:8px;overflow:hidden;min-height:210px;display:flex;align-items:flex-end;
+  background:linear-gradient(120deg,#3a4a55,#7d8a6a)}
+.thumb .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:8px;background:#e23b2e;display:grid;place-items:center}
+.thumb .play::after{content:"";border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px}
+.thumb .cap{position:relative;z-index:2;font-family:var(--head);font-weight:700;color:#fff;font-size:1.5rem;padding:16px;text-transform:uppercase;line-height:1}
+.thumb .cap em{background:var(--green-2);font-style:normal;padding:2px 6px}
+.events{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:760px;margin:0 auto}
+.event .ph{border-radius:6px;min-height:130px;background:linear-gradient(135deg,#20351f,#4a5f2c);display:flex;align-items:flex-end;padding:12px;color:#fff;font-family:var(--head);text-transform:uppercase;font-size:13px}
+.event .lab{text-align:center;font-weight:700;margin-top:10px;font-family:var(--head);text-transform:uppercase;font-size:13px}
+.fb{max-width:680px;margin:0 auto;border:1px solid #d3d3cc;border-radius:8px;overflow:hidden;background:#fff}
+.fb .cover{min-height:150px;background:linear-gradient(120deg,#8a6a3a,#4a5f2c,#7a3a55)}
+.fb .row{display:flex;align-items:center;gap:12px;padding:14px}
+.fb .av{width:48px;height:48px;border-radius:50%;background:var(--green);flex:none}
+.fb .row b{font-family:var(--head);font-size:1.1rem}
+.fb .row p{font-size:12px;color:var(--muted);margin:2px 0 0}
+.fb .follow{margin-left:auto;background:#3b5998;color:#fff;border:0;border-radius:5px;padding:9px 16px;font-family:var(--head);text-transform:uppercase;font-size:12px;cursor:pointer}
+@media(max-width:720px){.two,.events{grid-template-columns:1fr}}
+
+/* media */
+.mediarow{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:900px;margin:0 auto}
+.pills{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pill{background:var(--green-2);color:#fff;border-radius:100px;padding:11px;text-align:center;font-family:var(--head);text-transform:uppercase;font-size:12.5px;cursor:pointer}
+.pill:hover{background:var(--green-d)}
+.experts{display:grid;grid-template-columns:1.1fr 1fr;gap:0;border:1px solid #cfcfc8;border-radius:4px;overflow:hidden;margin-top:8px}
+.experts .ph{min-height:150px;background:linear-gradient(120deg,#4a5f2c,#8a9b57)}
+.experts .tx{padding:16px;background:#fff}
+.experts .tx p{font-size:13px;margin:0 0 12px}
+.contacts{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:0 auto}
+.contact-c{display:grid;grid-template-columns:1fr auto;gap:14px;border:1px solid #d3d3cc;border-radius:4px;padding:18px;background:#fbfbf8}
+.contact-c h3{color:var(--green);font-size:1.2rem;margin-bottom:8px}
+.contact-c p{font-size:12.5px;margin:0 0 8px}
+.contact-c .av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#c9b79a,#7a6a55);align-self:start}
+.contact-c .meta{font-size:12px}
+@media(max-width:760px){.mediarow,.contacts{grid-template-columns:1fr}}
+
+/* report */
+.polbtns{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+
+/* footer */
+.foot{background:var(--foot);color:#eef0e6;padding:26px clamp(18px,3.4vw,34px) 30px;text-align:center}
+.foot .soc{display:flex;justify-content:center;gap:22px;margin-bottom:16px}
+.foot .soc a{width:22px;height:22px;color:#fff}
+.foot .links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;font-size:12.5px;margin-bottom:18px}
+.foot .links a:hover{text-decoration:underline}
+.foot .ack{max-width:66ch;margin:0 auto;font-size:12px;color:#d9ddc9;line-height:1.6}
+.foot .auth{margin-top:12px;font-size:12px;color:#cfd4bd}
+
+/* chat fab */
+.chat{position:sticky;bottom:16px;float:right;margin:-56px 16px 0 0;display:inline-flex;align-items:center;gap:8px;background:#fff;
+  color:var(--green);border:1px solid #d7d7cf;border-radius:100px;padding:9px 16px;font-family:var(--head);font-weight:600;
+  text-transform:uppercase;font-size:13px;box-shadow:0 8px 22px rgba(0,0,0,.15)}
+.chat .mk{width:26px;height:26px;border-radius:50%;background:var(--green);display:grid;place-items:center}
+.chat .mk svg{width:16px;height:16px;color:#fff}
+
+/* screen switching */
+.screen{display:none}
+.screen.on{display:block}
+</style>
+
+<div class="site" id="site">
+<!-- ============ NAV (shared) ============ -->
+<div class="nav">
+  <a class="logo" data-goto="home" aria-label="Oxfam home">
+    <span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7.5" r="3.2"/><path d="M6 21c0-3.6 2.7-6.4 6-6.4s6 2.8 6 6.4" stroke-linecap="round"/></svg></span>
+    <b>OXFAM<span>Australia</span></b>
+  </a>
+  <div class="tagline">You and Oxfam,<br>tackling poverty together</div>
+  <nav class="nav-menu">
+    <a data-goto="fundraising">What we do</a>
+    <a data-goto="fundraising">Get involved</a>
+    <a data-goto="media">News and reports</a>
+    <a data-goto="myoxfam">Shop</a>
+  </nav>
+  <button class="donate" data-goto="myoxfam" type="button">Donate Now</button>
+</div>
+
+<!-- ============ HOME / CONTACT LANDING ============ -->
+<section class="screen on" data-screen="home">
+  <div class="hero">
+    <img class="bg" src="%%SUNSET%%" alt="Sunset over the Australian outback">
+    <div class="grn"></div>
+    <div class="in"><h1>Contact Us</h1><p>Have any questions or concerns?<br>Let us know.<br><br>We are committed to helping everyone.</p></div>
+  </div>
+  <div class="wrap">
+    <section class="sec"><h2 class="sec-h">Search for Topics</h2>
+      <form class="search" onsubmit="return false"><input type="text" placeholder="Search for help within our FAQ"><button class="btn">Submit</button></form>
+    </section>
+    <section class="sec"><h2 class="sec-h">Quick Links</h2>
+      <div class="ql">
+        <div class="item"><a class="lnk" data-goto="faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>FAQ</a><p class="sub">Here are some frequently asked questions</p></div>
+        <div class="item"><a class="lnk" data-goto="feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Feedback</a><p class="sub">Have any feedback or concerns</p></div>
+        <div class="item"><a class="lnk" data-goto="myoxfam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>MyOxfam</a><p class="sub">Manage your account details and donations</p></div>
+        <div class="item"><a class="lnk" data-goto="fundraising"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Fundraising</a><p class="sub">Want to get hands on with helping</p></div>
+        <div class="item"><a class="lnk" data-goto="media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Media</a><p class="sub">Have an inquiry relating to media</p></div>
+        <div class="item"><a class="lnk" data-goto="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Report</a><p class="sub">Report an incident regarding Oxfam</p></div>
+      </div>
+    </section>
+    <section class="sec"><h2 class="sec-h left"><svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Locations</h2>
+      <p class="sub-h">Here are our locations</p>
+      <div class="loc">
+        <div class="office"><h3>National Office &mdash; Victoria</h3><p>355 William St<br>West Melbourne VIC 3003</p><p><span class="lab">Postal address:</span><br>Oxfam Australia, Locked Bag 20004,<br>Melbourne VIC 3001</p><p><span class="lab">Phone:</span> 1800 088 110</p><button class="btn" type="button">Map</button></div>
+        <div class="map"><img src="%%MAP%%" alt="Map of Oxfam Australia offices"></div>
+      </div>
+      <div class="states">
+        <div><b>New South Wales</b><p>Desk Space Level 3, 85 William Street, Darlinghurst NSW</p></div>
+        <div><b>Queensland</b><p>Cove, 59 Doggett Street, Newstead, Qld 4006</p></div>
+        <div><b>Canberra</b><p>CARE Australia Suite G.06, 243 Northbourne Avenue, Lyneham ACT</p></div>
+        <div><b>Perth</b><p>Liberty Work Space Level 12, 197 St Georges Terrace, Perth 6000</p></div>
+        <div><b>South Australia</b><p>Oxfam Bookshop Adelaide, 5&ndash;7 Hutt St, Adelaide SA 5000</p></div>
+      </div>
+    </section>
+    <section class="sec"><div class="panel"><div class="side"><h3>Contact Us Directly</h3><p>Leave your information and we&rsquo;ll get back to you as soon as possible through our support.</p><p style="margin-top:12px;font-family:var(--head);font-weight:600;text-transform:uppercase">Call 1800 088 110</p></div>
+      <div class="body"><form class="form2" onsubmit="return false"><div><label>Name <i>*</i></label><input class="fld"></div><div class="inq"><label>Inquiry <i>*</i></label><textarea class="fld"></textarea></div><div><label>Email <i>*</i></label><input class="fld"></div><div><label>Phone</label><input class="fld"></div><button class="btn sub" type="submit">Submit</button></form></div>
+    </div></section>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="screen" data-screen="faq">
+  <div class="wrap">
+    <section class="sec" style="padding-top:26px"><h2 class="sec-h">Search for Topics</h2>
+      <form class="search" onsubmit="return false"><input type="text" placeholder="Search for help within our FAQ"><button class="btn">Submit</button></form>
+    </section>
+    <h1 style="text-align:center;font-size:clamp(1.9rem,4.6vw,3rem);margin:6px 0 26px">Frequently Asked Questions</h1>
+    <div class="faqgrid">
+      <div><h3 style="text-align:center;font-size:1.4rem;margin-bottom:16px">Quick Links</h3>
+        <div class="qlist">
+          <button class="qbtn" data-goto="fundraising">How can I participate in fundraising</button>
+          <button class="qbtn" data-goto="report">Our privacy policy</button>
+          <button class="qbtn" data-goto="fundraising">Find volunteer opportunities</button>
+          <button class="qbtn" data-goto="myoxfam">Where can I make an account</button>
+        </div>
+      </div>
+      <div><h3 style="text-align:center;font-size:1.4rem;margin-bottom:16px">Popular Topics</h3>
+        <div class="topics">
+          <a data-goto="myoxfam">How to change my Reoccurring Donations <b>&rsaquo;</b></a>
+          <a data-goto="media">Here you can find an Article to &hellip; <b>&rsaquo;</b></a>
+          <a data-goto="report">How to report an incident or concern <b>&rsaquo;</b></a>
+          <a data-goto="fundraising">How do I Volunteer or find Events <b>&rsaquo;</b></a>
+          <a data-goto="myoxfam">Want to change your Account Details <b>&rsaquo;</b></a>
+        </div>
+      </div>
+    </div>
+    <div class="help"><div class="ph"></div><div class="tx"><h3>How do we help?</h3><p>Discover how we are helping those in need by signing up for a reoccurring newsletter that details how we help those in need.</p><p>Receive a detailed report on the families we assist and how we use our donations to make a difference in each community.</p><button class="btn" type="button">Sign up for our newsletter</button></div></div>
+    <div style="height:26px"></div>
+  </div>
+</section>
+
+<!-- ============ FEEDBACK ============ -->
+<section class="screen" data-screen="feedback">
+  <div class="hero"><div class="grn" style="clip-path:polygon(0 0,52% 0,40% 100%,0 100%)"></div><div class="in"><h1>Leave Us Feedback</h1><p>We want to make your experience with us as best we can</p></div>
+    <div style="position:absolute;inset:0;left:44%;background:linear-gradient(120deg,#5a4a3a,#2e3a24)"></div></div>
+  <div class="wrap"><section class="sec"><div class="panel" style="max-width:760px;margin:10px auto 30px"><div class="side"><h3>Want to Leave Us Feedback</h3><p>Leave us your thoughts on anything we can improve or are doing well. It can be related to the website itself or the service we provide.</p></div>
+    <div class="body"><form class="form2" onsubmit="return false"><div><label>Name <i>*</i></label><input class="fld"></div><div class="inq"><label>Feedback <i>*</i></label><textarea class="fld"></textarea></div><div><label>Email <i>*</i></label><input class="fld"></div><div><label>Phone #</label><input class="fld"></div><button class="btn sub" type="submit">Submit</button></form></div>
+  </div></section></div>
+</section>
+
+<!-- ============ MYOXFAM / CREATE ACCOUNT ============ -->
+<section class="screen" data-screen="myoxfam">
+  <div class="hero"><div class="grn"></div><div class="in"><h1>Create an Account</h1><p>We want to make your experience as an Oxfam Australia supporter the best it can be</p></div>
+    <div style="position:absolute;inset:0;left:52%;background:linear-gradient(120deg,#6a4a2a,#33251a)"></div></div>
+  <div class="wrap"><section class="sec"><div class="acc">
+    <div class="top"><h3>Create an Account</h3></div>
+    <div class="cols">
+      <div class="side"><p>This unique, secure profile is where you can;</p><ul><li>View your Donation History</li><li>View your Tax Receipts</li><li>Keep your Information up to date</li><li>Decide how and when you want to hear from us</li><li>Register for our Events and Fundraisers</li></ul></div>
+      <div class="body"><form onsubmit="return false"><div class="grid2"><div><label>First Name <i>*</i></label><input class="fld"></div><div><label>Last Name <i>*</i></label><input class="fld"></div><div><label>Email <i>*</i></label><input class="fld"></div><div><label>Phone #</label><input class="fld"></div><div><label>Password <i>*</i></label><input class="fld" type="password"></div><div><label>Password <i>*</i></label><input class="fld" type="password"></div></div>
+        <div class="chk"><i></i><span>I agree to the <a>Terms and Conditions</a> and <a>Privacy</a> policy</span></div>
+        <div class="chk"><i></i><span>I would like to receive updates and newsletters via email</span></div>
+        <div style="text-align:right;margin-top:14px"><button class="btn" data-goto="portal" type="submit">Submit</button></div>
+      </form></div>
+    </div>
+  </div></section></div>
+</section>
+
+<!-- ============ MYOXFAM PORTAL ============ -->
+<section class="screen" data-screen="portal">
+  <div class="wrap"><section class="sec" style="padding-top:16px">
+    <div class="pbar"><h2>My Oxfam Portal</h2><span class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Supporter117</span></div>
+    <div class="portal">
+      <div>
+        <div class="menu"><div class="mh">My Account <span>&#9662;</span></div><a>Personal Details</a><a>Password/Privacy</a><a>Notifications</a></div>
+        <div class="menu g2"><div class="mh">Donations <span>&#9662;</span></div><a>My Donations</a><a>Reoccurring Donations</a></div>
+        <div class="menu g2"><div class="mh">Volunteering and Events <span>&#9662;</span></div><a data-goto="fundraising">My fundraisers</a><a data-goto="fundraising">Event Calendar</a><a data-goto="fundraising">Join an Event</a></div>
+      </div>
+      <div>
+        <div class="pcards">
+          <div class="pcard"><b>OXFAM</b><span>Trailwalker</span><span style="color:#fff;margin-top:4px">Share the adventure</span></div>
+          <div class="pcard"><b>OXFAM</b><span>Leaderboard</span><span style="color:#fff;margin-top:4px">Top donators</span></div>
+          <div class="pvol"><div class="ph"></div><h3>Volunteer with us</h3></div>
+        </div>
+      </div>
+    </div>
+  </section></div>
+</section>
+
+<!-- ============ FUNDRAISING ============ -->
+<section class="screen" data-screen="fundraising">
+  <div class="ptitle"><h1>Fundraising with Oxfam</h1><p>You can support Oxfam&rsquo;s lifesaving work by holding your own fundraiser or charity event and starting the conversation about poverty and injustice around the world.</p></div>
+  <div class="wrap">
+    <section class="sec"><div class="two">
+      <div class="txt"><h2 style="font-size:1.7rem">How to Get Started</h2><p>Doing things your way to help Oxfam make a difference. You can create a personalised fundraising page on GoFundraise and use it to keep your supporters up to date on your fundraising activities.</p><div class="btnrow"><button class="btn dark" type="button">GoFundraise</button><button class="btn dark" type="button">Use Facebook</button><button class="btn" type="button">Learn More</button></div></div>
+      <div class="thumb"><span class="play"></span><span class="cap">Impact in <em>Timor-Leste</em></span></div>
+    </div></section>
+    <section class="sec"><h2 class="sec-h">Events Near You</h2>
+      <div class="events">
+        <div class="event"><div class="ph">Change lives this holiday season</div><div class="lab">OXFAM Christmas Tree Event</div></div>
+        <div class="event"><div class="ph">Trailwalker Info Session #3 &middot; Oct 18 &middot; 7pm</div><div class="lab">OXFAM Trailwalker Info Session</div></div>
+      </div>
+    </section>
+    <section class="sec"><h2 class="sec-h">Our Facebook Page</h2>
+      <div class="fb"><div class="cover"></div><div class="row"><span class="av"></span><div><b>Oxfam</b><p>@oxfamamerica &middot; Nonprofit organization</p></div><button class="follow" type="button">Follow us</button></div></div>
+      <div style="height:20px"></div>
+    </section>
+  </div>
+</section>
+
+<!-- ============ MEDIA ============ -->
+<section class="screen" data-screen="media">
+  <div class="ptitle"><h1>Media Inquiries</h1><p>Have any questions about our organization or stay up-to-date on our latest media releases</p></div>
+  <div class="wrap">
+    <section class="sec"><div class="mediarow">
+      <div><h3 style="text-align:center;font-size:1.5rem">Popular Topics</h3><p class="sub-h" style="margin-top:6px">Find articles based on popular topics we write about</p>
+        <div class="pills"><span class="pill">Australian Government</span><span class="pill">COVID-19</span><span class="pill">Foreign Aid</span><span class="pill">Oxfam AUS</span><span class="pill">Poverty</span><span class="pill">Obama and Yemen</span><span class="pill">United Nations</span><span class="pill" data-goto="fundraising">Trailwalker</span><span class="pill">Emergency Response</span><span class="pill" data-goto="fundraising">Fundraising</span></div>
+      </div>
+      <div><h3 style="text-align:center;font-size:1.5rem">Search Media Releases</h3>
+        <form class="search" style="margin-top:16px" onsubmit="return false"><input type="text" placeholder="Search for Articles within our Media Releases"><button class="btn">Submit</button></form>
+        <h3 style="text-align:center;font-size:1.5rem;margin-top:28px">Our In-House Experts</h3>
+        <div class="experts"><div class="ph"></div><div class="tx"><p>Oxfam staff are able to provide expert comment or background briefings to media on a number of specialist topics</p><button class="btn" type="button">Our Experts</button></div></div>
+      </div>
+    </div></section>
+    <section class="sec"><h2 class="sec-h">Media Contacts</h2>
+      <div class="contacts">
+        <div class="contact-c"><div><h3>Lily Partland</h3><p>Based in Melbourne, Lily is Oxfam Australia&rsquo;s Head of Media.</p><p class="meta">Mobile: +61 418 118 687<br>Email: Lilyp@oxfam.org.au</p></div><span class="av"></span></div>
+        <div class="contact-c"><div><h3>Lucy Brown</h3><p>Based in Melbourne, Lucy is Oxfam Australia&rsquo;s Senior Media Coordinator.</p><p class="meta">Mobile: +61 418 118 687<br>Email: lucyb@oxfam.org.au</p></div><span class="av"></span></div>
+      </div>
+      <div style="height:20px"></div>
+    </section>
+  </div>
+</section>
+
+<!-- ============ REPORT ============ -->
+<section class="screen" data-screen="report">
+  <div class="ptitle"><h1>File a Report</h1><p>Have an issue with something related to or directly concerning Oxfam</p></div>
+  <div class="hero solid" style="min-height:210px"><div class="grn"></div><div class="in" style="max-width:52%"><h1 style="font-size:1.8rem">Why do we want to know?</h1><p style="text-transform:none;font-family:var(--body);font-size:13.5px;color:#eef0e6;margin-top:10px">Oxfam Australia is committed to upholding the highest ethical standards and providing a diverse and safe work environment for all of our employees and the communities we work with.</p><div class="polbtns"><button class="btn dark" data-goto="report" type="button">Privacy Policy</button><button class="btn dark" type="button">Whistleblower Policy</button></div></div>
+    <div style="position:absolute;inset:0;left:56%;background:linear-gradient(120deg,#5a6a2f,#2e3a1c)"></div></div>
+  <div class="wrap"><section class="sec"><div class="panel" style="max-width:820px;margin:10px auto 30px"><div class="side"><h3>File a Report Here</h3><p>If you need to report a matter referring to the Oxfam Australia Senior Management please submit a report.</p></div>
+    <div class="body"><form class="form2" onsubmit="return false"><div><label>Name <i>*</i></label><input class="fld"></div><div class="inq"><label>Report <i>*</i></label><textarea class="fld"></textarea></div><div><label>Email <i>*</i></label><input class="fld"></div><div><label>Phone #</label><input class="fld"></div><button class="btn sub" type="submit">Submit</button></form></div>
+  </div></section></div>
+</section>
+
+<!-- ============ FOOTER (shared) ============ -->
+<div class="foot">
+  <div class="soc">
+    <a aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.8-.5-5.6a2.9 2.9 0 0 0-2-2C18.7 4 12 4 12 4s-6.7 0-8.5.4a2.9 2.9 0 0 0-2 2C1 8.2 1 12 1 12s0 3.8.5 5.6a2.9 2.9 0 0 0 2 2C5.3 20 12 20 12 20s6.7 0 8.5-.4a2.9 2.9 0 0 0 2-2C23 15.8 23 12 23 12zM10 15.5v-7l6 3.5-6 3.5z"/></svg></a>
+    <a aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2 0-3.5 1.5-3.5 3.5V11H8v3h2.5v7h3v-7H16l.5-3h-3V9.8c0-.5.3-.8.8-.8z"/></svg></a>
+    <a aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.4 11.4 0 0 1 3.8 4.6a4 4 0 0 0 1.2 5.3c-.6 0-1.2-.2-1.8-.5a4 4 0 0 0 3.2 4 4 4 0 0 1-1.8.1 4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18a11.3 11.3 0 0 0 6.3 1.8c7.5 0 11.6-6.2 11.6-11.6v-.5c.8-.6 1.5-1.3 2.1-2.1z"/></svg></a>
+    <a aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+    <a aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8H4v12h3V8zM5.4 3.5A1.7 1.7 0 1 0 5.4 7a1.7 1.7 0 0 0 0-3.5zM20 20v-6.6c0-3.2-1.7-4.7-4-4.7a3.5 3.5 0 0 0-3.1 1.7V8H10v12h3v-6.4c0-1.4.9-2.1 1.8-2.1s1.7.6 1.7 2.1V20h3.5z"/></svg></a>
+  </div>
+  <div class="links"><a data-goto="home">About us</a><a data-goto="media">Media</a><a>Countries Where We Work</a><a data-goto="report">Policies &amp; whistleblowing</a><a data-goto="media">Resources</a><a data-goto="myoxfam">Jobs</a><a data-goto="faq">FAQs</a><a>Annual report</a><a data-goto="home">Contact us</a></div>
+  <p class="ack">Oxfam Australia acknowledges Aboriginal and Torres Strait Islander peoples as the original custodians of the land, and respects the rights that they hold as traditional custodians. We also recognise the dispossession of the land and its ongoing effects on First Nations Peoples today.</p>
+  <p class="auth">Authorised by Lyn Morgain, Oxfam Australia, Carlton</p>
+</div>
+
+<a class="chat" data-goto="home"><span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Chat</a>
+</div>
+
+<script>
+(function(){
+  var site=document.getElementById("site");
+  var screens=site.querySelectorAll(".screen");
+  function show(k){
+    var found=false;
+    screens.forEach(function(s){var on=s.getAttribute("data-screen")===k;s.classList.toggle("on",on);if(on)found=true;});
+    if(!found)return;
+    site.scrollIntoView({block:"start"});
+    try{var sc=site.closest("[data-scroll]")||document.scrollingElement;if(sc)sc.scrollTop=0;}catch(e){}
+    if(window.parent!==window){try{window.scrollTo(0,0);}catch(e){}}
+    window.scrollTo(0,0);
+  }
+  site.addEventListener("click",function(e){
+    var t=e.target.closest("[data-goto]");
+    if(!t)return;
+    e.preventDefault();
+    show(t.getAttribute("data-goto"));
+  });
+})();
+</script>
