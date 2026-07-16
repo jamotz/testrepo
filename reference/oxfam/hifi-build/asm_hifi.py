@@ -54,6 +54,11 @@ logo = re.sub(r'fill="#[0-9A-Fa-f]{6}"', 'fill="currentColor"', logo)
 logo = re.sub(r'<svg ', '<svg style="display:block;width:100%;height:100%" ', logo, count=1)
 src = src.replace("<!--LOGO-->", logo)
 
+# Embed the clickable prototype mini-site (served copy) as a base64 data-URI iframe
+proto_path = REPO / "site/public/work/oxfam/proto.html"
+proto_b64 = base64.b64encode(proto_path.read_bytes()).decode()
+src = src.replace("/*PROTODOC*/", proto_b64)
+
 segs = re.split(r'(<script[\s\S]*?</script>|<style[\s\S]*?</style>)', src)
 src = ''.join(x if (x[:7]=='<script' or x[:6]=='<style') else x.encode('ascii','xmlcharrefreplace').decode() for x in segs)
 
