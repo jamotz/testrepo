@@ -9,125 +9,201 @@ const meta = [
   { k: 'Location', v: 'Melbourne, AU' },
   { k: 'Engagement', v: 'Apprenticeship' },
 ];
-const phases = [
-  { n: '01', t: 'User research', d: 'Interviewed and observed real supporters to understand where the support experience and the MyOxfam portal were breaking down.' },
-  { n: '02', t: 'Information architecture', d: 'Restructured the support pages and MyOxfam portal — reorganising content around how people actually look for help.' },
-  { n: '03', t: 'Wireframes', d: 'Translated the new structure into low-fidelity wireframes to pressure-test the flow before visual design.' },
-  { n: '04', t: 'Visual design', d: 'Implemented a new visual design for the pages, aligned to Oxfam’s brand and accessibility needs.' },
-  { n: '05', t: 'Usability testing', d: 'Tested the proposed design with users, gathered feedback, and iterated to improve on the first pass.' },
-  { n: '06', t: 'Stakeholder presentation', d: 'Presented the refined design and rationale to stakeholders for buy-in.' },
+
+const research = [
+  { n: '01', t: 'Supporter interviews', d: 'Heard, in their words, where the support journey and the MyOxfam portal broke down.' },
+  { n: '02', t: 'Persona', d: 'Synthesised findings into a primary persona to keep decisions anchored to real needs.' },
+  { n: '03', t: 'Content & IA audit', d: 'Audited existing pages to decide what to keep, cut, merge, or relabel.' },
+  { n: '04', t: 'Accessibility lens', d: 'Reviewed against accessibility needs so help is reachable for everyone.' },
+];
+
+const decisions = [
+  { k: 'Structure', d: 'Reorganised support & MyOxfam content around supporter intent' },
+  { k: 'Wayfinding', d: 'Six clear entry points from one contact landing' },
+  { k: 'Portal', d: 'Restructured MyOxfam so account tasks are easy to find' },
+  { k: 'Access', d: 'Accessible, legible, brand-aligned patterns' },
+];
+
+const results = [
+  { k: 'faq', label: 'FAQ', n: '01' },
+  { k: 'feedback', label: 'Feedback', n: '02' },
+  { k: 'myoxfam', label: 'MyOxfam', n: '03' },
+  { k: 'fundraising', label: 'Fundraising', n: '04' },
+  { k: 'media', label: 'Media', n: '05' },
+  { k: 'report', label: 'Report', n: '06' },
 ];
 ---
 <Base
   accent="oxfam"
   title="Oxfam Support Redesign — Jack Motzkin"
-  description="Case study: redesigning Oxfam Australia's support pages and the MyOxfam portal — research, information architecture, wireframes, visual design, and usability testing."
+  description="Case study: redesigning Oxfam Australia's support pages and the MyOxfam portal — research, information architecture, wireframes, high-fidelity design, and usability testing."
 >
   <Nav />
   <main>
     <!-- Hero -->
-    <header class="case-hero wrap">
-      <a class="back" href="/#work">
-        <svg width="16" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M17 6H2m0 0 5-5M2 6l5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        All work
-      </a>
-      <p class="case-eyebrow"><span class="idx">01</span><span class="rule"></span>Case study · UX Research &amp; Design</p>
-      <h1 class="case-title" data-hero-name><span class="line"><span>Oxfam Support</span></span><span class="line"><span class="accent">Redesign</span></span></h1>
-      <p class="case-lead" data-reveal>
-        Restructuring Oxfam Australia’s support pages and the MyOxfam portal so supporters
-        can actually find help — grounded in research, validated with real users.
-      </p>
-      <dl class="case-meta" data-reveal>
-        {meta.map((m) => (
-          <div><dt>{m.k}</dt><dd>{m.v}</dd></div>
-        ))}
-      </dl>
-      <div class="case-banner" data-reveal aria-label="Project banner (image placeholder)">
-        <span class="ph-label">Hero image — drop your Oxfam banner here</span>
+    <header class="case-hero" id="case-top">
+      <img class="case-hero-img" src="/work/oxfam/hero.jpg" alt="Australian outback landscape" />
+      <div class="case-hero-in wrap">
+        <a class="back" href="/#work">
+          <svg width="16" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M17 6H2m0 0 5-5M2 6l5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          All work
+        </a>
+        <p class="case-eyebrow"><span class="idx">01</span><span class="rule"></span>Case study · UX Research &amp; Design</p>
+        <h1 class="case-title" data-hero-name><span class="line"><span>Oxfam Support</span></span><span class="line"><span class="accent">Redesign</span></span></h1>
+        <p class="case-lead">
+          Restructuring Oxfam Australia’s support pages and the MyOxfam portal so supporters
+          can actually find help — led by research, validated with real users.
+        </p>
       </div>
     </header>
 
-    <!-- Overview -->
-    <section class="section">
-      <div class="wrap case-cols">
-        <div data-reveal>
-          <p class="eyebrow">Overview</p>
-          <h2>About Oxfam Australia</h2>
-          <p class="body-p">
-            Oxfam Australia is an Australian-based charity that helps the Indigenous and
-            impoverished populations in Australia and the surrounding countries.
-          </p>
-        </div>
-        <div data-reveal>
-          <p class="eyebrow">The brief</p>
-          <h2>Make support easy to navigate</h2>
-          <p class="body-p">
-            Redesign a set of website pages and the information architecture to improve the
-            experience within their support system, and restructure the MyOxfam portal —
-            then validate the new design with real users before handing it to stakeholders.
-          </p>
-        </div>
+    <div class="wrap">
+      <!-- Snapshot -->
+      <div class="snapshot" data-reveal>
+        <div class="snap-row"><span class="mono-label">My role</span><p>Led UX research and design end-to-end — supporter research and a persona, information architecture, wireframes, high-fidelity visual design, and usability testing.</p></div>
+        <div class="snap-row"><span class="mono-label">Outcome</span><p>A clearer, user-tested route through Oxfam’s support content and a restructured MyOxfam portal — presented to stakeholders. <a class="jump" href="#results">See results ↓</a></p></div>
       </div>
-    </section>
+      <dl class="case-meta" data-reveal>
+        {meta.map((m) => (<div><dt>{m.k}</dt><dd>{m.v}</dd></div>))}
+      </dl>
+    </div>
 
-    <!-- Approach -->
-    <section class="section approach">
-      <div class="wrap">
-        <div class="section-head" data-reveal>
-          <h2>Approach</h2>
-          <span class="idx">Research-led · six phases</span>
+    <div class="wrap">
+      <!-- Problem -->
+      <section class="csec" id="problem">
+        <div class="shead" data-reveal><span class="n">02</span><h2>Problem overview</h2></div>
+        <div class="two">
+          <div data-reveal>
+            <p class="lead">Oxfam Australia supports Indigenous and impoverished communities across Australia and neighbouring countries. As support content grew, the pages and the MyOxfam portal became hard to navigate.</p>
+            <p class="body-p">Supporters couldn’t reliably find answers or manage their giving — friction in an experience that should feel effortless and trustworthy. The goal was a single, obvious front door to help, and a portal that put account tasks within easy reach. <span class="draft">[Tighten with your exact framing.]</span></p>
+          </div>
+          <div class="callout" data-reveal>Supporters were getting lost on the way to help — and to their own account.</div>
         </div>
-        <ol class="phases">
-          {phases.map((p) => (
-            <li class="phase" data-reveal>
-              <span class="phase-n">{p.n}</span>
-              <div>
-                <h3>{p.t}</h3>
-                <p>{p.d}</p>
-              </div>
-            </li>
+      </section>
+
+      <!-- Research -->
+      <section class="csec" id="research">
+        <div class="shead" data-reveal><span class="n">03</span><h2>Research approach</h2></div>
+        <p class="lead" data-reveal>I grounded the redesign in how real supporters move through the support system — then synthesised what I heard into a persona to design against.</p>
+        <div class="cards" data-reveal>
+          {research.map((c) => (
+            <div class="card"><span class="k">{c.n}</span><div><h3>{c.t}</h3><p>{c.d}</p></div></div>
           ))}
-        </ol>
-      </div>
-    </section>
-
-    <!-- Gallery -->
-    <section class="section">
-      <div class="wrap">
-        <div class="section-head" data-reveal>
-          <h2>Selected screens</h2>
-          <span class="idx">Add your artifacts</span>
         </div>
-        <div class="gallery">
-          <div class="ph tall" data-reveal><span class="ph-label">Wireframe / flow</span></div>
-          <div class="ph" data-reveal><span class="ph-label">Before → after</span></div>
-          <div class="ph" data-reveal><span class="ph-label">Final visual design</span></div>
-        </div>
-      </div>
-    </section>
+        <figure class="persona-wrap" data-reveal>
+          <img src="/work/oxfam/persona.jpg" alt="Primary persona: Franklin A." />
+          <figcaption class="cap"><b>Research artifact</b> — the primary persona I used to anchor every design decision.</figcaption>
+        </figure>
+      </section>
 
-    <!-- Outcome -->
-    <section class="section">
-      <div class="wrap case-cols">
-        <div data-reveal>
-          <p class="eyebrow">Outcome</p>
-          <h2>A clearer path to help</h2>
-          <p class="body-p">
-            The redesign gave supporters a more intuitive route through Oxfam’s support
-            content and a restructured MyOxfam portal — improved through usability testing
-            and presented to stakeholders for adoption.
-          </p>
+      <!-- Decisions -->
+      <section class="csec" id="decisions">
+        <div class="shead" data-reveal><span class="n">04</span><h2>Design decisions</h2></div>
+        <div class="two">
+          <div data-reveal>
+            <p class="lead">Research pointed to a clearer information architecture and a support flow organised around real questions, not internal structure.</p>
+            <ul class="rows">
+              {decisions.map((d) => (<li><span class="mono-label">{d.k}</span>{d.d}</li>))}
+            </ul>
+          </div>
+          <figure data-reveal>
+            <div class="frame crop"><img src="/work/oxfam/wf_ia.jpg" alt="Information architecture / menu wireframe" /></div>
+            <figcaption class="cap"><b>Information architecture</b> — MyOxfam menu structure (level 1 → level 2).</figcaption>
+          </figure>
         </div>
-        <ul class="outcome-list" data-reveal>
-          <li><span class="mono-label">Research</span>Interviews &amp; usability testing with real supporters</li>
-          <li><span class="mono-label">IA</span>New information architecture for support &amp; MyOxfam</li>
-          <li><span class="mono-label">Design</span>Wireframes → validated visual design</li>
-          <li><span class="mono-label">Delivery</span>Presented to stakeholders</li>
-        </ul>
-      </div>
-    </section>
+      </section>
 
-    <!-- Pagination -->
+      <!-- Iteration -->
+      <section class="csec" id="iteration">
+        <div class="shead" data-reveal><span class="n">05</span><h2>Design format &amp; iteration</h2></div>
+        <p class="lead" data-reveal>From low-fidelity wireframes to a validated high-fidelity design. Two flows, wireframe to final:</p>
+        <p class="viewhint" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Click any image to expand the full page</p>
+        <div class="arrowlab" data-reveal>Contact landing &nbsp;—&nbsp; wireframe → final</div>
+        <div class="compare" data-reveal>
+          <figure><div class="frame crop"><img src="/work/oxfam/wf_landing.jpg" alt="Landing wireframe" /></div><figcaption class="cap">Lo-fi wireframe</figcaption></figure>
+          <figure><div class="frame crop"><img src="/work/oxfam/home.jpg" alt="Landing final" /></div><figcaption class="cap"><b>High-fidelity</b></figcaption></figure>
+        </div>
+        <div class="arrowlab" style="margin-top:24px" data-reveal>MyOxfam portal &nbsp;—&nbsp; wireframe → final</div>
+        <div class="compare" data-reveal>
+          <figure><div class="frame crop"><img src="/work/oxfam/wf_portal.jpg" alt="Portal wireframe" /></div><figcaption class="cap">Lo-fi wireframe</figcaption></figure>
+          <figure><div class="frame crop"><img src="/work/oxfam/portal.jpg" alt="Portal final" /></div><figcaption class="cap"><b>High-fidelity</b></figcaption></figure>
+        </div>
+      </section>
+
+      <!-- Testing -->
+      <section class="csec" id="testing">
+        <div class="shead" data-reveal><span class="n">06</span><h2>Testing insights</h2></div>
+        <div class="two">
+          <div class="callout" data-reveal>Usability testing turned assumptions into evidence — and reshaped the second pass.</div>
+          <div data-reveal>
+            <p class="body-p">I tested the proposed design with users and annotated exactly where labels, order, and flow tripped people up, then folded those fixes into the final. The annotations below are the raw evidence behind the changes. <span class="draft">[Add your 2–3 headline findings.]</span></p>
+          </div>
+        </div>
+        <figure class="testing-fig" data-reveal>
+          <div class="frame crop"><img src="/work/oxfam/annotated.jpg" alt="Annotated usability findings" /></div>
+          <figcaption class="cap"><b>Usability annotations</b> — issues marked directly on the design, then resolved.</figcaption>
+        </figure>
+      </section>
+
+      <!-- Results -->
+      <section class="csec" id="results">
+        <div class="shead" data-reveal><span class="n">07</span><h2>Results</h2></div>
+        <p class="lead" data-reveal>A clearer path to help and a restructured MyOxfam portal — delivered as a cohesive set of high-fidelity pages, improved through testing and presented to stakeholders.</p>
+        <div class="stats" data-reveal>
+          <div class="stat"><div class="big">6</div><div class="statlab">Redesigned support pages, one clear entry</div></div>
+          <div class="stat"><div class="big">1</div><div class="statlab">Restructured MyOxfam portal (+ account flow)</div></div>
+          <div class="stat"><div class="big">✓</div><div class="statlab">Usability tested &amp; presented to stakeholders</div></div>
+        </div>
+        <div class="screens" data-reveal>
+          {results.map((r) => (
+            <div class="screen"><div class="shot"><img src={`/work/oxfam/${r.k}.jpg`} alt={r.label} /></div><div class="screenlab">{r.label}<span class="tag">{r.n}</span></div></div>
+          ))}
+        </div>
+        <p class="viewhint" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Click any screen to view the full page</p>
+      </section>
+
+      <!-- Reflection -->
+      <section class="csec" id="reflection">
+        <div class="shead" data-reveal><span class="n">08</span><h2>Reflection</h2></div>
+        <div class="two">
+          <div class="callout" data-reveal>What I’d carry forward — and do differently next time.</div>
+          <div data-reveal>
+            <p class="body-p">Leading research end-to-end sharpened how I turn messy supporter feedback into clear IA decisions. Next time I’d recruit test participants earlier and instrument the design so impact is measurable from day one — the thinking held up; I’d just prove it with numbers sooner. <span class="draft">[Make it yours.]</span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Explore -->
+      <section class="csec" id="explore">
+        <div class="shead" data-reveal><span class="n">09</span><h2>Explore the prototype</h2></div>
+        <p class="lead" data-reveal>Click through the real screens the way a supporter would. The contact landing branches to six pages; MyOxfam goes one level deeper to the portal.</p>
+        <div class="explorer" data-reveal>
+          <div class="exp">
+            <div class="exp-bar">
+              <span class="dots"><i></i><i></i><i></i></span>
+              <span class="exp-crumb" id="crumb">Contact landing</span>
+              <button class="exp-back" id="expback" type="button" disabled>← Back</button>
+            </div>
+            <div class="exp-view" id="expview"><img id="expimg" src="/work/oxfam/home.jpg" alt="Current screen" /></div>
+          </div>
+          <div>
+            <div class="exp-nav" id="expnav">
+              <button class="home" data-k="home" type="button">● Home</button>
+              <button data-k="faq" type="button">FAQ</button>
+              <button data-k="feedback" type="button">Feedback</button>
+              <button data-k="myoxfam" type="button">MyOxfam</button>
+              <button data-k="fundraising" type="button">Fundraising</button>
+              <button data-k="media" type="button">Media</button>
+              <button data-k="report" type="button">Report</button>
+              <button data-k="portal" id="portalbtn" type="button">MyOxfam Portal →</button>
+            </div>
+            <p class="exp-hint">Tip: open <b>MyOxfam</b> then <b>MyOxfam Portal</b> to see the only tertiary (3-level) path.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Pager -->
     <section class="section pager-sec">
       <div class="wrap pager">
         <a class="pager-link" href="/#work">
@@ -142,79 +218,172 @@ const phases = [
         </a>
       </div>
     </section>
-
-    <!-- CTA -->
-    <section class="section cta-sec">
-      <div class="wrap cta">
-        <h2 data-reveal>Have a support experience that needs untangling?</h2>
-        <a class="btn btn-primary" href="/#contact" data-reveal>Get in touch
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-4-4m4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-    </section>
   </main>
   <Footer />
+
+  <!-- Lightbox: full-page, scrollable -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Full-page view">
+    <button class="lb-close" id="lbclose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="lb-stage" id="lbstage"><img id="lbimg" alt="Full page" /></div>
+    <p class="lb-cap" id="lbcap"></p>
+  </div>
 </Base>
 
 <style>
-  main{padding-top:74px}
-  .case-hero{padding:clamp(40px,7vw,80px) var(--pad) clamp(30px,4vw,48px)}
+  main{padding-top:0}
+
+  /* Hero */
+  .case-hero{position:relative;min-height:62vh;display:flex;align-items:flex-end;overflow:hidden;
+    border-bottom:1px solid var(--line)}
+  .case-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .case-hero::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 40%,transparent) 0%,
+      color-mix(in srgb,var(--bg) 62%,transparent) 45%,var(--bg) 100%)}
+  .case-hero-in{position:relative;z-index:2;width:100%;padding:120px 0 clamp(30px,4vw,52px)}
   .back{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:34px;transition:color .2s}
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:22px;transition:color .2s}
   .back:hover{color:var(--gold)}
   .back svg{transition:transform .3s var(--ease-out)}
   .back:hover svg{transform:translateX(-4px)}
   .case-eyebrow{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:12.5px;
-    letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+    letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:16px}
   .case-eyebrow .idx{font-family:var(--display);font-weight:700;color:var(--ink);font-size:14px}
-  .case-eyebrow .rule{height:1px;width:min(120px,16vw);background:var(--line-2)}
-  .case-title{font-size:clamp(2.6rem,8vw,6rem);text-transform:uppercase;letter-spacing:-.03em;line-height:.86}
-  .case-title .line{display:block;overflow:hidden;padding-bottom:.02em}
-  .case-title .accent{color:var(--gold)}
-  .case-lead{max-width:56ch;margin-top:24px;font-size:clamp(1.05rem,1.8vw,1.3rem);
-    line-height:1.6;color:var(--ink-soft)}
-  .case-meta{display:grid;grid-template-columns:repeat(4,auto);gap:14px 44px;margin:36px 0 0;
-    padding-top:26px;border-top:1px solid var(--line)}
+  .case-eyebrow .rule{height:1px;width:min(90px,14vw);background:var(--gold-soft);opacity:.6}
+  .case-title{font-size:clamp(2.5rem,8vw,5.6rem);text-transform:uppercase;letter-spacing:-.03em;line-height:.88}
+  .case-title .line{display:block}
+  .case-title .accent{color:var(--gold-soft)}
+  .case-lead{max-width:56ch;margin-top:20px;font-size:clamp(1.05rem,1.8vw,1.3rem);line-height:1.6;color:var(--ink)}
+
+  /* Snapshot + meta */
+  .snapshot{margin:36px 0 0;display:flex;flex-direction:column;gap:14px;padding:22px 24px;
+    border:1px solid var(--line);border-left:2px solid var(--gold);border-radius:var(--radius);
+    background:color-mix(in srgb,var(--gold) 6%,var(--panel))}
+  .snap-row{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:baseline}
+  .snap-row .mono-label{color:var(--gold)}
+  .snap-row p{color:var(--ink);font-size:1.02rem;line-height:1.55}
+  .jump{color:var(--gold);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .jump:hover{text-decoration:underline}
+  @media (max-width:560px){.snap-row{grid-template-columns:1fr;gap:4px}}
+  .case-meta{display:grid;grid-template-columns:repeat(4,auto);gap:14px 44px;margin:26px 0 0;
+    padding-top:22px;border-top:1px solid var(--line)}
   .case-meta div{display:flex;flex-direction:column;gap:5px}
   .case-meta dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg)}
   .case-meta dd{margin:0;font-family:var(--display);font-weight:500;font-size:1.05rem}
-  @media (max-width:640px){.case-meta{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){.case-meta{grid-template-columns:1fr 1fr}}
 
-  .case-banner{margin-top:40px;aspect-ratio:16/7;border-radius:var(--radius);
-    border:1px solid var(--line-2);display:grid;place-items:center;overflow:hidden;
-    background:
-      radial-gradient(120% 130% at 80% 10%,color-mix(in srgb,var(--gold) 42%,transparent),transparent 60%),
-      color-mix(in srgb,var(--gold) 12%,var(--panel))}
+  /* Section scaffolding */
+  .csec{padding:clamp(44px,6vw,84px) 0;position:relative}
+  .shead{display:flex;align-items:baseline;gap:16px;margin-bottom:24px}
+  .shead .n{font-family:var(--mono);color:var(--gold);font-size:13px;font-weight:500}
+  .shead h2{font-size:clamp(1.6rem,4vw,2.6rem);text-transform:uppercase}
+  #results .shead h2{color:var(--gold)}
+  .lead{color:var(--ink-soft);max-width:62ch;font-size:1.08rem}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(26px,4vw,52px);align-items:start;margin-top:12px}
+  @media (max-width:820px){.two{grid-template-columns:1fr;gap:26px}}
+  .body-p{color:var(--ink-soft);max-width:58ch;margin-top:14px}
+  .draft{color:var(--gold)}
+  .callout{border-left:2px solid var(--gold);padding-left:22px;font-family:var(--display);font-weight:500;
+    font-size:clamp(1.2rem,2.4vw,1.7rem);line-height:1.3;color:var(--ink);max-width:26ch}
 
-  .ph{position:relative;border-radius:var(--radius);border:1px dashed color-mix(in srgb,var(--gold) 40%,var(--line-2));
-    background:color-mix(in srgb,var(--gold) 8%,var(--panel));min-height:220px;display:grid;place-items:center}
-  .ph.tall{grid-row:span 2;min-height:100%}
-  .ph-label{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
-    color:color-mix(in srgb,var(--gold) 70%,var(--ink-soft))}
+  /* Frames + zoom */
+  figure{margin:0}
+  .frame{position:relative;border:1px solid var(--line-2);border-radius:var(--radius);overflow:hidden;
+    background:var(--panel);cursor:zoom-in;transition:border-color .25s var(--ease-out)}
+  .frame:hover{border-color:var(--gold)}
+  .frame img{width:100%;display:block}
+  .frame.crop{height:clamp(240px,36vh,400px)}
+  .frame.crop img{position:absolute;top:0;left:0}
+  .frame.crop::after{content:"";position:absolute;left:0;right:0;bottom:0;height:64px;pointer-events:none;
+    background:linear-gradient(transparent,color-mix(in srgb,var(--panel) 92%,transparent))}
+  .frame::before{content:"";position:absolute;top:10px;right:10px;z-index:3;width:32px;height:32px;border-radius:9px;
+    border:1px solid var(--line-2);backdrop-filter:blur(6px);opacity:0;transition:opacity .2s var(--ease-out);
+    background:color-mix(in srgb,var(--bg) 68%,transparent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/17px no-repeat}
+  .frame:hover::before{opacity:1}
+  .cap{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--muted-fg);margin-top:10px}
+  .cap b{color:var(--gold);font-weight:500}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px}
+  @media (max-width:760px){.compare{grid-template-columns:1fr}}
+  .arrowlab{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:12px 0 6px}
+  .testing-fig{margin-top:18px}
 
-  .case-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,64px);align-items:start}
-  @media (max-width:820px){.case-cols{grid-template-columns:1fr;gap:34px}}
-  .case-cols h2{font-size:clamp(1.6rem,3.4vw,2.4rem);text-transform:uppercase;margin:14px 0 16px}
-  .body-p{color:var(--ink-soft);font-size:1.08rem;max-width:52ch}
+  /* Research cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:2px;border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;background:var(--line);margin-top:16px}
+  @media (max-width:760px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--bg);padding:22px;display:flex;gap:16px;align-items:flex-start}
+  .card .k{font-family:var(--display);font-weight:700;color:var(--gold);font-size:1.05rem;min-width:2ch}
+  .card h3{font-size:1.1rem;margin-bottom:6px}
+  .card p{color:var(--ink-soft);font-size:14px;line-height:1.6}
 
-  .phases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:2px;
-    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--line)}
-  @media (max-width:760px){.phases{grid-template-columns:1fr}}
-  .phase{display:flex;gap:20px;padding:28px;background:var(--bg);align-items:flex-start}
-  .phase-n{font-family:var(--display);font-weight:700;font-size:1.1rem;color:var(--gold);
-    padding-top:2px;min-width:2ch}
-  .phase h3{font-size:1.2rem;margin-bottom:8px}
-  .phase p{color:var(--ink-soft);font-size:14.5px;line-height:1.6}
+  /* Decision rows */
+  .rows{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--line)}
+  .rows li{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);
+    align-items:baseline;color:var(--ink)}
+  .rows .mono-label{color:var(--gold)}
 
-  .gallery{display:grid;grid-template-columns:1.2fr 1fr;grid-auto-rows:1fr;gap:18px}
-  @media (max-width:760px){.gallery{grid-template-columns:1fr}.ph.tall{grid-row:auto}}
+  /* Persona */
+  .persona-wrap{max-width:860px;margin:22px auto 0}
+  .persona-wrap img{width:100%;border:1px solid var(--line-2);border-radius:var(--radius);cursor:zoom-in;
+    transition:border-color .25s var(--ease-out)}
+  .persona-wrap img:hover{border-color:var(--gold)}
 
-  .outcome-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;
-    border-top:1px solid var(--line)}
-  .outcome-list li{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:16px 0;
-    border-bottom:1px solid var(--line);color:var(--ink);font-size:15px;align-items:center}
-  .outcome-list .mono-label{color:var(--gold)}
+  /* Stats + result screens */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+  @media (max-width:640px){.stats{grid-template-columns:1fr}}
+  .stat{border:1px solid var(--line);border-radius:var(--radius);padding:22px;background:var(--panel)}
+  .stat .big{font-family:var(--display);font-weight:800;font-size:2.3rem;color:var(--gold);line-height:1}
+  .stat .statlab{color:var(--ink-soft);font-size:13.5px;margin-top:8px}
+  .screens{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  @media (max-width:820px){.screens{grid-template-columns:1fr 1fr}}
+  @media (max-width:520px){.screens{grid-template-columns:1fr}}
+  .screen{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);
+    transition:border-color .25s,transform .25s var(--ease-out);cursor:zoom-in}
+  .screen:hover{border-color:var(--gold);transform:translateY(-3px)}
+  .screen .shot{height:200px;overflow:hidden;border-bottom:1px solid var(--line);position:relative}
+  .screen .shot img{width:100%;position:absolute;top:0;left:0}
+  .screen .shot::after{content:"";position:absolute;top:9px;right:9px;width:28px;height:28px;border-radius:8px;
+    border:1px solid var(--line-2);backdrop-filter:blur(6px);opacity:0;transition:opacity .2s var(--ease-out);
+    background:color-mix(in srgb,var(--bg) 68%,transparent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/15px no-repeat}
+  .screen:hover .shot::after{opacity:1}
+  .screenlab{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-family:var(--mono);
+    font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+  .screenlab .tag{color:var(--gold)}
 
+  /* View-full hint */
+  .viewhint{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted-fg);margin-top:16px}
+  .viewhint svg{width:15px;height:15px;stroke:var(--gold)}
+
+  /* Explorer */
+  .explorer{margin-top:22px;display:grid;grid-template-columns:1fr;gap:18px}
+  .exp{border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--panel-2)}
+  .exp-bar{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--muted-fg)}
+  .exp-bar .dots{display:flex;gap:6px}
+  .exp-bar .dots i{width:10px;height:10px;border-radius:50%;background:var(--line-2)}
+  .exp-bar .dots i:first-child{background:var(--gold)}
+  .exp-back{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);border:1px solid var(--line-2);background:transparent;border-radius:7px;padding:6px 11px;cursor:pointer}
+  .exp-back:disabled{opacity:.4;cursor:default}
+  .exp-back:not(:disabled):hover{border-color:var(--gold);color:var(--gold)}
+  .exp-crumb{color:var(--ink)}
+  .exp-view{height:clamp(320px,52vh,540px);overflow-y:auto;background:var(--bg-2);scroll-behavior:smooth}
+  .exp-view img{width:100%;display:block}
+  .exp-nav{display:flex;flex-wrap:wrap;gap:8px}
+  .exp-nav button{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-soft);border:1px solid var(--line-2);background:var(--panel);border-radius:100px;padding:9px 15px;
+    cursor:pointer;transition:.2s}
+  .exp-nav button:hover{border-color:var(--gold);color:var(--gold)}
+  .exp-nav button.on{background:var(--gold);color:#0b120b;border-color:var(--gold);font-weight:500}
+  .exp-nav .home{color:var(--ink)}
+  .exp-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted-fg);margin-top:12px}
+  .exp-hint b{color:var(--gold)}
+
+  /* Pager */
+  .pager-sec{border-top:1px solid var(--line)}
   .pager{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .pager-link{display:flex;flex-direction:column;gap:8px;padding:28px;border:1px solid var(--line);
     border-radius:var(--radius);transition:border-color .3s,background-color .3s}
@@ -225,7 +394,99 @@ const phases = [
   .pager-link.next:hover .pager-t svg{transform:translateX(5px)}
   @media (max-width:600px){.pager{grid-template-columns:1fr}.pager-link.next{text-align:left;align-items:flex-start}}
 
-  .cta-sec{border-top:1px solid var(--line)}
-  .cta{display:flex;flex-direction:column;align-items:flex-start;gap:24px}
-  .cta h2{font-size:clamp(1.8rem,4.5vw,3rem);text-transform:uppercase;max-width:20ch}
+  /* Lightbox */
+  .lightbox{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;gap:14px;
+    padding:clamp(14px,3.5vw,44px);background:color-mix(in srgb,#05060a 84%,transparent);backdrop-filter:blur(5px)}
+  .lightbox.open{display:flex}
+  .lb-stage{flex:1;width:min(1120px,100%);overflow:auto;border-radius:14px;border:1px solid rgba(255,255,255,.16);
+    background:#0a0b0e;-webkit-overflow-scrolling:touch;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .lb-stage img{width:100%;display:block}
+  .lb-cap{color:#d5d8d1;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-align:center;max-width:86ch}
+  .lb-cap b{color:var(--gold-soft);font-weight:500}
+  .lb-close{position:absolute;top:16px;right:18px;width:44px;height:44px;border-radius:100px;cursor:pointer;
+    border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);color:#fff;display:grid;place-items:center;transition:.2s}
+  .lb-close:hover{border-color:var(--gold);color:var(--gold);transform:rotate(90deg)}
+  .lb-close svg{width:20px;height:20px}
 </style>
+
+<script>
+  // Explorer — click through the real screens
+  (function () {
+    const names = {
+      home: 'Contact landing', faq: 'FAQ', feedback: 'Feedback',
+      myoxfam: 'MyOxfam · Create account', portal: 'MyOxfam Portal',
+      fundraising: 'Fundraising', media: 'Media', report: 'Report',
+    };
+    const src = (k) => '/work/oxfam/' + k + '.jpg';
+    const img = document.getElementById('expimg');
+    const view = document.getElementById('expview');
+    const crumb = document.getElementById('crumb');
+    const back = document.getElementById('expback');
+    const portalbtn = document.getElementById('portalbtn');
+    if (!img) return;
+    let path = ['home'];
+    function render() {
+      const cur = path[path.length - 1];
+      img.src = src(cur);
+      view.scrollTop = 0;
+      crumb.textContent = path.map((k) => names[k].split(' · ')[0]).join('  ›  ');
+      back.disabled = path.length < 2;
+      portalbtn.style.display = (cur === 'myoxfam' || cur === 'portal') ? 'inline-block' : 'none';
+      document.querySelectorAll('#expnav button').forEach((b) => b.classList.toggle('on', b.dataset.k === cur));
+    }
+    function go(k) {
+      if (k === 'home') path = ['home'];
+      else if (k === 'portal') path = ['home', 'myoxfam', 'portal'];
+      else path = ['home', k];
+      render();
+    }
+    document.querySelectorAll('#expnav button').forEach((b) => b.addEventListener('click', () => go(b.dataset.k)));
+    back.addEventListener('click', () => { if (path.length > 1) { path.pop(); render(); } });
+    render();
+  })();
+
+  // Lightbox — full-page, scrollable view for any screenshot
+  (function () {
+    const lb = document.getElementById('lightbox');
+    const lbimg = document.getElementById('lbimg');
+    const lbcap = document.getElementById('lbcap');
+    const lbstage = document.getElementById('lbstage');
+    if (!lb) return;
+    function open(s, cap) {
+      lbimg.src = s;
+      lbcap.innerHTML = cap || '';
+      lbcap.style.display = cap ? 'block' : 'none';
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      lbstage.scrollTop = 0;
+    }
+    function close() {
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    function capOf(el) {
+      const f = el.closest('figure');
+      if (f) { const c = f.querySelector('.cap'); if (c) return c.innerHTML; }
+      return '';
+    }
+    document.querySelectorAll('.frame').forEach((f) => {
+      f.addEventListener('click', () => { const im = f.querySelector('img'); if (im && im.src) open(im.src, capOf(f)); });
+    });
+    document.querySelectorAll('.screen').forEach((s) => {
+      s.addEventListener('click', () => {
+        const im = s.querySelector('img');
+        const l = s.querySelector('.screenlab');
+        const name = l ? l.childNodes[0].textContent.trim() : '';
+        if (im && im.src) open(im.src, '<b>' + name + '</b> — final high-fidelity page');
+      });
+    });
+    document.querySelectorAll('.persona-wrap img').forEach((im) => {
+      im.addEventListener('click', () => open(im.src, '<b>Primary persona</b> — the research artifact anchoring every design decision.'));
+    });
+    document.getElementById('lbclose').addEventListener('click', close);
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lb.classList.contains('open')) close(); });
+  })();
+</script>

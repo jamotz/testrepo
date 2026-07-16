@@ -1,19 +1,19 @@
 ---
 const projects = [
   {
-    n: '01', mono: 'Ox', accent: 'var(--ac-oxfam)',
+    n: '01', mono: 'Ox', accent: 'var(--ac-oxfam)', href: '/work/oxfam',
     title: 'Oxfam Support Redesign',
     role: 'UX Research & Design', client: 'Oxfam Australia', location: 'Melbourne, AU',
     desc: 'Restructured Oxfam Australia’s support pages and the MyOxfam portal — new information architecture, wireframes, usability testing, and a final design presented to stakeholders.',
   },
   {
-    n: '02', mono: 'Or', accent: 'var(--ac-origins)',
+    n: '02', mono: 'Or', accent: 'var(--ac-origins)', href: null,
     title: 'Origins App Redesign',
     role: 'UX Researcher & Designer', client: 'Origins Cannabis', location: 'Redmond, WA',
     desc: 'Interviewed real dispensary customers in person to learn why the app failed them, then rebuilt the product display and information architecture — validated through hands-on usability testing.',
   },
   {
-    n: '03', mono: 'Pr', accent: 'var(--ac-premier)',
+    n: '03', mono: 'Pr', accent: 'var(--ac-premier)', href: null,
     title: 'Premier CX Analysis',
     role: 'CX Researcher', client: 'Premier Packout', location: 'Scottsdale, AZ',
     desc: 'Partnered with the CEO to map the customer journey of a fire & flood contents company — surfacing pain points across packing, storage, cleaning, and pack-back to shape a white-glove service.',
@@ -28,32 +28,39 @@ const projects = [
     </div>
 
     <div class="work-grid">
-      {projects.map((p) => (
-        <a class="pcard" href="#contact" style={`--ac:${p.accent}`} data-reveal data-tilt>
-          <div class="pcard-visual" aria-hidden="true">
-            <span class="pcard-mono">{p.mono}</span>
-            <span class="pcard-n mono-label">{p.n} / 03</span>
-          </div>
-          <div class="pcard-body">
-            <span class="pcard-role">{p.role}</span>
-            <h3 class="pcard-title">{p.title}</h3>
-            <p class="pcard-desc">{p.desc}</p>
-            <div class="pcard-meta">
-              <span><i class="k">Client</i>{p.client}</span>
-              <span><i class="k">Location</i>{p.location}</span>
+      {projects.map((p) => {
+        const Tag = p.href ? 'a' : 'div';
+        return (
+          <Tag class:list={['pcard', { 'is-soon': !p.href }]} href={p.href} style={`--ac:${p.accent}`} data-reveal data-tilt>
+            <div class="pcard-visual" aria-hidden="true">
+              <span class="pcard-mono">{p.mono}</span>
+              <span class="pcard-n mono-label">{p.n} / 03</span>
             </div>
-            <span class="pcard-go">
-              View study
-              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </div>
-        </a>
-      ))}
+            <div class="pcard-body">
+              <span class="pcard-role">{p.role}</span>
+              <h3 class="pcard-title">{p.title}</h3>
+              <p class="pcard-desc">{p.desc}</p>
+              <div class="pcard-meta">
+                <span><i class="k">Client</i>{p.client}</span>
+                <span><i class="k">Location</i>{p.location}</span>
+              </div>
+              {p.href ? (
+                <span class="pcard-go">
+                  View study
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              ) : (
+                <span class="pcard-go soon">Case study in progress</span>
+              )}
+            </div>
+          </Tag>
+        );
+      })}
     </div>
 
     <p class="work-note" data-reveal>
       <span class="mono-label">Note</span>
-      Full case studies — methods, artifacts, and outcomes — are coming to individual project pages.
+      The full Oxfam case study is live — Origins and Premier are being brought into the same format next.
     </p>
   </div>
 </section>
@@ -97,6 +104,8 @@ const projects = [
     font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--ac)}
   .pcard-go svg{transition:transform .3s var(--ease-out)}
   .pcard:hover .pcard-go svg{transform:translateX(5px)}
+  .pcard.is-soon{cursor:default}
+  .pcard-go.soon{color:var(--muted-fg)}
 
   .work-note{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:36px;
     color:var(--ink-soft);font-size:14px}
