@@ -61,7 +61,7 @@ def embed(relpath, maxw=340, q=80):
 
 M = {
  "flower":    "product assets/flower.png",
- "gdp":       "product assets/Unproccessed Flower.jpg",
+ "gdp":       "product assets/Unproccessed Flower.jpeg",
  "preroll":   "product assets/preroll.png",
  "liveresin": "product assets/Live Resin.jpeg",
  "rosin":     "product assets/Concentrate (Rosin).png",
@@ -84,10 +84,13 @@ for k, rel in M.items():
         print("WARN", k, rel, e)
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
-# ---- entity-encode outside script/style ----
+# ---- entity-encode outside script/style; \u-escape non-ASCII inside script ----
+def esc_script(block):
+    return ''.join(c if ord(c) < 128 else '\\u%04X' % ord(c) for c in block)
 segs = re.split(r'(<script[\s\S]*?</script>|<style[\s\S]*?</style>)', src)
-src = ''.join(x if (x[:7] == '<script' or x[:6] == '<style')
-              else x.encode('ascii', 'xmlcharrefreplace').decode() for x in segs)
+src = ''.join(esc_script(x) if x[:7] == '<script'
+              else (x if x[:6] == '<style'
+                    else x.encode('ascii', 'xmlcharrefreplace').decode()) for x in segs)
 
 out = out_dir / "origins-app.html"
 out.write_text(src)
