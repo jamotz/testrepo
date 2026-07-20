@@ -43,8 +43,11 @@ img{display:block;max-width:100%}
 .page{position:relative;z-index:1}
 
 .nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);
-  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);transition:transform .35s var(--ease)}
 .nav .row{display:flex;align-items:center;justify-content:space-between;height:64px;gap:20px}
+/* prototype focus: slide the nav away + grow the phone to fill the screen */
+.page.proto-focus .nav{transform:translateY(-100%)}
+@media(prefers-reduced-motion:reduce){.nav,.exp-frame{transition:none}}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.04em;color:var(--ink)}
 .brand .mark{width:26px;height:26px;color:var(--ink)}
 .nav-links{display:flex;gap:4px;align-items:center}
@@ -154,7 +157,8 @@ figure{margin:0}
 .exp-crumb{color:var(--ink)}
 .exp-back{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--line-2);background:transparent;border-radius:7px;padding:6px 11px;cursor:pointer}
 .exp-back:hover{border-color:var(--ac);color:var(--ac)}
-.exp-frame{width:100%;height:clamp(560px,86vh,940px);border:0;display:block;background:#17120D}
+.exp-frame{width:100%;height:clamp(560px,72vh,860px);border:0;display:block;background:#17120D;transition:height .35s var(--ease)}
+.page.proto-focus .exp-frame{height:calc(100vh - 46px)}
 .exp-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:12px}
 .exp-hint b{color:var(--ac)}
 
@@ -475,6 +479,13 @@ document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribu
     frame.src=uri;
     var home=document.getElementById("protohome");
     if(home) home.addEventListener("click",function(){frame.src=uri;});
+  }
+  /* auto-hide the nav + grow the phone to fill the screen while the prototype is in view */
+  var page=document.querySelector(".page"), sec=document.getElementById("explore");
+  if(page&&sec&&"IntersectionObserver" in window){
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){page.classList.toggle("proto-focus",e.isIntersecting);});
+    },{rootMargin:"-26% 0px -26% 0px",threshold:0}).observe(sec);
   }
 })();
 (function(){
