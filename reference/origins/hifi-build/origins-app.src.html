@@ -105,6 +105,12 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .continue{background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:15px;padding:12px 24px;display:inline-flex;align-items:center;gap:9px}
 .continue:disabled{opacity:.45}
 .continue:active{background:var(--or-d)}
+.wiz-prog{display:flex;gap:6px;padding:14px 18px 2px}
+.wiz-prog i{flex:1;height:4px;border-radius:2px;background:#DAD3C6}
+.wiz-prog i.on{background:var(--or)}
+/* feel = lifestyle overview: real brand logo bars */
+.oc.life{padding:9px 14px;gap:14px}
+.oc.life .lifelogo{height:34px;width:auto;display:block}
 
 .gf{padding:20px 18px 24px}
 .gf .intro{font-family:var(--head);font-weight:600;font-size:1.05rem;color:var(--ink);line-height:1.25;text-transform:none}
@@ -307,6 +313,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
       <section class="s" data-s="guide">
         <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+          <div class="wiz-prog"><i class="on"></i><i></i><i></i><i></i></div>
           <div class="gw"><div class="q">How are you trying to FEEL?</div><div class="pick">Pick One or More:</div>
           <div class="opt-list" id="feelopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="feelnext" disabled>Continue &rarr;</button></div></div>
@@ -314,6 +321,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
       <section class="s" data-s="method">
         <div class="sbar"><button class="bk" data-back="guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+          <div class="wiz-prog"><i class="on"></i><i class="on"></i><i></i><i></i></div>
           <div class="gw"><div class="q">What is your preferred method?</div><div class="pick">Pick One Method:</div>
           <div class="opt-list" id="methodopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="methodnext" disabled>Continue &rarr;</button></div></div>
@@ -321,6 +329,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
       <section class="s" data-s="subtype">
         <div class="sbar"><button class="bk" data-back="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+          <div class="wiz-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
           <div class="gw"><div class="q" id="subq">Pick a type</div><div class="pick">Pick One or More:</div>
           <div class="opt-list" id="subopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="subnext" disabled>Continue &rarr;</button></div></div>
@@ -328,6 +337,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
       <section class="s" data-s="taste">
         <div class="sbar"><button class="bk" data-back="subtype"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+          <div class="wiz-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
           <div class="gw"><div class="q">How do you like it to TASTE?</div><div class="pick">Pick One or More:</div>
           <div class="opt-list" id="tasteopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="tastenext">See recommendations &rarr;</button></div></div>
@@ -466,7 +476,8 @@ document.querySelectorAll("[data-nav]").forEach(function(b){b.addEventListener("
 document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener("click",function(){nav(b.dataset.back);});});
 
 function renderFeel(){
-  $("#feelopts").innerHTML=FEELOPTS.map(function(o){return '<button class="oc tap '+(G.feels.indexOf(o.k)>-1?'sel':'')+'" data-fk="'+o.k+'"><span class="box"></span>'+o.t+'</button>';}).join("");
+  /* feel = the Lifestyle Overview: real brand logos, per Jack's request */
+  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifelogo" src="'+(IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'"></button>';}).join("");
   $("#feelopts").querySelectorAll("[data-fk]").forEach(function(b){b.addEventListener("click",function(){
     var k=b.dataset.fk,i=G.feels.indexOf(k);i>-1?G.feels.splice(i,1):G.feels.push(k);
     b.classList.toggle("sel");$("#feelnext").disabled=!G.feels.length;
@@ -514,10 +525,7 @@ $("#subnext").addEventListener("click",function(){
 });
 $("#tastenext").addEventListener("click",function(){renderFinish();setBack("finish","taste");nav("finish");});
 
-function guideLifestyles(){
-  var set=[];G.feels.forEach(function(k){var o=null;FEELOPTS.forEach(function(x){if(x.k===k)o=x;});if(o&&FEEL[o.life]&&set.indexOf(o.life)<0)set.push(o.life);});
-  return set.length?set:["social"];
-}
+function guideLifestyles(){return G.feels.length?G.feels.slice():["social"];}
 function renderFinish(){
   var lifes=guideLifestyles();
   var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||"picks"];

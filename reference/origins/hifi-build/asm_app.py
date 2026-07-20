@@ -75,6 +75,16 @@ M = {
  "choc":      "product assets/Chocolate Edible.png",
  "vape":      "product assets/vape.png",
  "topical":   "product assets/topical.png",
+ "life_discovery":   "Lifestyle logos/Discovery Logo.png",
+ "life_adventurous": "Lifestyle logos/Adventurous Logo.png",
+ "life_social":      "Lifestyle logos/Social Logo.png",
+ "life_unwind":      "Lifestyle logos/Unwind Logo.png",
+ "life_nightlife":   "Lifestyle logos/Nightlife Logo.png",
+ "sm_discovery":   "Lifestyle logos/Discovery Small Logo.png",
+ "sm_adventurous": "Lifestyle logos/Adventurous Small Logo.png",
+ "sm_social":      "Lifestyle logos/Social Small Logo.png",
+ "sm_unwind":      "Lifestyle logos/Unwind Small Logo.png",
+ "sm_nightlife":   "Lifestyle logos/Nightlife Small Logo.png",
 }
 IMG = {}
 for k, rel in M.items():
