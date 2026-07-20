@@ -528,6 +528,7 @@ function renderFinish(){
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
     S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;
     S.mood=lifes[0]||null;S.strain=null;S.size=null;
+    if(!results().length)S.mood=null; /* keep the feeling pre-selected, but never hand off an empty shop */
     moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));nav("list");
   });});
   $("#tobackshop").addEventListener("click",function(){S.mood=lifes[0]||null;S.type=null;S.sub=null;moodChips($("#moodbar"));nav("shop");});
