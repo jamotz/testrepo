@@ -58,6 +58,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .tabs button svg{width:21px;height:21px}
 .tabs button.on{color:var(--olive)}
 .tabs button.on svg{color:var(--or)}
+.scr.immersive .locbar,.scr.immersive .tabs{display:none}
 
 .promo{margin:8px 14px 0;background:#C8B99A;border-top:4px solid var(--or);border-bottom:4px solid var(--or);padding:26px 18px 18px;text-align:center;color:var(--brown)}
 .promo .m{font-family:var(--head);font-weight:600;font-size:1.55rem;letter-spacing:.06em;line-height:1.15}
@@ -313,21 +314,21 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
       <section class="s" data-s="method">
         <div class="sbar"><button class="bk" data-back="guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
-          <div class="gw"><div class="q">What is your preferred method?</div><div class="pick">Pick one method</div>
+          <div class="gw"><div class="q">What is your preferred method?</div><div class="pick">Pick One Method:</div>
           <div class="opt-list" id="methodopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="methodnext" disabled>Continue &rarr;</button></div></div>
       </section>
 
       <section class="s" data-s="subtype">
         <div class="sbar"><button class="bk" data-back="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
-          <div class="gw"><div class="q" id="subq">Pick a type</div><div class="pick">Pick one or more</div>
+          <div class="gw"><div class="q" id="subq">Pick a type</div><div class="pick">Pick One or More:</div>
           <div class="opt-list" id="subopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="subnext" disabled>Continue &rarr;</button></div></div>
       </section>
 
       <section class="s" data-s="taste">
         <div class="sbar"><button class="bk" data-back="subtype"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
-          <div class="gw"><div class="q">How do you like it to taste?</div><div class="pick">Pick one or more</div>
+          <div class="gw"><div class="q">How do you like it to TASTE?</div><div class="pick">Pick One or More:</div>
           <div class="opt-list" id="tasteopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="tastenext">See recommendations &rarr;</button></div></div>
       </section>
@@ -447,9 +448,11 @@ function feelIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="current
 function dotIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/></svg>';}
 
 const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account"};
+var WIZ=["guide","method","subtype","taste","finish"];
 function nav(k){
   document.querySelectorAll(".s").forEach(function(x){x.classList.toggle("on",x.dataset.s===k);});
   document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b.dataset.tab===TABMAP[k]);});
+  document.getElementById("scr").classList.toggle("immersive",WIZ.indexOf(k)>-1); /* full-screen wizard, per the frames */
   S.screen=k;view.scrollTop=0;
   if(k==="list")renderList();
   if(k==="cart")renderCart();
@@ -471,7 +474,7 @@ function renderFeel(){
   $("#feelnext").disabled=!G.feels.length;
 }
 function renderMethod(){
-  var methods=[["flower","Flower"],["concentrate","Concentrate"],["edible","Edible"],["preroll","Pre-Roll"],["topical","Topical"],["vape","Vape"]];
+  var methods=[["flower","Flower"],["concentrate","Concentrate"],["edible","Edible"],["vape","Vape"],["preroll","Pre-Roll"],["topical","Topical"],["tincture","Tincture"]];
   $("#methodopts").innerHTML=methods.map(function(m){return '<button class="oc tap '+(G.method===m[0]?'sel':'')+'" data-mk="'+m[0]+'"><span class="box"></span>'+m[1]+'</button>';}).join("");
   $("#methodopts").querySelectorAll("[data-mk]").forEach(function(b){b.addEventListener("click",function(){
     G.method=b.dataset.mk;G.subs=[];
@@ -495,15 +498,21 @@ function renderTaste(){
     var t=b.dataset.tk,i=G.tastes.indexOf(t);i>-1?G.tastes.splice(i,1):G.tastes.push(t);b.classList.toggle("sel");
   });});
 }
+var SMOKEABLE=["flower","preroll","concentrate"];
+function setBack(screen,target){var e=document.querySelector('.s[data-s="'+screen+'"] [data-back]');if(e)e.dataset.back=target;}
 $("#feelnext").addEventListener("click",function(){renderMethod();nav("method");});
 $("#methodnext").addEventListener("click",function(){
-  if(G.method==="vape"){nav("vape");return;}
-  var subs=SUBS[G.method];
-  if(subs){$("#subq").textContent="What kind of "+(TYPES[G.method]||"product").replace(/s$/,'')+" do you like?";renderSub();nav("subtype");}
-  else{G.subs=[];renderTaste();nav("taste");}
+  if(G.method==="vape"){nav("vape");return;}                                  /* vape: web-only dead end */
+  if(G.method==="concentrate"){$("#subq").textContent="What kind of Concentrate do you like?";renderSub();nav("subtype");}
+  else if(G.method==="edible"){$("#subq").textContent="Chocolate, Gummy, Mint, or Drinks?";renderSub();nav("subtype");}
+  else if(SMOKEABLE.indexOf(G.method)>-1){G.subs=[];renderTaste();setBack("taste","method");nav("taste");} /* flower/pre-roll -> taste */
+  else{G.subs=[];renderFinish();setBack("finish","method");nav("finish");}     /* topical/tincture -> finish */
 });
-$("#subnext").addEventListener("click",function(){renderTaste();nav("taste");});
-$("#tastenext").addEventListener("click",function(){renderFinish();nav("finish");});
+$("#subnext").addEventListener("click",function(){
+  if(G.method==="concentrate"){renderTaste();setBack("taste","subtype");nav("taste");} /* smokeable -> taste */
+  else{renderFinish();setBack("finish","subtype");nav("finish");}                      /* edible -> finish (type IS the flavor) */
+});
+$("#tastenext").addEventListener("click",function(){renderFinish();setBack("finish","taste");nav("finish");});
 
 function guideLifestyles(){
   var set=[];G.feels.forEach(function(k){var o=null;FEELOPTS.forEach(function(x){if(x.k===k)o=x;});if(o&&FEEL[o.life]&&set.indexOf(o.life)<0)set.push(o.life);});
