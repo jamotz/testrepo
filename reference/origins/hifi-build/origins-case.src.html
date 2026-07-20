@@ -96,17 +96,10 @@ section{padding:clamp(48px,6.5vw,88px) 0;position:relative}
 figure{margin:0}
 .frame{position:relative;border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden;background:var(--panel);cursor:zoom-in;transition:border-color .25s var(--ease)}
 .frame:hover{border-color:var(--ac)}
-.frame img{width:100%;display:block}
-.frame.crop{height:clamp(240px,36vh,400px)}
-.frame.crop img{position:absolute;top:0;left:0}
-.frame.crop::after{content:"";position:absolute;left:0;right:0;bottom:0;height:64px;pointer-events:none;
-  background:linear-gradient(transparent,color-mix(in srgb,var(--panel) 92%,transparent))}
-.frame.tall{height:clamp(300px,48vh,520px)}
-.frame.tall img{position:absolute;top:0;left:0}
-.frame.tall::after{content:"";position:absolute;left:0;right:0;bottom:0;height:64px;pointer-events:none;
-  background:linear-gradient(transparent,color-mix(in srgb,var(--panel) 92%,transparent))}
-.frame.fit{padding:10px;background:#fff}
-.frame.fit img{position:static}
+.frame img{width:100%;height:auto;display:block}
+/* .crop/.tall intentionally hug the image now — every frame shows the full
+   asset at its natural aspect: no cropping, no letterboxing */
+.frame.fit{padding:12px;background:#fff}
 .frame::before{content:"";position:absolute;top:10px;right:10px;z-index:3;width:32px;height:32px;border-radius:9px;
   border:1px solid var(--line-2);backdrop-filter:blur(6px);opacity:0;transition:opacity .2s var(--ease);
   background:color-mix(in srgb,var(--bg) 68%,transparent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/17px no-repeat}
@@ -217,8 +210,8 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 
 <div class="wrap">
   <div class="snapshot">
-    <div class="snap-row"><span class="mono">About</span><p>Origins is a local cannabis shop I started working at in July of 2022. They specialize in helping those who are new to cannabis &mdash; or want to explore it &mdash; at every age.</p></div>
-    <div class="snap-row"><span class="mono">Brief</span><p>I worked with shareholders and the COO in person to research why customers were having issues using the app. I conducted in-person interviews with real customers, redesigned the product display and information architecture to fit users&rsquo; needs, and validated the design through in-person usability testing. <a class="jump" href="#results">See results &darr;</a></p></div>
+    <div class="snap-row"><span class="mono">My role</span><p>Led UX research and design end-to-end from inside the store &mdash; competitive SWOT, in-person surveys and interviews, personas, user-flow and IA analysis, lo-fi through hi-fi design, and usability testing at the counter.</p></div>
+    <div class="snap-row"><span class="mono">Outcome</span><p>A leveled filter system that can&rsquo;t return wrong results, a reorganized shop and home, and 20+ hi-fi frames &mdash; presented in person to the shareholders and the COO. <a class="jump" href="#results">See results &darr;</a></p></div>
   </div>
   <dl class="meta">
     <div><dt>Role</dt><dd>UX Researcher &amp; Designer</dd></div>
@@ -231,6 +224,7 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 <main class="wrap">
   <section id="problem">
     <div class="shead"><span class="n">02</span><h2>Problem overview</h2></div>
+    <p class="lead" style="margin-bottom:26px">Origins is a local cannabis shop I started working at in July of 2022 &mdash; they specialize in helping people who are new to cannabis, at every age. The shareholders and COO asked for help understanding why customers struggled with their app.</p>
     <div class="two">
       <div>
         <p class="subh">Client briefing</p>
@@ -247,8 +241,8 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
       </div>
       <div>
         <div class="compare">
-          <figure><div class="frame tall"><img data-img="cluttered" alt="Cluttered home screen"></div><figcaption class="cap"><b>&ldquo;Cluttered home&rdquo;</b> &mdash; the original home page</figcaption></figure>
-          <figure><div class="frame tall"><img data-img="pricing" alt="Contradictory pricing deal"></div><figcaption class="cap"><b>&ldquo;Incorrect price&rdquo;</b> &mdash; deals that contradict themselves</figcaption></figure>
+          <figure><div class="frame"><img data-img="cluttered" alt="Cluttered home screen"></div><figcaption class="cap"><b>&ldquo;Cluttered home&rdquo;</b> &mdash; the original home page</figcaption></figure>
+          <figure><div class="frame"><img data-img="pricing" alt="Contradictory pricing deal"></div><figcaption class="cap"><b>&ldquo;Incorrect price&rdquo;</b> &mdash; deals that contradict themselves</figcaption></figure>
         </div>
         <div class="callout" style="margin-top:26px">I wasn&rsquo;t guessing at the pain points &mdash; I rang them up at the register every day.</div>
       </div>
@@ -271,16 +265,16 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
         <p class="subh">User interviews &mdash; in person</p>
         <p class="body-p">I conducted individual interviews with a variety of customers, gathering quantitative data through user surveys and distinguishing between active users and non-users of the app.</p>
         <div class="compare">
-          <figure><div class="frame crop"><img data-img="survey_u" alt="User survey heatmap"></div><figcaption class="cap"><b>User survey</b> &mdash; 12 app users, in person</figcaption></figure>
-          <figure><div class="frame crop"><img data-img="survey_n" alt="Non-user survey heatmap"></div><figcaption class="cap"><b>Non-user survey</b> &mdash; shoppers who skip the app</figcaption></figure>
+          <figure><div class="frame fit"><img data-img="survey_u" alt="User survey heatmap"></div><figcaption class="cap"><b>User survey</b> &mdash; 12 app users, in person</figcaption></figure>
+          <figure><div class="frame fit"><img data-img="survey_n" alt="Non-user survey heatmap"></div><figcaption class="cap"><b>Non-user survey</b> &mdash; shoppers who skip the app</figcaption></figure>
         </div>
       </div>
       <div>
         <p class="subh">User personas</p>
         <p class="body-p">I developed personas representing each key age group, which helped communicate to the shareholders the unique needs and preferences of each demographic.</p>
         <div class="compare">
-          <figure><div class="frame crop"><img data-img="persona1" alt="Persona one — Noelle"></div><figcaption class="cap"><b>Noelle</b> &mdash; 21&ndash;26 &middot; bartender &middot; regular who checks out fast</figcaption></figure>
-          <figure><div class="frame crop"><img data-img="persona2" alt="Persona two — Jared"></div><figcaption class="cap"><b>Jared</b> &mdash; 34&ndash;45 &middot; architect &middot; hunts top terpenes &amp; deals</figcaption></figure>
+          <figure><div class="frame fit"><img data-img="persona1" alt="Persona one — Noelle"></div><figcaption class="cap"><b>Noelle</b> &mdash; 21&ndash;26 &middot; bartender &middot; regular who checks out fast</figcaption></figure>
+          <figure><div class="frame fit"><img data-img="persona2" alt="Persona two — Jared"></div><figcaption class="cap"><b>Jared</b> &mdash; 34&ndash;45 &middot; architect &middot; hunts top terpenes &amp; deals</figcaption></figure>
         </div>
       </div>
     </div>
@@ -297,13 +291,13 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
       <div>
         <p class="subh">User flow analysis</p>
         <p class="body-p">Mapping the first-time user flow let me identify key pain points and present potential solutions to the shareholders &mdash; and illustrate how each issue could derail a user&rsquo;s experience, making its significance easier to convey.</p>
-        <figure style="margin-top:14px"><div class="frame crop"><img data-img="flow_pain" alt="User flow analysis — pain points"></div><figcaption class="cap"><b>User flow analysis</b> &mdash; pain points marked across the first-time flow</figcaption></figure>
+        <figure style="margin-top:14px"><div class="frame fit"><img data-img="flow_pain" alt="User flow analysis — pain points"></div><figcaption class="cap"><b>User flow analysis</b> &mdash; pain points marked across the first-time flow</figcaption></figure>
       </div>
     </div>
     <p class="subh">Information architecture</p>
     <p class="body-p" style="max-width:66ch">The information architecture had several issues &mdash; the major concern being that <strong style="color:var(--ink)">many filters either led to no products or returned incorrect products.</strong> Filters pointed at things the system couldn&rsquo;t serve: categories with no inventory behind them, ratios no one could explain, and a &ldquo;gear&rdquo; bucket full of unlabeled product.</p>
     <figure style="margin-top:18px">
-      <div class="frame crop"><img data-img="filt_pain" alt="Filter structure — pain points"></div>
+      <div class="frame fit"><img data-img="filt_pain" alt="Filter structure — pain points"></div>
       <figcaption class="cap"><b>Filter analysis</b> &mdash; the existing filter tree, mapped against what the system could actually serve</figcaption>
     </figure>
   </section>
@@ -313,14 +307,14 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
     <p class="lead">My lo-fi iterations helped me design the base of the final product. I crafted the main product screens and gathered feedback from customers and shareholders before committing to visuals.</p>
     <p class="subh">Low-fidelity &mdash; the Guide page, three ways</p>
     <div class="trio">
-      <figure><div class="frame tall"><img data-img="lofi_g1a" alt="Lo-fi guide V1a"></div><figcaption class="cap"><b>V1a</b> &mdash; recommendations under the feeling picker</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="lofi_g1b" alt="Lo-fi guide V1b"></div><figcaption class="cap"><b>V1b</b> &mdash; reframed as a &ldquo;Virtual Guide&rdquo;</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="lofi_g2" alt="Lo-fi guide V2"></div><figcaption class="cap"><b>V2</b> &mdash; results first, picker below</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="lofi_g1a" alt="Lo-fi guide V1a"></div><figcaption class="cap"><b>V1a</b> &mdash; recommendations under the feeling picker</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="lofi_g1b" alt="Lo-fi guide V1b"></div><figcaption class="cap"><b>V1b</b> &mdash; reframed as a &ldquo;Virtual Guide&rdquo;</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="lofi_g2" alt="Lo-fi guide V2"></div><figcaption class="cap"><b>V2</b> &mdash; results first, picker below</figcaption></figure>
     </div>
     <p class="subh">Low-fidelity &mdash; the main shop</p>
     <div class="compare">
-      <figure><div class="frame tall"><img data-img="lofi_shop" alt="Lo-fi main shop"></div><figcaption class="cap"><b>Main shop</b> &mdash; feelings chips, clean category circles, aligned sale rows</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="lofi_scroll" alt="Lo-fi main shop scrolled"></div><figcaption class="cap"><b>Scrolled</b> &mdash; Sales &rarr; Flower &rarr; Concentrate, in tidy tiles</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="lofi_shop" alt="Lo-fi main shop"></div><figcaption class="cap"><b>Main shop</b> &mdash; feelings chips, clean category circles, aligned sale rows</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="lofi_scroll" alt="Lo-fi main shop scrolled"></div><figcaption class="cap"><b>Scrolled</b> &mdash; Sales &rarr; Flower &rarr; Concentrate, in tidy tiles</figcaption></figure>
     </div>
     <div class="two" style="margin-top:30px">
       <div>
@@ -363,17 +357,17 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
     </div>
     <p class="subh">The home page, three candidates</p>
     <div class="trio">
-      <figure><div class="frame tall"><img data-img="home_v1" alt="Hi-fi home V1"></div><figcaption class="cap"><b>Home V1</b> &mdash; snowfield hero, deals calendar up top</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="home_v1b" alt="Hi-fi home V1b"></div><figcaption class="cap"><b>Home V1b</b> &mdash; bigger hero image</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="home_v2" alt="Hi-fi home V2"></div><figcaption class="cap"><b>Home V2</b> &mdash; forest hero, tested variant</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="home_v1" alt="Hi-fi home V1"></div><figcaption class="cap"><b>Home V1</b> &mdash; snowfield hero, deals calendar up top</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="home_v1b" alt="Hi-fi home V1b"></div><figcaption class="cap"><b>Home V1b</b> &mdash; bigger hero image</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="home_v2" alt="Hi-fi home V2"></div><figcaption class="cap"><b>Home V2</b> &mdash; forest hero, tested variant</figcaption></figure>
     </div>
     <div class="two" style="margin-top:26px">
-      <figure><div class="frame tall"><img data-img="abtest" alt="User testing hi-fi shop variation"></div><figcaption class="cap"><b>User testing</b> &mdash; hi-fi shop variation (flower), tested at the counter</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="abtest" alt="User testing hi-fi shop variation"></div><figcaption class="cap"><b>User testing</b> &mdash; hi-fi shop variation (flower), tested at the counter</figcaption></figure>
       <div>
         <p class="subh">Settings, refined</p>
         <div class="compare">
-          <figure><div class="frame tall"><img data-img="acct_v1" alt="Account settings V1"></div><figcaption class="cap"><b>Settings V1</b></figcaption></figure>
-          <figure><div class="frame tall"><img data-img="acct_v2" alt="Account settings V2"></div><figcaption class="cap"><b>Settings V2</b> &mdash; after feedback</figcaption></figure>
+          <figure><div class="frame fit"><img data-img="acct_v1" alt="Account settings V1"></div><figcaption class="cap"><b>Settings V1</b></figcaption></figure>
+          <figure><div class="frame fit"><img data-img="acct_v2" alt="Account settings V2"></div><figcaption class="cap"><b>Settings V2</b> &mdash; after feedback</figcaption></figure>
         </div>
         <div class="callout" style="margin-top:22px">Tested at the counter, with the people who&rsquo;d actually use it.</div>
       </div>
@@ -390,11 +384,11 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
       <div class="lv"><b>Holistic &amp; CBD</b><p>A dedicated CBD path with real ratios (20:1 &rarr; 1:1), topicals by use (cooling, warming, soothing) &mdash; and vape clearly flagged as web-only instead of silently missing.</p></div>
     </div>
     <figure style="margin-top:20px">
-      <div class="frame crop"><img data-img="flow_rec" alt="Recommended user flow"></div>
+      <div class="frame fit"><img data-img="flow_rec" alt="Recommended user flow"></div>
       <figcaption class="cap"><b>Redesigned user flow</b> &mdash; recommended changes across the first-time journey</figcaption>
     </figure>
     <figure style="margin-top:20px">
-      <div class="frame crop"><img data-img="filt_rec" alt="Refined filter structures"></div>
+      <div class="frame fit"><img data-img="filt_rec" alt="Refined filter structures"></div>
       <figcaption class="cap"><b>Refined filter structures</b> &mdash; sizes become contextual to product type, so a filter can never return an impossible result</figcaption>
     </figure>
   </section>
@@ -408,20 +402,31 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
       <div class="stat"><div class="big">20+</div><div class="lab">Hi-fi frames delivered across the full app flow</div></div>
     </div>
     <figure style="margin-top:20px">
-      <div class="frame crop"><img data-img="hifi_over" alt="Hi-fi frame overview map"></div>
+      <div class="frame fit"><img data-img="hifi_over" alt="Hi-fi frame overview map"></div>
       <figcaption class="cap"><b>Hi-fi overview</b> &mdash; the full frame map: landing &rarr; home &rarr; guide/shop &rarr; product &rarr; education &rarr; account &rarr; cart</figcaption>
     </figure>
     <div class="quad">
-      <figure><div class="frame tall"><img data-img="hifi_land" alt="Hi-fi landing — store picker"></div><figcaption class="cap"><b>Landing</b> &mdash; pick a store, no location grab</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="home_v2b" alt="Hi-fi home final"></div><figcaption class="cap"><b>Home</b> &mdash; deals front and center</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="hifi_prod" alt="Hi-fi product page — concentrate"></div><figcaption class="cap"><b>Product</b> &mdash; reviews, feelings &amp; taste chips</figcaption></figure>
-      <figure><div class="frame tall"><img data-img="hifi_acct" alt="Hi-fi account page"></div><figcaption class="cap"><b>Account</b> &mdash; points, orders, reviews in reach</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="hifi_land" alt="Hi-fi landing — store picker"></div><figcaption class="cap"><b>Landing</b> &mdash; pick a store, no location grab</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="home_v2b" alt="Hi-fi home final"></div><figcaption class="cap"><b>Home</b> &mdash; deals front and center</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="hifi_prod" alt="Hi-fi product page — concentrate"></div><figcaption class="cap"><b>Product</b> &mdash; reviews, feelings &amp; taste chips</figcaption></figure>
+      <figure><div class="frame fit"><img data-img="hifi_acct" alt="Hi-fi account page"></div><figcaption class="cap"><b>Account</b> &mdash; points, orders, reviews in reach</figcaption></figure>
     </div>
     <p class="viewhint"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Click any frame to view it full size</p>
   </section>
 
+  <section id="reflection">
+    <div class="shead"><span class="n">09</span><h2>Reflection</h2></div>
+    <div class="two">
+      <div class="callout">Working the counter while redesigning the app was the unfair advantage.</div>
+      <div>
+        <p class="body-p">Every assumption got tested within hours, not weeks &mdash; the people I designed for were standing in front of me. The biggest lesson: fix the fundamentals before the fancy stuff. Filters that return the right products beat any new feature.</p>
+        <p class="body-p">Next time I&rsquo;d push to instrument the app so improvements show up as numbers &mdash; search success, filter dead-ends, checkout completion &mdash; and I&rsquo;d pilot the terpene education system I proposed once the basics landed. <span style="color:var(--ac)">[Make it yours.]</span></p>
+      </div>
+    </div>
+  </section>
+
   <section id="explore">
-    <div class="shead"><span class="n">09</span><h2>Explore the prototype</h2></div>
+    <div class="shead"><span class="n">10</span><h2>Explore the prototype</h2></div>
     <p class="lead">A working rebuild of the redesigned app &mdash; tap through it like a customer. Guide Me routes by feeling, and the filters run live against a real catalog: pick a product type and watch the size options adapt.</p>
     <div class="explorer">
       <div class="exp">
