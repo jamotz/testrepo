@@ -108,17 +108,16 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .wiz-prog{display:flex;gap:6px;padding:14px 18px 2px}
 .wiz-prog i{flex:1;height:4px;border-radius:2px;background:#DAD3C6}
 .wiz-prog i.on{background:var(--or)}
-/* feel = lifestyle overview: full-color buttons with the enlarged, centered brand logo */
-.oc.life{justify-content:center;padding:20px 16px;border:2px solid transparent;border-radius:14px;
-  box-shadow:0 3px 8px rgba(30,22,12,.2);transition:box-shadow .18s,transform .12s}
-.oc.life .lifelogo{height:46px;width:auto;max-width:82%;object-fit:contain;display:block;margin:0 auto}
+/* feel = lifestyle overview: same toggle size/format as the rest of the wizard,
+   just the lifestyle color as the button + a slightly bigger, centered logo, checkbox kept */
+.oc.life{position:relative;justify-content:center;padding:12px 16px}
+.oc.life .box{display:block;position:absolute;left:16px;top:50%;transform:translateY(-50%)}
+.oc.life .lifelogo{height:28px;width:auto;max-width:66%;object-fit:contain;display:block;margin:0 auto}
 .oc.life.discovery{background:var(--disc)}
 .oc.life.adventurous{background:var(--adv)}
 .oc.life.social{background:var(--soc)}
 .oc.life.unwind{background:var(--unw)}
 .oc.life.nightlife{background:var(--night)}
-.oc.life.sel{border-color:var(--or);box-shadow:0 0 0 3px var(--or),0 6px 16px rgba(241,96,28,.32)}
-.oc.life .box{display:none}
 
 .gf{padding:20px 18px 24px}
 .gf .intro{font-family:var(--head);font-weight:600;font-size:1.05rem;color:var(--ink);line-height:1.25;text-transform:none}
@@ -485,7 +484,7 @@ document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener(
 
 function renderFeel(){
   /* feel = the Lifestyle Overview: real brand logos, per Jack's request */
-  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><img class="lifelogo" src="'+(IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'"></button>';}).join("");
+  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifelogo" src="'+(IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'"></button>';}).join("");
   $("#feelopts").querySelectorAll("[data-fk]").forEach(function(b){b.addEventListener("click",function(){
     var k=b.dataset.fk,i=G.feels.indexOf(k);i>-1?G.feels.splice(i,1):G.feels.push(k);
     b.classList.toggle("sel");$("#feelnext").disabled=!G.feels.length;
