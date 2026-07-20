@@ -3,7 +3,7 @@
 Run: python3 reference/origins/hifi-build/asm_app.py
 Fonts: reuses Oswald from reference/oxfam/hifi-build/fontcache (fetches if missing).
 Output: <scratchpad>/origins-app.html (or ./origins-app.html)."""
-from PIL import Image
+from PIL import Image, ImageChops
 import base64, io, json, pathlib, re, urllib.request
 
 REPO = pathlib.Path(__file__).resolve().parents[3]
@@ -86,10 +86,28 @@ M = {
  "sm_unwind":      "Lifestyle logos/Unwind Small Logo.png",
  "sm_nightlife":   "Lifestyle logos/Nightlife Small Logo.png",
 }
+def embed_glyph(relpath, maxw=560):
+    """Extract just the black icon+wordmark on a transparent background (so it can
+    sit directly on a lifestyle-colored button), trimmed to its bounding box."""
+    im = Image.open(assets / relpath).convert("RGBA")
+    gray = im.convert("L")
+    dark = gray.point(lambda v: 255 if v < 80 else 0)
+    alpha = im.getchannel("A").point(lambda v: 255 if v > 40 else 0)
+    mask = ImageChops.multiply(dark, alpha)
+    out = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    out.paste(Image.new("RGBA", im.size, (0, 0, 0, 255)), (0, 0), mask)
+    bbox = out.getbbox()
+    if bbox:
+        out = out.crop(bbox)
+    if out.width > maxw:
+        out = out.resize((maxw, round(out.height * maxw / out.width)), Image.LANCZOS)
+    buf = io.BytesIO(); out.save(buf, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
 IMG = {}
 for k, rel in M.items():
     try:
-        IMG[k] = embed(rel)
+        IMG[k] = embed_glyph(rel) if (k.startswith("life_") or k.startswith("sm_")) else embed(rel)
     except Exception as e:
         print("WARN", k, rel, e)
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
