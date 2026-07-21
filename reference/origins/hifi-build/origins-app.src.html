@@ -265,36 +265,42 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .vape .web{background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:13px;padding:12px 24px;display:inline-flex;align-items:center;gap:8px}
 
 .pwrap{padding:6px 16px 20px}
-.pimg{position:relative;background:#fff;border:1px solid #BFD0DE;border-radius:12px;display:flex;align-items:center;justify-content:center;height:210px;margin-bottom:12px}
+.pimg{position:relative;background:#fff;border:1.5px solid #E1DBCD;border-radius:12px;display:flex;align-items:center;justify-content:center;height:210px;margin-bottom:12px}
+.pimg.disc{border-color:var(--disc)}.pimg.adv{border-color:var(--adv)}.pimg.soc{border-color:var(--soc)}.pimg.unw{border-color:var(--unw)}.pimg.night{border-color:var(--night)}
 .pimg img{max-height:190px;object-fit:contain}
-.pimg .life{position:absolute;right:12px;bottom:12px;border-radius:100px;padding:6px 13px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.04em;display:inline-flex;align-items:center;gap:6px}
+.pimg .life{position:absolute;right:12px;bottom:12px;border-radius:100px;padding:6px 14px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.04em;display:inline-flex;align-items:center;gap:7px}
 .pimg .life svg{width:14px;height:14px}
+.pimg .life img{width:16px;height:16px;object-fit:contain}
 .pimg .life.disc{background:var(--disc);color:#F6E9E2}.pimg .life.adv{background:var(--adv);color:var(--brown)}.pimg .life.soc{background:var(--soc);color:var(--brown)}
 .pimg .life.unw{background:var(--unw);color:#122B3C}.pimg .life.night{background:var(--night);color:#EAF4F0}
-.pcat{font-family:var(--head);font-size:10.5px;letter-spacing:.1em;color:#8C8478;text-transform:uppercase}
-.pname{font-size:1.7rem;margin:3px 0 1px;color:var(--ink)}
+.pcat{font-family:var(--head);font-size:12px;letter-spacing:.01em;color:#9A9284;text-transform:none}
+.pname{font-size:1.7rem;margin:3px 0 1px;color:var(--ink);text-transform:none}
 .pbrand{display:flex;justify-content:space-between;align-items:baseline}
-.pbrand .b{font-family:var(--head);font-size:14px;color:var(--olive);text-transform:uppercase;letter-spacing:.03em}
+.pbrand .b{font-family:var(--head);font-weight:600;font-size:15px;color:var(--olive);text-transform:none;letter-spacing:.01em}
 .pbrand .t{font-family:var(--head);font-weight:600;font-size:15px;color:var(--or)}
 .prating{color:#D8A013;font-family:var(--head);font-size:13px;margin-top:4px}
 .prating i{font-style:normal;color:#8C8478;margin-left:5px}
 .pprice{font-family:var(--head);font-weight:700;font-size:1.5rem;color:var(--ink);margin-top:6px}
 .pprice .was{color:#A19A8D;text-decoration:line-through;font-weight:400;font-size:1rem;margin-left:7px}
 .szpick{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.szo{border:1px solid #C9C2B4;background:#fff;border-radius:100px;padding:9px 15px;font-family:var(--head);font-weight:600;font-size:12px;letter-spacing:.05em;color:var(--ink)}
-.szo.sel{background:var(--olive);border-color:var(--olive);color:#fff}
-.addbig{width:100%;margin-top:12px;background:var(--or);color:#fff;border:0;border-radius:6px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:14px;padding:14px}
+.szo{border:0;background:var(--brown);color:var(--cream);border-radius:100px;padding:10px 17px;font-family:var(--head);font-weight:600;font-size:12.5px;letter-spacing:.04em}
+.szo.sel{background:var(--olive);color:#fff}
+.addbig{width:100%;margin-top:13px;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:15px;padding:13px}
 .addbig:active{background:var(--or-d)}
-.pdesc-h{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1.1rem;color:var(--ink);margin-top:16px}
+.pihead{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
+.pihead .pihback{background:none;border:0;color:var(--ink);width:26px;height:26px;padding:0;display:flex;align-items:center;justify-content:center}
+.pihead .pihback svg{width:24px;height:24px}
+.pihead h2{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.5rem;color:var(--ink);letter-spacing:.03em}
+.pdesc-h{font-family:var(--head);font-weight:700;text-transform:none;font-size:1.2rem;color:var(--ink);margin-top:16px}
 .pdesc{font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-top:4px;text-indent:20px}
 .chipset{margin-top:16px}
-.chipset .csh{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1.05rem;letter-spacing:.03em;margin-bottom:8px}
+.chipset .csh{font-family:var(--head);font-weight:700;text-transform:none;font-size:1.15rem;letter-spacing:.01em;margin-bottom:8px}
 .chipset.feel .csh{color:var(--or)}.chipset.taste .csh{color:var(--olive)}
 .iconrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .icard{border:1px solid #DDD6C8;border-radius:8px;padding:12px 6px;text-align:center;background:#fff}
 .chipset.feel .icard{border-color:#F0C4AC}.chipset.taste .icard{border-color:#CFCDA0}
-.icard svg{width:30px;height:30px;color:var(--ink);margin:0 auto 6px}
-.icard b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;color:var(--ink)}
+.icard svg{display:block;width:34px;height:34px;color:var(--ink);margin:0 auto 8px}
+.icard b{display:block;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;color:var(--ink)}
 
 .cwrap{padding:6px 16px 20px}
 .cwrap h2{font-size:1.5rem;margin-bottom:10px;color:var(--ink)}
@@ -558,10 +564,31 @@ const S={type:null,strain:null,sub:null,mood:null,brands:[],size:null,thc:null,t
 const G={feels:[],method:null,subs:[],tastes:[]};
 const $=function(q){return document.querySelector(q);};
 const view=$("#view");
-function money(v){return "$"+v.toFixed(2).replace(/\.00$/,"");}
+function money(v){return "$"+v.toFixed(2);}
 function stars(r){var s="";for(var i=1;i<=5;i++)s+=i<=Math.round(r)?"★":"☆";return s;}
 function feelIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7.5" r="3.2"/><path d="M6 21c0-3.6 2.7-6.4 6-6.4s6 2.8 6 6.4"/></svg>';}
 function dotIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/></svg>';}
+var ICONS={
+ happy:'<circle cx="12" cy="12" r="9"/><path d="M8 14.5s1.6 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r=".7" fill="currentColor"/><circle cx="15" cy="10" r=".7" fill="currentColor"/>',
+ calm:'<path d="M21 13.5A8.5 8.5 0 1 1 10.5 3a6.6 6.6 0 0 0 10.5 10.5z"/>',
+ energy:'<path d="M13 2 5 13.5h6L10 22l9-12h-6z"/>',
+ hungry:'<path d="M4 10.5h16a8 8 0 0 1-16 0z"/><path d="M12 3v3.5M9 3.5v3M15 3.5v3"/>',
+ relief:'<path d="M12 4v16M4 12h16"/>',
+ citrus:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/>',
+ leaf:'<path d="M4 20C3 12 9 5 20 4c1 11-6 16-14 15z"/><path d="M4 20C8 16 12 12 17 9"/>',
+ flame:'<path d="M12 3c3.2 3.8 5 6.2 5 9a5 5 0 0 1-10 0c0-1.7.8-3 2-4.2.2 1.8 1.2 2.7 2.8 2.7.3-2.8-1.8-4.2 .2-7.5z"/>',
+ drop:'<path d="M12 3.5c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/>',
+ spice:'<circle cx="8" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="14.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/>',
+ spark:'<path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/>'};
+function pIcon(name){var n=(name||"").toLowerCase(),k="spark";
+ if(/giddy|uplift|social|euphor|happy|creativ|giggl|energ|focus|clear|alert/.test(n))k=/energ|focus|clear|alert/.test(n)?"energy":"happy";
+ else if(/relax|calm|mellow|balanc|heavy|sleep|sedat|relief/.test(n))k=/relief|relief/.test(n)?"relief":"calm";
+ else if(/hung/.test(n))k="hungry";
+ else if(/citrus|lemon|orange/.test(n))k="citrus";
+ else if(/pine|herbal|flower|earth|woody/.test(n))k="leaf";
+ else if(/diesel|skunk|pepper|gas/.test(n))k="flame";
+ else if(/cream|nutty|fruit|aromatic|sweet/.test(n))k="drop";
+ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[k]||ICONS.spark)+'</svg>';}
 
 const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account"};
 var WIZ=["guide","method","subtype","taste","finish"];
@@ -750,20 +777,21 @@ function sizeMult(p,s){var arr=SIZES[p.t]||[],i=arr.indexOf(s);
   return (mult[p.t]||[1])[i]||1;}
 function drawProduct(){
   var p=curP,price=p.pr*sizeMult(p,curSize);
-  var life=p.f[0]?'<span class="life '+LIFECLASS[p.f[0]]+'">'+feelIcon()+FEEL[p.f[0]]+'</span>':'';
+  var lc=LIFECLASS[p.f[0]]||"soc";
+  var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
+  var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+FEEL[p.f[0]]+'</span>':'';
   var hasSizes=(SIZES[p.t]||[]).length>1;
-  var szpick=hasSizes?'<div class="szpick">'+(SIZES[p.t]||[]).map(function(s){return '<button class="szo tap '+(s===curSize?'sel':'')+'" data-sz="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>':'';
-  var feels='<div class="chipset feel"><div class="csh">Feelings</div><div class="iconrow">'+p.fe.map(function(f){return '<div class="icard">'+dotIcon()+'<b>'+f+'</b></div>';}).join("")+'</div></div>';
-  var taste='<div class="chipset taste"><div class="csh">Taste</div><div class="iconrow">'+p.ta.map(function(t){return '<div class="icard">'+dotIcon()+'<b>'+t+'</b></div>';}).join("")+'</div></div>';
-  $("#pwrap").innerHTML='<button class="bk tap" data-b="1" style="color:var(--or);background:none;border:0;font-family:var(--head);text-transform:uppercase;font-size:.9rem;letter-spacing:.06em;padding:6px 0">‹ Product Info</button>'+
-    '<div class="pimg"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+life+'</div>'+
-    '<div class="pcat">'+TYPES[p.t]+(p.sub?(" / "+p.sub):"")+'</div>'+
+  var szpick=hasSizes?'<div class="szpick">'+(SIZES[p.t]||[]).map(function(s){return '<button class="szo tap '+(s===curSize?'sel':'')+'" data-sz="'+s+'">'+feedPill(s)+'</button>';}).join("")+'</div>':'';
+  var feels='<div class="chipset feel"><div class="csh">Feelings</div><div class="iconrow">'+p.fe.map(function(f){return '<div class="icard">'+pIcon(f)+'<b>'+f+'</b></div>';}).join("")+'</div></div>';
+  var taste='<div class="chipset taste"><div class="csh">Taste</div><div class="iconrow">'+p.ta.map(function(t){return '<div class="icard">'+pIcon(t)+'<b>'+t+'</b></div>';}).join("")+'</div></div>';
+  $("#pwrap").innerHTML='<div class="pihead"><button class="pihback tap" data-b="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Product Info</h2></div>'+
+    '<div class="pimg '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+life+'</div>'+
+    '<div class="pcat">'+TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""))+'</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="t">'+(p.thc!=null?("THC "+p.thc+"%"):(p.mg?p.mg+" mg":""))+'</span></div>'+
-    '<div class="prating">'+stars(p.r)+'<i>'+p.r+' ('+p.rv+' reviews)</i></div>'+
     '<div class="pprice">'+money(price)+(p.was?'<span class="was">'+money(p.was*sizeMult(p,curSize))+'</span>':'')+'</div>'+
     szpick+
-    '<button class="addbig tap" id="addbig">Add to Cart</button>'+
+    '<button class="addbig tap" id="addbig">Add</button>'+
     '<div class="pdesc-h">Details</div><p class="pdesc">'+p.d+'</p>'+feels+taste;
   $("#pwrap [data-b]").addEventListener("click",function(){nav(S.type?"list":"shop");});
   $("#pwrap").querySelectorAll("[data-sz]").forEach(function(b){b.addEventListener("click",function(){curSize=b.dataset.sz;drawProduct();});});
