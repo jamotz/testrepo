@@ -798,7 +798,7 @@ function drawProduct(){
   var lc=LIFECLASS[p.f[0]]||"soc";
   var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
   var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+FEEL[p.f[0]]+'</span>':'';
-  var hasSizes=(SIZES[p.t]||[]).length>1;
+  var hasSizes=(SIZES[p.t]||[]).length>=1;
   var szpick=hasSizes?'<div class="szpick">'+(SIZES[p.t]||[]).map(function(s){return '<button class="szo tap '+(s===curSize?'sel':'')+'" data-sz="'+s+'">'+feedPill(s)+'</button>';}).join("")+'</div>':'';
   var feels='<div class="chipset feel"><div class="csh">Feelings</div><div class="iconrow">'+p.fe.map(function(f){return '<div class="icard">'+pIcon(f)+'<b>'+f+'</b></div>';}).join("")+'</div></div>';
   var taste='<div class="chipset taste"><div class="csh">Taste</div><div class="iconrow">'+p.ta.map(function(t){return '<div class="icard">'+pIcon(t)+'<b>'+t+'</b></div>';}).join("")+'</div></div>';
