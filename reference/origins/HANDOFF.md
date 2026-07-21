@@ -41,11 +41,20 @@ Skills refine **execution** — they never override Jack's frames, which stay th
 - **Case study prototype section**: nav **auto-hides** + phone **grows to fill screen** on scroll
   (IntersectionObserver in `origins-case.src.html`).
 
+### Recently done (this session)
+- **GM sub-type / Taste** rebuilt 1:1: option checkboxes filled **cream** (`.oc:not(.life) .box`,
+  FEEL left untouched); **Concentrate** gained a "Learn the differences" link (concentrate-only).
+- **GM Finish** chips now carry the **small monogram logos** (`IMG["sm_*"]`) instead of the person icon.
+- **Landing** store-picker built as the app **entry point** (immersive, tabs/locbar hidden):
+  Origins "Explore Confidently" badge, Redmond map, Redmond (selected) + Seattle cards.
+  "Shop our Redmond store" → Home; Seattle = coming-soon toast.
+- `asm_app.py`: output dir now found by **glob** (no stale session id); embeds the Redmond map +
+  inlines `logo_header_origins.svg` as a data URI. `embed_svg` helper added.
+- **Open question for Jack (defaulted, not blocking):** frames spell CTA "COUNTINUE" / "Chocalates" /
+  "diffrences" — built with **corrected spelling**. Frames use a **white** page bg; app kept on **cream**.
+
 ## What's NEXT (agreed order)
-1. Finish walking Guide Me; then rebuild **sub-type screens** (`GM - CONCENTRATES`,
-   `GM - EDIBLES`), **Taste**, and **Finish** 1:1 against the frames in
-   `reference/origins/hifi-final/` (bring the **small monogram logos** into the finish chips).
-2. Then, one at a time, faithful to `hifi-final/`: **Landing** (store picker, Redmond),
+1. One at a time, faithful to `hifi-final/`:
    **Shop** + `SHOP-CONCENTRATE` + `PI 1`(concentrate) / `PI 2`(flower) + Vape,
    **Cart** (`SC-CHECKOUT` / `SC-OVERVIEW`), **Deals**, **Account** (+ settings, loyalty),
    **Origins U** (+ `ED-FLOWER`).
