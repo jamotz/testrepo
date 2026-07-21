@@ -79,6 +79,7 @@ M = {
  "vape":      "product assets/vape.png",
  "topical":   "product assets/topical.png",
  "map_redmond": "Various other assets/Redmond Map.png",
+ "scent_skunky": "scents assets/Scent (Skunky).png",
  "logo_origins": "origins logos/logo_header_origins.svg",
  "life_discovery":   "Lifestyle logos/Discovery Logo.png",
  "life_adventurous": "Lifestyle logos/Adventurous Logo.png",
@@ -119,7 +120,7 @@ for k, rel in M.items():
     try:
         if rel.endswith(".svg"):
             IMG[k] = embed_svg(rel)
-        elif k.startswith("life_") or k.startswith("sm_"):
+        elif k.startswith("life_") or k.startswith("sm_") or k.startswith("scent_"):
             IMG[k] = embed_glyph(rel)
         else:
             IMG[k] = embed(rel)
