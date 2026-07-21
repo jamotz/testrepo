@@ -201,7 +201,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .fcard .fbadge{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .fcard .fbadge.disc{background:var(--disc)}.fcard .fbadge.adv{background:var(--adv)}.fcard .fbadge.soc{background:var(--soc)}.fcard .fbadge.unw{background:var(--unw)}.fcard .fbadge.night{background:var(--night)}
 .fcard .fbadge img{width:19px;height:19px;object-fit:contain}
-.fcard .fbc{font-family:var(--head);font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#9A9284}
+.fcard .fbc{font-family:var(--head);font-size:11.5px;letter-spacing:.01em;color:#9A9284}
 .fcard .fnm{font-family:var(--head);font-weight:700;font-size:18px;color:var(--ink);margin:2px 0 4px;line-height:1.12}
 .fcard .fmeta{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .fcard .fbr{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.03em;color:var(--olive)}
@@ -211,6 +211,15 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .fcard .fsz{background:var(--olive);color:#F0EAD8;border-radius:100px;font-family:var(--head);font-weight:600;font-size:11px;padding:5px 12px;letter-spacing:.03em}
 .fcard .fadd{margin-top:auto;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:13px;padding:11px 0;width:100%}
 
+.lhead2{padding:14px 16px 2px;background:#fff}
+.lhead2 h2{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.6rem;color:var(--ink);letter-spacing:.02em}
+.lhead2 .llearn{display:block;background:none;border:0;color:var(--or);font-family:var(--head);font-weight:600;font-size:14px;padding:3px 0 0;letter-spacing:.01em}
+.subcircles{padding-top:12px}
+.cc.sel .ring{border-width:3px;box-shadow:0 0 0 2px rgba(241,96,28,.22)}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:10px 16px 16px}
+.pgrid .fcard{width:auto}
+.pgrid .fcard .fnm{font-size:16px}
+.pgrid .fcard .fim{height:82px}.pgrid .fcard .fim img{max-height:82px}
 .lhead{padding:14px 16px 0}
 .lhead h2{font-size:1.9rem;color:var(--ink)}
 .lhead .learn{display:inline-flex;align-items:center;gap:6px;font-family:var(--head);text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--or);padding:6px 0;background:none;border:0}
@@ -452,13 +461,13 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
       </section>
 
       <section class="s" data-s="list">
-        <div class="chipbar" id="moodbar2"></div>
-        <div class="lhead"><button class="bk" data-nav="shop" style="color:var(--or);background:none;border:0;font-family:var(--head);text-transform:uppercase;font-size:.9rem;letter-spacing:.06em;padding:8px 0">&#8249; Back</button><h2 id="ltitle">All products</h2><button class="learn" id="learnbtn" type="button" style="display:none">Learn about the differences &rsaquo;</button></div>
-        <div class="subcats" id="subcats"></div>
-        <div class="frow"><button class="fbtn" id="openfilter">Filter <span class="n" id="fcount">0</span></button>
+        <div class="shophead"><button class="shopback tap" data-nav="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="chipbar shopchips" id="moodbar2"></div>
+        <div class="lhead2"><h2 id="ltitle">All Products</h2><button class="llearn" id="learnbtn" type="button" style="display:none">Learn about the Differences &rsaquo;</button></div>
+        <div class="catcircles subcircles" id="subcats"></div>
+        <div class="frow shopfrow"><button class="fbtn" id="openfilter">Filter <span class="n" id="fcount">0</span></button>
           <label class="sort"><span class="lab">Sort by</span><select id="sortsel"><option value="best">Best Match</option><option value="plow">Price &#8595;</option><option value="phigh">Price &#8593;</option><option value="thc">THC %</option></select></label></div>
-        <div class="count" id="count"></div>
-        <div class="grid" id="grid"></div>
+        <div class="pgrid" id="grid"></div>
       </section>
 
       <section class="s" data-s="vape">
@@ -710,26 +719,20 @@ function renderShop(){
   $("#feed").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
 }
 function renderList(){
-  $("#ltitle").textContent=S.type?TYPES[S.type]:"All products";
+  $("#ltitle").textContent=S.type?TYPES[S.type]:"All Products";
   var learn=$("#learnbtn"),subs=SUBS[S.type],sc=$("#subcats");
   if(S.type&&subs){
-    learn.style.display="inline-flex";sc.style.display="flex";
-    sc.innerHTML=subs.map(function(x){return '<button class="subc tap '+(S.sub===x?'sel':'')+'" data-sub="'+x+'">'+x+'</button>';}).join("");
+    learn.style.display="block";sc.style.display="flex";
+    sc.innerHTML=subs.map(function(x){
+      var rep=P.filter(function(p){return p.t===S.type&&p.sub===x;})[0]||P.filter(function(p){return p.t===S.type;})[0];
+      var img=rep?IMG[rep.img]:"";
+      return '<button class="cc tap '+(S.sub===x?'sel':'')+'" data-sub="'+x+'"><span class="ring"><img src="'+(img||'')+'" alt=""></span><b>'+x+'</b></button>';
+    }).join("");
     sc.querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){S.sub=S.sub===b.dataset.sub?null:b.dataset.sub;renderList();});});
   }else{learn.style.display="none";sc.style.display="none";sc.innerHTML="";}
   var r=results();
-  $("#count").textContent=r.length+" products";$("#fcount").textContent=activeCount();
-  $("#grid").innerHTML=r.length?r.map(function(p){
-    var sz=(SIZES[p.t]||[]).slice(0,3).map(function(s){return '<span class="sz">'+s.replace(" each","")+'</span>';}).join("");
-    return '<div class="pc tap" data-p="'+p.id+'">'+(p.sale?'<span class="sale">Sale</span>':'')+
-      '<div class="im"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
-      '<span class="cat">'+TYPES[p.t]+' / '+(p.sub||p.st)+'</span>'+
-      '<div class="nm">'+p.n+'</div><div class="br">'+p.b+'</div>'+
-      '<div class="stars">'+stars(p.r)+'<i>('+p.rv+')</i></div>'+
-      '<div class="thc">'+(p.thc!=null?("THC "+p.thc+"%"):(p.mg?p.mg+" mg / piece":""))+(p.cbd?" · CBD":"")+'</div>'+
-      '<div class="pr">'+money(p.pr)+(p.was?'<span class="was">'+money(p.was)+'</span>':'')+'</div>'+
-      '<div class="szrow">'+sz+'</div>'+
-      '<button class="add tap" data-add="'+p.id+'">Add</button></div>';}).join("")
+  $("#fcount").textContent=activeCount();
+  $("#grid").innerHTML=r.length?r.map(feedCard).join("")
    :'<div class="noresults"><b>0 products</b><p>No matches for this combo — but notice you could never pick a size that doesn’t exist for the product type. That’s the point.</p></div>';
   $("#grid").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
   $("#grid").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});

@@ -70,6 +70,7 @@ M = {
  "sugar":     "product assets/Sugar.webp",
  "thca":      "product assets/THC-A Crystals.png",
  "badder":    "product assets/Butter Concentrate.png",
+ "distillate": "product assets/Butter Concentrate.png",
  "hash":      "product assets/hash.jpeg",
  "keif":      "product assets/keif.jpeg",
  "gummy":     "product assets/Gummy Edibles.png",
