@@ -50,14 +50,26 @@ Skills refine **execution** — they never override Jack's frames, which stay th
   "Shop our Redmond store" → Home; Seattle = coming-soon toast.
 - `asm_app.py`: output dir now found by **glob** (no stale session id); embeds the Redmond map +
   inlines `logo_header_origins.svg` as a data URI. `embed_svg` helper added.
-- **Open question for Jack (defaulted, not blocking):** frames spell CTA "COUNTINUE" / "Chocalates" /
-  "diffrences" — built with **corrected spelling**. Frames use a **white** page bg; app kept on **cream**.
+- **Decisions locked by Jack:** typos corrected everywhere (Continue/Chocolates/Differences);
+  page background switched **cream → white** (`--bg:#FFFFFF`) — brand moved off cream.
+- **Shop cluster (one screen at a time, 1:1, exact scale — Jack's rule):**
+  - `#1 Shop feed` DONE — browse feed: white header, monogram chips, category circles,
+    Filter/Sort, per-category horizontal product-card rows (`feedCard`).
+  - `#2 Shop – Concentrate/list view` DONE — `renderList` rebuilt: title + "Learn about the
+    Differences", sub-type circles, 2-col grid of `feedCard`. Generic for any category.
+  - `#3 PI 2 (flower detail)` DONE — big "PRODUCT INFO" header, lifestyle-bordered image +
+    monogram chip, title-case text, brown/olive size pills, "ADD" pill, Feelings/Taste cards.
+  - **Scent/flavor icon set** DONE — `FLAVORS` map (13, brand line-art). Skunky uses the real
+    `scent_skunky` asset (embed_glyph). Citrus = simple half-slice. `pIcon()` resolves flavors
+    first, feelings by keyword. Prices now 2-decimal everywhere (`money()`).
+- **Pre-existing fix:** `distillate` image key was undefined (broke ATF Distillate) — mapped in `asm_app.py`.
 
 ## What's NEXT (agreed order)
-1. One at a time, faithful to `hifi-final/`:
-   **Shop** + `SHOP-CONCENTRATE` + `PI 1`(concentrate) / `PI 2`(flower) + Vape,
-   **Cart** (`SC-CHECKOUT` / `SC-OVERVIEW`), **Deals**, **Account** (+ settings, loyalty),
+1. **`#4 PI 1` (concentrate detail)** vs `SHOP - PI 1.png` — PI layout is shared; mostly verify/adjust.
+2. **`#5 Vape` page** vs `SHOP - VAPE.png` (web-only dead-end).
+3. Then: **Cart** (`SC-CHECKOUT` / `SC-OVERVIEW`), **Deals**, **Account** (+ settings, loyalty),
    **Origins U** (+ `ED-FLOWER`).
+   *(Jack paused #4/#5 for credits — resume there.)*
 
 ## Frame naming (Jack's convention)
 Full name on hub, abbreviated on subpages: `GM-`=Guide Me, `SC-`=Shopping Cart, `AC-`=Account,
