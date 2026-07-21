@@ -580,15 +580,31 @@ var ICONS={
  drop:'<path d="M12 3.5c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/>',
  spice:'<circle cx="8" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="14.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="9.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/>',
  spark:'<path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/>'};
-function pIcon(name){var n=(name||"").toLowerCase(),k="spark";
- if(/giddy|uplift|social|euphor|happy|creativ|giggl|energ|focus|clear|alert/.test(n))k=/energ|focus|clear|alert/.test(n)?"energy":"happy";
- else if(/relax|calm|mellow|balanc|heavy|sleep|sedat|relief/.test(n))k=/relief|relief/.test(n)?"relief":"calm";
+var FLAVORS={
+ Citrus:'<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6 6 18"/>',
+ Fruity:'<path d="M12 8c-1.4-2.4-4.6-3-6.4-1S4.4 13 7 16.5c1.6 2.2 3.2 2.7 5 2.7s3.4-.5 5-2.7c2.6-3.5 3.2-6.5 1.4-9.5S13.4 5.6 12 8z"/><path d="M12 8c.3-2.2 1.6-3.4 3.8-4"/>',
+ Flowery:'<circle cx="12" cy="6.6" r="2.7"/><circle cx="12" cy="17.4" r="2.7"/><circle cx="6.6" cy="12" r="2.7"/><circle cx="17.4" cy="12" r="2.7"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/>',
+ Creamy:'<path d="M6.5 13a5.5 5.5 0 0 1 11 0z"/><path d="M9 9.5c0-1.6 1.3-3 3-3s3 1.4 3 3M12 6.5v-2"/>',
+ Nutty:'<path d="M6 10a6 6 0 0 1 12 0c0 5.5-4 10-6 10S6 15.5 6 10z"/><path d="M6 10.5h12"/><path d="M12 4.2V2.5"/>',
+ Herbal:'<path d="M12 21V6"/><path d="M12 13c-3.2 0-5.4-2.2-5.4-5.4 3.2 0 5.4 2.2 5.4 5.4zM12 11c3.2 0 5.4-2.2 5.4-5.4-3.2 0-5.4 2.2-5.4 5.4z"/>',
+ Pine:'<path d="M12 3 7 10.5h3l-3.2 5H11v4h2v-4h4.2L14 10.5h3z"/>',
+ Earthy:'<path d="M3 20h18"/><path d="M3.5 20c3-4.5 6-4.5 9 0 3-4.5 6-4.5 8.5 0"/><path d="M6.5 14.5c1.6-2 3.2-2 4.8 0M13 14.5c1.6-2 3.2-2 4.8 0"/>',
+ Peppery:'<path d="M9 21h6"/><path d="M8.2 21c.2-3.6 1-5.6 1-8.8h5.6c0 3.2.8 5.2 1 8.8"/><path d="M9.2 12.2h5.6"/><path d="M10 12.2c0-2 .4-4 2-4s2 2 2 4"/>',
+ Cheese:'<path d="M4 16.5 17.4 8.4a1.6 1.6 0 0 1 2.6 1.3v6.8H4z"/><circle cx="9" cy="14.2" r="1.05" fill="currentColor" stroke="none"/><circle cx="14" cy="13.4" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="15.4" r=".9" fill="currentColor" stroke="none"/>',
+ Aromatic:'<path d="M12 21c-4 0-7-3-7-7 0-4.2 3.2-7.6 7-7.6s7 3.4 7 7.6c0 4-3 7-7 7z"/><path d="M9.6 9c-1.1 1.9-1.1 5 0 6.9M14.4 9c1.1 1.9 1.1 5 0 6.9M12 7v4.2"/><path d="M10.4 5.4 12 3.4l1.6 2"/>',
+ Diesel:'<path d="M6 8.5h8.5l3 3v8.2a1.3 1.3 0 0 1-1.3 1.3H6a1.3 1.3 0 0 1-1.3-1.3V9.8A1.3 1.3 0 0 1 6 8.5z"/><path d="M8.2 5.5h3.6v3H8.2z"/><path d="M9 13.4l5 5M14 13.4l-5 5"/>',
+ Skunky:'<path d="M6.5 19c-1-3.4.3-6.4 2.6-7.4 1.2-.5 2.2-.6 2.2-2 0-1-.9-1.5-.9-2.7C10.4 3.3 12.6 3.4 12.6 5.4c0 1.6 1.1 2.2 2.4 2.2 3 0 5 2.4 3.6 5.6"/><path d="M6.5 19a2.6 2.6 0 0 0 5.2 0"/><circle cx="14.6" cy="9.6" r=".7" fill="currentColor" stroke="none"/>'};
+function svgIco(inner){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>';}
+function pIcon(name){var n=(name||"").toLowerCase();
+ var fk=FLAVORS[name]||FLAVORS[n.charAt(0).toUpperCase()+n.slice(1)];
+ if(fk)return svgIco(fk);
+ var k="spark";
+ if(/giddy|uplift|social|euphor|happy|creativ|giggl|chatty/.test(n))k="happy";
+ else if(/energ|focus|clear|alert/.test(n))k="energy";
+ else if(/relief/.test(n))k="relief";
+ else if(/relax|calm|mellow|balanc|heavy|sleep|sedat/.test(n))k="calm";
  else if(/hung/.test(n))k="hungry";
- else if(/citrus|lemon|orange/.test(n))k="citrus";
- else if(/pine|herbal|flower|earth|woody/.test(n))k="leaf";
- else if(/diesel|skunk|pepper|gas/.test(n))k="flame";
- else if(/cream|nutty|fruit|aromatic|sweet/.test(n))k="drop";
- return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[k]||ICONS.spark)+'</svg>';}
+ return svgIco(ICONS[k]||ICONS.spark);}
 
 const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account"};
 var WIZ=["guide","method","subtype","taste","finish"];
