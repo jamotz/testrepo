@@ -172,6 +172,44 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .cat img{height:74px;object-fit:contain;margin:0 auto 8px}
 .cat b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12.5px;letter-spacing:.08em;color:var(--ink)}
 .cat span{display:block;font-family:var(--head);font-size:10px;color:var(--ink-2);margin-top:2px}
+/* --- Shop feed (SHOP.png) --- */
+.shophead{display:flex;align-items:center;gap:12px;background:#fff;color:var(--ink);padding:16px 16px 8px}
+.shophead .shopback{background:none;border:0;color:var(--ink);width:26px;height:26px;padding:0;display:flex;align-items:center;justify-content:center}
+.shophead .shopback svg{width:24px;height:24px}
+.shophead h2{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.55rem;letter-spacing:.03em}
+.chipbar.shopchips{background:#fff;padding:6px 14px 10px}
+.chip .chiplg{width:16px;height:16px;object-fit:contain;flex:none}
+.catcircles{display:flex;gap:15px;overflow-x:auto;padding:6px 16px 14px;background:#fff}
+.cc{flex:none;width:82px;text-align:center;background:none;border:0;padding:0}
+.cc .ring{width:78px;height:78px;border-radius:50%;border:2px solid var(--or);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 8px;background:#fff}
+.cc .ring img{width:62px;height:62px;object-fit:contain}
+.cc b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.03em;color:var(--ink);display:block;line-height:1.1}
+.shopfrow{margin:0 0 2px}
+.shopfrow .fbtn{background:#fff;border:2px solid var(--or);color:var(--or)}
+.shopfrow .fbtn .n{background:#fff;color:var(--or);border:1.5px solid var(--or);width:24px;height:24px}
+.feed{padding:8px 0 12px}
+.feed-sec{margin-bottom:18px}
+.feed-h{display:flex;flex-direction:column;padding:0 16px;margin-bottom:10px}
+.feed-h .ft{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.4rem;color:var(--ink);letter-spacing:.02em}
+.feed-h .fsee{align-self:flex-start;background:none;border:0;color:var(--or);font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.04em;padding:1px 0}
+.feedrow{display:flex;gap:14px;overflow-x:auto;padding:4px 16px 10px}
+.fcard{flex:none;width:230px;background:#fff;border:1.5px solid #E1DBCD;border-radius:12px;padding:14px 14px 15px;box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column}
+.fcard.disc{border-color:var(--disc)}.fcard.adv{border-color:var(--adv)}.fcard.soc{border-color:var(--soc)}.fcard.unw{border-color:var(--unw)}.fcard.night{border-color:var(--night)}
+.fcard .fim{height:92px;display:flex;align-items:center;justify-content:center}
+.fcard .fim img{max-height:92px;max-width:80%;object-fit:contain}
+.fcard .fdiv{position:relative;height:1.5px;background:#DAD3C5;margin:8px 0 11px}
+.fcard .fbadge{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.fcard .fbadge.disc{background:var(--disc)}.fcard .fbadge.adv{background:var(--adv)}.fcard .fbadge.soc{background:var(--soc)}.fcard .fbadge.unw{background:var(--unw)}.fcard .fbadge.night{background:var(--night)}
+.fcard .fbadge img{width:19px;height:19px;object-fit:contain}
+.fcard .fbc{font-family:var(--head);font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#9A9284}
+.fcard .fnm{font-family:var(--head);font-weight:700;font-size:18px;color:var(--ink);margin:2px 0 4px;line-height:1.12}
+.fcard .fmeta{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.fcard .fbr{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.03em;color:var(--olive)}
+.fcard .fthc{font-family:var(--head);font-weight:600;font-size:12px;color:#C0392B;white-space:nowrap}
+.fcard .fpr{font-family:var(--head);font-weight:700;font-size:19px;color:var(--ink);margin:5px 0 9px}
+.fcard .fszs{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}
+.fcard .fsz{background:var(--olive);color:#F0EAD8;border-radius:100px;font-family:var(--head);font-weight:600;font-size:11px;padding:5px 12px;letter-spacing:.03em}
+.fcard .fadd{margin-top:auto;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:13px;padding:11px 0;width:100%}
 
 .lhead{padding:14px 16px 0}
 .lhead h2{font-size:1.9rem;color:var(--ink)}
@@ -405,9 +443,12 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
       </section>
 
       <section class="s" data-s="shop">
-        <div class="sbar"><h2>Shop</h2><svg class="sic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
-        <div class="chipbar" id="moodbar"></div>
-        <div class="cats" id="cats"></div>
+        <div class="shophead"><button class="shopback tap" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="chipbar shopchips" id="moodbar"></div>
+        <div class="catcircles" id="catcircles"></div>
+        <div class="frow shopfrow"><button class="fbtn" id="shopfilter">Filter <span class="n">0</span></button>
+          <label class="sort"><span class="lab">Sort by</span><select id="shopsort"><option>Best Match</option><option>Price &#8595;</option><option>Price &#8593;</option><option>THC %</option></select></label></div>
+        <div class="feed" id="feed"></div>
       </section>
 
       <section class="s" data-s="list">
@@ -632,20 +673,41 @@ function results(){var r=P.filter(match);
 
 function moodChips(el){
   if(!el)return;
-  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'">'+feelIcon()+FEEL[k]+'</button>';}).join("");
+  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'">'+(IMG["sm_"+k]?'<img class="chiplg" src="'+IMG["sm_"+k]+'" alt="">':feelIcon())+FEEL[k]+'</button>';}).join("");
   el.querySelectorAll("[data-mood]").forEach(function(b){b.addEventListener("click",function(){
     S.mood=S.mood===b.dataset.mood?null:b.dataset.mood;moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
     if(S.screen!=="list")nav("list");else renderList();
   });});
 }
+function feedPill(s){s=s.replace(" each","").trim();return /mg/i.test(s)?s.replace(/\s+/g,""):s.replace(/\s+/g,"").toUpperCase();}
+function feedCard(p){
+  var lc=LIFECLASS[p.f[0]]||"soc";
+  var sizes=(SIZES[p.t]||[]).slice(0,3).map(function(s){return '<span class="fsz">'+feedPill(s)+'</span>';}).join("");
+  var bc=TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
+  var thc=p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):"");
+  var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
+  return '<div class="fcard '+lc+' tap" data-p="'+p.id+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
+    '<div class="fdiv">'+badge+'</div><div class="fbc">'+bc+'</div><div class="fnm">'+p.n+'</div>'+
+    '<div class="fmeta"><span class="fbr">'+p.b+'</span><span class="fthc">'+thc+'</span></div>'+
+    '<div class="fpr">'+money(p.pr)+'</div><div class="fszs">'+sizes+'</div>'+
+    '<button class="fadd tap" data-add="'+p.id+'">Add to Cart</button></div>';
+}
 function renderShop(){
-  var icons={flower:"flower",preroll:"preroll",concentrate:"liveresin",edible:"gummy",drink:"gummy2",topical:"topical"};
-  var html=Object.keys(TYPES).map(function(k){var n=P.filter(function(p){return p.t===k;}).length;
-    return '<div class="cat tap" data-cat="'+k+'"><img src="'+(IMG[icons[k]]||'')+'" alt=""><b>'+TYPES[k]+'</b><span>'+n+' products</span></div>';}).join("")
-    +'<div class="cat tap" data-vape="1"><img src="'+(IMG.vape||'')+'" alt=""><b>Vape</b><span>Web only ›</span></div>';
-  $("#cats").innerHTML=html;
-  $("#cats").querySelectorAll("[data-cat]").forEach(function(c){c.addEventListener("click",function(){S.type=c.dataset.cat;S.strain=null;S.sub=null;S.size=null;nav("list");});});
-  $("#cats").querySelectorAll("[data-vape]").forEach(function(c){c.addEventListener("click",function(){nav("vape");});});
+  moodChips($("#moodbar"));
+  var icons={flower:"flower",concentrate:"liveresin",edible:"gummy",preroll:"preroll",vape:"vape",drink:"gummy2",topical:"topical"};
+  var labels={flower:"Flower",concentrate:"Concentrate",edible:"Edibles",preroll:"Pre-Rolls",vape:"Vapes",drink:"Drinks",topical:"Topicals"};
+  var circles=["flower","concentrate","edible","preroll","vape","drink","topical"];
+  $("#catcircles").innerHTML=circles.map(function(k){return '<button class="cc tap" data-cc="'+k+'"><span class="ring"><img src="'+(IMG[icons[k]]||'')+'" alt=""></span><b>'+labels[k]+'</b></button>';}).join("");
+  $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.size=null;nav("list");});});
+  var feedcats=["flower","concentrate","edible","preroll","drink","topical"];
+  $("#feed").innerHTML=feedcats.map(function(k){
+    var prods=P.filter(function(p){return p.t===k;});
+    if(!prods.length)return "";
+    return '<div class="feed-sec"><div class="feed-h"><div class="ft">'+labels[k]+'</div><button class="fsee tap" data-see="'+k+'">See All ›</button></div><div class="feedrow">'+prods.map(feedCard).join("")+'</div></div>';
+  }).join("");
+  $("#feed").querySelectorAll("[data-see]").forEach(function(b){b.addEventListener("click",function(){S.type=b.dataset.see;S.strain=null;S.sub=null;S.size=null;nav("list");});});
+  $("#feed").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
+  $("#feed").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
 }
 function renderList(){
   $("#ltitle").textContent=S.type?TYPES[S.type]:"All products";
@@ -754,6 +816,7 @@ function drawDrawer(){
   $("#applyf").textContent="Show "+results().length+" results";
 }
 $("#openfilter").addEventListener("click",function(){drawDrawer();$("#drawer").classList.add("on");});
+$("#shopfilter").addEventListener("click",function(){nav("list");drawDrawer();$("#drawer").classList.add("on");});
 $("#closefilter").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#dim").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#applyf").addEventListener("click",function(){$("#drawer").classList.remove("on");moodChips($("#moodbar2"));renderList();});
