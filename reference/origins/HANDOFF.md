@@ -11,6 +11,16 @@ Commit + push after every change. Branch: `claude/portfolio-redesign-81crin`.
 Work **one screen at a time**, show a screenshot, get sign-off, then next. Ask clarifying
 questions before building anything non-trivial.
 
+## Skills — USE THEM when designing the website + interactive elements
+When designing/building the actual website pages and any interactive elements
+(the app prototype, wizard, filters, hover/scroll behaviors, animations), **invoke the
+design skills** rather than hand-coding cold — call `Skill` first, then execute:
+- `ui-ux-pro-max` — UI/UX decisions: layout, palettes, font pairing, components, interaction patterns
+- `frontend-design` — distinctive visual direction for new UI
+- `ui-styling` — accessible, component-level styling
+- `artifact-design` — auto-loads when publishing; design fundamentals for artifacts
+Skills refine **execution** — they never override Jack's frames, which stay the source of truth.
+
 ## What's DONE
 - **Oxfam** case study (`site/src/pages/work/oxfam.astro` in the real Astro site + standalone
   artifacts). Landing card wired. Clickable "website within a website" prototype embedded.
