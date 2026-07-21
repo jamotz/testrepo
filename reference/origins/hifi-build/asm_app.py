@@ -77,6 +77,8 @@ M = {
  "choc":      "product assets/Chocolate Edible.png",
  "vape":      "product assets/vape.png",
  "topical":   "product assets/topical.png",
+ "map_redmond": "Various other assets/Redmond Map.png",
+ "logo_origins": "origins logos/logo_header_origins.svg",
  "life_discovery":   "Lifestyle logos/Discovery Logo.png",
  "life_adventurous": "Lifestyle logos/Adventurous Logo.png",
  "life_social":      "Lifestyle logos/Social Logo.png",
@@ -106,10 +108,20 @@ def embed_glyph(relpath, maxw=560):
     buf = io.BytesIO(); out.save(buf, "PNG", optimize=True)
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
+def embed_svg(relpath):
+    """Inline an SVG asset as a data URI (vector, no rasterization)."""
+    data = (assets / relpath).read_bytes()
+    return "data:image/svg+xml;base64," + base64.b64encode(data).decode()
+
 IMG = {}
 for k, rel in M.items():
     try:
-        IMG[k] = embed_glyph(rel) if (k.startswith("life_") or k.startswith("sm_")) else embed(rel)
+        if rel.endswith(".svg"):
+            IMG[k] = embed_svg(rel)
+        elif k.startswith("life_") or k.startswith("sm_"):
+            IMG[k] = embed_glyph(rel)
+        else:
+            IMG[k] = embed(rel)
     except Exception as e:
         print("WARN", k, rel, e)
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
