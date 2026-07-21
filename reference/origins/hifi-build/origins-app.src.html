@@ -56,9 +56,12 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .tabs{display:flex;background:#fff;border-top:1px solid #E5E0D6;padding:8px 2px 14px}
 .tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:9px;letter-spacing:.06em;color:#8C8478}
 .tabs button svg{width:21px;height:21px}
+.tabs button .tabic{position:relative;display:inline-flex}
+.tabs button .tabn{position:absolute;top:-5px;right:-9px;min-width:16px;height:16px;border-radius:100px;background:var(--or);color:#fff;font-family:var(--head);font-size:10px;font-weight:600;line-height:16px;text-align:center;padding:0 4px;display:none}
+.tabs button .tabn.show{display:block}
 .tabs button.on{color:var(--olive)}
 .tabs button.on svg{color:var(--or)}
-.scr.immersive .locbar,.scr.immersive .tabs{display:none}
+.scr.immersive .tabs{display:none}
 
 .promo{margin:8px 14px 0;background:#C8B99A;border-top:4px solid var(--or);border-bottom:4px solid var(--or);padding:26px 18px 18px;text-align:center;color:var(--brown)}
 .promo .m{font-family:var(--head);font-weight:600;font-size:1.55rem;letter-spacing:.06em;line-height:1.15}
@@ -505,15 +508,10 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
     <div class="toast" id="toast">Added to bag</div>
 
-    <div class="locbar">
-      <div class="l"><div class="cap">Currently shopping</div><div class="city">Redmond, WA</div><div class="open">OPEN TIL 11:30 PM</div></div>
-      <div class="rew"><svg class="gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="4"/><rect x="5" y="12" width="14" height="9"/><path d="M12 8v13M12 8s-4.5.2-4.5-2.5C7.5 3.6 10 3.4 11 5c.8 1.2 1 3 1 3s.2-1.8 1-3c1-1.6 3.5-1.4 3.5.5C16.5 8.2 12 8 12 8z"/></svg>12 Rewards</div>
-      <button class="bagbtn" data-nav="cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 13H6z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg><span class="n" id="bagn">0</span></button>
-    </div>
     <div class="tabs">
       <button data-nav="home" class="on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button>
       <button data-nav="shop" data-tab="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.5 12H19l2-8H6"/></svg>Shop</button>
-      <button data-nav="cart" data-tab="cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 13H6z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>Cart</button>
+      <button data-nav="cart" data-tab="cart"><span class="tabic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 13H6z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg><span class="tabn" id="bagn"></span></span>Cart</button>
       <button data-nav="edu" data-tab="edu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M7 9v5c0 1.5 5 3 5 3s5-1.5 5-3V9"/></svg>Origins U</button>
       <button data-nav="account" data-tab="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3-6.5 7-6.5s7 2.9 7 6.5"/></svg>Account</button>
     </div>
@@ -818,7 +816,8 @@ function drawProduct(){
 }
 
 function addToCart(id,size){var key=id+"|"+size,ex=null;S.cart.forEach(function(c){if(c.key===key)ex=c;});if(ex)ex.q++;else S.cart.push({key:key,id:id,size:size,q:1});
-  $("#bagn").textContent=S.cart.reduce(function(a,c){return a+c.q;},0);toast("Added to bag");}
+  setBag();toast("Added to bag");}
+function setBag(){var n=S.cart.reduce(function(a,c){return a+c.q;},0);var e=$("#bagn");e.textContent=n;e.classList.toggle("show",n>0);}
 function cartSub(){return S.cart.reduce(function(a,c){return a+P[c.id].pr*sizeMult(P[c.id],c.size)*c.q;},0);}
 function renderCart(){
   var w=$("#cwrap");
@@ -830,7 +829,7 @@ function renderCart(){
      '<div class="trow"><span>Excise + tax (37%)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
      '<div class="trow big"><span>Total</span><span>'+money(cartSub()*1.37)+'</span></div></div>'+
      '<button class="checkout tap" id="ck">Checkout — pickup</button>';
-  w.querySelectorAll("[data-d]").forEach(function(b){b.addEventListener("click",function(){var c=S.cart[+b.dataset.d];c.q--;if(c.q<1)S.cart.splice(+b.dataset.d,1);$("#bagn").textContent=S.cart.reduce(function(a,c){return a+c.q;},0);renderCart();});});
+  w.querySelectorAll("[data-d]").forEach(function(b){b.addEventListener("click",function(){var c=S.cart[+b.dataset.d];c.q--;if(c.q<1)S.cart.splice(+b.dataset.d,1);setBag();renderCart();});});
   w.querySelectorAll("[data-u]").forEach(function(b){b.addEventListener("click",function(){S.cart[+b.dataset.u].q++;$("#bagn").textContent=S.cart.reduce(function(a,c){return a+c.q;},0);renderCart();});});
   var ck=w.querySelector("#ck");if(ck)ck.addEventListener("click",function(){renderConfirm();nav("confirm");});
 }
@@ -879,5 +878,5 @@ $("#taptoggle").addEventListener("click",function(){this.classList.toggle("on");
 $("#landlogo").src=IMG["logo_origins"];$("#landmap").src=IMG["map_redmond"];
 $("#seattlebtn").addEventListener("click",function(){toast("Seattle store — coming soon");});
 renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderRec();
-nav("landing");
+setBag();nav("landing");
 </script>
