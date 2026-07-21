@@ -278,9 +278,10 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .pbrand{display:flex;justify-content:space-between;align-items:baseline}
 .pbrand .b{font-family:var(--head);font-weight:600;font-size:15px;color:var(--olive);text-transform:none;letter-spacing:.01em}
 .pbrand .t{font-family:var(--head);font-weight:600;font-size:15px;color:var(--or)}
-.prating{color:#D8A013;font-family:var(--head);font-size:13px;margin-top:4px}
-.prating i{font-style:normal;color:#8C8478;margin-left:5px}
-.pprice{font-family:var(--head);font-weight:700;font-size:1.5rem;color:var(--ink);margin-top:6px}
+.pricerow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.prating{color:var(--or);font-family:var(--head);font-size:17px;letter-spacing:1.5px;white-space:nowrap}
+.prating i{font-style:normal;color:var(--or);margin-left:6px;letter-spacing:0;font-size:14px;font-weight:600}
+.pprice{font-family:var(--head);font-weight:700;font-size:1.5rem;color:var(--ink)}
 .pprice .was{color:#A19A8D;text-decoration:line-through;font-weight:400;font-size:1rem;margin-left:7px}
 .szpick{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .szo{border:0;background:var(--brown);color:var(--cream);border-radius:100px;padding:10px 17px;font-family:var(--head);font-weight:600;font-size:12.5px;letter-spacing:.04em}
@@ -807,9 +808,9 @@ function drawProduct(){
     '<div class="pcat">'+TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""))+'</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="t">'+(p.thc!=null?("THC "+p.thc+"%"):(p.mg?p.mg+" mg":""))+'</span></div>'+
-    '<div class="pprice">'+money(price)+(p.was?'<span class="was">'+money(p.was*sizeMult(p,curSize))+'</span>':'')+'</div>'+
+    '<div class="pricerow"><div class="pprice">'+money(price)+(p.was?'<span class="was">'+money(p.was*sizeMult(p,curSize))+'</span>':'')+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
     szpick+
-    '<button class="addbig tap" id="addbig">Add</button>'+
+    '<button class="addbig tap" id="addbig">Add to Cart</button>'+
     '<div class="pdesc-h">Details</div><p class="pdesc">'+p.d+'</p>'+feels+taste;
   $("#pwrap [data-b]").addEventListener("click",function(){nav(S.type?"list":"shop");});
   $("#pwrap").querySelectorAll("[data-sz]").forEach(function(b){b.addEventListener("click",function(){curSize=b.dataset.sz;drawProduct();});});
