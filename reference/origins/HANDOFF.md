@@ -57,19 +57,20 @@ Skills refine **execution** — they never override Jack's frames, which stay th
     Filter/Sort, per-category horizontal product-card rows (`feedCard`).
   - `#2 Shop – Concentrate/list view` DONE — `renderList` rebuilt: title + "Learn about the
     Differences", sub-type circles, 2-col grid of `feedCard`. Generic for any category.
-  - `#3 PI 2 (flower detail)` DONE — big "PRODUCT INFO" header, lifestyle-bordered image +
-    monogram chip, title-case text, brown/olive size pills, "ADD" pill, Feelings/Taste cards.
+  - `#3 PI 2 (flower)` + `#4 PI 1 (concentrate)` DONE — shared PI template. Unified per Jack:
+    "PRODUCT INFO" text header, image w/ lifestyle border + monogram chip, title-case text,
+    THC on brand row, **orange star rating on the price row**, brown/olive size pills (shows
+    even for single-size, e.g. concentrate 1G), **"Add to Cart"** pill, Details, Feelings/Taste.
   - **Scent/flavor icon set** DONE — `FLAVORS` map (13, brand line-art). Skunky uses the real
     `scent_skunky` asset (embed_glyph). Citrus = simple half-slice. `pIcon()` resolves flavors
     first, feelings by keyword. Prices now 2-decimal everywhere (`money()`).
+  - `#5 Vape` — Jack said **fine as-is**, no changes. **Shop cluster COMPLETE.**
 - **Pre-existing fix:** `distillate` image key was undefined (broke ATF Distillate) — mapped in `asm_app.py`.
 
 ## What's NEXT (agreed order)
-1. **`#4 PI 1` (concentrate detail)** vs `SHOP - PI 1.png` — PI layout is shared; mostly verify/adjust.
-2. **`#5 Vape` page** vs `SHOP - VAPE.png` (web-only dead-end).
-3. Then: **Cart** (`SC-CHECKOUT` / `SC-OVERVIEW`), **Deals**, **Account** (+ settings, loyalty),
+1. **Cart** (`SC-CHECKOUT` / `SC-OVERVIEW`), **Deals**, **Account** (+ settings, loyalty),
    **Origins U** (+ `ED-FLOWER`).
-   *(Jack paused #4/#5 for credits — resume there.)*
+   *(Shop cluster done — resume at Cart.)*
 
 ## Frame naming (Jack's convention)
 Full name on hub, abbreviated on subpages: `GM-`=Guide Me, `SC-`=Shopping Cart, `AC-`=Account,
