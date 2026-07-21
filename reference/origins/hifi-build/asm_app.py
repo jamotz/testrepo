@@ -12,8 +12,10 @@ build = pathlib.Path(__file__).resolve().parent
 cache = REPO / "reference/oxfam/hifi-build/fontcache"
 src = (build / "origins-app.src.html").read_text()
 
-SCRATCH = pathlib.Path("/tmp/claude-0/-home-user-testrepo/ddda76a0-85c4-5287-b8c8-caa7c709d458/scratchpad")
-out_dir = SCRATCH if SCRATCH.exists() else pathlib.Path(".")
+# Write the assembled artifact to the session scratchpad (path changes each session/recycle),
+# discovered by glob so it never hardcodes a stale session id; fall back to CWD.
+_scratch = sorted(pathlib.Path("/tmp/claude-0").glob("*/*/scratchpad"))
+out_dir = _scratch[-1] if _scratch else pathlib.Path(".")
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 # ---- fonts: Oswald only (headers); body is system Georgia ----

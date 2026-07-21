@@ -94,11 +94,15 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .gw .q{font-family:var(--head);font-weight:600;text-transform:none;font-size:1.25rem;color:var(--ink);line-height:1.2}
 .gw .q{font-size:1.35rem}
 .gw .pick{font-family:var(--head);text-transform:none;font-size:15px;font-weight:600;letter-spacing:.01em;color:var(--ink);margin:2px 0 20px}
+.gw .pick.haslearn{margin-bottom:4px}
+.learnlink{display:none;background:none;border:0;font-family:var(--head);text-transform:none;font-size:13.5px;font-weight:600;letter-spacing:.01em;color:var(--or);padding:0;margin:0 0 18px}
+.learnlink.on{display:block}
 .opt-list{display:flex;flex-direction:column;gap:14px}
 .oc{display:flex;align-items:center;gap:14px;border:1px solid #E1DBCD;background:#fff;border-radius:12px;padding:15px 16px;
   font-family:var(--head);font-weight:600;text-transform:none;font-size:15px;letter-spacing:.01em;color:var(--ink);text-align:left;
   box-shadow:0 2px 6px rgba(30,22,12,.12);transition:box-shadow .18s,border-color .18s}
 .oc .box{width:20px;height:20px;border:1px solid #C2BBAD;border-radius:3px;background:#E2E0DA;flex:none}
+.oc:not(.life) .box{background:#EFDFC8;border-color:#D9C6A5}
 .oc.sel{border-color:var(--or);box-shadow:0 0 0 2px var(--or),0 4px 10px rgba(241,96,28,.22)}
 .oc.sel .box{background:var(--or);border-color:var(--or)}
 .wiz-foot{display:flex;justify-content:flex-end;margin-top:22px}
@@ -125,6 +129,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .feelchips{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap}
 .feelchip{width:104px;height:96px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--brown);font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:14px;letter-spacing:.04em;text-align:center;padding:4px}
 .feelchip svg{width:24px;height:24px}
+.feelchip .chiplogo{height:32px;width:auto;max-width:64%;object-fit:contain;display:block}
 .feelchip.disc{background:var(--disc);color:#F6E9E2}.feelchip.adv{background:var(--adv)}.feelchip.soc{background:var(--soc)}
 .feelchip.unw{background:var(--unw);color:#122B3C}.feelchip.night{background:var(--night);color:#EAF4F0}
 .recgroup{margin-bottom:20px}
@@ -337,7 +342,8 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
       <section class="s" data-s="subtype">
         <div class="sbar"><button class="bk" data-back="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
           <div class="wiz-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
-          <div class="gw"><div class="q" id="subq">Pick a type</div><div class="pick">Pick One or More:</div>
+          <div class="gw"><div class="q" id="subq">Pick a type</div><div class="pick haslearn">Pick One or More:</div>
+          <button class="learnlink" id="sublearn" type="button">Learn the differences ›</button>
           <div class="opt-list" id="subopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="subnext" disabled>Continue &rarr;</button></div></div>
       </section>
@@ -521,8 +527,8 @@ function setBack(screen,target){var e=document.querySelector('.s[data-s="'+scree
 $("#feelnext").addEventListener("click",function(){renderMethod();nav("method");});
 $("#methodnext").addEventListener("click",function(){
   if(G.method==="vape"){nav("vape");return;}                                  /* vape: web-only dead end */
-  if(G.method==="concentrate"){$("#subq").textContent="What kind of Concentrate do you like?";renderSub();nav("subtype");}
-  else if(G.method==="edible"){$("#subq").textContent="Chocolate, Gummy, Mint, or Drinks?";renderSub();nav("subtype");}
+  if(G.method==="concentrate"){$("#subq").textContent="What kind of Concentrate do you like?";$("#sublearn").classList.add("on");renderSub();nav("subtype");}
+  else if(G.method==="edible"){$("#subq").textContent="Chocolate, Gummy, Mint, or Drinks?";$("#sublearn").classList.remove("on");renderSub();nav("subtype");}
   else if(SMOKEABLE.indexOf(G.method)>-1){G.subs=[];renderTaste();setBack("taste","method");nav("taste");} /* flower/pre-roll -> taste */
   else{G.subs=[];renderFinish();setBack("finish","method");nav("finish");}     /* topical/tincture -> finish */
 });
@@ -531,12 +537,13 @@ $("#subnext").addEventListener("click",function(){
   else{renderFinish();setBack("finish","subtype");nav("finish");}                      /* edible -> finish (type IS the flavor) */
 });
 $("#tastenext").addEventListener("click",function(){renderFinish();setBack("finish","taste");nav("finish");});
+$("#sublearn").addEventListener("click",function(){toast("Concentrate guide — coming soon");});
 
 function guideLifestyles(){return G.feels.length?G.feels.slice():["social"];}
 function renderFinish(){
   var lifes=guideLifestyles();
   var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||"picks"];
-  var chips=lifes.map(function(l){return '<div class="feelchip '+LIFECLASS[l]+'">'+feelIcon()+FEEL[l]+'</div>';}).join("");
+  var chips=lifes.map(function(l){var lg=IMG["sm_"+l];return '<div class="feelchip '+LIFECLASS[l]+'">'+(lg?'<img class="chiplogo" src="'+lg+'" alt="">':feelIcon())+FEEL[l]+'</div>';}).join("");
   var groupHtml=groups.map(function(g){
     var prods=P.filter(function(p){return p.t===G.method&&(g===TYPES[G.method]||p.sub===g);}).slice(0,6);
     var pool=prods.length?prods:P.filter(function(p){return p.t===G.method;}).slice(0,6);
