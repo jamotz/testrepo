@@ -343,6 +343,38 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .ci .nm{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;line-height:1.2;color:var(--ink)}
 .ci .sub{font-family:var(--head);font-size:10.5px;color:#8C8478;text-transform:uppercase;margin-top:2px}
 .ci .pr{font-family:var(--head);font-weight:700;font-size:14px;margin-top:3px;color:var(--ink)}
+/* Origins U */
+.s[data-s="edu"] .sbar h2,.s[data-s="edutopic"] .sbar h2{text-transform:uppercase}
+.eduhub{padding:20px 16px 26px;text-align:center}
+.eduhub h2{font-family:var(--head);font-weight:700;font-size:1.55rem;color:var(--ink);margin-bottom:8px}
+.eduhub .eduintro{font-family:var(--body);font-size:13px;line-height:1.5;color:var(--ink-2);max-width:300px;margin:0 auto 18px}
+.edusearch{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--olive);color:#F0EAD8;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:14px;padding:12px 30px}
+.edusearch svg{width:18px;height:18px}
+.educards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.educard{border-radius:12px;overflow:hidden;background:#D9A87C;box-shadow:0 5px 13px rgba(0,0,0,.09);display:flex;flex-direction:column;height:152px;border:0;padding:0;text-align:left;cursor:pointer}
+.educard .eduimg{flex:1;display:flex;align-items:center;justify-content:center;padding:10px;min-height:0}
+.educard .eduimg img{max-width:100%;max-height:100%;object-fit:contain}
+.educard .edulife{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;place-items:center;gap:4px;padding:12px 10px}
+.educard .edulife img{width:34px;height:34px;object-fit:contain}
+.educard .edulabel{background:var(--brown);color:#fff;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:.02em;padding:9px 12px}
+.edutopic{padding:0 0 28px}
+.edubanner{position:relative;background:#D9A87C;height:98px;display:flex;align-items:center;overflow:hidden}
+.edubanner .edubg{position:absolute;left:0;right:0;text-align:center;font-family:var(--head);font-weight:700;font-size:66px;color:rgba(46,38,30,.15);letter-spacing:.04em;white-space:nowrap;pointer-events:none;user-select:none}
+.edubanner img{height:100%;width:118px;object-fit:cover;flex:none}
+.edubanner .edutitle{position:relative;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:2rem;color:#fff;letter-spacing:.02em;margin-left:16px;text-shadow:0 2px 7px rgba(0,0,0,.45)}
+.edulead{font-family:var(--body);font-size:13px;line-height:1.5;color:var(--ink);text-align:center;padding:16px 22px 6px}
+.edusearchwrap{text-align:center;padding:6px 0 16px}
+.eduacc{padding:0 16px;display:flex;flex-direction:column;gap:12px}
+.edubar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--brown);color:#fff;border:0;border-radius:10px;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:15px;letter-spacing:.02em;padding:15px 16px;text-align:left;cursor:pointer}
+.edubar .chev{width:18px;height:18px;flex:none;transition:transform .2s}
+.eduitem.open .edubar{border-radius:10px 10px 0 0}
+.eduitem.open .edubar .chev{transform:rotate(180deg)}
+.educontent{display:none;border:1.5px solid #E1DBCD;border-top:0;border-radius:0 0 10px 10px;padding:16px;background:#fff}
+.eduitem.open .educontent{display:block}
+.educontent p{font-family:var(--body);font-size:13.5px;line-height:1.5;color:var(--ink);margin-bottom:14px}
+.educ-cta{display:flex;justify-content:flex-end}
+.educ-btn{display:inline-flex;align-items:center;gap:10px;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:13px;padding:11px 24px;cursor:pointer}
+.educ-btn svg{width:16px;height:16px}
 .q{display:flex;align-items:center;gap:8px}
 .q button{width:26px;height:26px;border-radius:50%;border:1px solid #C9C2B4;background:#fff;font-family:var(--head);font-size:14px;color:var(--ink)}
 .q b{font-family:var(--head);min-width:14px;text-align:center;color:var(--ink)}
@@ -519,6 +551,15 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
       <section class="s" data-s="cart"><div class="cwrap" id="cwrap"></div></section>
       <section class="s" data-s="confirm"><div class="conf" id="confwrap"></div></section>
 
+      <section class="s" data-s="edu">
+        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Origins University</h2></div>
+        <div class="eduhub" id="eduhub"></div>
+      </section>
+      <section class="s" data-s="edutopic">
+        <div class="sbar"><button class="bk" data-back="edu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Origins University</h2></div>
+        <div class="edutopic" id="edutopic"></div>
+      </section>
+
     </div>
 
     <div class="drawer" id="drawer">
@@ -644,7 +685,7 @@ function nav(k){
 }
 document.querySelectorAll("[data-nav]").forEach(function(b){b.addEventListener("click",function(){
   var k=b.dataset.nav;
-  if(k==="edu"){toast("Origins U — education hub");return;}
+  if(k==="edu"){renderEduHub();nav("edu");return;}
   if(k==="account"){toast("Account — loyalty, orders & reviews");return;}
   nav(k);
 });});
@@ -699,7 +740,9 @@ $("#subnext").addEventListener("click",function(){
   else{renderFinish();setBack("finish","subtype");nav("finish");}                      /* edible -> finish (type IS the flavor) */
 });
 $("#tastenext").addEventListener("click",function(){renderFinish();setBack("finish","taste");nav("finish");});
-$("#sublearn").addEventListener("click",function(){toast("Concentrate guide — coming soon");});
+$("#sublearn").addEventListener("click",function(){renderEduTopic("concentrate",0);}); /* Guide Me: concentrate differences -> Origins U */
+$("#learnbtn").addEventListener("click",function(){openEduFor(S.type,0);});             /* Shop list: "Learn about the Differences" -> matching Origins U page */
+(function(){var v=document.querySelector('.vape .learn');if(v){v.classList.add("tap");v.style.cursor="pointer";v.addEventListener("click",function(){renderEduTopic("concentrate",0);});}})(); /* Vape differences -> Concentrate page */
 
 function guideLifestyles(){return G.feels.length?G.feels.slice():["social"];}
 function renderFinish(){
@@ -713,7 +756,8 @@ function renderFinish(){
     var cards=pool.map(function(p){return '<div class="rp tap" data-p="'+p.id+'"><img src="'+(IMG[p.img]||'')+'" alt=""><b>'+p.n+'</b><span>'+money(p.pr)+'</span></div>';}).join("");
     return '<div class="recgroup"><div class="rt">Recommended '+g+'</div><button class="browse tap" data-sub="'+g+'">Browse products ›</button><div class="recrow">'+cards+'</div></div>';
   }).join("");
-  $("#finishwrap").innerHTML='<div class="intro">You chose to see items from these feelings.<br>Select one to explore related products:</div><div class="learn">Learn more ›</div><div class="feelchips">'+chips+'</div>'+groupHtml+'<div class="backshop"><button class="continue cue" id="tobackshop">Back to Shop →</button></div>';
+  $("#finishwrap").innerHTML='<div class="intro">You chose to see items from these feelings.<br>Select one to explore related products:</div><div class="learn tap" id="finishlearn">Learn more ›</div><div class="feelchips">'+chips+'</div>'+groupHtml+'<div class="backshop"><button class="continue cue" id="tobackshop">Back to Shop →</button></div>';
+  $("#finishlearn").addEventListener("click",function(){openEduFor(G.method,0);}); /* Recommendations: Learn more -> matching Origins U page */
   $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(){openProduct(+c.dataset.p);});});
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
     S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;
@@ -868,6 +912,91 @@ function addToCart(id,size){var key=id+"|"+size,ex=null;S.cart.forEach(function(
   setBag();toast("Added to bag");}
 function setBag(){var n=S.cart.reduce(function(a,c){return a+c.q;},0);var e=$("#bagn");e.textContent=n;e.classList.toggle("show",n>0);}
 function cartSub(){return S.cart.reduce(function(a,c){return a+P[c.id].pr*sizeMult(P[c.id],c.size)*c.q;},0);}
+
+/* ===== Origins U (education) ===== */
+const EDU_ORDER=["flower","concentrate","edibles","topicals","lifestyles","cbd","growing","thc"];
+/* which Origins U category a Shop/Guide "Learn the differences" link jumps to */
+const EDUMAP={flower:"flower",preroll:"flower",concentrate:"concentrate",edible:"edibles",drink:"edibles",topical:"topicals",tincture:"cbd",vape:"concentrate"};
+const EDU={
+ flower:{name:"Flower",img:"flower",lead:"Learn all about flower from the growing process to your jar — we cover the anatomy of the plant to help you explore the world of FLOWER.",topics:[
+   {t:"Outdoor vs Indoor",d:"Learn the differences between flower grown outdoors vs indoors. Explore the benefits and disadvantages of each growing style."},
+   {t:"Growing Flower",d:"Follow a plant from seedling to harvest — the lighting, feeding, and the vegetative and flowering stages that shape the final bud."},
+   {t:"Harvesting Flower",d:"Learn how growers cure their flower before bottling it up for you to smoke. Explore the process of curation and why it's important."},
+   {t:"Parts of the Plant",d:"Colas, calyxes, trichomes and pistils — get to know the anatomy of the flower and where the good stuff lives."},
+   {t:"THC in Flower",d:"How potency is measured, what the percentage on the jar really means, and why terpenes matter as much as the THC number."}]},
+ concentrate:{name:"Concentrate",img:"rosin",lead:"From the melty to the marble, concentrates come in many forms. Learn how they're made and how to tell them apart.",topics:[
+   {t:"Types of Concentrate",d:"Distillate, live resin, rosin, kief and hash — a quick tour of the most common concentrate textures and what sets each apart."},
+   {t:"Extraction Methods",d:"Solvent vs solventless: how butane, CO2 and heat-and-pressure extraction change the final product."},
+   {t:"Live Resin vs Rosin",d:"Both are prized for flavor, but they're made very differently. Learn which one fits your taste and budget."},
+   {t:"Distillate Explained",d:"Why distillate is the most potent and most neutral concentrate, and where you'll usually find it."},
+   {t:"THC in Concentrate",d:"Concentrates can test far higher than flower — learn how to read the numbers and dose accordingly."}]},
+ edibles:{name:"Edibles",img:"gummy",lead:"Chocolates, gummies, mints and drinks — learn how edibles work and how to enjoy them responsibly.",topics:[
+   {t:"How Edibles Work",d:"Why eating cannabis feels different from smoking it, and how your liver turns THC into something stronger."},
+   {t:"Dosing & Onset Time",d:"Edibles can take up to two hours to kick in. Start low, go slow — learn how to find your dose."},
+   {t:"Chocolate, Gummy, Mint & Drinks",d:"Each format hits a little differently. Explore the options and which suits your moment."},
+   {t:"THC vs CBD Edibles",d:"Balanced ratios, CBD-only and high-THC — learn how the blend changes the experience."}]},
+ topicals:{name:"Topicals",img:"topical",lead:"Balms, lotions and oils you apply to your skin. Learn what topicals do and when to reach for one.",topics:[
+   {t:"What Are Topicals",d:"Cannabis-infused products for the skin — salves, balms and roll-ons designed for targeted comfort."},
+   {t:"How Topicals Work",d:"Most topicals act locally and won't get you high. Learn how they interact with receptors in your skin."},
+   {t:"When to Use Topicals",d:"Sore spots, dry skin and post-workout recovery — common moments people reach for a topical."},
+   {t:"CBD & THC Topicals",d:"How the cannabinoid blend shapes what a topical is best used for."}]},
+ lifestyles:{name:"Lifestyles",life:true,lead:"Origins sorts every product into five lifestyles so you can shop by how you want to feel. Meet them here.",topics:[
+   {t:"The Five Lifestyles",d:"Discovery, Adventurous, Social, Unwind and Nightlife — the five moods that organize the whole Origins catalog."},
+   {t:"Discovery & Adventurous",d:"Curious and clear-headed, or energized and ready to move — the daytime lifestyles."},
+   {t:"Social & Nightlife",d:"Easy conversation and good company, or a bigger night out — the lifestyles built for people."},
+   {t:"Unwind",d:"Calm, quiet and restful — the lifestyle for winding down at the end of the day."},
+   {t:"Finding Your Lifestyle",d:"Not sure where you fit? Our Guide Me wizard matches you to a lifestyle in a few taps."}]},
+ cbd:{name:"Forms of CBD",img:"badder",lead:"CBD comes in many forms and does many things. Learn the basics and how it differs from THC.",topics:[
+   {t:"What Is CBD",d:"A non-intoxicating cannabinoid known for a calmer, clearer kind of relief. Here's the primer."},
+   {t:"CBD vs THC",d:"They come from the same plant but feel worlds apart. Learn what sets them apart."},
+   {t:"Forms of CBD",d:"Oils, edibles, topicals, flower and concentrate — the many ways to take CBD."},
+   {t:"Benefits of CBD",d:"What people reach for CBD to help with, and what the research does and doesn't say."}]},
+ growing:{name:"Growing Process",img:"gdp",lead:"From seed to shelf — follow the full journey of how cannabis is grown, harvested and prepared for you.",topics:[
+   {t:"Seed to Harvest",d:"The full life cycle: germination, seedling, vegetative growth and the flowering stage that produces bud."},
+   {t:"Indoor vs Outdoor",d:"Sun-grown or climate-controlled — how the growing environment shapes the final flower."},
+   {t:"Soil vs Hydroponic",d:"Two very different ways to feed a plant, and what each brings to the table."},
+   {t:"Curing & Drying",d:"The slow, careful finish that locks in aroma, smoothness and potency after harvest."},
+   {t:"Sustainable Growing",d:"Water, energy and packaging — how growers are shrinking cannabis's footprint."}]},
+ thc:{name:"Types of THC",img:"thca",lead:"THC isn't just one thing. Learn about the different forms and what the numbers on the label really mean.",topics:[
+   {t:"What Is THC",d:"The primary intoxicating compound in cannabis — how it works with your body's endocannabinoid system."},
+   {t:"Delta-9 THC",d:"The classic, most abundant form of THC and the one most products are measured by."},
+   {t:"Delta-8 THC",d:"A milder cousin of Delta-9 with a reportedly smoother, clearer effect."},
+   {t:"THCA & THCV",d:"The raw acid form that converts to THC with heat, plus the rare cannabinoid people call 'diet weed.'"},
+   {t:"Reading THC Percentages",d:"What the percentage on the jar really tells you — and why higher isn't always better."}]}
+};
+function eduSearchPill(){return '<button class="edusearch tap" type="button" data-edusearch="1"><span>Search</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.2-4.2"/></svg></button>';}
+function wireEduSearch(root){root.querySelectorAll("[data-edusearch]").forEach(function(b){b.addEventListener("click",function(){toast("Search — coming soon");});});}
+function renderEduHub(){
+  var cards=EDU_ORDER.map(function(k){var c=EDU[k];
+    var media=c.life
+      ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife"].map(function(l){return '<img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="">';}).join("")+'</div>'
+      : '<div class="eduimg"><img src="'+(IMG[c.img]||"")+'" alt="'+c.name+'"></div>';
+    return '<button class="educard tap" data-ec="'+k+'">'+media+'<div class="edulabel">'+c.name+'</div></button>';
+  }).join("");
+  var w=$("#eduhub");
+  w.innerHTML='<h2>Welcome to Origins U</h2><p class="eduintro">Learn about all our products through our organized catalog of verified information. We have information covering the basics to more advanced topics.</p>'+eduSearchPill()+'<div class="educards">'+cards+'</div>';
+  w.querySelectorAll("[data-ec]").forEach(function(b){b.addEventListener("click",function(){renderEduTopic(b.dataset.ec,0);});});
+  wireEduSearch(w);
+}
+function renderEduTopic(catKey,openIdx){
+  var c=EDU[catKey];if(!c)return;
+  var chev='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  var arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
+  var acc=c.topics.map(function(tp,i){
+    return '<div class="eduitem'+(i===openIdx?" open":"")+'"><button class="edubar tap" data-ti="'+i+'"><span>'+tp.t+'</span>'+chev+'</button>'+
+      '<div class="educontent"><p>'+tp.d+'</p><div class="educ-cta"><button class="educ-btn tap" type="button">Continue '+arrow+'</button></div></div></div>';
+  }).join("");
+  var banner=c.life?'':'<img src="'+(IMG[c.img]||"")+'" alt="">';
+  var w=$("#edutopic");
+  w.innerHTML='<div class="edubanner"><div class="edubg">ORIGINS</div>'+banner+'<div class="edutitle">'+c.name+'</div></div>'+
+    '<p class="edulead">'+c.lead+'</p><div class="edusearchwrap">'+eduSearchPill()+'</div><div class="eduacc">'+acc+'</div>';
+  w.querySelectorAll("[data-ti]").forEach(function(b){b.addEventListener("click",function(){b.closest(".eduitem").classList.toggle("open");});});
+  w.querySelectorAll(".educ-btn").forEach(function(b){b.addEventListener("click",function(){toast("Lesson — coming soon");});});
+  wireEduSearch(w);
+  nav("edutopic");
+  if(openIdx!=null){var op=w.querySelector(".eduitem.open");if(op)setTimeout(function(){op.scrollIntoView({block:"center",behavior:"smooth"});},80);}
+}
+function openEduFor(type,idx){renderEduTopic(EDUMAP[type]||"flower",idx==null?0:idx);}
 function renderCart(){
   var w=$("#cwrap");
   if(!S.cart.length){w.innerHTML='<h2>Your bag</h2><div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
