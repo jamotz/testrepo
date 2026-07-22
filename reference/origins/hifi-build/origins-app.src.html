@@ -95,6 +95,31 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .st-hours div span:last-child{width:120px;text-align:left}
 .st-btn{display:block;width:100%;background:none;border:1.5px solid var(--or);color:var(--or);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:13.5px;padding:12px}
 .st-btn:active{background:var(--or);color:#fff}
+/* --- Home / Deals (DEALS.png) --- */
+.hero{background-size:cover;background-position:center;padding:22px 18px 20px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.hero-logo{width:200px;height:auto;margin:6px auto 8px;display:block}
+.hero-btn{background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:14px;padding:13px 20px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.hero-btn:active{background:var(--or-d)}
+.hero-btn.wide{width:82%}
+.hero-row{display:flex;gap:12px;width:82%}
+.hero-row .hero-btn{flex:1;padding:13px 0}
+.deals{padding:6px 0 4px}
+.deal-sec{margin-bottom:16px}
+.deal-banner{background:var(--or);color:#fff;border-radius:12px;margin:10px 16px 12px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.deal-banner .bl{font-family:var(--head);font-weight:700;font-size:1.8rem;line-height:1;white-space:nowrap;text-transform:uppercase}
+.deal-banner .bs{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.03em;text-align:right;line-height:1.3;max-width:54%}
+.dealrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 10px}
+.dealrow .fcard{flex:none;width:230px}
+.fcard.dcard .fsz{background:var(--brown);opacity:.65}
+.fcard.dcard .fsz.sel{background:var(--olive);opacity:1}
+.fcard .fpr .was{color:#8C8478;text-decoration:line-through;font-weight:400;font-size:15px;margin-right:8px}
+.fcard .fpr .now{color:#C0392B}
+.brandrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 12px}
+.btile{flex:none;width:158px;height:150px;background:#0b0b0b;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:18px}
+.btile img{max-width:84%;max-height:100px;object-fit:contain}
+.deals-foot{text-align:center;padding:6px 16px 22px}
+.deals-foot h3{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--ink);margin-bottom:12px}
+.deals-foot .hero-btn.wide{width:82%;box-shadow:none}
 .rec{padding:20px 16px 8px}
 .rec .rh{display:flex;align-items:baseline;gap:12px}
 .rec h3{font-size:1.25rem;color:var(--ink)}
@@ -408,19 +433,15 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
       </section>
 
       <section class="s" data-s="home">
-        <div class="promo">
-          <div class="m">MARCH<br>ACTS OF<br><span class="strike">KINDNESS</span></div>
-          <div class="high">Highness</div>
-          <div class="off">40% OFF<br>14G &amp; 28G</div>
-          <div class="sub">ALL MONTH</div>
-          <div class="cols"><div><b>30% OFF ONLINE</b><span>TUES, THURS, SAT, SUN</span></div><div><b>25% OFF IN-STORE</b><span>MON &amp; WEDS</span></div></div>
-          <div class="fine">CANNOT BE COMBINED WITH OTHER DEAL &middot; SEE STORE FOR DETAILS &middot; OFFER SUBJECT TO CHANGE</div>
+        <div class="hero" id="hero">
+          <img class="hero-logo" id="herologo" alt="Origins — Explore Confidently">
+          <button class="hero-btn wide tap" id="dealscal1">See Deals Calendar</button>
+          <div class="hero-row"><button class="hero-btn tap" data-nav="guide">Guide Me</button><button class="hero-btn tap" data-nav="shop">Our Menu</button></div>
         </div>
-        <button class="guide-btn cue" data-nav="guide">Guide Me</button>
-        <div class="rec">
-          <div class="rh"><h3>Recommended for you</h3><button class="va" data-nav="shop">View all</button></div>
-          <p>Recommended products based on your preferences and review feedback.</p>
-          <div class="hscroll" id="recrow"></div>
+        <div class="deals" id="deals"></div>
+        <div class="deals-foot">
+          <h3>Check out our upcoming deals</h3>
+          <button class="hero-btn wide tap" id="dealscal2">See Deals Calendar</button>
         </div>
       </section>
 
@@ -781,10 +802,35 @@ function renderList(){
   $("#grid").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
   $("#grid").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
 }
-function renderRec(){
-  var picks=[P[7],P[0],P[13],P[3],P[16]];
-  $("#recrow").innerHTML=picks.map(function(p){return '<div class="hp tap" data-p="'+p.id+'"><img src="'+(IMG[p.img]||'')+'" alt=""><b>'+p.n+'</b><span>'+money(p.pr)+'</span></div>';}).join("");
-  $("#recrow").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(){openProduct(+c.dataset.p);});});
+function dealCard(p,dealSize,struck,sale){
+  var lc=LIFECLASS[p.f[0]]||"soc";
+  var all=SIZES[p.t]||[],idx=all.indexOf(dealSize),start=Math.max(0,Math.min(idx-2,all.length-4));
+  var szs=all.slice(start,start+4).map(function(s){return '<span class="fsz'+(s===dealSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
+  var bc=TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
+  var thc=p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):"");
+  var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
+  return '<div class="fcard dcard '+lc+' tap" data-p="'+p.id+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
+    '<div class="fdiv">'+badge+'</div><div class="fbc">'+bc+'</div><div class="fnm">'+p.n+'</div>'+
+    '<div class="fmeta"><span class="fbr">'+p.b+'</span><span class="fthc">'+thc+'</span></div>'+
+    '<div class="fpr"><span class="was">'+money(struck)+'</span><span class="now">'+money(sale)+'</span></div>'+
+    '<div class="fszs">'+szs+'</div><button class="fadd tap" data-add="'+p.id+'" data-sz="'+dealSize+'">Add to Cart</button></div>';
+}
+function renderHome(){
+  $("#hero").style.backgroundImage="url("+(IMG.hero_mtn||"")+")";
+  $("#herologo").src=IMG.logo_origins||"";
+  var flowers=P.filter(function(p){return p.t==="flower";});
+  var d1=flowers.slice(0,4),d3=flowers.slice(0,4);
+  var brands=[["brand_royaltree","Royal Tree"],["brand_saints","Saints"],["brand_freddys","Freddy's"],["brand_skord","Skord"]];
+  var html='';
+  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any of these two eighths for $50</span></div><div class="dealrow">'+
+    d1.map(function(p){return dealCard(p,"3.5 g",p.pr,25);}).join('')+'</div></div>';
+  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">30% Off</span><span class="bs">Try some top-shelf flower for the low</span></div><div class="brandrow">'+
+    brands.map(function(b){return '<div class="btile"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></div>';}).join('')+'</div></div>';
+  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">40% Off</span><span class="bs">Get any 14g or 28g of flower for 40% off</span></div><div class="dealrow">'+
+    d3.map(function(p){var oz=Math.round(p.pr*5);return dealCard(p,"28 g",oz,Math.round(oz*0.6));}).join('')+'</div></div>';
+  $("#deals").innerHTML=html;
+  $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
+  $("#deals").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz);});});
 }
 
 var curP=null,curSize=null;
@@ -877,6 +923,8 @@ $("#taptoggle").addEventListener("click",function(){this.classList.toggle("on");
 
 $("#landlogo").src=IMG["logo_origins"];$("#landmap").src=IMG["map_redmond"];
 $("#seattlebtn").addEventListener("click",function(){toast("Seattle store — coming soon");});
-renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderRec();
+renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderHome();
+$("#dealscal1").addEventListener("click",function(){toast("Deals calendar — coming soon");});
+$("#dealscal2").addEventListener("click",function(){toast("Deals calendar — coming soon");});
 setBag();nav("landing");
 </script>

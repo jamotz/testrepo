@@ -80,6 +80,11 @@ M = {
  "topical":   "product assets/topical.png",
  "map_redmond": "Various other assets/Redmond Map.png",
  "scent_skunky": "scents assets/Scent (Skunky).png",
+ "hero_mtn": "origins logos/Origin background.jpeg",
+ "brand_royaltree": "Various Brand Logos/Royal Tree Main Logo.png",
+ "brand_saints": "Various Brand Logos/Saints Main Logo.png",
+ "brand_freddys": "Various Brand Logos/Freddy's Main Logo.png",
+ "brand_skord": "Various Brand Logos/Skord Main Logo.png",
  "logo_origins": "origins logos/logo_header_origins.svg",
  "life_discovery":   "Lifestyle logos/Discovery Logo.png",
  "life_adventurous": "Lifestyle logos/Adventurous Logo.png",
@@ -115,11 +120,23 @@ def embed_svg(relpath):
     data = (assets / relpath).read_bytes()
     return "data:image/svg+xml;base64," + base64.b64encode(data).decode()
 
+def embed_png(relpath, maxw=380):
+    """Embed a PNG keeping transparency (for logos that sit on dark tiles)."""
+    im = Image.open(assets / relpath).convert("RGBA")
+    if im.width > maxw:
+        im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
+    buf = io.BytesIO(); im.save(buf, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
 IMG = {}
 for k, rel in M.items():
     try:
         if rel.endswith(".svg"):
             IMG[k] = embed_svg(rel)
+        elif k.startswith("brand_"):
+            IMG[k] = embed_png(rel)
+        elif k == "hero_mtn":
+            IMG[k] = embed(rel, 1040, 82)
         elif k.startswith("life_") or k.startswith("sm_") or k.startswith("scent_"):
             IMG[k] = embed_glyph(rel)
         else:
