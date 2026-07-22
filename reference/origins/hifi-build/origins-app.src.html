@@ -335,8 +335,9 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .icard .flavimg{display:block;width:36px;height:36px;object-fit:contain;margin:0 auto 8px}
 
 .cwrap{padding:6px 16px 20px}
-.cwrap h2{font-size:1.5rem;margin-bottom:10px;color:var(--ink)}
-.ci{display:flex;gap:12px;background:#fff;border:1px solid #E5E0D6;border-radius:10px;padding:10px;margin-bottom:10px;align-items:center}
+.cwrap h2{font-size:1.5rem;margin-bottom:10px;color:var(--ink);text-transform:uppercase;letter-spacing:.02em}
+.ci{display:flex;gap:12px;background:#fff;border:1.5px solid #E5E0D6;border-radius:10px;padding:10px;margin-bottom:10px;align-items:center}
+.ci.disc{border-color:var(--disc)}.ci.adv{border-color:var(--adv)}.ci.soc{border-color:var(--soc)}.ci.unw{border-color:var(--unw)}.ci.night{border-color:var(--night)}
 .ci img{width:54px;height:54px;object-fit:contain;flex:none}
 .ci .m{flex:1;min-width:0}
 .ci .nm{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;line-height:1.2;color:var(--ink)}
@@ -870,8 +871,8 @@ function cartSub(){return S.cart.reduce(function(a,c){return a+P[c.id].pr*sizeMu
 function renderCart(){
   var w=$("#cwrap");
   if(!S.cart.length){w.innerHTML='<h2>Your bag</h2><div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
-  w.innerHTML='<h2>Here is your shopping cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],pr=p.pr*sizeMult(p,c.size);
-    return '<div class="ci"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+money(pr*c.q)+'</div></div>'+
+  w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],pr=p.pr*sizeMult(p,c.size),lc=LIFECLASS[p.f[0]]||"soc";
+    return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+money(pr*c.q)+'</div></div>'+
       '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
    +'<div class="totals"><div class="trow"><span>Subtotal</span><span>'+money(cartSub())+'</span></div>'+
      '<div class="trow"><span>Excise + tax (37%)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
