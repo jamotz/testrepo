@@ -147,8 +147,17 @@ def bg_color(relpath):
     from collections import Counter
     im = Image.open(assets / relpath).convert("RGBA")
     w, h = im.size; px = im.load()
-    pts = [(1, 1), (w - 2, 1), (1, h - 2), (w - 2, h - 2), (w // 2, 1), (1, h // 2)]
-    cols = [px[x, y][:3] for (x, y) in pts if px[x, y][3] > 200]
+    # Sample the whole perimeter (not just the corners) so a few stray edge
+    # pixels can't win a tie — e.g. Skord's logo has gray patches along its
+    # edges that beat black in a 6-point sample and turned the tile gray.
+    cols = []
+    sx, sy = max(1, w // 60), max(1, h // 60)
+    for x in range(0, w, sx):
+        for y in (0, 1, 2, h - 3, h - 2, h - 1):
+            if px[x, y][3] > 200: cols.append(px[x, y][:3])
+    for y in range(0, h, sy):
+        for x in (0, 1, 2, w - 3, w - 2, w - 1):
+            if px[x, y][3] > 200: cols.append(px[x, y][:3])
     if not cols:
         return "#0b0b0b"
     r, g, b = Counter(cols).most_common(1)[0][0]
