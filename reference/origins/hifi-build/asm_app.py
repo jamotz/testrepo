@@ -128,6 +128,19 @@ def embed_png(relpath, maxw=380):
     buf = io.BytesIO(); im.save(buf, "PNG", optimize=True)
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
+def embed_hero(relpath, box=(0.20, 0.0, 0.80, 1.0), maxw=1000, q=82):
+    """Crop the hero photo to a peak-focused region (baked-in 'zoom') then embed.
+    Used with background-size:cover so the hero always fills cleanly at any screen
+    size — never tiles/repeats — while staying framed on the summit."""
+    im = Image.open(assets / relpath).convert("RGB")
+    w, h = im.size
+    l, t, r, b = box
+    im = im.crop((int(w*l), int(h*t), int(w*r), int(h*b)))
+    if im.width > maxw:
+        im = im.resize((maxw, round(im.height*maxw/im.width)), Image.LANCZOS)
+    buf = io.BytesIO(); im.save(buf, "JPEG", quality=q, optimize=True)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+
 def bg_color(relpath):
     """Sample a logo's own background colour (its opaque corner/edge) so a tile
     behind it can match and the visible 'box' disappears."""
@@ -150,7 +163,7 @@ for k, rel in M.items():
             IMG[k] = embed_png(rel)
             IMG["bg_" + k] = bg_color(rel)
         elif k == "hero_mtn":
-            IMG[k] = embed(rel, 1040, 82)
+            IMG[k] = embed_hero(rel)
         elif k.startswith("life_") or k.startswith("sm_") or k.startswith("scent_"):
             IMG[k] = embed_glyph(rel)
         else:
