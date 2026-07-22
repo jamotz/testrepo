@@ -96,13 +96,13 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .st-btn{display:block;width:100%;background:none;border:1.5px solid var(--or);color:var(--or);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:13.5px;padding:12px}
 .st-btn:active{background:var(--or);color:#fff}
 /* --- Home / Deals (DEALS.png) --- */
-.hero{background-size:cover;background-position:center;padding:22px 18px 20px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.hero-logo{width:200px;height:auto;margin:6px auto 8px;display:block}
-.hero-btn{background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:14px;padding:13px 20px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.hero{background-size:cover;background-position:center 18%;padding:16px 18px 18px;min-height:372px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.hero-logo{width:148px;height:auto;margin:2px auto 0;display:block}
+.hero-btn{background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:12.5px;padding:11px 18px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
 .hero-btn:active{background:var(--or-d)}
-.hero-btn.wide{width:82%}
-.hero-row{display:flex;gap:12px;width:82%}
-.hero-row .hero-btn{flex:1;padding:13px 0}
+.hero-btn.wide{width:74%;margin-top:auto}
+.hero-row{display:flex;gap:11px;width:74%}
+.hero-row .hero-btn{flex:1;padding:11px 0}
 .deals{padding:6px 0 4px}
 .deal-sec{margin-bottom:16px}
 .deal-banner{background:var(--or);color:#fff;border-radius:12px;margin:10px 16px 12px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
@@ -825,7 +825,7 @@ function renderHome(){
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any of these two eighths for $50</span></div><div class="dealrow">'+
     d1.map(function(p){return dealCard(p,"3.5 g",p.pr,25);}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">30% Off</span><span class="bs">Try some top-shelf flower for the low</span></div><div class="brandrow">'+
-    brands.map(function(b){return '<div class="btile"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></div>';}).join('')+'</div></div>';
+    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></div>';}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">40% Off</span><span class="bs">Get any 14g or 28g of flower for 40% off</span></div><div class="dealrow">'+
     d3.map(function(p){var oz=Math.round(p.pr*5);return dealCard(p,"28 g",oz,Math.round(oz*0.6));}).join('')+'</div></div>';
   $("#deals").innerHTML=html;

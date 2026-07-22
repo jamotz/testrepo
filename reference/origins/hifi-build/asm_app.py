@@ -128,6 +128,19 @@ def embed_png(relpath, maxw=380):
     buf = io.BytesIO(); im.save(buf, "PNG", optimize=True)
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
+def bg_color(relpath):
+    """Sample a logo's own background colour (its opaque corner/edge) so a tile
+    behind it can match and the visible 'box' disappears."""
+    from collections import Counter
+    im = Image.open(assets / relpath).convert("RGBA")
+    w, h = im.size; px = im.load()
+    pts = [(1, 1), (w - 2, 1), (1, h - 2), (w - 2, h - 2), (w // 2, 1), (1, h // 2)]
+    cols = [px[x, y][:3] for (x, y) in pts if px[x, y][3] > 200]
+    if not cols:
+        return "#0b0b0b"
+    r, g, b = Counter(cols).most_common(1)[0][0]
+    return "#%02x%02x%02x" % (r, g, b)
+
 IMG = {}
 for k, rel in M.items():
     try:
@@ -135,6 +148,7 @@ for k, rel in M.items():
             IMG[k] = embed_svg(rel)
         elif k.startswith("brand_"):
             IMG[k] = embed_png(rel)
+            IMG["bg_" + k] = bg_color(rel)
         elif k == "hero_mtn":
             IMG[k] = embed(rel, 1040, 82)
         elif k.startswith("life_") or k.startswith("sm_") or k.startswith("scent_"):
