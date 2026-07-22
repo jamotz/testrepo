@@ -27,8 +27,8 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .taptoggle.on .d{background:var(--or);box-shadow:0 0 0 3px rgba(241,96,28,.3)}
 
 .phone{background:#000;border-radius:52px;padding:11px;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px #2A2119,0 0 70px rgba(241,96,28,.13)}
-/* true iPhone proportions (393 x 852, 9:19.5), sized to fit the viewport */
-.scr{position:relative;background:var(--bg);border-radius:42px;overflow:hidden;aspect-ratio:393/852;height:min(852px,86vh);width:auto;max-width:94vw;display:flex;flex-direction:column}
+/* phone frame — widened 15% over iPhone 393w (→452) so 2-up grids have room */
+.scr{position:relative;background:var(--bg);border-radius:44px;overflow:hidden;aspect-ratio:452/852;height:min(852px,86vh);width:auto;max-width:96vw;display:flex;flex-direction:column}
 @media(max-width:520px){.scr{height:min(852px,84vh)}.phone{border-radius:44px;padding:9px}}
 .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:112px;height:30px;background:#000;border-radius:100px;z-index:60}
 .view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);color:var(--ink)}
