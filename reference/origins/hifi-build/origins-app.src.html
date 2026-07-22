@@ -874,9 +874,9 @@ function renderCart(){
   w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],pr=p.pr*sizeMult(p,c.size),lc=LIFECLASS[p.f[0]]||"soc";
     return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+money(pr*c.q)+'</div></div>'+
       '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
-   +'<div class="totals"><div class="trow"><span>Subtotal</span><span>'+money(cartSub())+'</span></div>'+
-     '<div class="trow"><span>Excise + tax (37%)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
-     '<div class="trow big"><span>Total</span><span>'+money(cartSub()*1.37)+'</span></div></div>'+
+   +'<div class="totals"><div class="trow"><span>Subtotal (pre-tax)</span><span>'+money(cartSub()*0.63)+'</span></div>'+
+     '<div class="trow"><span>Excise + tax (37%, incl.)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
+     '<div class="trow big"><span>Total</span><span>'+money(cartSub())+'</span></div></div>'+
      '<button class="checkout tap" id="ck">Checkout — pickup</button>';
   w.querySelectorAll("[data-d]").forEach(function(b){b.addEventListener("click",function(){var c=S.cart[+b.dataset.d];c.q--;if(c.q<1)S.cart.splice(+b.dataset.d,1);setBag();renderCart();});});
   w.querySelectorAll("[data-u]").forEach(function(b){b.addEventListener("click",function(){S.cart[+b.dataset.u].q++;$("#bagn").textContent=S.cart.reduce(function(a,c){return a+c.q;},0);renderCart();});});
@@ -884,9 +884,9 @@ function renderCart(){
 }
 function renderConfirm(){
   var items=S.cart.map(function(c){var p=P[c.id];return '<div class="li"><span>'+p.n+' <span class="q">× '+c.q+'</span></span><span>'+money(p.pr*sizeMult(p,c.size)*c.q)+'</span></div>';}).join("");
-  var tot=money(cartSub()*1.37);
+  var tot=money(cartSub());
   $("#confwrap").innerHTML='<div class="card"><div class="ch"><h3>We have received your order</h3><p>Please be sure to pick up your order before we close. We will not hold orders overnight.</p></div>'+
-    '<div class="body"><div class="sum">Order Summary</div>'+items+'<div class="tot"><span>Total</span><span>'+tot+'</span></div></div>'+
+    '<div class="body"><div class="sum">Order Summary</div>'+items+'<div class="tot"><span>Total <small>(tax incl.)</small></span><span>'+tot+'</span></div></div>'+
     '<div class="foot"><b>Location</b><p>16390 Cleveland St, Redmond, WA 98052</p><b>Hours</b><p>Mon–Thu 8AM–10:30PM · Fri–Sat 8AM–11:30PM · Sun 9AM–9PM</p></div></div>'+
     '<button class="again tap" id="again">Keep shopping</button>';
   S.cart=[];$("#bagn").textContent="0";
