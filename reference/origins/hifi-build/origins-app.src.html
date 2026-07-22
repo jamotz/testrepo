@@ -115,8 +115,10 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .fcard .fpr .was{color:#8C8478;text-decoration:line-through;font-weight:400;font-size:15px;margin-right:8px}
 .fcard .fpr .now{color:#C0392B}
 .brandrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 12px}
-.btile{flex:none;width:158px;height:150px;background:#0b0b0b;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:18px}
-.btile img{max-width:84%;max-height:100px;object-fit:contain}
+.btile{flex:none;width:160px;height:176px;background:#0b0b0b;border-radius:12px;display:flex;flex-direction:column;align-items:center;padding:16px 12px 15px}
+.btile .btl{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
+.btile .btl img{max-width:88%;max-height:98px;object-fit:contain}
+.btile .bname{font-family:var(--head);font-weight:700;text-transform:uppercase;color:#fff;font-size:16px;letter-spacing:.05em;text-align:center;margin-top:8px;text-shadow:0 1px 3px rgba(0,0,0,.55)}
 .deals-foot{text-align:center;padding:6px 16px 22px}
 .deals-foot h3{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--ink);margin-bottom:12px}
 .deals-foot .hero-btn.wide{width:82%;box-shadow:none}
@@ -825,7 +827,7 @@ function renderHome(){
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any of these two eighths for $50</span></div><div class="dealrow">'+
     d1.map(function(p){return dealCard(p,"3.5 g",p.pr,25);}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">30% Off</span><span class="bs">Try some top-shelf flower for the low</span></div><div class="brandrow">'+
-    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></div>';}).join('')+'</div></div>';
+    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">40% Off</span><span class="bs">Get any 14g or 28g of flower for 40% off</span></div><div class="dealrow">'+
     d3.map(function(p){var oz=Math.round(p.pr*5);return dealCard(p,"28 g",oz,Math.round(oz*0.6));}).join('')+'</div></div>';
   $("#deals").innerHTML=html;
