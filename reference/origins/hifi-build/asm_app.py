@@ -172,6 +172,39 @@ def embed_glyph(relpath, maxw=560):
     buf = io.BytesIO(); out.save(buf, "PNG", optimize=True)
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
+def embed_wordmark(relpath, maxw=560):
+    """Just the wordmark (drop the leading decorative glyph), black on
+    transparent and trimmed. Lets the FEEL step align every lifestyle's word to
+    a common left edge beside a fixed-width glyph slot, instead of inheriting
+    each combined logo's baked-in glyph width + gap."""
+    im = Image.open(assets / relpath).convert("RGBA")
+    w, h = im.size
+    g = im.convert("L").load(); al = im.getchannel("A").load()
+    cols = [sum(1 for y in range(h) if g[x, y] < 80 and al[x, y] > 40) for x in range(w)]
+    runs = []; x = 0
+    while x < w:
+        if cols[x] > 2:
+            x0 = x
+            while x < w and cols[x] > 2: x += 1
+            runs.append((x0, x))
+        else:
+            x += 1
+    if len(runs) < 2:
+        return embed_glyph(relpath)
+    crop = im.crop((runs[1][0], 0, w, h))
+    dark = crop.convert("L").point(lambda v: 255 if v < 80 else 0)
+    alpha = crop.getchannel("A").point(lambda v: 255 if v > 40 else 0)
+    mask = ImageChops.multiply(dark, alpha)
+    out = Image.new("RGBA", crop.size, (0, 0, 0, 0))
+    out.paste(Image.new("RGBA", crop.size, (0, 0, 0, 255)), (0, 0), mask)
+    bbox = out.getbbox()
+    if bbox:
+        out = out.crop(bbox)
+    if out.width > maxw:
+        out = out.resize((maxw, round(out.height * maxw / out.width)), Image.LANCZOS)
+    buf = io.BytesIO(); out.save(buf, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
 def embed_svg(relpath):
     """Inline an SVG asset as a data URI (vector, no rasterization)."""
     data = (assets / relpath).read_bytes()
@@ -251,6 +284,14 @@ for k in ["flower", "rosin", "gummy", "topical", "badder", "thca"]:
         IMG["cut_" + k] = embed_cut(M[k], **CUT_CFG.get(k, {}))
     except Exception as e:
         print("WARN cut", k, e)
+
+# wordmark-only images (leading glyph dropped) so the FEEL step can align every
+# lifestyle's word to a common left edge next to a fixed glyph slot
+for name in ["discovery", "adventurous", "social", "unwind", "nightlife", "holistic"]:
+    try:
+        IMG["word_" + name] = embed_wordmark(M["life_" + name])
+    except Exception as e:
+        print("WARN word", name, e)
 
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 

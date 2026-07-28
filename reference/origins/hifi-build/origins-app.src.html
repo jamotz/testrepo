@@ -163,9 +163,10 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .wiz-prog i.on{background:var(--or)}
 /* feel = lifestyle overview: same toggle size/format as the rest of the wizard,
    just the lifestyle color as the button + a slightly bigger, centered logo, checkbox kept */
-.oc.life{position:relative;justify-content:flex-start;padding:12px 16px 12px 50px}
+.oc.life{position:relative;justify-content:flex-start;gap:10px;padding:12px 16px 12px 50px}
 .oc.life .box{display:block;position:absolute;left:16px;top:50%;transform:translateY(-50%)}
-.oc.life .lifelogo{height:28px;width:auto;max-width:78%;object-fit:contain;display:block;margin:0}
+.oc.life .lifeglyph{height:28px;width:32px;object-fit:contain;object-position:left center;flex:none}
+.oc.life .lifeword{height:25px;width:auto;object-fit:contain;display:block}
 .oc.life.discovery{background:var(--disc)}
 .oc.life.adventurous{background:var(--adv)}
 .oc.life.social{background:var(--soc)}
@@ -694,7 +695,7 @@ document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener(
 
 function renderFeel(){
   /* feel = the Lifestyle Overview: real brand logos, per Jack's request */
-  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifelogo" src="'+(IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'"></button>';}).join("");
+  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifeglyph" src="'+(IMG["sm_"+k]||'')+'" alt=""><img class="lifeword" src="'+(IMG["word_"+k]||IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'"></button>';}).join("");
   $("#feelopts").querySelectorAll("[data-fk]").forEach(function(b){b.addEventListener("click",function(){
     var k=b.dataset.fk,i=G.feels.indexOf(k);i>-1?G.feels.splice(i,1):G.feels.push(k);
     b.classList.toggle("sel");$("#feelnext").disabled=!G.feels.length;
