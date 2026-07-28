@@ -146,11 +146,13 @@ M = {
  "life_social":      "Lifestyle logos/Social Logo.png",
  "life_unwind":      "Lifestyle logos/Unwind Logo.png",
  "life_nightlife":   "Lifestyle logos/Nightlife Logo.png",
+ "life_holistic":    "Lifestyle logos/Holistic Logo.png",
  "sm_discovery":   "Lifestyle logos/Discovery Small Logo.png",
  "sm_adventurous": "Lifestyle logos/Adventurous Small Logo.png",
  "sm_social":      "Lifestyle logos/Social Small Logo.png",
  "sm_unwind":      "Lifestyle logos/Unwind Small Logo.png",
  "sm_nightlife":   "Lifestyle logos/Nightlife Small Logo.png",
+ "sm_holistic":    "Lifestyle logos/Holistic Small Logo.png",
 }
 def embed_glyph(relpath, maxw=560):
     """Extract just the black icon+wordmark on a transparent background (so it can
@@ -249,16 +251,6 @@ for k in ["flower", "rosin", "gummy", "topical", "badder", "thca"]:
         IMG["cut_" + k] = embed_cut(M[k], **CUT_CFG.get(k, {}))
     except Exception as e:
         print("WARN cut", k, e)
-
-# Holistic lifestyle glyph — placeholder sage leaf (no real logo asset yet).
-# setdefault so a future 'life_holistic'/'sm_holistic' PNG in M overrides it.
-_hol_leaf = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
-             '<path fill="#2E261E" fill-rule="evenodd" d="M50 7C74 27 76 60 51 93'
-             'C48 89 46 85 45 81C31 82 22 72 21 56C33 55 41 58 46 64'
-             'C46 45 47 26 50 7ZM49 40C40 47 34 55 32 65C41 63 47 57 49 47Z"/></svg>')
-_hol_uri = "data:image/svg+xml;base64," + base64.b64encode(_hol_leaf.encode()).decode()
-IMG.setdefault("life_holistic", _hol_uri)
-IMG.setdefault("sm_holistic", _hol_uri)
 
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
