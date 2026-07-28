@@ -84,13 +84,13 @@ for i in imgs:
 # like Jack's leading letters) so the word doesn't shrink when the logo scales
 # to the 28px row; near-square with thick bars + thick crossbar so it reads as
 # blocky as D/N; a leaf cut into each vertical bar.
-GH = int(TARGET * 1.06); GW = int(GH * 0.95)
-t = int(GW * 0.31); r = int(t * 0.22)
+GH = int(TARGET * 1.06); GW = int(GH * 1.0)
+t = int(GW * 0.37); r = int(t * 0.12)
 glyph = Image.new("RGBA", (GW, GH), (0, 0, 0, 0))
 d = ImageDraw.Draw(glyph)
 d.rounded_rectangle([0, 0, t, GH - 1], radius=r, fill=(0, 0, 0, 255))
 d.rounded_rectangle([GW - t, 0, GW - 1, GH - 1], radius=r, fill=(0, 0, 0, 255))
-cbh = int(GH * 0.30); cby = (GH - cbh) // 2
+cbh = int(GH * 0.33); cby = (GH - cbh) // 2
 d.rectangle([t - 2, cby, GW - t + 2, cby + cbh], fill=(0, 0, 0, 255))
 
 def leaf_poly(cx, cy, length, width, angle):
@@ -112,9 +112,9 @@ def cut_leaf(cx, cy, length, width, angle):
          (cx + length * 0.42 * ca, cy + length * 0.42 * sa)],
         fill=(0, 0, 0, 255), width=max(2, int(t * 0.08)))
 
-leafL, leafW = int(GH * 0.52), int(t * 0.58)
-cut_leaf(t / 2, GH / 2, leafL, leafW, math.pi / 2 - 0.26)
-cut_leaf(GW - t / 2, GH / 2, leafL, leafW, math.pi / 2 + 0.26)
+leafL, leafW = int(GH * 0.5), int(t * 0.5)
+cut_leaf(t / 2, GH / 2, leafL, leafW, math.pi / 2 - 0.22)
+cut_leaf(GW - t / 2, GH / 2, leafL, leafW, math.pi / 2 + 0.22)
 
 PAD, gap2 = int(GH * 0.18), int(TARGET * 0.42)
 big = Image.new("RGBA", (PAD * 2 + GW + gap2 + wordmark.width, PAD * 2 + GH), (0, 0, 0, 0))
