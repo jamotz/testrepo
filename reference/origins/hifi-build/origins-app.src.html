@@ -994,7 +994,7 @@ function renderEduTopic(catKey,openIdx){
   w.querySelectorAll(".educ-btn").forEach(function(b){b.addEventListener("click",function(){toast("Lesson — coming soon");});});
   wireEduSearch(w);
   nav("edutopic");
-  if(openIdx!=null){var op=w.querySelector(".eduitem.open");if(op)setTimeout(function(){op.scrollIntoView({block:"center",behavior:"smooth"});},80);}
+  if(openIdx>0){var op=w.querySelector(".eduitem.open");if(op)setTimeout(function(){op.scrollIntoView({block:"center",behavior:"smooth"});},80);} /* only deep-links to a lower topic scroll; top item keeps the banner in view */
 }
 function openEduFor(type,idx){renderEduTopic(EDUMAP[type]||"flower",idx==null?0:idx);}
 function renderCart(){
