@@ -61,6 +61,52 @@ def embed(relpath, maxw=340, q=80):
     b = io.BytesIO(); im.save(b, "JPEG", quality=q, optimize=True)
     return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
 
+def embed_cut(relpath, maxw=400, thr=238, mode="flood"):
+    """Knock out a flat near-white background to transparent. mode="flood"
+    (default) flood-fills from the image edges, so only the *surrounding*
+    background is removed and light areas *inside* the product (white crystals,
+    pale gummies) survive. mode="global" removes every near-white pixel — use it
+    only for products saturated enough that no interior reads as white (e.g.
+    colored gummies), where the background is also trapped between the product.
+    Returns a transparent PNG data URI. Not for photographic backgrounds."""
+    from collections import deque
+    im = Image.open(assets / relpath).convert("RGBA")
+    if im.width > maxw:
+        im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
+    w, h = im.size
+    px = im.load()
+    def is_bg(x, y):
+        r, g, b, a = px[x, y]
+        return a > 0 and r >= thr and g >= thr and b >= thr
+    if mode == "global":
+        for y in range(h):
+            for x in range(w):
+                if is_bg(x, y):
+                    r, g, b, a = px[x, y]; px[x, y] = (r, g, b, 0)
+        b = io.BytesIO(); im.save(b, "PNG", optimize=True)
+        return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
+    dq = deque()
+    for x in range(w):
+        if is_bg(x, 0): dq.append((x, 0))
+        if is_bg(x, h - 1): dq.append((x, h - 1))
+    for y in range(h):
+        if is_bg(0, y): dq.append((0, y))
+        if is_bg(w - 1, y): dq.append((w - 1, y))
+    seen = bytearray(w * h)
+    while dq:
+        x, y = dq.popleft()
+        i = y * w + x
+        if seen[i]: continue
+        seen[i] = 1
+        if not is_bg(x, y): continue
+        r, g, b, a = px[x, y]; px[x, y] = (r, g, b, 0)
+        if x > 0: dq.append((x - 1, y))
+        if x < w - 1: dq.append((x + 1, y))
+        if y > 0: dq.append((x, y - 1))
+        if y < h - 1: dq.append((x, y + 1))
+    b = io.BytesIO(); im.save(b, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
+
 M = {
  "flower":    "product assets/flower.png",
  "gdp":       "product assets/Unproccessed Flower.jpeg",
@@ -179,6 +225,17 @@ for k, rel in M.items():
             IMG[k] = embed(rel)
     except Exception as e:
         print("WARN", k, rel, e)
+
+# transparent cut-outs for the Origins U category cards (flat near-white bg only;
+# 'gdp'/Growing Process has a photographic bg and is intentionally excluded)
+# per-image cut config; gummies: light-gray shadow trapped between them, and they're
+# saturated enough that a lower global threshold clears it without eroding the candy
+CUT_CFG = {"gummy": {"mode": "global", "thr": 222}}
+for k in ["flower", "rosin", "gummy", "topical", "badder", "thca"]:
+    try:
+        IMG["cut_" + k] = embed_cut(M[k], **CUT_CFG.get(k, {}))
+    except Exception as e:
+        print("WARN cut", k, e)
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
 # ---- entity-encode outside script/style; \u-escape non-ASCII inside script ----

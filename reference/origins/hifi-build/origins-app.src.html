@@ -970,7 +970,7 @@ function renderEduHub(){
   var cards=EDU_ORDER.map(function(k){var c=EDU[k];
     var media=c.life
       ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife"].map(function(l){return '<img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="">';}).join("")+'</div>'
-      : '<div class="eduimg"><img src="'+(IMG[c.img]||"")+'" alt="'+c.name+'"></div>';
+      : '<div class="eduimg"><img src="'+(IMG["cut_"+c.img]||IMG[c.img]||"")+'" alt="'+c.name+'"></div>';
     return '<button class="educard tap" data-ec="'+k+'">'+media+'<div class="edulabel">'+c.name+'</div></button>';
   }).join("");
   var w=$("#eduhub");
