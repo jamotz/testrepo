@@ -61,6 +61,15 @@ def embed(relpath, maxw=340, q=80):
     b = io.BytesIO(); im.save(b, "JPEG", quality=q, optimize=True)
     return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
 
+def embed_rgba(relpath, maxw=400):
+    """Embed a pre-cut transparent product photo as-is (keeps the alpha channel;
+    no white flatten). Used for the drop-in files in 'product assets no bg/'."""
+    im = Image.open(assets / relpath).convert("RGBA")
+    if im.width > maxw:
+        im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
+    b = io.BytesIO(); im.save(b, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
+
 def embed_cut(relpath, maxw=400, thr=238, mode="flood"):
     """Knock out a flat near-white background to transparent. mode="flood"
     (default) flood-fills from the image edges, so only the *surrounding*
@@ -222,7 +231,11 @@ for k, rel in M.items():
         elif k.startswith("life_") or k.startswith("sm_") or k.startswith("scent_"):
             IMG[k] = embed_glyph(rel)
         else:
-            IMG[k] = embed(rel)
+            nobg = assets / "product assets no bg" / (k + ".png")
+            if nobg.exists():
+                IMG[k] = embed_rgba("product assets no bg/" + k + ".png")
+            else:
+                IMG[k] = embed(rel)
     except Exception as e:
         print("WARN", k, rel, e)
 
@@ -236,6 +249,17 @@ for k in ["flower", "rosin", "gummy", "topical", "badder", "thca"]:
         IMG["cut_" + k] = embed_cut(M[k], **CUT_CFG.get(k, {}))
     except Exception as e:
         print("WARN cut", k, e)
+
+# Holistic lifestyle glyph — placeholder sage leaf (no real logo asset yet).
+# setdefault so a future 'life_holistic'/'sm_holistic' PNG in M overrides it.
+_hol_leaf = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+             '<path fill="#2E261E" fill-rule="evenodd" d="M50 7C74 27 76 60 51 93'
+             'C48 89 46 85 45 81C31 82 22 72 21 56C33 55 41 58 46 64'
+             'C46 45 47 26 50 7ZM49 40C40 47 34 55 32 65C41 63 47 57 49 47Z"/></svg>')
+_hol_uri = "data:image/svg+xml;base64," + base64.b64encode(_hol_leaf.encode()).decode()
+IMG.setdefault("life_holistic", _hol_uri)
+IMG.setdefault("sm_holistic", _hol_uri)
+
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
 # ---- entity-encode outside script/style; \u-escape non-ASCII inside script ----

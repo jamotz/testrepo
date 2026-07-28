@@ -3,7 +3,7 @@
 :root{
   --or:#F1601C; --or-d:#DF5B35; --olive:#555624; --brown:#2E261E; --brown-2:#3A2F24;
   --cream:#E6C7A7; --tan:#C09A64; --paper:#FFFFFF; --bg:#FFFFFF; --ink:#221C14; --ink-2:#6B6357;
-  --disc:#A0463C; --adv:#C09A64; --soc:#F3D390; --unw:#78A6C5; --night:#5D8A85;
+  --disc:#A0463C; --adv:#C09A64; --soc:#F3D390; --unw:#78A6C5; --night:#5D8A85; --hol:#7E9A5B;
   --head:"Oswald",system-ui,sans-serif; --body:Georgia,"Times New Roman",serif;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -166,11 +166,14 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .oc.life{position:relative;justify-content:flex-start;padding:12px 16px 12px 50px}
 .oc.life .box{display:block;position:absolute;left:16px;top:50%;transform:translateY(-50%)}
 .oc.life .lifelogo{height:28px;width:auto;max-width:78%;object-fit:contain;display:block;margin:0}
+.oc.life .lifelogo.glyphonly{height:34px;width:34px}
+.oc.life .lifename{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.75rem;letter-spacing:.02em;color:#20260F;line-height:1}
 .oc.life.discovery{background:var(--disc)}
 .oc.life.adventurous{background:var(--adv)}
 .oc.life.social{background:var(--soc)}
 .oc.life.unwind{background:var(--unw)}
 .oc.life.nightlife{background:var(--night)}
+.oc.life.holistic{background:var(--hol)}
 
 .gf{padding:20px 18px 24px}
 .gf .intro{font-family:var(--head);font-weight:600;font-size:1.05rem;color:var(--ink);line-height:1.25;text-transform:none}
@@ -180,7 +183,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .feelchip svg{width:24px;height:24px}
 .feelchip .chiplogo{height:32px;width:auto;max-width:64%;object-fit:contain;display:block}
 .feelchip.disc{background:var(--disc);color:#F6E9E2}.feelchip.adv{background:var(--adv)}.feelchip.soc{background:var(--soc)}
-.feelchip.unw{background:var(--unw);color:#122B3C}.feelchip.night{background:var(--night);color:#EAF4F0}
+.feelchip.unw{background:var(--unw);color:#122B3C}.feelchip.night{background:var(--night);color:#EAF4F0}.feelchip.hol{background:var(--hol);color:#20260F}
 .recgroup{margin-bottom:20px}
 .recgroup .rt{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;color:var(--ink);letter-spacing:.03em}
 .recgroup .browse{display:inline-flex;align-items:center;gap:6px;font-family:var(--head);text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--or);background:none;border:0;padding:2px 0 10px}
@@ -195,7 +198,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .chip{flex:none;border:0;border-radius:100px;padding:9px 16px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.09em;color:var(--brown);opacity:.92;display:inline-flex;align-items:center;gap:7px}
 .chip svg{width:15px;height:15px}
 .chip.disc{background:var(--disc);color:#F6E9E2}.chip.adv{background:var(--adv)}.chip.soc{background:var(--soc)}
-.chip.unw{background:var(--unw);color:#122B3C}.chip.night{background:var(--night);color:#EAF4F0}
+.chip.unw{background:var(--unw);color:#122B3C}.chip.night{background:var(--night);color:#EAF4F0}.chip.hol{background:var(--hol);color:#20260F}
 .chip.sel{outline:3px solid #fff;outline-offset:-3px}
 .cats{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
 .cat{background:#fff;border:1px solid #E5E0D6;border-radius:12px;padding:14px;text-align:center}
@@ -224,12 +227,12 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .feed-h .fsee{align-self:flex-start;background:none;border:0;color:var(--or);font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.04em;padding:1px 0}
 .feedrow{display:flex;gap:14px;overflow-x:auto;padding:4px 16px 10px}
 .fcard{flex:none;width:230px;background:#fff;border:1.5px solid #E1DBCD;border-radius:12px;padding:14px 14px 15px;box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column}
-.fcard.disc{border-color:var(--disc)}.fcard.adv{border-color:var(--adv)}.fcard.soc{border-color:var(--soc)}.fcard.unw{border-color:var(--unw)}.fcard.night{border-color:var(--night)}
+.fcard.disc{border-color:var(--disc)}.fcard.adv{border-color:var(--adv)}.fcard.soc{border-color:var(--soc)}.fcard.unw{border-color:var(--unw)}.fcard.night{border-color:var(--night)}.fcard.hol{border-color:var(--hol)}
 .fcard .fim{height:92px;display:flex;align-items:center;justify-content:center}
 .fcard .fim img{max-height:92px;max-width:80%;object-fit:contain}
 .fcard .fdiv{position:relative;height:1.5px;background:#DAD3C5;margin:8px 0 11px}
 .fcard .fbadge{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.fcard .fbadge.disc{background:var(--disc)}.fcard .fbadge.adv{background:var(--adv)}.fcard .fbadge.soc{background:var(--soc)}.fcard .fbadge.unw{background:var(--unw)}.fcard .fbadge.night{background:var(--night)}
+.fcard .fbadge.disc{background:var(--disc)}.fcard .fbadge.adv{background:var(--adv)}.fcard .fbadge.soc{background:var(--soc)}.fcard .fbadge.unw{background:var(--unw)}.fcard .fbadge.night{background:var(--night)}.fcard .fbadge.hol{background:var(--hol)}
 .fcard .fbadge img{width:19px;height:19px;object-fit:contain}
 .fcard .fbc{font-family:var(--head);font-size:11.5px;letter-spacing:.01em;color:#9A9284}
 .fcard .fnm{font-family:var(--head);font-weight:700;font-size:18px;color:var(--ink);margin:2px 0 4px;line-height:1.12}
@@ -296,13 +299,13 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
 .pwrap{padding:6px 16px 20px}
 .pimg{position:relative;background:#fff;border:1.5px solid #E1DBCD;border-radius:12px;display:flex;align-items:center;justify-content:center;height:210px;margin-bottom:12px}
-.pimg.disc{border-color:var(--disc)}.pimg.adv{border-color:var(--adv)}.pimg.soc{border-color:var(--soc)}.pimg.unw{border-color:var(--unw)}.pimg.night{border-color:var(--night)}
+.pimg.disc{border-color:var(--disc)}.pimg.adv{border-color:var(--adv)}.pimg.soc{border-color:var(--soc)}.pimg.unw{border-color:var(--unw)}.pimg.night{border-color:var(--night)}.pimg.hol{border-color:var(--hol)}
 .pimg img{max-height:190px;object-fit:contain}
 .pimg .life{position:absolute;right:12px;bottom:12px;border-radius:100px;padding:6px 14px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.04em;display:inline-flex;align-items:center;gap:7px}
 .pimg .life svg{width:14px;height:14px}
 .pimg .life img{width:16px;height:16px;object-fit:contain}
 .pimg .life.disc{background:var(--disc);color:#F6E9E2}.pimg .life.adv{background:var(--adv);color:var(--brown)}.pimg .life.soc{background:var(--soc);color:var(--brown)}
-.pimg .life.unw{background:var(--unw);color:#122B3C}.pimg .life.night{background:var(--night);color:#EAF4F0}
+.pimg .life.unw{background:var(--unw);color:#122B3C}.pimg .life.night{background:var(--night);color:#EAF4F0}.pimg .life.hol{background:var(--hol);color:#20260F}
 .pcat{font-family:var(--head);font-size:12px;letter-spacing:.01em;color:#9A9284;text-transform:none}
 .pname{font-size:1.7rem;margin:3px 0 1px;color:var(--ink);text-transform:none}
 .pbrand{display:flex;justify-content:space-between;align-items:baseline}
@@ -337,7 +340,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .cwrap{padding:6px 16px 20px}
 .cwrap h2{font-size:1.5rem;margin-bottom:10px;color:var(--ink);text-transform:uppercase;letter-spacing:.02em}
 .ci{display:flex;gap:12px;background:#fff;border:1.5px solid #E5E0D6;border-radius:10px;padding:10px;margin-bottom:10px;align-items:center}
-.ci.disc{border-color:var(--disc)}.ci.adv{border-color:var(--adv)}.ci.soc{border-color:var(--soc)}.ci.unw{border-color:var(--unw)}.ci.night{border-color:var(--night)}
+.ci.disc{border-color:var(--disc)}.ci.adv{border-color:var(--adv)}.ci.soc{border-color:var(--soc)}.ci.unw{border-color:var(--unw)}.ci.night{border-color:var(--night)}.ci.hol{border-color:var(--hol)}
 .ci img{width:54px;height:54px;object-fit:contain;flex:none}
 .ci .m{flex:1;min-width:0}
 .ci .nm{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;line-height:1.2;color:var(--ink)}
@@ -587,8 +590,8 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 
 <script>
 const IMG=/*IMGMAP*/;
-const FEEL={discovery:"Discovery",adventurous:"Adventurous",social:"Social",unwind:"Unwind",nightlife:"Nightlife"};
-const LIFECLASS={discovery:"disc",adventurous:"adv",social:"soc",unwind:"unw",nightlife:"night"};
+const FEEL={discovery:"Discovery",adventurous:"Adventurous",social:"Social",unwind:"Unwind",nightlife:"Nightlife",holistic:"Holistic"};
+const LIFECLASS={discovery:"disc",adventurous:"adv",social:"soc",unwind:"unw",nightlife:"night",holistic:"hol"};
 const TYPES={flower:"Flower",preroll:"Pre-Rolls",concentrate:"Concentrates",edible:"Edibles",drink:"Drinks",topical:"Topicals"};
 const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:[".5 g each",".75 g each","1 g each"],concentrate:["1 g"],edible:["2.5 mg","10 mg","30 mg","100 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"],topical:["50 mL","100 mL","200 mL","250 mL"]};
 const SUBS={concentrate:["Distillate","Live Resin","Rosin (SHO)","Kief","Hash"],edible:["Chocolates","Gummies","Mints","Drinks"],flower:["Indoor","Outdoor"],preroll:["Traditional","Infused","Blunt"],topical:["Cooling","Warming","Soothing"]};
@@ -600,7 +603,7 @@ const FEELOPTS=[
  {k:"balanced",t:"Balanced / Giggly",life:"social"},
  {k:"euphoric",t:"Euphoric / Creative",life:"discovery"},
  {k:"focused",t:"Focused / Energized",life:"adventurous"},
- {k:"cbd",t:"Holistic / CBD Dominant",life:"nightlife"}
+ {k:"cbd",t:"Holistic / CBD Dominant",life:"holistic"}
 ];
 const TASTES=["Fruity","Flowery","Citrus","Creamy","Nutty","Diesel","Cheese","Herbal","Pine","Peppery"];
 const P=[
@@ -608,7 +611,7 @@ const P=[
  {t:"flower",n:"Jet Fuel",b:"Artizen",img:"flower",pr:38,thc:25.5,sub:"Indoor",st:"Sativa",tp:"Piney",f:["adventurous","nightlife"],sale:0,r:4.5,rv:13,fe:["Focused","Uplifted","Energized"],ta:["Diesel","Pine","Peppery"],d:"A loud, gassy sativa with a sharp piney nose. Fast, focused, and made for moving."},
  {t:"flower",n:"Grand Daddy Purple",b:"Freddy's",img:"gdp",pr:34,thc:22.1,sub:"Outdoor",st:"Indica",tp:"Lavender",f:["unwind"],sale:1,r:4.7,rv:21,fe:["Sleepy","Relaxed","Calm"],ta:["Flowery","Fruity","Herbal"],d:"Classic indica comfort — grape and lavender with a heavy exhale."},
  {t:"flower",n:"Pineapple Express",b:"Saints",img:"flower",pr:45,thc:20.7,sub:"Indoor",st:"Sativa",tp:"Citrus",f:["social","adventurous","discovery"],sale:0,r:4.8,rv:18,fe:["Giddy","Chatty","Creative"],ta:["Citrus","Fruity","Pine"],d:"Bright citrus sativa — chatty, sunny, and made for daytime."},
- {t:"flower",n:"Northern Lights CBD",b:"Royal Tree",img:"flower",pr:26,thc:0.8,cbd:1,sub:"Outdoor",st:"CBD",tp:"Earthy",f:["nightlife","unwind"],sale:0,r:4.4,rv:7,fe:["Calm","Clear","Relaxed"],ta:["Earthy","Herbal","Pine"],d:"A CBD-forward cut for clear-headed calm. Under 1% THC."},
+ {t:"flower",n:"Northern Lights CBD",b:"Royal Tree",img:"flower",pr:26,thc:0.8,cbd:1,sub:"Outdoor",st:"CBD",tp:"Earthy",f:["holistic","unwind"],sale:0,r:4.4,rv:7,fe:["Calm","Clear","Relaxed"],ta:["Earthy","Herbal","Pine"],d:"A CBD-forward cut for clear-headed calm. Under 1% THC."},
  {t:"preroll",n:"Dutch Treat 3-Pack",b:"Artizen",img:"preroll",pr:18,thc:23.4,sub:"Traditional",st:"Hybrid",tp:"Piney",f:["social","nightlife"],sale:0,r:4.3,rv:11,fe:["Giddy","Social","Relaxed"],ta:["Pine","Peppery","Herbal"],d:"Three straight-to-the-point pre-rolls. Grab and go."},
  {t:"preroll",n:"Slurricane Infused",b:"Skörd",img:"preroll",pr:14,thc:31.2,sub:"Infused",st:"Indica",tp:"Fruity",f:["unwind","nightlife"],sale:1,r:4.6,rv:15,fe:["Sleepy","Heavy","Relaxed"],ta:["Fruity","Creamy","Diesel"],d:"One heavy infused indica pre-roll for the end of the night."},
  {t:"concentrate",n:"Cinderella 99 Rosin",b:"Push Co.",img:"rosin",pr:37,thc:84.3,sub:"Rosin (SHO)",st:"Sativa",tp:"Citrus",f:["adventurous","nightlife","discovery"],sale:0,r:4.9,rv:24,fe:["Euphoric","Creative","Focused"],ta:["Citrus","Fruity","Diesel"],d:"Fresh-pressed single-origin rosin with a screaming citrus profile."},
@@ -618,10 +621,10 @@ const P=[
  {t:"concentrate",n:"House Kief",b:"Freddy's",img:"keif",pr:14,thc:41.9,sub:"Kief",st:"Hybrid",tp:"Pepper",f:["discovery"],sale:1,r:3.9,rv:4,fe:["Balanced","Mellow","Giddy"],ta:["Peppery","Herbal","Pine"],d:"House-collected kief for topping bowls. Budget heat."},
  {t:"concentrate",n:"Bubble Hash",b:"Freddy's",img:"hash",pr:30,thc:52.3,sub:"Hash",st:"Indica",tp:"Earthy",f:["unwind","discovery"],sale:0,r:4.2,rv:5,fe:["Relaxed","Mellow","Calm"],ta:["Earthy","Herbal","Creamy"],d:"Old-school ice-water hash, pressed and mellow."},
  {t:"edible",n:"Gummies — Lemon & Orange",b:"Saints",img:"gummy",pr:25,mg:10,sub:"Gummies",st:"Sativa",tp:"Citrus",f:["social","adventurous"],sale:0,r:4.7,rv:19,fe:["Giddy","Uplifted","Social"],ta:["Citrus","Fruity","Creamy"],d:"Bright citrus gummies, 10 mg apiece. Party-portioned."},
- {t:"edible",n:"Dark Chocolates 1:1",b:"St. Ideal",img:"choc",pr:28,mg:10,cbd:1,sub:"Chocolates",st:"Hybrid",tp:"Earthy",f:["unwind","social"],sale:0,r:4.6,rv:12,fe:["Balanced","Calm","Relaxed"],ta:["Creamy","Nutty","Earthy"],d:"Rich 1:1 THC:CBD dark chocolate squares."},
+ {t:"edible",n:"Dark Chocolates 1:1",b:"St. Ideal",img:"choc",pr:28,mg:10,cbd:1,sub:"Chocolates",st:"Hybrid",tp:"Earthy",f:["unwind","social","holistic"],sale:0,r:4.6,rv:12,fe:["Balanced","Calm","Relaxed"],ta:["Creamy","Nutty","Earthy"],d:"Rich 1:1 THC:CBD dark chocolate squares."},
  {t:"edible",n:"Peppermint Melts",b:"Saints",img:"choc",pr:22,mg:5,sub:"Mints",st:"Hybrid",tp:"Piney",f:["social"],sale:0,r:4.2,rv:6,fe:["Giddy","Clear","Balanced"],ta:["Flowery","Herbal","Creamy"],d:"Fast-acting 5 mg mints — discreet and easy to dose."},
  {t:"drink",n:"Sungaze Agave Spritz",b:"Saints",img:"gummy2",pr:31.99,mg:100,sub:"Drinks",st:"Sativa",tp:"Citrus",f:["social","nightlife"],sale:1,r:4.0,rv:9,fe:["Uplifted","Social","Giddy"],ta:["Citrus","Fruity","Creamy"],d:"Sparkling agave sipper. Splits into 10 easy pours."},
- {t:"topical",n:"Dragon Balm",b:"St. Ideal",img:"topical",pr:42,thc:0.3,cbd:1,sub:"Soothing",st:"CBD",tp:"Lavender",f:["unwind"],sale:0,r:4.9,rv:22,fe:["Calm","Relief","Clear"],ta:["Flowery","Herbal","Aromatic"],d:"CBD-rich recovery balm for muscles and joints. No high, all relief."}
+ {t:"topical",n:"Dragon Balm",b:"St. Ideal",img:"topical",pr:42,thc:0.3,cbd:1,sub:"Soothing",st:"CBD",tp:"Lavender",f:["holistic"],sale:0,r:4.9,rv:22,fe:["Calm","Relief","Clear"],ta:["Flowery","Herbal","Aromatic"],d:"CBD-rich recovery balm for muscles and joints. No high, all relief."}
 ];
 P.forEach(function(p,i){p.id=i;p.was=p.sale?+(p.pr*1.3).toFixed(2):null;});
 
@@ -693,7 +696,12 @@ document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener(
 
 function renderFeel(){
   /* feel = the Lifestyle Overview: real brand logos, per Jack's request */
-  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifelogo" src="'+(IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'"></button>';}).join("");
+  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){
+    var wm=k!=="holistic"; /* the 5 brand logos already contain their wordmark; holistic has only a placeholder glyph */
+    return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span>'+
+      '<img class="lifelogo'+(wm?'':' glyphonly')+'" src="'+(IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'">'+
+      (wm?'':'<span class="lifename">'+FEEL[k]+'</span>')+'</button>';
+  }).join("");
   $("#feelopts").querySelectorAll("[data-fk]").forEach(function(b){b.addEventListener("click",function(){
     var k=b.dataset.fk,i=G.feels.indexOf(k);i>-1?G.feels.splice(i,1):G.feels.push(k);
     b.classList.toggle("sel");$("#feelnext").disabled=!G.feels.length;
@@ -969,7 +977,7 @@ function wireEduSearch(root){root.querySelectorAll("[data-edusearch]").forEach(f
 function renderEduHub(){
   var cards=EDU_ORDER.map(function(k){var c=EDU[k];
     var media=c.life
-      ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife"].map(function(l){return '<img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="">';}).join("")+'</div>'
+      ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="">';}).join("")+'</div>'
       : '<div class="eduimg"><img src="'+(IMG["cut_"+c.img]||IMG[c.img]||"")+'" alt="'+c.name+'"></div>';
     return '<button class="educard tap" data-ec="'+k+'">'+media+'<div class="edulabel">'+c.name+'</div></button>';
   }).join("");
