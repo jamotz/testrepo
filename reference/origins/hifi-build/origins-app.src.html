@@ -324,6 +324,11 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .szo.sel{background:var(--olive);color:#fff}
 .addbig{width:100%;margin-top:13px;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:15px;padding:13px}
 .addbig:active{background:var(--or-d)}
+.pistep{display:flex;align-items:center;justify-content:center;gap:30px;margin-top:13px;padding:6px 0}
+.pistep button{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--or);background:#fff;color:var(--or);font-family:var(--head);font-size:22px;line-height:1;padding:0}
+.pistep button:active{background:var(--or);color:#fff}
+.pistep b{font-family:var(--head);font-weight:700;font-size:22px;color:var(--ink);min-width:26px;text-align:center}
+.dealhint{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--or);margin:2px 0 6px}
 .pihead{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
 .pihead .pihback{background:none;border:0;color:var(--ink);width:26px;height:26px;padding:0;display:flex;align-items:center;justify-content:center}
 .pihead .pihback svg{width:24px;height:24px}
@@ -652,6 +657,15 @@ function priceFor(p,size){
   }
   return{now:base,was:null};
 }
+/* 2-for-$50 needs pairs: only even units (2,4,…) of a line get the $25 eighth
+   price, the odd one stays regular. The 40%-off 14g/28g deal has no quantity
+   requirement. Used for the cart, confirmation and PI line pricing. */
+function linePrice(p,size,q){
+  var pp=priceFor(p,size),reg=(pp.was||pp.now);
+  if(pp.was&&size==="3.5 g"){var d=q-(q%2);return{total:d*pp.now+(q%2)*reg,regTotal:reg*q};}
+  return{total:pp.now*q,regTotal:reg*q};
+}
+function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}
 
 const S={type:null,strain:null,sub:null,mood:null,brands:[],size:null,thc:null,terp:null,sale:false,sort:"best",cart:[],screen:"home"};
 const G={feels:[],method:null,subs:[],tastes:[]};
@@ -924,7 +938,12 @@ function sizeMult(p,s){var arr=SIZES[p.t]||[],i=arr.indexOf(s);
   var mult={flower:[0.4,1,1.8,3.2,5.5],preroll:[1,1.35,1.7],concentrate:[1],edible:[.5,1,2.4,6],drink:[.5,1,2.4,6],topical:[1,1.7,3,3.6]};
   return (mult[p.t]||[1])[i]||1;}
 function drawProduct(){
-  var p=curP,pp=priceFor(p,curSize),price=pp.now;
+  var p=curP,pp=priceFor(p,curSize);
+  var q=cartQty(p.id,curSize),reg=(pp.was||pp.now);
+  var isPair=!!pp.was&&curSize==="3.5 g";               /* 2-for-$50: needs qty 2,4,… */
+  var dealOn=pp.was&&(!isPair||q>=2);                    /* 40% off 14g/28g: always on */
+  var priceHtml=dealOn?money(pp.now)+'<span class="was">'+money(reg)+'</span>':money(reg);
+  var hint=(isPair&&q<2)?'<div class="dealhint">2 for $50 &mdash; deal price unlocks in pairs</div>':'';
   var lc=LIFECLASS[p.f[0]]||"soc";
   var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
   var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+FEEL[p.f[0]]+'</span>':'';
@@ -937,20 +956,25 @@ function drawProduct(){
     '<div class="pcat">'+TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""))+'</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="t">'+(p.thc!=null?("THC "+p.thc+"%"):(p.mg?p.mg+" mg":""))+'</span></div>'+
-    '<div class="pricerow"><div class="pprice">'+money(price)+(pp.was?'<span class="was">'+money(pp.was)+'</span>':'')+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
-    szpick+
-    '<button class="addbig tap" id="addbig">Add to Cart</button>'+
+    '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
+    hint+szpick+
+    (q>0?'<div class="pistep"><button class="tap" id="pidec">&minus;</button><b>'+q+'</b><button class="tap" id="piinc">+</button></div>'
+        :'<button class="addbig tap" id="addbig">Add to Cart</button>')+
     '<div class="pdesc-h">Details</div><p class="pdesc">'+p.d+'</p>'+feels+taste;
   $("#pwrap [data-b]").addEventListener("click",function(){nav(S.type?"list":"shop");});
   $("#pwrap").querySelectorAll("[data-sz]").forEach(function(b){b.addEventListener("click",function(){curSize=b.dataset.sz;drawProduct();});});
-  $("#addbig").addEventListener("click",function(){addToCart(p.id,curSize);});
+  var ab=$("#addbig");if(ab)ab.addEventListener("click",function(){addToCart(p.id,curSize);drawProduct();});
+  var inc=$("#piinc");if(inc)inc.addEventListener("click",function(){addToCart(p.id,curSize);drawProduct();});
+  var dec=$("#pidec");if(dec)dec.addEventListener("click",function(){var key=p.id+"|"+curSize;
+    for(var i=0;i<S.cart.length;i++){if(S.cart[i].key===key){S.cart[i].q--;if(S.cart[i].q<1)S.cart.splice(i,1);break;}}
+    setBag();drawProduct();});
 }
 
 function addToCart(id,size){var key=id+"|"+size,ex=null;S.cart.forEach(function(c){if(c.key===key)ex=c;});if(ex)ex.q++;else S.cart.push({key:key,id:id,size:size,q:1});
   setBag();toast("Added to bag");}
 function setBag(){var n=S.cart.reduce(function(a,c){return a+c.q;},0);var e=$("#bagn");e.textContent=n;e.classList.toggle("show",n>0);}
-function cartSub(){return S.cart.reduce(function(a,c){return a+priceFor(P[c.id],c.size).now*c.q;},0);}
-function cartDiscount(){return S.cart.reduce(function(a,c){var pp=priceFor(P[c.id],c.size);return a+((pp.was||pp.now)-pp.now)*c.q;},0);}
+function cartSub(){return S.cart.reduce(function(a,c){return a+linePrice(P[c.id],c.size,c.q).total;},0);}
+function cartDiscount(){return S.cart.reduce(function(a,c){var lp=linePrice(P[c.id],c.size,c.q);return a+(lp.regTotal-lp.total);},0);}
 
 /* ===== Origins U (education) ===== */
 const EDU_ORDER=["flower","concentrate","edibles","topicals","lifestyles","cbd","growing","thc"];
@@ -1039,8 +1063,8 @@ function openEduFor(type,idx){renderEduTopic(EDUMAP[type]||"flower",idx==null?0:
 function renderCart(){
   var w=$("#cwrap");
   if(!S.cart.length){w.innerHTML='<h2>Your bag</h2><div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
-  w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],pp=priceFor(p,c.size),pr=pp.now,was=pp.was,lc=LIFECLASS[p.f[0]]||"soc";
-    return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+(was?'<span class="was">'+money(was*c.q)+'</span><span class="now">'+money(pr*c.q)+'</span>':money(pr*c.q))+'</div></div>'+
+  w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],lp=linePrice(p,c.size,c.q),lc=LIFECLASS[p.f[0]]||"soc";
+    return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+(lp.total<lp.regTotal-0.001?'<span class="was">'+money(lp.regTotal)+'</span><span class="now">'+money(lp.total)+'</span>':money(lp.total))+'</div></div>'+
       '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
    +'<div class="totals"><div class="trow"><span>Subtotal (pre-tax)</span><span>'+money(cartSub()*0.63)+'</span></div>'+
      '<div class="trow"><span>Excise + tax (37%, incl.)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
@@ -1052,8 +1076,8 @@ function renderCart(){
   var ck=w.querySelector("#ck");if(ck)ck.addEventListener("click",function(){renderConfirm();nav("confirm");});
 }
 function renderConfirm(){
-  var items=S.cart.map(function(c){var p=P[c.id],pp=priceFor(p,c.size),pr=pp.now*c.q,was=pp.was?pp.was*c.q:null;
-    return '<div class="li"><div class="li-m"><div class="li-nm">'+p.n+' <span class="lq">&times;'+c.q+'</span></div><div class="li-g">'+c.size.replace(" each","")+'</div></div><span class="li-pr">'+(was?'<span class="was">'+money(was)+'</span><span class="now">'+money(pr)+'</span>':money(pr))+'</span></div>';}).join("");
+  var items=S.cart.map(function(c){var p=P[c.id],lp=linePrice(p,c.size,c.q);
+    return '<div class="li"><div class="li-m"><div class="li-nm">'+p.n+' <span class="lq">&times;'+c.q+'</span></div><div class="li-g">'+c.size.replace(" each","")+'</div></div><span class="li-pr">'+(lp.total<lp.regTotal-0.001?'<span class="was">'+money(lp.regTotal)+'</span><span class="now">'+money(lp.total)+'</span>':money(lp.total))+'</span></div>';}).join("");
   var tot=money(cartSub());
   $("#confwrap").innerHTML='<div class="card"><div class="ch"><h3>We have received your order</h3><p>Please be sure to pick up your order before we close. We will not hold orders overnight.</p></div>'+
     '<div class="body"><div class="sum">Order Summary</div>'+items+'<div class="tot"><span>Total <small>(tax incl.)</small></span><span>'+tot+'</span></div></div>'+
