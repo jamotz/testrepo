@@ -347,6 +347,8 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .ci img{width:54px;height:54px;object-fit:contain;flex:none}
 .ci .m{flex:1;min-width:0}
 .ci .nm{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;line-height:1.2;color:var(--ink)}
+.ci .nm .qx{color:var(--or);font-weight:700;margin-right:2px}
+.ci .grams{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.03em;color:var(--olive);margin-top:3px}
 .ci .sub{font-family:var(--head);font-size:10.5px;color:#8C8478;text-transform:uppercase;margin-top:2px}
 .ci .pr{font-family:var(--head);font-weight:700;font-size:14px;margin-top:3px;color:var(--ink)}
 /* Origins U */
@@ -402,9 +404,13 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .conf .li{display:flex;justify-content:space-between;font-family:var(--head);font-size:12.5px;padding:4px 0;text-transform:uppercase;color:var(--ink)}
 .conf .li .q{color:#8C8478}
 .conf .tot{display:flex;justify-content:space-between;font-family:var(--head);font-weight:700;font-size:15px;border-top:1px solid #E5E0D6;margin-top:8px;padding-top:10px;text-transform:uppercase;color:var(--ink)}
-.conf .foot{background:var(--brown);color:#EFE7DA;padding:14px 16px}
+.conf .foot{background:var(--brown);color:#EFE7DA;padding:16px;text-align:center}
 .conf .foot b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.12em;display:block;color:var(--cream)}
-.conf .foot p{margin:2px 0 10px;font-size:13px}
+.conf .foot p{margin:3px 0 12px;font-size:13px;line-height:1.5}
+.cf-hours{display:inline-flex;flex-direction:column;gap:6px;margin-top:3px}
+.cf-hours div{display:flex;justify-content:center;gap:14px;font-size:13px}
+.cf-hours div span:first-child{font-weight:600;width:78px;text-align:right}
+.cf-hours div span:last-child{width:130px;text-align:left}
 .again{width:100%;margin-top:14px;background:var(--olive);color:#fff;border:0;border-radius:6px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:13px;padding:13px}
 
 .drawer{position:absolute;inset:0;z-index:70;display:none}
@@ -1015,8 +1021,8 @@ function renderCart(){
   var w=$("#cwrap");
   if(!S.cart.length){w.innerHTML='<h2>Your bag</h2><div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
   w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],pr=p.pr*sizeMult(p,c.size),lc=LIFECLASS[p.f[0]]||"soc";
-    return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+money(pr*c.q)+'</div></div>'+
-      '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
+    return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm"><span class="qx">'+c.q+'&times;</span> '+p.n+'</div><div class="grams">'+c.size.replace(" each","")+'</div><div class="sub">'+p.b+'</div><div class="pr">'+money(pr*c.q)+'</div></div>'+
+      '<div class="q"><button class="tap" data-d="'+i+'">−</button><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
    +'<div class="totals"><div class="trow"><span>Subtotal (pre-tax)</span><span>'+money(cartSub()*0.63)+'</span></div>'+
      '<div class="trow"><span>Excise + tax (37%, incl.)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
      '<div class="trow big"><span>Total</span><span>'+money(cartSub())+'</span></div></div>'+
@@ -1030,7 +1036,7 @@ function renderConfirm(){
   var tot=money(cartSub());
   $("#confwrap").innerHTML='<div class="card"><div class="ch"><h3>We have received your order</h3><p>Please be sure to pick up your order before we close. We will not hold orders overnight.</p></div>'+
     '<div class="body"><div class="sum">Order Summary</div>'+items+'<div class="tot"><span>Total <small>(tax incl.)</small></span><span>'+tot+'</span></div></div>'+
-    '<div class="foot"><b>Location</b><p>16390 Cleveland St, Redmond, WA 98052</p><b>Hours</b><p>Mon–Thu 8AM–10:30PM · Fri–Sat 8AM–11:30PM · Sun 9AM–9PM</p></div></div>'+
+    '<div class="foot"><b>Location</b><p>16390 Cleveland St,<br>Redmond, WA<br>98052, USA</p><b>Hours</b><div class="cf-hours"><div><span>Mon - Thu</span><span>8 AM to 10:30 PM</span></div><div><span>Fri - Sat</span><span>8 AM to 11:30 PM</span></div><div><span>Sunday</span><span>9 AM to 9:00 PM</span></div></div></div></div>'+
     '<button class="again tap" id="again">Keep shopping</button>';
   S.cart=[];$("#bagn").textContent="0";
   $("#again").addEventListener("click",function(){nav("shop");});
