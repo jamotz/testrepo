@@ -183,7 +183,8 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .feelchip .chiplogo{height:32px;width:auto;max-width:64%;object-fit:contain;display:block}
 .feelchip.disc{background:var(--disc);color:#F6E9E2}.feelchip.adv{background:var(--adv)}.feelchip.soc{background:var(--soc)}
 .feelchip.unw{background:var(--unw);color:#122B3C}.feelchip.night{background:var(--night);color:#EAF4F0}.feelchip.hol{background:var(--hol);color:#20260F}
-.recgroup{margin-bottom:20px}
+.recgroup{margin-bottom:22px}
+.gf .feedrow{margin:0 -18px;padding:6px 18px 12px}
 .recgroup .rt{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;color:var(--ink);letter-spacing:.03em}
 .recgroup .browse{display:inline-flex;align-items:center;gap:6px;font-family:var(--head);text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--or);background:none;border:0;padding:2px 0 10px}
 .recrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
@@ -755,12 +756,13 @@ function renderFinish(){
     var prods=P.filter(function(p){return p.t===G.method&&(g===TYPES[G.method]||p.sub===g);}).slice(0,6);
     var pool=prods.length?prods:P.filter(function(p){return p.t===G.method;}).slice(0,6);
     if(!pool.length)pool=P.slice(0,6);
-    var cards=pool.map(function(p){return '<div class="rp tap" data-p="'+p.id+'"><img src="'+(IMG[p.img]||'')+'" alt=""><b>'+p.n+'</b><span>'+money(p.pr)+'</span></div>';}).join("");
-    return '<div class="recgroup"><div class="rt">Recommended '+g+'</div><button class="browse tap" data-sub="'+g+'">Browse products ›</button><div class="recrow">'+cards+'</div></div>';
+    var cards=pool.map(feedCard).join("");
+    return '<div class="recgroup"><div class="rt">Recommended '+g+'</div><button class="browse tap" data-sub="'+g+'">Browse products ›</button><div class="feedrow">'+cards+'</div></div>';
   }).join("");
   $("#finishwrap").innerHTML='<div class="intro">You chose to see items from these feelings.<br>Select one to explore related products:</div><div class="learn tap" id="finishlearn">Learn more ›</div><div class="feelchips">'+chips+'</div>'+groupHtml+'<div class="backshop"><button class="continue cue" id="tobackshop">Back to Shop →</button></div>';
   $("#finishlearn").addEventListener("click",function(){openEduFor(G.method,0);}); /* Recommendations: Learn more -> matching Origins U page */
-  $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(){openProduct(+c.dataset.p);});});
+  $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
+  $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
     S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;
     S.mood=lifes[0]||null;S.strain=null;S.size=null;
