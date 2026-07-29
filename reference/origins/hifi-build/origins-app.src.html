@@ -922,13 +922,13 @@ const EDU_ORDER=["flower","concentrate","edibles","topicals","lifestyles","cbd",
 /* which Origins U category a Shop/Guide "Learn the differences" link jumps to */
 const EDUMAP={flower:"flower",preroll:"flower",concentrate:"concentrate",edible:"edibles",drink:"edibles",topical:"topicals",tincture:"cbd",vape:"concentrate"};
 const EDU={
- flower:{name:"Flower",img:"flower",lead:"Learn all about flower from the growing process to your jar — we cover the anatomy of the plant to help you explore the world of FLOWER.",topics:[
+ flower:{name:"Flower",img:"flower",imgscale:1.3,lead:"Learn all about flower from the growing process to your jar — we cover the anatomy of the plant to help you explore the world of FLOWER.",topics:[
    {t:"Outdoor vs Indoor",d:"Learn the differences between flower grown outdoors vs indoors. Explore the benefits and disadvantages of each growing style."},
    {t:"Growing Flower",d:"Follow a plant from seedling to harvest — the lighting, feeding, and the vegetative and flowering stages that shape the final bud."},
    {t:"Harvesting Flower",d:"Learn how growers cure their flower before bottling it up for you to smoke. Explore the process of curation and why it's important."},
    {t:"Parts of the Plant",d:"Colas, calyxes, trichomes and pistils — get to know the anatomy of the flower and where the good stuff lives."},
    {t:"THC in Flower",d:"How potency is measured, what the percentage on the jar really means, and why terpenes matter as much as the THC number."}]},
- concentrate:{name:"Concentrate",img:"rosin",lead:"From the melty to the marble, concentrates come in many forms. Learn how they're made and how to tell them apart.",topics:[
+ concentrate:{name:"Concentrate",img:"rosin",imgscale:1.3,lead:"From the melty to the marble, concentrates come in many forms. Learn how they're made and how to tell them apart.",topics:[
    {t:"Types of Concentrate",d:"Distillate, live resin, rosin, kief and hash — a quick tour of the most common concentrate textures and what sets each apart."},
    {t:"Extraction Methods",d:"Solvent vs solventless: how butane, CO2 and heat-and-pressure extraction change the final product."},
    {t:"Live Resin vs Rosin",d:"Both are prized for flavor, but they're made very differently. Learn which one fits your taste and budget."},
@@ -961,11 +961,11 @@ const EDU={
    {t:"Soil vs Hydroponic",d:"Two very different ways to feed a plant, and what each brings to the table."},
    {t:"Curing & Drying",d:"The slow, careful finish that locks in aroma, smoothness and potency after harvest."},
    {t:"Sustainable Growing",d:"Water, energy and packaging — how growers are shrinking cannabis's footprint."}]},
- thc:{name:"Types of THC",img:"thca",lead:"THC isn't just one thing. Learn about the different forms and what the numbers on the label really mean.",topics:[
+ thc:{name:"Types of Cannabinoids",img:"thca",lead:"THC is just the start — cannabis makes many cannabinoids, each with its own effect. Learn what sets them apart.",topics:[
    {t:"What Is THC",d:"The primary intoxicating compound in cannabis — how it works with your body's endocannabinoid system."},
    {t:"Delta-9 THC",d:"The classic, most abundant form of THC and the one most products are measured by."},
-   {t:"Delta-8 THC",d:"A milder cousin of Delta-9 with a reportedly smoother, clearer effect."},
    {t:"THCA & THCV",d:"The raw acid form that converts to THC with heat, plus the rare cannabinoid people call 'diet weed.'"},
+   {t:"Types of CBD",d:"The non-intoxicating side of the plant — CBD alongside CBDA, CBN and CBG, and what each is reached for."},
    {t:"Reading THC Percentages",d:"What the percentage on the jar really tells you — and why higher isn't always better."}]}
 };
 function eduSearchPill(){return '<button class="edusearch tap" type="button" data-edusearch="1"><span>Search</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.2-4.2"/></svg></button>';}
@@ -974,7 +974,7 @@ function renderEduHub(){
   var cards=EDU_ORDER.map(function(k){var c=EDU[k];
     var media=c.life
       ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="">';}).join("")+'</div>'
-      : '<div class="eduimg"><img src="'+(IMG[c.img]||"")+'" alt="'+c.name+'"></div>';
+      : '<div class="eduimg"><img src="'+(IMG[c.img]||"")+'" alt="'+c.name+'"'+(c.imgscale?' style="transform:scale('+c.imgscale+')"':'')+'></div>';
     return '<button class="educard tap" data-ec="'+k+'">'+media+'<div class="edulabel">'+c.name+'</div></button>';
   }).join("");
   var w=$("#eduhub");
