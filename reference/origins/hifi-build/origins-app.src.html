@@ -324,10 +324,13 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .szo.sel{background:var(--olive);color:#fff}
 .addbig{width:100%;margin-top:13px;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:15px;padding:13px}
 .addbig:active{background:var(--or-d)}
-.pistep{display:flex;align-items:center;justify-content:center;gap:30px;margin-top:13px;padding:6px 0}
-.pistep button{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--or);background:#fff;color:var(--or);font-family:var(--head);font-size:22px;line-height:1;padding:0}
+/* same pill footprint as .addbig — the button turns into this stepper in place */
+.pistep{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:13px;
+  background:#fff;border:1.5px solid var(--or);border-radius:100px;padding:0;overflow:hidden}
+.pistep button{flex:none;width:64px;align-self:stretch;border:0;background:none;color:var(--or);
+  font-family:var(--head);font-weight:700;font-size:24px;line-height:1;padding:13px 0}
 .pistep button:active{background:var(--or);color:#fff}
-.pistep b{font-family:var(--head);font-weight:700;font-size:22px;color:var(--ink);min-width:26px;text-align:center}
+.pistep b{flex:1;text-align:center;font-family:var(--head);font-weight:700;font-size:20px;color:var(--or)}
 .dealhint{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--or);margin:2px 0 6px}
 .pihead{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
 .pihead .pihback{background:none;border:0;color:var(--ink);width:26px;height:26px;padding:0;display:flex;align-items:center;justify-content:center}
