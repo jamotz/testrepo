@@ -828,7 +828,8 @@ function renderShop(){
   var icons={flower:"flower",concentrate:"liveresin",edible:"gummy",preroll:"preroll",vape:"vape",drink:"gummy2",topical:"topical"};
   var labels={flower:"Flower",concentrate:"Concentrate",edible:"Edibles",preroll:"Pre-Rolls",vape:"Vapes",drink:"Drinks",topical:"Topicals"};
   var circles=["flower","concentrate","edible","preroll","vape","drink","topical"];
-  $("#catcircles").innerHTML=circles.map(function(k){return '<button class="cc tap" data-cc="'+k+'"><span class="ring"><img src="'+(IMG[icons[k]]||'')+'" alt=""></span><b>'+labels[k]+'</b></button>';}).join("");
+  var iconScale={flower:1.5,preroll:1.5,vape:1.5,topical:1.5}; /* these cutouts sit small in the ring — enlarge to match the others */
+  $("#catcircles").innerHTML=circles.map(function(k){var sc=iconScale[k];return '<button class="cc tap" data-cc="'+k+'"><span class="ring"><img src="'+(IMG[icons[k]]||'')+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'></span><b>'+labels[k]+'</b></button>';}).join("");
   $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.size=null;nav("list");});});
   var feedcats=["flower","concentrate","edible","preroll","drink","topical"];
   $("#feed").innerHTML=feedcats.map(function(k){
