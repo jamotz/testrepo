@@ -241,7 +241,8 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .fcard .fthc{font-family:var(--head);font-weight:600;font-size:12px;color:#C0392B;white-space:nowrap}
 .fcard .fpr{font-family:var(--head);font-weight:700;font-size:19px;color:var(--ink);margin:5px 0 9px}
 .fcard .fszs{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}
-.fcard .fsz{background:var(--olive);color:#F0EAD8;border-radius:100px;font-family:var(--head);font-weight:600;font-size:11px;padding:5px 12px;letter-spacing:.03em}
+.fcard .fsz{background:var(--brown);opacity:.6;color:#F0EAD8;border-radius:100px;font-family:var(--head);font-weight:600;font-size:11px;padding:5px 12px;letter-spacing:.03em}
+.fcard .fsz.sel{background:var(--olive);opacity:1}
 .fcard .fadd{margin-top:auto;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:13px;padding:11px 0;width:100%}
 
 .lhead2{padding:14px 16px 2px;background:#fff}
@@ -762,7 +763,7 @@ function renderFinish(){
   $("#finishwrap").innerHTML='<div class="intro">You chose to see items from these feelings.<br>Select one to explore related products:</div><div class="learn tap" id="finishlearn">Learn more ›</div><div class="feelchips">'+chips+'</div>'+groupHtml+'<div class="backshop"><button class="continue cue" id="tobackshop">Back to Shop →</button></div>';
   $("#finishlearn").addEventListener("click",function(){openEduFor(G.method,0);}); /* Recommendations: Learn more -> matching Origins U page */
   $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
-  $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
+  $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz||(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
     S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;
     S.mood=lifes[0]||null;S.strain=null;S.size=null;
@@ -807,15 +808,22 @@ function moodChips(el){
 function feedPill(s){s=s.replace(" each","").trim();return /mg/i.test(s)?s.replace(/\s+/g,""):s.replace(/\s+/g,"").toUpperCase();}
 function feedCard(p){
   var lc=LIFECLASS[p.f[0]]||"soc";
-  var sizes=(SIZES[p.t]||[]).slice(0,3).map(function(s){return '<span class="fsz">'+feedPill(s)+'</span>';}).join("");
+  var all=SIZES[p.t]||[];
+  /* price + highlighted pill follow the shown size: the active size filter if it
+     applies to this product, otherwise the cheapest size (index 0) */
+  var dispSize=(S.size&&all.indexOf(S.size)>-1)?S.size:(all[0]||"");
+  var idx=Math.max(0,all.indexOf(dispSize));
+  var start=Math.max(0,Math.min(idx-1,Math.max(0,all.length-3)));
+  var sizes=all.slice(start,start+3).map(function(s){return '<span class="fsz'+(s===dispSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
+  var price=p.pr*sizeMult(p,dispSize);
   var bc=TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
   var thc=p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):"");
   var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
   return '<div class="fcard '+lc+' tap" data-p="'+p.id+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
     '<div class="fdiv">'+badge+'</div><div class="fbc">'+bc+'</div><div class="fnm">'+p.n+'</div>'+
     '<div class="fmeta"><span class="fbr">'+p.b+'</span><span class="fthc">'+thc+'</span></div>'+
-    '<div class="fpr">'+money(p.pr)+'</div><div class="fszs">'+sizes+'</div>'+
-    '<button class="fadd tap" data-add="'+p.id+'">Add to Cart</button></div>';
+    '<div class="fpr">'+money(price)+'</div><div class="fszs">'+sizes+'</div>'+
+    '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dispSize+'">Add to Cart</button></div>';
 }
 function renderShop(){
   moodChips($("#moodbar"));
@@ -832,7 +840,7 @@ function renderShop(){
   }).join("");
   $("#feed").querySelectorAll("[data-see]").forEach(function(b){b.addEventListener("click",function(){S.type=b.dataset.see;S.strain=null;S.sub=null;S.size=null;nav("list");});});
   $("#feed").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
-  $("#feed").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
+  $("#feed").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,b.dataset.sz||(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
 }
 function renderList(){
   $("#ltitle").textContent=S.type?TYPES[S.type]:"All Products";
@@ -851,7 +859,7 @@ function renderList(){
   $("#grid").innerHTML=r.length?r.map(feedCard).join("")
    :'<div class="noresults"><b>0 products</b><p>No matches for this combo — but notice you could never pick a size that doesn’t exist for the product type. That’s the point.</p></div>';
   $("#grid").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
-  $("#grid").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
+  $("#grid").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,b.dataset.sz||(SIZES[P[+b.dataset.add].t]||["1 g"])[0]);});});
 }
 function dealCard(p,dealSize,struck,sale){
   var lc=LIFECLASS[p.f[0]]||"soc";
