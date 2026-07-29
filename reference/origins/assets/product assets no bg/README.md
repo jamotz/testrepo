@@ -6,9 +6,17 @@ automatically **instead of** the white-background version in `../product assets/
 Nothing here yet = the app keeps using the current images, so it's safe to add
 them one at a time.
 
-## How to name the files
-Name each file exactly `<key>.png` from the table below (lowercase, `.png`).
-The key is what the app maps images by — matching the name is what wires it in.
+## How files here are wired in
+Two ways, checked in this order by `asm_app.py`:
+1. **Explicit map** — the `NOBG` dict in `asm_app.py` maps each product key to a
+   filename here. Jack's uploaded files (named after the originals, e.g.
+   `flower Background Removed.png`) are mapped there. To add/replace an image,
+   drop it in and point the key at it in `NOBG`.
+2. **Key-named drop-in** — alternatively name a file exactly `<key>.png` from the
+   table below and it's picked up automatically, no code change needed.
+
+`Full Bud No background.webp` is used for the **Growing Process** education card
+(`growbud`); the realistic `No bg - Flower bud …` is used for the `gdp` product.
 
 | Filename to add | Product | Currently sourced from |
 |-----------------|---------|------------------------|

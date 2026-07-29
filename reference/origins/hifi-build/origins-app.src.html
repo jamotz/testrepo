@@ -955,7 +955,7 @@ const EDU={
    {t:"CBD vs THC",d:"They come from the same plant but feel worlds apart. Learn what sets them apart."},
    {t:"Forms of CBD",d:"Oils, edibles, topicals, flower and concentrate — the many ways to take CBD."},
    {t:"Benefits of CBD",d:"What people reach for CBD to help with, and what the research does and doesn't say."}]},
- growing:{name:"Growing Process",img:"gdp",lead:"From seed to shelf — follow the full journey of how cannabis is grown, harvested and prepared for you.",topics:[
+ growing:{name:"Growing Process",img:"growbud",lead:"From seed to shelf — follow the full journey of how cannabis is grown, harvested and prepared for you.",topics:[
    {t:"Seed to Harvest",d:"The full life cycle: germination, seedling, vegetative growth and the flowering stage that produces bud."},
    {t:"Indoor vs Outdoor",d:"Sun-grown or climate-controlled — how the growing environment shapes the final flower."},
    {t:"Soil vs Hydroponic",d:"Two very different ways to feed a plant, and what each brings to the table."},
@@ -974,7 +974,7 @@ function renderEduHub(){
   var cards=EDU_ORDER.map(function(k){var c=EDU[k];
     var media=c.life
       ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="">';}).join("")+'</div>'
-      : '<div class="eduimg"><img src="'+(IMG["cut_"+c.img]||IMG[c.img]||"")+'" alt="'+c.name+'"></div>';
+      : '<div class="eduimg"><img src="'+(IMG[c.img]||"")+'" alt="'+c.name+'"></div>';
     return '<button class="educard tap" data-ec="'+k+'">'+media+'<div class="edulabel">'+c.name+'</div></button>';
   }).join("");
   var w=$("#eduhub");

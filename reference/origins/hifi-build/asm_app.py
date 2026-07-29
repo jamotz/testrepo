@@ -253,6 +253,35 @@ def bg_color(relpath):
     r, g, b = Counter(cols).most_common(1)[0][0]
     return "#%02x%02x%02x" % (r, g, b)
 
+# Jack's uploaded background-free photos map to product keys by their own
+# filenames (named after the originals, not the key). A matching '<key>.png'
+# also works as a drop-in. When neither exists we fall back to the white-bg
+# source in 'product assets/'.
+NOBG_DIR = "product assets no bg"
+NOBG = {
+    "flower":     "flower Background Removed.png",
+    "gdp":        "No bg - Flower bud Background Removed.png",
+    "preroll":    "preroll Background Removed.png",
+    "liveresin":  "Live Resin Background Removed.png",
+    "rosin":      "Concentrate (Rosin) Background Removed.png",
+    "sugar":      "Sugar Background Removed.png",
+    "thca":       "THC-A Crystals Background Removed.png",
+    "badder":     "Butter Concentrate Background Removed.png",
+    "distillate": "distalite Background Removed.png",
+    "hash":       "hash Background Removed.png",
+    "keif":       "keif Background Removed.png",
+    "gummy":      "Gummy Edibles Background Removed.png",
+    "gummy2":     "Gummy Edibles Background Removed 2.png",
+    "choc":       "Chocolate Edible Background Removed.png",
+    "topical":    "topical Background Removed.png",
+    "vape":       "vape Background Removed.png",
+}
+def nobg_file(k):
+    for name in (NOBG.get(k), k + ".png"):
+        if name and (assets / NOBG_DIR / name).exists():
+            return NOBG_DIR + "/" + name
+    return None
+
 IMG = {}
 for k, rel in M.items():
     try:
@@ -266,24 +295,10 @@ for k, rel in M.items():
         elif k.startswith("life_") or k.startswith("sm_") or k.startswith("scent_"):
             IMG[k] = embed_glyph(rel)
         else:
-            nobg = assets / "product assets no bg" / (k + ".png")
-            if nobg.exists():
-                IMG[k] = embed_rgba("product assets no bg/" + k + ".png")
-            else:
-                IMG[k] = embed(rel)
+            nb = nobg_file(k)
+            IMG[k] = embed_rgba(nb) if nb else embed(rel)
     except Exception as e:
         print("WARN", k, rel, e)
-
-# transparent cut-outs for the Origins U category cards (flat near-white bg only;
-# 'gdp'/Growing Process has a photographic bg and is intentionally excluded)
-# per-image cut config; gummies: light-gray shadow trapped between them, and they're
-# saturated enough that a lower global threshold clears it without eroding the candy
-CUT_CFG = {"gummy": {"mode": "global", "thr": 222}}
-for k in ["flower", "rosin", "gummy", "topical", "badder", "thca"]:
-    try:
-        IMG["cut_" + k] = embed_cut(M[k], **CUT_CFG.get(k, {}))
-    except Exception as e:
-        print("WARN cut", k, e)
 
 # wordmark-only images (leading glyph dropped) so the FEEL step can align every
 # lifestyle's word to a common left edge next to a fixed glyph slot
@@ -292,6 +307,12 @@ for name in ["discovery", "adventurous", "social", "unwind", "nightlife", "holis
         IMG["word_" + name] = embed_wordmark(M["life_" + name])
     except Exception as e:
         print("WARN word", name, e)
+
+# Growing Process education card uses Jack's full-plant illustration
+try:
+    IMG["growbud"] = embed_rgba(NOBG_DIR + "/Full Bud No background.webp", maxw=600)
+except Exception as e:
+    print("WARN growbud", e)
 
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
