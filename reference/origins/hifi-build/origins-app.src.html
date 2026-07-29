@@ -82,11 +82,11 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .lg-map{width:100%;height:158px;object-fit:cover;border-radius:3px;display:block;margin-bottom:18px}
 .store{border:1px solid #E1DBCD;border-radius:10px;padding:16px 16px 18px;margin-bottom:16px;background:#fff;box-shadow:0 6px 14px rgba(0,0,0,.07)}
 .store.sel{border-color:var(--or);box-shadow:0 6px 16px rgba(241,96,28,.18)}
-.st-top{display:flex;justify-content:space-between;gap:12px}
+.st-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
 .st-name{font-family:var(--head);font-weight:700;font-size:20px;color:var(--ink)}
-.st-addr{font-family:Georgia,serif;font-size:12px;color:#6E6355;text-align:right;line-height:1.45;flex:none}
+.st-addr{font-family:Georgia,serif;font-size:12px;color:#6E6355;line-height:1.45;margin-top:4px}
 .st-open{font-family:var(--head);font-weight:600;color:var(--or);font-size:13.5px;margin-top:4px}
-.st-phone{font-family:var(--head);font-size:13px;color:var(--ink);margin-top:5px;line-height:1.45}
+.st-phone{font-family:var(--head);font-size:13px;color:var(--ink);text-align:right;line-height:1.45;flex:none}
 .st-phone b{font-weight:600}
 .st-hh{font-family:var(--head);font-weight:600;color:var(--or);text-align:center;font-size:14px;margin:13px 0 9px}
 .st-hours{display:flex;flex-direction:column;gap:7px;margin:0 auto 15px}
@@ -453,17 +453,17 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
           <h1 class="lg-title">Select a store to begin shopping</h1>
           <img class="lg-map" id="landmap" alt="Map of Redmond, WA">
           <div class="store sel">
-            <div class="st-top"><div class="st-name">Redmond, WA</div><div class="st-addr">16390 Cleveland St,<br>Redmond, WA<br>98052, USA</div></div>
+            <div class="st-top"><div class="st-name">Redmond, WA</div><div class="st-phone"><b>Phone Number:</b><br>(425) 298-0170</div></div>
             <div class="st-open">Open until 10:30 PM</div>
-            <div class="st-phone"><b>Phone Number:</b><br>(425) 298-0170</div>
+            <div class="st-addr">16390 Cleveland St, Redmond, WA 98052, USA</div>
             <div class="st-hh">Open Hours</div>
             <div class="st-hours"><div><span>Mon - Thu</span><span>8 AM to 10:30 PM</span></div><div><span>Fri - Sat</span><span>8 AM to 11:30 PM</span></div><div><span>Sunday</span><span>9 AM to 9:00 PM</span></div></div>
             <button class="st-btn tap" data-nav="home">Shop our Redmond store</button>
           </div>
           <div class="store">
-            <div class="st-top"><div class="st-name">Seattle, WA</div><div class="st-addr">1201 First Ave S,<br>Seattle, WA<br>98134, USA</div></div>
+            <div class="st-top"><div class="st-name">Seattle, WA</div><div class="st-phone"><b>Phone Number:</b><br>(206) 555-0140</div></div>
             <div class="st-open">Open until 10:30 PM</div>
-            <div class="st-phone"><b>Phone Number:</b><br>(206) 555-0140</div>
+            <div class="st-addr">1201 First Ave S, Seattle, WA 98134, USA</div>
             <div class="st-hh">Open Hours</div>
             <div class="st-hours"><div><span>Mon - Thu</span><span>8 AM to 10:30 PM</span></div><div><span>Fri - Sat</span><span>8 AM to 11:30 PM</span></div><div><span>Sunday</span><span>9 AM to 9:00 PM</span></div></div>
             <button class="st-btn ghost tap" id="seattlebtn">Shop our Seattle store</button>
