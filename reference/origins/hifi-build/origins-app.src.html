@@ -892,20 +892,20 @@ function renderHome(){
   var brands=[["brand_royaltree","Royal Tree"],["brand_saints","Saints"],["brand_freddys","Freddy's"],["brand_skord","Skord"]];
   var html='';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any of these two eighths for $50</span></div><div class="dealrow">'+
-    d1.map(function(p){return dealCard(p,"3.5 g",p.pr,25);}).join('')+'</div></div>';
+    d1.map(function(p){return dealCard(p,"3.5 g",p.pr*sizeMult(p,"3.5 g"),25);}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">30% Off</span><span class="bs">Try some top-shelf flower for the low</span></div><div class="brandrow">'+
     brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">40% Off</span><span class="bs">Get any 14g or 28g of flower for 40% off</span></div><div class="dealrow">'+
-    d3.map(function(p){var oz=Math.round(p.pr*5);return dealCard(p,"28 g",oz,Math.round(oz*0.6));}).join('')+'</div></div>';
+    d3.map(function(p){var reg=p.pr*sizeMult(p,"28 g");return dealCard(p,"28 g",reg,reg*0.6);}).join('')+'</div></div>';
   $("#deals").innerHTML=html;
   $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
   $("#deals").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz);});});
 }
 
 var curP=null,curSize=null;
-function openProduct(id){curP=P[id];curSize=(SIZES[curP.t]||["1 g"])[0];drawProduct();nav("product");}
+function openProduct(id){curP=P[id];var all=SIZES[curP.t]||["1 g"];curSize=(curP.t==="flower"&&all.indexOf("3.5 g")>-1)?"3.5 g":all[0];drawProduct();nav("product");}
 function sizeMult(p,s){var arr=SIZES[p.t]||[],i=arr.indexOf(s);
-  var mult={flower:[1,3,5.4,9.2,16],preroll:[1,1.35,1.7],concentrate:[1],edible:[.5,1,2.4,6],drink:[.5,1,2.4,6],topical:[1,1.7,3,3.6]};
+  var mult={flower:[0.4,1,1.8,3.2,5.5],preroll:[1,1.35,1.7],concentrate:[1],edible:[.5,1,2.4,6],drink:[.5,1,2.4,6],topical:[1,1.7,3,3.6]};
   return (mult[p.t]||[1])[i]||1;}
 function drawProduct(){
   var p=curP,price=p.pr*sizeMult(p,curSize);
