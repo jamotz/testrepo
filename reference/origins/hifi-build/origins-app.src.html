@@ -388,7 +388,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .q b{font-family:var(--head);min-width:14px;text-align:center;color:var(--ink)}
 .totals{background:#fff;border:1px solid #E5E0D6;border-radius:10px;padding:14px;margin-top:6px}
 .trow{display:flex;justify-content:space-between;font-family:var(--head);font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);padding:3px 0}
-.trow.disc{color:var(--or)}
+.trow.disc span:last-child{color:#C0392B;font-weight:600}
 .trow.big{color:var(--ink);font-weight:700;font-size:16px;border-top:1px solid #E5E0D6;margin-top:8px;padding-top:10px}
 .checkout{width:100%;margin-top:14px;background:var(--or);color:#fff;border:0;border-radius:6px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:14px;padding:15px}
 .empty{padding:40px 20px;text-align:center}
@@ -620,26 +620,38 @@ const FEELOPTS=[
 ];
 const TASTES=["Fruity","Flowery","Citrus","Creamy","Nutty","Diesel","Cheese","Herbal","Pine","Peppery"];
 const P=[
- {t:"flower",n:"Animal Sherbert",b:"Gold Leaf",img:"gdp",pr:58,thc:22.5,sub:"Indoor",st:"Indica",tp:"Diesel",f:["unwind"],sale:0,r:4.0,rv:11,fe:["Giddy","Relaxed","Hungry"],ta:["Aromatic","Skunky","Diesel"],d:"Animal Sherbert is an indica-dominant hybrid made by crossing Sunset Sherbert with Animal Cookies. Powerful full-body effects elevated by a jolt of cerebral energy and a carefree state of mind."},
- {t:"flower",n:"Jet Fuel",b:"Artizen",img:"flower",pr:38,thc:25.5,sub:"Indoor",st:"Sativa",tp:"Piney",f:["adventurous","nightlife"],sale:0,r:4.5,rv:13,fe:["Focused","Uplifted","Energized"],ta:["Diesel","Pine","Peppery"],d:"A loud, gassy sativa with a sharp piney nose. Fast, focused, and made for moving."},
+ {t:"flower",n:"Animal Sherbert",b:"Gold Leaf",img:"gdp",pr:58,thc:22.5,sub:"Indoor",st:"Indica",tp:"Diesel",f:["unwind"],sale:1,r:4.0,rv:11,fe:["Giddy","Relaxed","Hungry"],ta:["Aromatic","Skunky","Diesel"],d:"Animal Sherbert is an indica-dominant hybrid made by crossing Sunset Sherbert with Animal Cookies. Powerful full-body effects elevated by a jolt of cerebral energy and a carefree state of mind."},
+ {t:"flower",n:"Jet Fuel",b:"Artizen",img:"flower",pr:38,thc:25.5,sub:"Indoor",st:"Sativa",tp:"Piney",f:["adventurous","nightlife"],sale:1,r:4.5,rv:13,fe:["Focused","Uplifted","Energized"],ta:["Diesel","Pine","Peppery"],d:"A loud, gassy sativa with a sharp piney nose. Fast, focused, and made for moving."},
  {t:"flower",n:"Grand Daddy Purple",b:"Freddy's",img:"gdp",pr:34,thc:22.1,sub:"Outdoor",st:"Indica",tp:"Lavender",f:["unwind"],sale:1,r:4.7,rv:21,fe:["Sleepy","Relaxed","Calm"],ta:["Flowery","Fruity","Herbal"],d:"Classic indica comfort — grape and lavender with a heavy exhale."},
- {t:"flower",n:"Pineapple Express",b:"Saints",img:"flower",pr:45,thc:20.7,sub:"Indoor",st:"Sativa",tp:"Citrus",f:["social","adventurous","discovery"],sale:0,r:4.8,rv:18,fe:["Giddy","Chatty","Creative"],ta:["Citrus","Fruity","Pine"],d:"Bright citrus sativa — chatty, sunny, and made for daytime."},
+ {t:"flower",n:"Pineapple Express",b:"Saints",img:"flower",pr:45,thc:20.7,sub:"Indoor",st:"Sativa",tp:"Citrus",f:["social","adventurous","discovery"],sale:1,r:4.8,rv:18,fe:["Giddy","Chatty","Creative"],ta:["Citrus","Fruity","Pine"],d:"Bright citrus sativa — chatty, sunny, and made for daytime."},
  {t:"flower",n:"Northern Lights CBD",b:"Royal Tree",img:"flower",pr:26,thc:0.8,cbd:1,sub:"Outdoor",st:"CBD",tp:"Earthy",f:["holistic","unwind"],sale:0,r:4.4,rv:7,fe:["Calm","Clear","Relaxed"],ta:["Earthy","Herbal","Pine"],d:"A CBD-forward cut for clear-headed calm. Under 1% THC."},
  {t:"preroll",n:"Dutch Treat 3-Pack",b:"Artizen",img:"preroll",pr:18,thc:23.4,sub:"Traditional",st:"Hybrid",tp:"Piney",f:["social","nightlife"],sale:0,r:4.3,rv:11,fe:["Giddy","Social","Relaxed"],ta:["Pine","Peppery","Herbal"],d:"Three straight-to-the-point pre-rolls. Grab and go."},
- {t:"preroll",n:"Slurricane Infused",b:"Skörd",img:"preroll",pr:14,thc:31.2,sub:"Infused",st:"Indica",tp:"Fruity",f:["unwind","nightlife"],sale:1,r:4.6,rv:15,fe:["Sleepy","Heavy","Relaxed"],ta:["Fruity","Creamy","Diesel"],d:"One heavy infused indica pre-roll for the end of the night."},
+ {t:"preroll",n:"Slurricane Infused",b:"Skörd",img:"preroll",pr:14,thc:31.2,sub:"Infused",st:"Indica",tp:"Fruity",f:["unwind","nightlife"],sale:0,r:4.6,rv:15,fe:["Sleepy","Heavy","Relaxed"],ta:["Fruity","Creamy","Diesel"],d:"One heavy infused indica pre-roll for the end of the night."},
  {t:"concentrate",n:"Cinderella 99 Rosin",b:"Push Co.",img:"rosin",pr:37,thc:84.3,sub:"Rosin (SHO)",st:"Sativa",tp:"Citrus",f:["adventurous","nightlife","discovery"],sale:0,r:4.9,rv:24,fe:["Euphoric","Creative","Focused"],ta:["Citrus","Fruity","Diesel"],d:"Fresh-pressed single-origin rosin with a screaming citrus profile."},
  {t:"concentrate",n:"Kodiak Bear Live Resin",b:"Freddy's",img:"liveresin",pr:40,thc:80.1,sub:"Live Resin",st:"Indica",tp:"Fruity",f:["unwind"],sale:0,r:4.8,rv:16,fe:["Relaxed","Heavy","Calm"],ta:["Fruity","Creamy","Herbal"],d:"Fresh-frozen live resin, terpy and full. Deep indica shelf."},
- {t:"concentrate",n:"ATF Distillate",b:"St. Ideal",img:"distillate",pr:37,thc:88.2,sub:"Distillate",st:"Sativa",tp:"Pepper",f:["adventurous"],sale:1,r:4.1,rv:8,fe:["Focused","Energized","Clear"],ta:["Peppery","Pine","Diesel"],d:"Clean distillate with reintroduced terps. Versatile and potent."},
+ {t:"concentrate",n:"ATF Distillate",b:"St. Ideal",img:"distillate",pr:37,thc:88.2,sub:"Distillate",st:"Sativa",tp:"Pepper",f:["adventurous"],sale:0,r:4.1,rv:8,fe:["Focused","Energized","Clear"],ta:["Peppery","Pine","Diesel"],d:"Clean distillate with reintroduced terps. Versatile and potent."},
  {t:"concentrate",n:"Animal Sherbert Rosin",b:"Gold Leaf",img:"sugar",pr:60,thc:67.7,sub:"Rosin (SHO)",st:"Indica",tp:"Fruity",f:["unwind","social"],sale:0,r:4.0,rv:15,fe:["Giddy","Relaxed","Hungry"],ta:["Aromatic","Skunky","Diesel"],d:"Solventless rosin from the Animal Sherbert cut — full-body and flavorful with a carefree lift."},
- {t:"concentrate",n:"House Kief",b:"Freddy's",img:"keif",pr:14,thc:41.9,sub:"Kief",st:"Hybrid",tp:"Pepper",f:["discovery"],sale:1,r:3.9,rv:4,fe:["Balanced","Mellow","Giddy"],ta:["Peppery","Herbal","Pine"],d:"House-collected kief for topping bowls. Budget heat."},
+ {t:"concentrate",n:"House Kief",b:"Freddy's",img:"keif",pr:14,thc:41.9,sub:"Kief",st:"Hybrid",tp:"Pepper",f:["discovery"],sale:0,r:3.9,rv:4,fe:["Balanced","Mellow","Giddy"],ta:["Peppery","Herbal","Pine"],d:"House-collected kief for topping bowls. Budget heat."},
  {t:"concentrate",n:"Bubble Hash",b:"Freddy's",img:"hash",pr:30,thc:52.3,sub:"Hash",st:"Indica",tp:"Earthy",f:["unwind","discovery"],sale:0,r:4.2,rv:5,fe:["Relaxed","Mellow","Calm"],ta:["Earthy","Herbal","Creamy"],d:"Old-school ice-water hash, pressed and mellow."},
  {t:"edible",n:"Gummies — Lemon & Orange",b:"Saints",img:"gummy",pr:25,mg:10,sub:"Gummies",st:"Sativa",tp:"Citrus",f:["social","adventurous"],sale:0,r:4.7,rv:19,fe:["Giddy","Uplifted","Social"],ta:["Citrus","Fruity","Creamy"],d:"Bright citrus gummies, 10 mg apiece. Party-portioned."},
  {t:"edible",n:"Dark Chocolates 1:1",b:"St. Ideal",img:"choc",pr:28,mg:10,cbd:1,sub:"Chocolates",st:"Hybrid",tp:"Earthy",f:["unwind","social","holistic"],sale:0,r:4.6,rv:12,fe:["Balanced","Calm","Relaxed"],ta:["Creamy","Nutty","Earthy"],d:"Rich 1:1 THC:CBD dark chocolate squares."},
  {t:"edible",n:"Peppermint Melts",b:"Saints",img:"choc",pr:22,mg:5,sub:"Mints",st:"Hybrid",tp:"Piney",f:["social"],sale:0,r:4.2,rv:6,fe:["Giddy","Clear","Balanced"],ta:["Flowery","Herbal","Creamy"],d:"Fast-acting 5 mg mints — discreet and easy to dose."},
- {t:"drink",n:"Sungaze Agave Spritz",b:"Saints",img:"gummy2",pr:31.99,mg:100,sub:"Drinks",st:"Sativa",tp:"Citrus",f:["social","nightlife"],sale:1,r:4.0,rv:9,fe:["Uplifted","Social","Giddy"],ta:["Citrus","Fruity","Creamy"],d:"Sparkling agave sipper. Splits into 10 easy pours."},
+ {t:"drink",n:"Sungaze Agave Spritz",b:"Saints",img:"gummy2",pr:31.99,mg:100,sub:"Drinks",st:"Sativa",tp:"Citrus",f:["social","nightlife"],sale:0,r:4.0,rv:9,fe:["Uplifted","Social","Giddy"],ta:["Citrus","Fruity","Creamy"],d:"Sparkling agave sipper. Splits into 10 easy pours."},
  {t:"topical",n:"Dragon Balm",b:"St. Ideal",img:"topical",pr:42,thc:0.3,cbd:1,sub:"Soothing",st:"CBD",tp:"Lavender",f:["holistic"],sale:0,r:4.9,rv:22,fe:["Calm","Relief","Clear"],ta:["Flowery","Herbal","Aromatic"],d:"CBD-rich recovery balm for muscles and joints. No high, all relief."}
 ];
-P.forEach(function(p,i){p.id=i;p.was=p.sale?+(p.pr*1.3).toFixed(2):null;});
+P.forEach(function(p,i){p.id=i;});
+/* The two home-page flower deals ARE the discounts, applied at their sizes only:
+   2-for-$50 mix & match -> $25 per eighth; 40% off any 14g/28g. Same four
+   sale-flagged flowers in both. priceFor is the single source of truth for
+   every window (home, shop, PI, cart, confirmation). */
+function priceFor(p,size){
+  var base=p.pr*sizeMult(p,size);
+  if(p.sale&&p.t==="flower"){
+    if(size==="3.5 g")return{now:25,was:base};
+    if(size==="14 g"||size==="28 g")return{now:base*0.6,was:base};
+  }
+  return{now:base,was:null};
+}
 
 const S={type:null,strain:null,sub:null,mood:null,brands:[],size:null,thc:null,terp:null,sale:false,sort:"best",cart:[],screen:"home"};
 const G={feels:[],method:null,subs:[],tastes:[]};
@@ -828,8 +840,7 @@ function feedCard(p){
   var idx=Math.max(0,all.indexOf(dispSize));
   var start=Math.max(0,Math.min(idx-1,Math.max(0,all.length-3)));
   var sizes=all.slice(start,start+3).map(function(s){return '<span class="fsz'+(s===dispSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
-  var price=p.pr*sizeMult(p,dispSize);
-  var was=p.was?p.was*sizeMult(p,dispSize):null; /* sale items show the struck was-price here too, matching PI + home deals */
+  var pp=priceFor(p,dispSize),price=pp.now,was=pp.was;
   var bc=TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
   var thc=p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):"");
   var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
@@ -892,16 +903,16 @@ function dealCard(p,dealSize,struck,sale){
 function renderHome(){
   $("#hero").style.backgroundImage="url("+(IMG.hero_mtn||"")+")";
   $("#herologo").src=IMG.logo_origins||"";
-  var flowers=P.filter(function(p){return p.t==="flower";});
-  var d1=flowers.slice(0,4),d3=flowers.slice(0,4);
+  var dealFlowers=P.filter(function(p){return p.t==="flower"&&p.sale;});
+  var d1=dealFlowers,d3=dealFlowers;
   var brands=[["brand_royaltree","Royal Tree"],["brand_saints","Saints"],["brand_freddys","Freddy's"],["brand_skord","Skord"]];
   var html='';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any of these two eighths for $50</span></div><div class="dealrow">'+
-    d1.map(function(p){return dealCard(p,"3.5 g",p.pr*sizeMult(p,"3.5 g"),25);}).join('')+'</div></div>';
+    d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">30% Off</span><span class="bs">Try some top-shelf flower for the low</span></div><div class="brandrow">'+
     brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">40% Off</span><span class="bs">Get any 14g or 28g of flower for 40% off</span></div><div class="dealrow">'+
-    d3.map(function(p){var reg=p.pr*sizeMult(p,"28 g");return dealCard(p,"28 g",reg,reg*0.6);}).join('')+'</div></div>';
+    d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+'</div></div>';
   $("#deals").innerHTML=html;
   $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
   $("#deals").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz);});});
@@ -913,7 +924,7 @@ function sizeMult(p,s){var arr=SIZES[p.t]||[],i=arr.indexOf(s);
   var mult={flower:[0.4,1,1.8,3.2,5.5],preroll:[1,1.35,1.7],concentrate:[1],edible:[.5,1,2.4,6],drink:[.5,1,2.4,6],topical:[1,1.7,3,3.6]};
   return (mult[p.t]||[1])[i]||1;}
 function drawProduct(){
-  var p=curP,price=p.pr*sizeMult(p,curSize);
+  var p=curP,pp=priceFor(p,curSize),price=pp.now;
   var lc=LIFECLASS[p.f[0]]||"soc";
   var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
   var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+FEEL[p.f[0]]+'</span>':'';
@@ -926,7 +937,7 @@ function drawProduct(){
     '<div class="pcat">'+TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""))+'</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="t">'+(p.thc!=null?("THC "+p.thc+"%"):(p.mg?p.mg+" mg":""))+'</span></div>'+
-    '<div class="pricerow"><div class="pprice">'+money(price)+(p.was?'<span class="was">'+money(p.was*sizeMult(p,curSize))+'</span>':'')+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
+    '<div class="pricerow"><div class="pprice">'+money(price)+(pp.was?'<span class="was">'+money(pp.was)+'</span>':'')+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
     szpick+
     '<button class="addbig tap" id="addbig">Add to Cart</button>'+
     '<div class="pdesc-h">Details</div><p class="pdesc">'+p.d+'</p>'+feels+taste;
@@ -938,7 +949,8 @@ function drawProduct(){
 function addToCart(id,size){var key=id+"|"+size,ex=null;S.cart.forEach(function(c){if(c.key===key)ex=c;});if(ex)ex.q++;else S.cart.push({key:key,id:id,size:size,q:1});
   setBag();toast("Added to bag");}
 function setBag(){var n=S.cart.reduce(function(a,c){return a+c.q;},0);var e=$("#bagn");e.textContent=n;e.classList.toggle("show",n>0);}
-function cartSub(){return S.cart.reduce(function(a,c){return a+P[c.id].pr*sizeMult(P[c.id],c.size)*c.q;},0);}
+function cartSub(){return S.cart.reduce(function(a,c){return a+priceFor(P[c.id],c.size).now*c.q;},0);}
+function cartDiscount(){return S.cart.reduce(function(a,c){var pp=priceFor(P[c.id],c.size);return a+((pp.was||pp.now)-pp.now)*c.q;},0);}
 
 /* ===== Origins U (education) ===== */
 const EDU_ORDER=["flower","concentrate","edibles","topicals","lifestyles","cbd","growing","thc"];
@@ -1027,11 +1039,12 @@ function openEduFor(type,idx){renderEduTopic(EDUMAP[type]||"flower",idx==null?0:
 function renderCart(){
   var w=$("#cwrap");
   if(!S.cart.length){w.innerHTML='<h2>Your bag</h2><div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
-  w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],pr=p.pr*sizeMult(p,c.size),was=p.was?p.was*sizeMult(p,c.size):null,lc=LIFECLASS[p.f[0]]||"soc";
+  w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],pp=priceFor(p,c.size),pr=pp.now,was=pp.was,lc=LIFECLASS[p.f[0]]||"soc";
     return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+(was?'<span class="was">'+money(was*c.q)+'</span><span class="now">'+money(pr*c.q)+'</span>':money(pr*c.q))+'</div></div>'+
       '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
    +'<div class="totals"><div class="trow"><span>Subtotal (pre-tax)</span><span>'+money(cartSub()*0.63)+'</span></div>'+
      '<div class="trow"><span>Excise + tax (37%, incl.)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
+     (cartDiscount()>0?'<div class="trow disc"><span>Discount</span><span>&minus;'+money(cartDiscount())+'</span></div>':'')+
      '<div class="trow big"><span>Total</span><span>'+money(cartSub())+'</span></div></div>'+
      '<button class="checkout tap" id="ck">Checkout — pickup</button>';
   w.querySelectorAll("[data-d]").forEach(function(b){b.addEventListener("click",function(){var c=S.cart[+b.dataset.d];c.q--;if(c.q<1)S.cart.splice(+b.dataset.d,1);setBag();renderCart();});});
@@ -1039,7 +1052,7 @@ function renderCart(){
   var ck=w.querySelector("#ck");if(ck)ck.addEventListener("click",function(){renderConfirm();nav("confirm");});
 }
 function renderConfirm(){
-  var items=S.cart.map(function(c){var p=P[c.id],pr=p.pr*sizeMult(p,c.size)*c.q,was=p.was?p.was*sizeMult(p,c.size)*c.q:null;
+  var items=S.cart.map(function(c){var p=P[c.id],pp=priceFor(p,c.size),pr=pp.now*c.q,was=pp.was?pp.was*c.q:null;
     return '<div class="li"><div class="li-m"><div class="li-nm">'+p.n+' <span class="lq">&times;'+c.q+'</span></div><div class="li-g">'+c.size.replace(" each","")+'</div></div><span class="li-pr">'+(was?'<span class="was">'+money(was)+'</span><span class="now">'+money(pr)+'</span>':money(pr))+'</span></div>';}).join("");
   var tot=money(cartSub());
   $("#confwrap").innerHTML='<div class="card"><div class="ch"><h3>We have received your order</h3><p>Please be sure to pick up your order before we close. We will not hold orders overnight.</p></div>'+
