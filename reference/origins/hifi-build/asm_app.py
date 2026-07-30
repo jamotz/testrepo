@@ -119,6 +119,11 @@ def embed_cut(relpath, maxw=400, thr=238, mode="flood"):
 M = {
  "flower":    "product assets/flower.png",
  "gdp":       "product assets/Unproccessed Flower.jpeg",
+ # extra bud photos (no white-bg original; resolved via NOBG -> embed_rgba)
+ "bud1":      "product assets no bg/492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
+ "bud2":      "product assets no bg/cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
+ "bud3":      "product assets no bg/marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
+ "bud4":      "product assets no bg/pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
  "preroll":   "product assets/preroll.png",
  "liveresin": "product assets/Live Resin.jpeg",
  "rosin":     "product assets/Concentrate (Rosin).png",
@@ -259,6 +264,11 @@ def bg_color(relpath):
 # source in 'product assets/'.
 NOBG_DIR = "product assets no bg"
 NOBG = {
+    # extra bud photos, mixed in across the catalog flower products
+    "bud1":       "492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
+    "bud2":       "cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
+    "bud3":       "marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
+    "bud4":       "pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
     "flower":     "flower Background Removed.png",
     "gdp":        "No bg - Flower bud Background Removed.png",
     "preroll":    "preroll Background Removed.png",
