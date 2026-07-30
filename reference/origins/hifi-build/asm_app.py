@@ -63,7 +63,7 @@ def embed(relpath, maxw=340, q=80):
 
 def embed_rgba(relpath, maxw=400):
     """Embed a pre-cut transparent product photo as-is (keeps the alpha channel;
-    no white flatten). Used for the drop-in files in 'product assets no bg/'."""
+    no white flatten). Used for the background-free product photos."""
     im = Image.open(assets / relpath).convert("RGBA")
     if im.width > maxw:
         im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
@@ -117,27 +117,27 @@ def embed_cut(relpath, maxw=400, thr=238, mode="flood"):
     return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
 
 M = {
- "flower":    "product assets/flower.png",
- "gdp":       "product assets/Unproccessed Flower.jpeg",
+ "flower":    "product assets/Flower/flower.png",
+ "gdp":       "product assets/Flower/Unproccessed Flower.jpeg",
  # extra bud photos (no white-bg original; resolved via NOBG -> embed_rgba)
- "bud1":      "product assets no bg/492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
- "bud2":      "product assets no bg/cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
- "bud3":      "product assets no bg/marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
- "bud4":      "product assets no bg/pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
- "preroll":   "product assets/preroll.png",
- "liveresin": "product assets/Live Resin.jpeg",
- "rosin":     "product assets/Concentrate (Rosin).png",
- "sugar":     "product assets/Sugar.webp",
- "thca":      "product assets/THC-A Crystals.png",
- "badder":    "product assets/Butter Concentrate.png",
- "distillate": "product assets/Butter Concentrate.png",
- "hash":      "product assets/hash.jpeg",
- "keif":      "product assets/keif.jpeg",
- "gummy":     "product assets/Gummy Edibles.png",
- "gummy2":    "product assets/Gummy Edibles.webp",
- "choc":      "product assets/Chocolate Edible.png",
- "vape":      "product assets/vape.png",
- "topical":   "product assets/topical.png",
+ "bud1":      "product assets/Flower/492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
+ "bud2":      "product assets/Flower/cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
+ "bud3":      "product assets/Flower/marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
+ "bud4":      "product assets/Flower/pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
+ "preroll":   "product assets/Prerolls/preroll.png",
+ "liveresin": "product assets/Concentrate/Live Resin/Live Resin.jpeg",
+ "rosin":     "product assets/Concentrate/Rosin/Concentrate (Rosin).png",
+ "sugar":     "product assets/Concentrate/Live Resin/Sugar.webp",
+ "thca":      "product assets/Concentrate/Live Resin/THC-A Crystals.png",
+ "badder":    "product assets/Concentrate/Live Resin/Butter Concentrate.png",
+ "distillate": "product assets/Concentrate/Live Resin/Butter Concentrate.png",
+ "hash":      "product assets/Concentrate/Hash/hash.jpeg",
+ "keif":      "product assets/Concentrate/Kief/keif.jpeg",
+ "gummy":     "product assets/Edibles/Gummy Edibles.png",
+ "gummy2":    "product assets/Edibles/Gummy Edibles.webp",
+ "choc":      "product assets/Edibles/Chocolate Edible.png",
+ "vape":      "product assets/Vapes/vape.png",
+ "topical":   "product assets/Topicals/topical.png",
  "map_redmond": "Various other assets/Redmond Map.png",
  "scent_skunky": "scents assets/Scent (Skunky).png",
  "hero_mtn": "origins logos/Origin background.jpeg",
@@ -262,29 +262,29 @@ def bg_color(relpath):
 # filenames (named after the originals, not the key). A matching '<key>.png'
 # also works as a drop-in. When neither exists we fall back to the white-bg
 # source in 'product assets/'.
-NOBG_DIR = "product assets no bg"
+NOBG_DIR = "product assets"
 NOBG = {
     # extra bud photos, mixed in across the catalog flower products
-    "bud1":       "492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
-    "bud2":       "cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
-    "bud3":       "marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
-    "bud4":       "pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
-    "flower":     "flower Background Removed.png",
-    "gdp":        "No bg - Flower bud Background Removed.png",
-    "preroll":    "preroll Background Removed.png",
-    "liveresin":  "Live Resin Background Removed.png",
-    "rosin":      "Concentrate (Rosin) Background Removed.png",
-    "sugar":      "Sugar Background Removed.png",
-    "thca":       "THC-A Crystals Background Removed.png",
-    "badder":     "Butter Concentrate Background Removed.png",
-    "distillate": "distalite Background Removed.png",
-    "hash":       "hash Background Removed.png",
-    "keif":       "keif Background Removed.png",
-    "gummy":      "Gummy Edibles Background Removed.png",
-    "gummy2":     "Gummy Edibles Background Removed 2.png",
-    "choc":       "Chocolate Edible Background Removed.png",
-    "topical":    "topical Background Removed.png",
-    "vape":       "vape Background Removed.png",
+    "bud1":       "Flower/492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
+    "bud2":       "Flower/cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
+    "bud3":       "Flower/marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
+    "bud4":       "Flower/pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
+    "flower":     "Flower/flower Background Removed.png",
+    "gdp":        "Flower/No bg - Flower bud Background Removed.png",
+    "preroll":    "Prerolls/preroll Background Removed.png",
+    "liveresin":  "Concentrate/Live Resin/Live Resin Background Removed.png",
+    "rosin":      "Concentrate/Rosin/Concentrate (Rosin) Background Removed.png",
+    "sugar":      "Concentrate/Live Resin/Sugar Background Removed.png",
+    "thca":       "Concentrate/Live Resin/THC-A Crystals Background Removed.png",
+    "badder":     "Concentrate/Live Resin/Butter Concentrate Background Removed.png",
+    "distillate": "Concentrate/Distillate/distalite Background Removed.png",
+    "hash":       "Concentrate/Hash/hash Background Removed.png",
+    "keif":       "Concentrate/Kief/keif Background Removed.png",
+    "gummy":      "Edibles/Gummy Edibles Background Removed.png",
+    "gummy2":     "Edibles/Gummy Edibles Background Removed 2.png",
+    "choc":       "Edibles/Chocolate Edible Background Removed.png",
+    "topical":    "Topicals/topical Background Removed.png",
+    "vape":       "Vapes/vape Background Removed.png",
 }
 def nobg_file(k):
     for name in (NOBG.get(k), k + ".png"):
@@ -320,7 +320,7 @@ for name in ["discovery", "adventurous", "social", "unwind", "nightlife", "holis
 
 # Growing Process education card uses Jack's full-plant illustration
 try:
-    IMG["growbud"] = embed_rgba(NOBG_DIR + "/Full Bud No background.webp", maxw=600)
+    IMG["growbud"] = embed_rgba(NOBG_DIR + "/Flower/Full Bud No background.webp", maxw=600)
 except Exception as e:
     print("WARN growbud", e)
 
