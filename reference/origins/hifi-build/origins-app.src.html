@@ -251,6 +251,14 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .lhead2 h2{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.6rem;color:var(--ink);letter-spacing:.02em}
 .lhead2 .llearn{display:block;background:none;border:0;color:var(--or);font-family:var(--head);font-weight:600;font-size:14px;padding:3px 0 0;letter-spacing:.01em}
 .subcircles{padding-top:12px}
+.subcircles .cc .ring.empty{background:#fff}
+.subcircles .cc.sel .ring{border-width:3px;box-shadow:0 0 0 2px rgba(241,96,28,.22)}
+.subcircles .cc.back .ring{background:var(--or);position:relative}
+.subcircles .cc.back .ring::after{content:"";position:absolute;width:13px;height:13px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(45deg);margin-left:4px}
+.subcircles .cc.back b{color:var(--or)}
+.subcircles .cc.dim{opacity:.45}
+.subcircles .cc .ccn{display:block;font-family:var(--head);font-size:10.5px;color:#9A9284;margin-top:2px}
+.subcircles .cc.sel .ccn{color:var(--or)}
 .cc.sel .ring{border-width:3px;box-shadow:0 0 0 2px rgba(241,96,28,.22)}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:10px 16px 16px}
 .pgrid .fcard{width:auto}
@@ -615,7 +623,18 @@ const FEEL={discovery:"Discovery",adventurous:"Adventurous",social:"Social",unwi
 const LIFECLASS={discovery:"disc",adventurous:"adv",social:"soc",unwind:"unw",nightlife:"night",holistic:"hol"};
 const TYPES={flower:"Flower",preroll:"Pre-Rolls",concentrate:"Concentrates",edible:"Edibles",drink:"Drinks",topical:"Topicals"};
 const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:[".5 g each",".75 g each","1 g each"],concentrate:["1 g"],edible:["2.5 mg","10 mg","30 mg","100 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"],topical:["50 mL","100 mL","200 mL","250 mL"]};
-const SUBS={concentrate:["Distillate","Live Resin","Rosin (SHO)","Kief","Hash"],edible:["Chocolates","Gummies","Mints","Drinks"],flower:["Indoor","Outdoor"],preroll:["Traditional","Infused","Blunt"],topical:["Cooling","Warming","Soothing"]};
+/* Concentrate taxonomy (Jack's "Concentrate Categories and filters" doc):
+   layer 1 = category, layer 2 = the consistencies/forms sold under it. */
+const CONC=[
+ {n:"Live Resin",         forms:["Badder/Batter","Sugar","Sauce","Diamonds & Sauce","Wax","Crumble","Shatter"]},
+ {n:"Rosin (Solventless)",forms:["Live Rosin","Rosin Badder","Rosin Jam","Rosin Coins","Rosin Sap"]},
+ {n:"Hash",               forms:["Bubble Hash","Ice Water Hash","Dry Sift","Full Melt Hash","Temple Ball Hash"]},
+ {n:"Distillate",         forms:["Oil","Syringe","Dab Applicator"]},
+ {n:"RSO",                forms:["Oil Syringe","Applicator"]},
+ {n:"Kief",               forms:["Loose Kief","Dry Sift Kief","Infused Kief"]}
+];
+function concForms(cat){for(var i=0;i<CONC.length;i++)if(CONC[i].n===cat)return CONC[i].forms;return [];}
+const SUBS={concentrate:CONC.map(function(c){return c.n;}),edible:["Chocolates","Gummies","Mints","Drinks"],flower:["Indoor","Outdoor"],preroll:["Traditional","Infused","Blunt"],topical:["Cooling","Warming","Soothing"]};
 const TERPS=["Citrus","Piney","Pepper","Lavender","Earthy","Fruity"];
 const BRANDS=["Artizen","Freddy's","Royal Tree","Saints","Skörd","St. Ideal"];
 const FEELOPTS=[
@@ -635,12 +654,12 @@ const P=[
  {t:"flower",n:"Northern Lights CBD",b:"Royal Tree",img:"flower",pr:26,thc:0.8,cbd:1,sub:"Outdoor",st:"CBD",tp:"Earthy",f:["holistic","unwind"],sale:0,r:4.4,rv:7,fe:["Calm","Clear","Relaxed"],ta:["Earthy","Herbal","Pine"],d:"A CBD-forward cut for clear-headed calm. Under 1% THC."},
  {t:"preroll",n:"Dutch Treat 3-Pack",b:"Artizen",img:"preroll",pr:18,thc:23.4,sub:"Traditional",st:"Hybrid",tp:"Piney",f:["social","nightlife"],sale:0,r:4.3,rv:11,fe:["Giddy","Social","Relaxed"],ta:["Pine","Peppery","Herbal"],d:"Three straight-to-the-point pre-rolls. Grab and go."},
  {t:"preroll",n:"Slurricane Infused",b:"Skörd",img:"preroll",pr:14,thc:31.2,sub:"Infused",st:"Indica",tp:"Fruity",f:["unwind","nightlife"],sale:0,r:4.6,rv:15,fe:["Sleepy","Heavy","Relaxed"],ta:["Fruity","Creamy","Diesel"],d:"One heavy infused indica pre-roll for the end of the night."},
- {t:"concentrate",n:"Cinderella 99 Rosin",b:"Push Co.",img:"rosin",pr:37,thc:84.3,sub:"Rosin (SHO)",st:"Sativa",tp:"Citrus",f:["adventurous","nightlife","discovery"],sale:0,r:4.9,rv:24,fe:["Euphoric","Creative","Focused"],ta:["Citrus","Fruity","Diesel"],d:"Fresh-pressed single-origin rosin with a screaming citrus profile."},
- {t:"concentrate",n:"Kodiak Bear Live Resin",b:"Freddy's",img:"liveresin",pr:40,thc:80.1,sub:"Live Resin",st:"Indica",tp:"Fruity",f:["unwind"],sale:0,r:4.8,rv:16,fe:["Relaxed","Heavy","Calm"],ta:["Fruity","Creamy","Herbal"],d:"Fresh-frozen live resin, terpy and full. Deep indica shelf."},
- {t:"concentrate",n:"ATF Distillate",b:"St. Ideal",img:"distillate",pr:37,thc:88.2,sub:"Distillate",st:"Sativa",tp:"Pepper",f:["adventurous"],sale:0,r:4.1,rv:8,fe:["Focused","Energized","Clear"],ta:["Peppery","Pine","Diesel"],d:"Clean distillate with reintroduced terps. Versatile and potent."},
- {t:"concentrate",n:"Animal Sherbert Rosin",b:"Gold Leaf",img:"sugar",pr:60,thc:67.7,sub:"Rosin (SHO)",st:"Indica",tp:"Fruity",f:["unwind","social"],sale:0,r:4.0,rv:15,fe:["Giddy","Relaxed","Hungry"],ta:["Aromatic","Skunky","Diesel"],d:"Solventless rosin from the Animal Sherbert cut — full-body and flavorful with a carefree lift."},
- {t:"concentrate",n:"House Kief",b:"Freddy's",img:"keif",pr:14,thc:41.9,sub:"Kief",st:"Hybrid",tp:"Pepper",f:["discovery"],sale:0,r:3.9,rv:4,fe:["Balanced","Mellow","Giddy"],ta:["Peppery","Herbal","Pine"],d:"House-collected kief for topping bowls. Budget heat."},
- {t:"concentrate",n:"Bubble Hash",b:"Freddy's",img:"hash",pr:30,thc:52.3,sub:"Hash",st:"Indica",tp:"Earthy",f:["unwind","discovery"],sale:0,r:4.2,rv:5,fe:["Relaxed","Mellow","Calm"],ta:["Earthy","Herbal","Creamy"],d:"Old-school ice-water hash, pressed and mellow."},
+ {t:"concentrate",n:"Cinderella 99 Rosin",b:"Push Co.",img:"rosin",pr:37,thc:84.3,sub:"Rosin (Solventless)",sub2:"Live Rosin",st:"Sativa",tp:"Citrus",f:["adventurous","nightlife","discovery"],sale:0,r:4.9,rv:24,fe:["Euphoric","Creative","Focused"],ta:["Citrus","Fruity","Diesel"],d:"Fresh-pressed single-origin rosin with a screaming citrus profile."},
+ {t:"concentrate",n:"Kodiak Bear Live Resin",b:"Freddy's",img:"liveresin",pr:40,thc:80.1,sub:"Live Resin",sub2:"Sauce",st:"Indica",tp:"Fruity",f:["unwind"],sale:0,r:4.8,rv:16,fe:["Relaxed","Heavy","Calm"],ta:["Fruity","Creamy","Herbal"],d:"Fresh-frozen live resin, terpy and full. Deep indica shelf."},
+ {t:"concentrate",n:"ATF Distillate",b:"St. Ideal",img:"distillate",pr:37,thc:88.2,sub:"Distillate",sub2:"Oil",st:"Sativa",tp:"Pepper",f:["adventurous"],sale:0,r:4.1,rv:8,fe:["Focused","Energized","Clear"],ta:["Peppery","Pine","Diesel"],d:"Clean distillate with reintroduced terps. Versatile and potent."},
+ {t:"concentrate",n:"Animal Sherbert Rosin",b:"Gold Leaf",img:"sugar",pr:60,thc:67.7,sub:"Rosin (Solventless)",sub2:"Rosin Badder",st:"Indica",tp:"Fruity",f:["unwind","social"],sale:0,r:4.0,rv:15,fe:["Giddy","Relaxed","Hungry"],ta:["Aromatic","Skunky","Diesel"],d:"Solventless rosin from the Animal Sherbert cut — full-body and flavorful with a carefree lift."},
+ {t:"concentrate",n:"House Kief",b:"Freddy's",img:"keif",pr:14,thc:41.9,sub:"Kief",sub2:"Loose Kief",st:"Hybrid",tp:"Pepper",f:["discovery"],sale:0,r:3.9,rv:4,fe:["Balanced","Mellow","Giddy"],ta:["Peppery","Herbal","Pine"],d:"House-collected kief for topping bowls. Budget heat."},
+ {t:"concentrate",n:"Bubble Hash",b:"Freddy's",img:"hash",pr:30,thc:52.3,sub:"Hash",sub2:"Bubble Hash",st:"Indica",tp:"Earthy",f:["unwind","discovery"],sale:0,r:4.2,rv:5,fe:["Relaxed","Mellow","Calm"],ta:["Earthy","Herbal","Creamy"],d:"Old-school ice-water hash, pressed and mellow."},
  {t:"edible",n:"Gummies — Lemon & Orange",b:"Saints",img:"gummy",pr:25,mg:10,sub:"Gummies",st:"Sativa",tp:"Citrus",f:["social","adventurous"],sale:0,r:4.7,rv:19,fe:["Giddy","Uplifted","Social"],ta:["Citrus","Fruity","Creamy"],d:"Bright citrus gummies, 10 mg apiece. Party-portioned."},
  {t:"edible",n:"Dark Chocolates 1:1",b:"St. Ideal",img:"choc",pr:28,mg:10,cbd:1,sub:"Chocolates",st:"Hybrid",tp:"Earthy",f:["unwind","social","holistic"],sale:0,r:4.6,rv:12,fe:["Balanced","Calm","Relaxed"],ta:["Creamy","Nutty","Earthy"],d:"Rich 1:1 THC:CBD dark chocolate squares."},
  {t:"edible",n:"Peppermint Melts",b:"Saints",img:"choc",pr:22,mg:5,sub:"Mints",st:"Hybrid",tp:"Piney",f:["social"],sale:0,r:4.2,rv:6,fe:["Giddy","Clear","Balanced"],ta:["Flowery","Herbal","Creamy"],d:"Fast-acting 5 mg mints — discreet and easy to dose."},
@@ -705,7 +724,7 @@ function linePrice(p,size,q){
 }
 function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}
 
-const S={type:null,strain:null,sub:null,mood:null,brands:[],size:null,thc:null,terp:null,sale:false,sort:"best",cart:[],screen:"home"};
+const S={type:null,strain:null,sub:null,sub2:null,mood:null,brands:[],size:null,thc:null,terp:null,sale:false,sort:"best",cart:[],screen:"home"};
 const G={feels:[],method:null,subs:[],tastes:[]};
 const $=function(q){return document.querySelector(q);};
 const view=$("#view");
@@ -841,19 +860,20 @@ function renderFinish(){
   $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
   $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
-    S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;
+    S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;S.sub2=null;
     S.mood=lifes[0]||null;S.strain=null;S.size=null;
     if(!results().length)S.mood=null; /* keep the feeling pre-selected, but never hand off an empty shop */
     moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));nav("list");
   });});
-  $("#tobackshop").addEventListener("click",function(){S.mood=lifes[0]||null;S.type=null;S.sub=null;moodChips($("#moodbar"));nav("shop");});
+  $("#tobackshop").addEventListener("click",function(){S.mood=lifes[0]||null;S.type=null;S.sub=null;S.sub2=null;moodChips($("#moodbar"));nav("shop");});
 }
 
-function activeCount(){var n=0;["type","strain","sub","mood","size","thc","terp"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;n+=S.brands.length;return n;}
+function activeCount(){var n=0;["type","strain","sub","sub2","mood","size","thc","terp"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;n+=S.brands.length;return n;}
 function match(p){
   if(S.type&&p.t!==S.type)return false;
   if(S.strain&&p.st!==S.strain)return false;
   if(S.sub&&p.sub!==S.sub)return false;
+  if(S.sub2&&p.sub2!==S.sub2)return false;
   if(S.mood&&p.f.indexOf(S.mood)<0)return false;
   if(S.brands.length&&S.brands.indexOf(p.b)<0)return false;
   if(S.sale&&!p.sale)return false;
@@ -909,21 +929,45 @@ function renderShop(){
   var circles=["flower","concentrate","edible","preroll","vape","drink","topical"];
   var iconScale={flower:1.5,preroll:1.5,vape:1.5,topical:1.5}; /* these cutouts sit small in the ring — enlarge to match the others */
   $("#catcircles").innerHTML=circles.map(function(k){var sc=iconScale[k];return '<button class="cc tap" data-cc="'+k+'"><span class="ring"><img src="'+(IMG[icons[k]]||'')+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'></span><b>'+labels[k]+'</b></button>';}).join("");
-  $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.size=null;nav("list");});});
+  $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.sub2=null;S.size=null;nav("list");});});
   var feedcats=["flower","concentrate","edible","preroll","drink","topical"];
   $("#feed").innerHTML=feedcats.map(function(k){
     var prods=P.filter(function(p){return p.t===k;}).slice(0,10); /* browse row previews 10; 'See All' opens the full catalog */
     if(!prods.length)return "";
     return '<div class="feed-sec"><div class="feed-h"><div class="ft">'+labels[k]+'</div><button class="fsee tap" data-see="'+k+'">See All ›</button></div><div class="feedrow">'+prods.map(feedCard).join("")+'</div></div>';
   }).join("");
-  $("#feed").querySelectorAll("[data-see]").forEach(function(b){b.addEventListener("click",function(){S.type=b.dataset.see;S.strain=null;S.sub=null;S.size=null;nav("list");});});
+  $("#feed").querySelectorAll("[data-see]").forEach(function(b){b.addEventListener("click",function(){S.type=b.dataset.see;S.strain=null;S.sub=null;S.sub2=null;S.size=null;nav("list");});});
   $("#feed").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
   $("#feed").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
 }
 function renderList(){
   $("#ltitle").textContent=S.type?TYPES[S.type]:"All Products";
   var learn=$("#learnbtn"),subs=SUBS[S.type],sc=$("#subcats");
-  if(S.type&&subs){
+  if(S.type==="concentrate"){
+    /* two-layer concentrate bubbles: category row -> tap one and the row becomes
+       its consistencies, with that category parked far-left; tap it again to go
+       back. Rings are empty until Jack supplies the photos. */
+    learn.style.display="block";sc.style.display="flex";
+    var bub=function(label,cls,attr,n){
+      return '<button class="cc tap '+cls+'" '+attr+'><span class="ring empty"></span><b>'+label+'</b>'+
+        (n==null?'':'<span class="ccn">'+n+'</span>')+'</button>';};
+    if(!S.sub){
+      sc.innerHTML=CONC.map(function(c){
+        var n=P.filter(function(p){return p.t==="concentrate"&&p.sub===c.n;}).length;
+        return bub(c.n,"",'data-cc1="'+c.n+'"',n);}).join("");
+    }else{
+      sc.innerHTML=bub(S.sub,"back sel",'data-ccback="1"',null)+
+        concForms(S.sub).map(function(fm){
+          var n=P.filter(function(p){return p.t==="concentrate"&&p.sub===S.sub&&p.sub2===fm;}).length;
+          return bub(fm,(S.sub2===fm?"sel":"")+(n?"":" dim"),'data-cc2="'+fm+'"',n);}).join("");
+    }
+    sc.querySelectorAll("[data-cc1]").forEach(function(b){b.addEventListener("click",function(){
+      S.sub=b.dataset.cc1;S.sub2=null;renderList();});});
+    sc.querySelectorAll("[data-ccback]").forEach(function(b){b.addEventListener("click",function(){
+      S.sub=null;S.sub2=null;renderList();});});
+    sc.querySelectorAll("[data-cc2]").forEach(function(b){b.addEventListener("click",function(){
+      var v=b.dataset.cc2;S.sub2=(S.sub2===v)?null:v;renderList();});});
+  }else if(S.type&&subs){
     learn.style.display="block";sc.style.display="flex";
     sc.innerHTML=subs.map(function(x){
       var rep=P.filter(function(p){return p.t===S.type&&p.sub===x;})[0]||P.filter(function(p){return p.t===S.type;})[0];
@@ -1141,7 +1185,7 @@ function drawDrawer(){
    '<div class="dsec"><div class="dt">Terpenes</div><div class="opts">'+TERPS.map(function(t){return '<button class="opt tap '+(S.terp===t?'sel':'')+'" data-fp="'+t+'">'+t+'</button>';}).join("")+'</div></div>';
   d.querySelector("#swsale").addEventListener("click",function(){S.sale=!S.sale;drawDrawer();});
   d.querySelectorAll("[data-fm]").forEach(function(b){b.addEventListener("click",function(){S.mood=S.mood===b.dataset.fm?null:b.dataset.fm;drawDrawer();});});
-  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;drawDrawer();});});
+  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;drawDrawer();});});
   d.querySelectorAll("[data-fs]").forEach(function(b){b.addEventListener("click",function(){S.size=S.size===b.dataset.fs?null:b.dataset.fs;drawDrawer();});});
   d.querySelectorAll("[data-fh]").forEach(function(b){b.addEventListener("click",function(){S.thc=S.thc===b.dataset.fh?null:b.dataset.fh;drawDrawer();});});
   d.querySelectorAll("[data-fb]").forEach(function(b){b.addEventListener("click",function(){var i=S.brands.indexOf(b.dataset.fb);i>-1?S.brands.splice(i,1):S.brands.push(b.dataset.fb);drawDrawer();});});
@@ -1153,7 +1197,7 @@ $("#shopfilter").addEventListener("click",function(){nav("list");drawDrawer();$(
 $("#closefilter").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#dim").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#applyf").addEventListener("click",function(){$("#drawer").classList.remove("on");moodChips($("#moodbar2"));renderList();});
-$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.mood=null;S.brands=[];S.size=null;S.thc=null;S.terp=null;S.sale=false;drawDrawer();});
+$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.mood=null;S.brands=[];S.size=null;S.thc=null;S.terp=null;S.sale=false;drawDrawer();});
 $("#sortsel").addEventListener("change",function(e){S.sort=e.target.value;renderList();});
 
 var tmr=null;function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tmr);tmr=setTimeout(function(){t.classList.remove("on");},1600);}
