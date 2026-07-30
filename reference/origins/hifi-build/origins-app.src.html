@@ -626,12 +626,12 @@ const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:[".5 g each",".7
 /* Concentrate taxonomy (Jack's "Concentrate Categories and filters" doc):
    layer 1 = category, layer 2 = the consistencies/forms sold under it. */
 const CONC=[
- {n:"Live Resin",         forms:["Badder/Batter","Sugar","Sauce","Diamonds","Wax","Crumble","Shatter"]},
- {n:"Rosin",             forms:["Live Rosin","Rosin Badder","Rosin Jam","Rosin Coins","Rosin Sap"]},
- {n:"Hash",               forms:["Bubble Hash","Ice Water Hash","Dry Sift","Full Melt Hash","Temple Ball Hash"]},
  {n:"Distillate",         forms:["Oil","Syringe","Dab Applicator"]},
- {n:"RSO",                forms:["Oil Syringe","Applicator"]},
- {n:"Kief",               forms:["Loose Kief","Dry Sift Kief","Infused Kief"]}
+ {n:"Live Resin",         forms:["Badder/Batter","Sugar","Sauce","Diamonds","Wax","Crumble","Shatter"]},
+ {n:"Rosin",              forms:["Live Rosin","Rosin Badder","Rosin Jam","Rosin Coins","Rosin Sap"]},
+ {n:"Kief",               forms:["Loose Kief","Dry Sift Kief","Infused Kief"]},
+ {n:"Hash",               forms:["Bubble Hash","Ice Water Hash","Dry Sift","Full Melt Hash","Temple Ball Hash"]},
+ {n:"RSO",                forms:["Oil Syringe","Applicator"]}
 ];
 function concForms(cat){for(var i=0;i<CONC.length;i++)if(CONC[i].n===cat)return CONC[i].forms;return [];}
 const SUBS={concentrate:CONC.map(function(c){return c.n;}),edible:["Chocolates","Gummies","Mints","Drinks"],flower:["Indoor","Outdoor"],preroll:["Traditional","Infused","Blunt"],topical:["Cooling","Warming","Soothing"]};
@@ -901,6 +901,12 @@ function moodChips(el){
     if(S.screen!=="list")nav("list");else renderList();
   });});
 }
+/* tile/PI breadcrumb: concentrates read category > consistency (e.g. Rosin ›
+   Live Rosin); everything else keeps type > sub/strain. */
+function crumb(p){
+  if(p.t==="concentrate"&&p.sub)return p.sub+(p.sub2?(" › "+p.sub2):"");
+  return TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
+}
 function feedPill(s){s=s.replace(" each","").trim();return /mg/i.test(s)?s.replace(/\s+/g,""):s.replace(/\s+/g,"").toUpperCase();}
 function feedCard(p){
   var lc=LIFECLASS[p.f[0]]||"soc";
@@ -913,7 +919,7 @@ function feedCard(p){
   var start=Math.max(0,Math.min(idx-1,Math.max(0,all.length-3)));
   var sizes=all.slice(start,start+3).map(function(s){return '<span class="fsz'+(s===dispSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
   var pp=priceFor(p,dispSize),price=pp.now,was=pp.was;
-  var bc=TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
+  var bc=crumb(p);
   var thc=p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):"");
   var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
   return '<div class="fcard '+lc+' tap" data-p="'+p.id+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
@@ -989,7 +995,7 @@ function dealCard(p,dealSize,struck,sale){
   var lc=LIFECLASS[p.f[0]]||"soc";
   var all=sizesFor(p),idx=all.indexOf(dealSize),start=Math.max(0,Math.min(idx-2,all.length-4));
   var szs=all.slice(start,start+4).map(function(s){return '<span class="fsz'+(s===dealSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
-  var bc=TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
+  var bc=crumb(p);
   var thc=p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):"");
   var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
   return '<div class="fcard dcard '+lc+' tap" data-p="'+p.id+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
@@ -1040,7 +1046,7 @@ function drawProduct(){
   var taste='<div class="chipset taste"><div class="csh">Taste</div><div class="iconrow">'+p.ta.map(function(t){return '<div class="icard">'+pIcon(t)+'<b>'+t+'</b></div>';}).join("")+'</div></div>';
   $("#pwrap").innerHTML='<div class="pihead"><button class="pihback tap" data-b="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Product Info</h2></div>'+
     '<div class="pimg '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+life+'</div>'+
-    '<div class="pcat">'+TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""))+'</div>'+
+    '<div class="pcat">'+crumb(p)+'</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="t">'+(p.thc!=null?("THC "+p.thc+"%"):(p.mg?p.mg+" mg":""))+'</span></div>'+
     '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
