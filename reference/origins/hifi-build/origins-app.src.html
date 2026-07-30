@@ -946,7 +946,7 @@ function drawProduct(){
   var isPair=!!pp.was&&curSize==="3.5 g";               /* 2-for-$50: needs qty 2,4,… */
   var dealOn=pp.was&&(!isPair||q>=2);                    /* 40% off 14g/28g: always on */
   var priceHtml=dealOn?money(pp.now)+'<span class="was">'+money(reg)+'</span>':money(reg);
-  var hint=(isPair&&q<2)?'<div class="dealhint">2 for $50 &mdash; deal price unlocks in pairs</div>':'';
+  var hint=isPair?'<div class="dealhint">2 for $50 &mdash; deal price unlocks in pairs</div>':''; /* stays visible once unlocked, as the deal's label */
   var lc=LIFECLASS[p.f[0]]||"soc";
   var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
   var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+FEEL[p.f[0]]+'</span>':'';
