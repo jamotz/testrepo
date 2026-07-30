@@ -251,8 +251,8 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .lhead2 h2{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.6rem;color:var(--ink);letter-spacing:.02em}
 .lhead2 .llearn{display:block;background:none;border:0;color:var(--or);font-family:var(--head);font-weight:600;font-size:14px;padding:3px 0 0;letter-spacing:.01em}
 .subcircles{padding-top:12px}
-.subcircles .cc .ring.empty{background:#fff}
-.subcircles .cc.sel .ring{border-width:3px;box-shadow:0 0 0 2px rgba(241,96,28,.22)}
+.subcircles .cc .ring.noimg{background:#fff}
+.subcircles .cc.sel .ring{border-width:2px;box-shadow:inset 0 0 0 3px rgba(241,96,28,.30)}
 .subcircles .cc.back .ring{background:var(--or);position:relative}
 .subcircles .cc.back .ring::after{content:"";position:absolute;width:13px;height:13px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(45deg);margin-left:4px}
 .subcircles .cc.back b{color:var(--or)}
@@ -955,7 +955,7 @@ function renderList(){
        back. Rings are empty until Jack supplies the photos. */
     learn.style.display="block";sc.style.display="flex";
     var bub=function(label,cls,attr,img){
-      return '<button class="cc tap '+cls+'" '+attr+'><span class="ring'+(img?'':' empty')+'">'+
+      return '<button class="cc tap '+cls+'" '+attr+'><span class="ring'+(img?'':' noimg')+'">'+
         (img?'<img src="'+img+'" alt="">':'')+'</span><b>'+label+'</b></button>';};
     var catImg=function(cat){ /* representative product photo for the category */
       var rep=P.filter(function(p){return p.t==="concentrate"&&p.sub===cat;})[0];
