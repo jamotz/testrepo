@@ -912,7 +912,7 @@ function renderShop(){
   $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.size=null;nav("list");});});
   var feedcats=["flower","concentrate","edible","preroll","drink","topical"];
   $("#feed").innerHTML=feedcats.map(function(k){
-    var prods=P.filter(function(p){return p.t===k;});
+    var prods=P.filter(function(p){return p.t===k;}).slice(0,10); /* browse row previews 10; 'See All' opens the full catalog */
     if(!prods.length)return "";
     return '<div class="feed-sec"><div class="feed-h"><div class="ft">'+labels[k]+'</div><button class="fsee tap" data-see="'+k+'">See All ›</button></div><div class="feedrow">'+prods.map(feedCard).join("")+'</div></div>';
   }).join("");
