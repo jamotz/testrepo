@@ -34,7 +34,15 @@ EXTRA = """51\tSkord\tMAC 1 Loose Kief\tKief\tLoose Kief\tHybrid\t1g\t22\t48.6\t
 54\tDank Czar\tPermanent Marker Dry Sift Kief\tKief\tDry Sift Kief\tHybrid\t1g\t25\t53.2\t0.1\tHigh-quality dry sift with bold aroma and smooth texture.\tEuphoric\tBalanced\tRelaxed\tGas, Candy, Floral
 55\tBuddies\tACDC Infused Kief\tKief\tInfused Kief\tCBD\t1g\t18\t9.8\t38.5\tCBD-rich kief designed for a mellow, clear-headed experience.\tCalm\tClear-Headed\tRelaxed\tLemon, Herbal, Pine
 56\tPassion Flower\tRainbow Belts Infused Kief\tKief\tInfused Kief\tHybrid\t1g\t23\t55.1\t0.2\tTerpene-enhanced kief for sprinkling over flower or bowls.\tHappy\tRelaxed\tCreative\tCandy, Tropical, Citrus"""
-for line in EXTRA.strip().split("\n"):
+
+# Rows 57-60 authored to Jack's schema (not from the sheet) to stock the two
+# syringe consistencies. Rosin Coins and both applicator forms stay empty.
+AUTHORED = """57\tDabstract\tNorthern Lights Distillate Syringe\tDistillate\tSyringe\tIndica\t1g\t32\t88.4\t0.3\tUltra-refined distillate in an easy-dose syringe for dabbing or infusing.\tRelaxed\tSleepy\tBody High\tEarth, Herbal, Sweet
+58\tRefine\tSour Diesel Distillate Syringe\tDistillate\tSyringe\tSativa\t1g\t34\t90.2\t0.2\tUltra-refined distillate in an easy-dose syringe for dabbing or infusing.\tEnergetic\tFocused\tUplifted\tDiesel, Citrus, Fuel
+59\tSkagit Organics\tFull Spectrum RSO Syringe\tRSO\tOil Syringe\tIndica\t1g\t38\t72.5\t1.8\tUnrefined full-spectrum extract in a measured syringe. Start small.\tRelaxed\tSleepy\tBody High\tEarth, Herbal, Pine
+60\tBuddies\t1:1 CBD RSO Syringe\tRSO\tOil Syringe\tCBD\t1g\t40\t32.4\t31.8\tBalanced full-spectrum RSO for measured, clear-headed relief.\tCalm\tRelaxed\tClear-Headed\tHerbal, Earth, Pepper"""
+
+for line in (EXTRA + "\n" + AUTHORED).strip().split("\n"):
     recs.append(dict(zip(hdr, line.split("\t"))))
 
 # --- sheet (Category, Subcategory) -> (app category, app consistency, image key) ---
