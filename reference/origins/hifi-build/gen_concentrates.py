@@ -27,6 +27,16 @@ for r in re.findall(r"<row[^>]*>(.*?)</row>", sheet, re.S):
     rows.append([cell(c) for c in re.findall(r"<c[^>]*>.*?</c>|<c[^>]*/>", r, re.S)])
 hdr, recs = rows[0], [dict(zip(rows[0], r)) for r in rows[1:]]
 
+# Kief rows 51-56, supplied by Jack as an addendum to the sheet (same columns).
+EXTRA = """51\tSkord\tMAC 1 Loose Kief\tKief\tLoose Kief\tHybrid\t1g\t22\t48.6\t0.2\tFinely sifted trichomes ideal for topping flower or boosting potency.\tBalanced\tHappy\tEuphoric\tCitrus, Pine, Earth
+52\tPlaid Jacket\tBlue Dream Loose Kief\tKief\tLoose Kief\tSativa Hybrid\t1g\t20\t46.9\t0.2\tClassic kief with bright terpene expression and versatile use.\tCreative\tUplifted\tFocused\tBerry, Sweet, Herbal
+53\tRefine\tGMO Dry Sift Kief\tKief\tDry Sift Kief\tIndica Hybrid\t1g\t24\t51.4\t0.1\tTraditional dry sift concentrate with rich cannabinoid content.\tRelaxed\tCalm\tHappy\tGarlic, Diesel, Earth
+54\tDank Czar\tPermanent Marker Dry Sift Kief\tKief\tDry Sift Kief\tHybrid\t1g\t25\t53.2\t0.1\tHigh-quality dry sift with bold aroma and smooth texture.\tEuphoric\tBalanced\tRelaxed\tGas, Candy, Floral
+55\tBuddies\tACDC Infused Kief\tKief\tInfused Kief\tCBD\t1g\t18\t9.8\t38.5\tCBD-rich kief designed for a mellow, clear-headed experience.\tCalm\tClear-Headed\tRelaxed\tLemon, Herbal, Pine
+56\tPassion Flower\tRainbow Belts Infused Kief\tKief\tInfused Kief\tHybrid\t1g\t23\t55.1\t0.2\tTerpene-enhanced kief for sprinkling over flower or bowls.\tHappy\tRelaxed\tCreative\tCandy, Tropical, Citrus"""
+for line in EXTRA.strip().split("\n"):
+    recs.append(dict(zip(hdr, line.split("\t"))))
+
 # --- sheet (Category, Subcategory) -> (app category, app consistency, image key) ---
 # app taxonomy + photo names come from the same source, so this is the join table
 JOIN = {
