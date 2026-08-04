@@ -67,8 +67,8 @@ def embed_rgba(relpath, maxw=400):
     im = Image.open(assets / relpath).convert("RGBA")
     if im.width > maxw:
         im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
-    b = io.BytesIO(); im.save(b, "PNG", optimize=True)
-    return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
+    b = io.BytesIO(); im.save(b, "WEBP", quality=86, method=6)   # alpha kept, far smaller than PNG
+    return "data:image/webp;base64," + base64.b64encode(b.getvalue()).decode()
 
 def embed_cut(relpath, maxw=400, thr=238, mode="flood"):
     """Knock out a flat near-white background to transparent. mode="flood"
@@ -117,27 +117,7 @@ def embed_cut(relpath, maxw=400, thr=238, mode="flood"):
     return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
 
 M = {
- "flower":    "product assets/Flower/flower.png",
- "gdp":       "product assets/Flower/Unproccessed Flower.jpeg",
  # extra bud photos (no white-bg original; resolved via NOBG -> embed_rgba)
- "bud1":      "product assets/Flower/492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
- "bud2":      "product assets/Flower/cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
- "bud3":      "product assets/Flower/marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
- "bud4":      "product assets/Flower/pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
- "preroll":   "product assets/Prerolls/preroll.png",
- "liveresin": "product assets/Concentrate/Live Resin/Live Resin.jpeg",
- "rosin":     "product assets/Concentrate/Rosin/Concentrate (Rosin).png",
- "sugar":     "product assets/Concentrate/Live Resin/Sugar.webp",
- "thca":      "product assets/Concentrate/Live Resin/THC-A Crystals.png",
- "badder":    "product assets/Concentrate/Live Resin/Butter Concentrate.png",
- "distillate": "product assets/Concentrate/Live Resin/Butter Concentrate.png",
- "hash":      "product assets/Concentrate/Hash/hash.jpeg",
- "keif":      "product assets/Concentrate/Kief/keif.jpeg",
- "gummy":     "product assets/Edibles/Gummy Edibles.png",
- "gummy2":    "product assets/Edibles/Gummy Edibles.webp",
- "choc":      "product assets/Edibles/Chocolate Edible.png",
- "vape":      "product assets/Vapes/vape.png",
- "topical":   "product assets/Topicals/topical.png",
 
  # concentrate consistency photos (Jack's uploads, named by sub-filter)
  "cd_oil": "product assets/Concentrate/Distillate/Distalite Oil.png",
@@ -165,6 +145,37 @@ M = {
  "ch_templeball": "product assets/Concentrate/Hash/Temple Ball Hash.png",
  "crso_oil": "product assets/Concentrate/RSO/RSO Oil.png",
  "crso_applicator": "product assets/Concentrate/RSO/RSO Applicator .png",
+
+ # edible + flower photos (Jack's uploads)
+ "top_balm": "product assets/Topicals/Balm:Salve.png",
+ "ed_gum_orange": "product assets/Edibles/Orange Gummy Edible.png",
+ "ed_gum_purple": "product assets/Edibles/Purple Gummy Edible.png",
+ "ed_gum_red": "product assets/Edibles/Red Gummy Edible.png",
+ "ed_choc_dark": "product assets/Edibles/Dark Chocolate Edible.png",
+ "ed_choc_milk": "product assets/Edibles/Milk Chocolate Edible.png",
+ "ed_choc_white": "product assets/Edibles/White Chocolate Edible.png",
+ "ed_hard_green": "product assets/Edibles/Green Hard Candy Edible.png",
+ "ed_hard_red": "product assets/Edibles/Red Hard Candy Edible.png",
+ "ed_hard_yellow": "product assets/Edibles/Yellow Hard Candy Edible.png",
+ "ed_cap_brown": "product assets/Edibles/Brown Capsule Edible.png",
+ "ed_cap_white": "product assets/Edibles/White Capsule Edible.png",
+ "ed_cap_yellow": "product assets/Edibles/Yellow Capsule Edible.png",
+ "ed_baked_brownie": "product assets/Edibles/Brownie Edible.png",
+ "ed_baked_cookie": "product assets/Edibles/Cookie Edible.png",
+ "ed_baked_rice": "product assets/Edibles/Rice Crispy Edible.png",
+ "fl_indica": "product assets/Flower/Indica.png",
+ "fl_indica2": "product assets/Flower/Indica 2.png",
+ "fl_indica3": "product assets/Flower/Indica.webp",
+ "fl_sativa": "product assets/Flower/Sativa.webp",
+ "fl_sativa2": "product assets/Flower/Sativa 2.png",
+ "fl_hybrid": "product assets/Flower/Hybrid.png",
+ "fl_hybrid2": "product assets/Flower/Hybrid 2.png",
+ "fl_indhyb": "product assets/Flower/Indica Hybrid.png",
+ "fl_indhyb2": "product assets/Flower/Indica hybrid 2.png",
+ "fl_sathyb": "product assets/Flower/Sativa Hybrid.png",
+ "fl_sathyb2": "product assets/Flower/Sativa Hybrid 2.png",
+ "fl_universal": "product assets/Flower/Universal Nug.png",
+ "growbud": "product assets/Flower/Full Bud - educational .webp",
  "map_redmond": "Various other assets/Redmond Map.png",
  "scent_skunky": "scents assets/Scent (Skunky).png",
  "hero_mtn": "origins logos/Origin background.jpeg",
@@ -291,6 +302,35 @@ def bg_color(relpath):
 # source in 'product assets/'.
 NOBG_DIR = "product assets"
 NOBG = {
+    "top_balm": "Topicals/Balm:Salve.png",
+    "ed_gum_orange": "Edibles/Orange Gummy Edible.png",
+    "ed_gum_purple": "Edibles/Purple Gummy Edible.png",
+    "ed_gum_red": "Edibles/Red Gummy Edible.png",
+    "ed_choc_dark": "Edibles/Dark Chocolate Edible.png",
+    "ed_choc_milk": "Edibles/Milk Chocolate Edible.png",
+    "ed_choc_white": "Edibles/White Chocolate Edible.png",
+    "ed_hard_green": "Edibles/Green Hard Candy Edible.png",
+    "ed_hard_red": "Edibles/Red Hard Candy Edible.png",
+    "ed_hard_yellow": "Edibles/Yellow Hard Candy Edible.png",
+    "ed_cap_brown": "Edibles/Brown Capsule Edible.png",
+    "ed_cap_white": "Edibles/White Capsule Edible.png",
+    "ed_cap_yellow": "Edibles/Yellow Capsule Edible.png",
+    "ed_baked_brownie": "Edibles/Brownie Edible.png",
+    "ed_baked_cookie": "Edibles/Cookie Edible.png",
+    "ed_baked_rice": "Edibles/Rice Crispy Edible.png",
+    "fl_indica": "Flower/Indica.png",
+    "fl_indica2": "Flower/Indica 2.png",
+    "fl_indica3": "Flower/Indica.webp",
+    "fl_sativa": "Flower/Sativa.webp",
+    "fl_sativa2": "Flower/Sativa 2.png",
+    "fl_hybrid": "Flower/Hybrid.png",
+    "fl_hybrid2": "Flower/Hybrid 2.png",
+    "fl_indhyb": "Flower/Indica Hybrid.png",
+    "fl_indhyb2": "Flower/Indica hybrid 2.png",
+    "fl_sathyb": "Flower/Sativa Hybrid.png",
+    "fl_sathyb2": "Flower/Sativa Hybrid 2.png",
+    "fl_universal": "Flower/Universal Nug.png",
+    "growbud": "Flower/Full Bud - educational .webp",
     "cd_oil": "Concentrate/Distillate/Distalite Oil.png",
     "cd_syringe": "Concentrate/Distillate/Distillate Syringe.png",
     "cd_applicator": "Concentrate/Distillate/Dist Applicator.webp",
@@ -317,26 +357,6 @@ NOBG = {
     "crso_oil": "Concentrate/RSO/RSO Oil.png",
     "crso_applicator": "Concentrate/RSO/RSO Applicator .png",
     # extra bud photos, mixed in across the catalog flower products
-    "bud1":       "Flower/492-4922062_weed-nug-transparent-background-hd-png-download Background Removed.png",
-    "bud2":       "Flower/cannabis-isolated-transparent-background_1318202-6561 Background Removed.png",
-    "bud3":       "Flower/marijuana-strain-flower-isolated-transparent-background_1028290-12621 Background Removed.png",
-    "bud4":       "Flower/pngtree-high-quality-cannabis-bud-with-vibrant-green-and-orange-hues-png-image_19751757 Background Removed.png",
-    "flower":     "Flower/flower Background Removed.png",
-    "gdp":        "Flower/No bg - Flower bud Background Removed.png",
-    "preroll":    "Prerolls/preroll Background Removed.png",
-    "liveresin":  "Concentrate/Live Resin/Live Resin Background Removed.png",
-    "rosin":      "Concentrate/Rosin/Concentrate (Rosin) Background Removed.png",
-    "sugar":      "Concentrate/Live Resin/Sugar Background Removed.png",
-    "thca":       "Concentrate/Live Resin/THC-A Crystals Background Removed.png",
-    "badder":     "Concentrate/Live Resin/Butter Concentrate Background Removed.png",
-    "distillate": "Concentrate/Distillate/distalite Background Removed.png",
-    "hash":       "Concentrate/Hash/hash Background Removed.png",
-    "keif":       "Concentrate/Kief/keif Background Removed.png",
-    "gummy":      "Edibles/Gummy Edibles Background Removed.png",
-    "gummy2":     "Edibles/Gummy Edibles Background Removed 2.png",
-    "choc":       "Edibles/Chocolate Edible Background Removed.png",
-    "topical":    "Topicals/topical Background Removed.png",
-    "vape":       "Vapes/vape Background Removed.png",
 }
 def nobg_file(k):
     for name in (NOBG.get(k), k + ".png"):
@@ -371,10 +391,7 @@ for name in ["discovery", "adventurous", "social", "unwind", "nightlife", "holis
         print("WARN word", name, e)
 
 # Growing Process education card uses Jack's full-plant illustration
-try:
-    IMG["growbud"] = embed_rgba(NOBG_DIR + "/Flower/Full Bud No background.webp", maxw=600)
-except Exception as e:
-    print("WARN growbud", e)
+
 
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
