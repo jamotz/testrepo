@@ -45,7 +45,9 @@ hdr = rows[0]
 recs = [dict(zip(hdr, r)) for r in rows[1:] if any(x.strip() for x in r)]
 
 # ---- photos: 3 variants per edible form, picked by flavour where it reads ----
-GUMMY  = {"Blackberry":"ed_gum_purple","Huckleberry":"ed_gum_purple","Blue Raspberry":"ed_gum_purple",
+GUMMY  = {"Blackberry":"ed_gum_purple","Blue Raspberry":"ed_gum_purple",
+          "Huckleberry":"ed_gum_red",   # red huckleberry — uses the red gummy photo
+
           "Raspberry":"ed_gum_red","Strawberry":"ed_gum_red","Cherry Lime":"ed_gum_red","Watermelon":"ed_gum_red",
           "Pineapple":"ed_gum_orange","Mango":"ed_gum_orange","Tangerine":"ed_gum_orange",
           "Blood Orange":"ed_gum_orange","Peach":"ed_gum_orange","Lemon":"ed_gum_orange","Pear":"ed_gum_orange"}
@@ -54,19 +56,29 @@ CANDY  = {"Blue Raspberry":"ed_hard_green","Pear":"ed_hard_green","Cherry Lime":
           "Strawberry":"ed_hard_red","Raspberry":"ed_hard_red","Watermelon":"ed_hard_red","Blood Orange":"ed_hard_red",
           "Mango":"ed_hard_yellow","Lemon":"ed_hard_yellow","Peach":"ed_hard_yellow",
           "Pineapple":"ed_hard_yellow","Tangerine":"ed_hard_yellow","Dark Chocolate":"ed_hard_red"}
-CHOC   = {"Dark Chocolate":"ed_choc_dark"}          # else alternate milk/white
-CHOC_ALT = ["ed_choc_milk", "ed_choc_white"]
+# no chocolate product carries a "Dark Chocolate" flavour, so rotate all three
+CHOC_ALT = ["ed_choc_dark", "ed_choc_milk", "ed_choc_white"]
 CAP_ALT  = ["ed_cap_brown", "ed_cap_white", "ed_cap_yellow"]
-BAKED    = "ed_baked_cookie"                         # every baked good is a "Cookie Bite"
+# baked goods were all "Cookie Bites"; rename some so the brownie and rice-crispy
+# photos get used too (Jack: "rename some things to fit the variety of pictures")
+BAKED_RENAME = {"Raspberry":("Brownie Bites","ed_baked_brownie"),
+                "Blood Orange":("Brownie Bites","ed_baked_brownie"),
+                "Peach":("Crispy Treats","ed_baked_rice"),
+                "Lemon":("Crispy Treats","ed_baked_rice")}
 
 def photo(etype, flavor, i):
     if etype == "Gummies":  return GUMMY.get(flavor, "ed_gum_red")
     if etype == "Hard Candy": return CANDY.get(flavor, "ed_hard_red")
     if etype == "Chocolate":
-        return CHOC.get(flavor) or CHOC_ALT[i % len(CHOC_ALT)]
+        return CHOC_ALT[i % len(CHOC_ALT)]
     if etype == "Capsules / Softgels":
         return "ed_cap_brown" if flavor == "Dark Chocolate" else CAP_ALT[i % len(CAP_ALT)]
-    return BAKED
+    return BAKED_RENAME.get(flavor, (None, "ed_baked_cookie"))[1]
+
+def baked_name(name, flavor):
+    """Rename some Cookie Bites to Brownie Bites / Crispy Treats for variety."""
+    ren = BAKED_RENAME.get(flavor)
+    return name.replace("Cookie Bites", ren[0]) if ren else name
 
 # ---- authored WA-realistic prices: base by form + extraction/formulation premium ----
 BASE = {"Gummies": 18, "Chocolate": 22, "Hard Candy": 15, "Baked Goods": 20, "Capsules / Softgels": 25}
@@ -121,7 +133,7 @@ for i, r in enumerate(recs):
         ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s'
         'sub:"%s",sub2:"%s"%s,etype:"%s",pot:"%s",combo:"%s",ratio:"%s",'
         'st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
-        % (esc(r["Product Name"]), esc(r["Brand"]), photo(etype, flavor, i), p, pack, p, pack,
+        % (esc(baked_name(r["Product Name"], flavor) if etype == "Baked Goods" else r["Product Name"]), esc(r["Brand"]), photo(etype, flavor, i), p, pack, p, pack,
            thc if thc else cbd, ("cbd:1," if cbd and cbd >= thc else ""),
            cat, sub2, (',sub3:"%s"' % strain if cat == "THC Edibles" else ""), etype,
            pot, combo, ratio, st, TERP.get(flavor, "Fruity"), life,
