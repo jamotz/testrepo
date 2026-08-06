@@ -137,6 +137,7 @@ for i, r in enumerate(recs):
     p = price(r)
     # the combo + ratio ride on the photo as a tile overlay, so the name stays short
     name = baked_name(r["Product Name"], flavor) if etype == "Baked Goods" else r["Product Name"]
+    name = name.replace("Chocolate Squares", "Chocolates")   # Jack's wording
     out.append(
         ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s%s'
         'sub:"%s",sub2:"%s"%s,etype:"%s",pot:"%s",combo:"%s",ratio:"%s",'
