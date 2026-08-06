@@ -247,16 +247,21 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .fcard .cchip.c{background:rgba(126,154,91,.17);color:#5C7540}
 .fcard .fmeta{flex-wrap:wrap}
 .fcard .fmore{margin-top:auto;background:none;color:var(--or);border:1.5px solid var(--or);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;padding:8px 0;width:100%}
-.fcard .fsheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1.5px solid #E1DBCD;box-shadow:0 -10px 24px rgba(0,0,0,.10);padding:0 12px 12px;transform:translateY(101%);transition:transform .34s cubic-bezier(.4,.15,.2,1);display:flex;flex-direction:column;max-height:80%}
+.fcard .fsheet{position:absolute;inset:0;background:#fff;padding:0 12px 12px;transform:translateY(101%);transition:transform .34s cubic-bezier(.4,.15,.2,1);display:flex;flex-direction:column;z-index:2}
 .fcard.sheet-on .fsheet{transform:translateY(0)}
 .fcard .fsclose{background:none;border:0;width:100%;height:24px;display:flex;align-items:center;justify-content:center;color:#8C8478;padding:0}
 .fcard .fsclose svg{width:19px;height:19px}
 .fcard .fsrows{flex:1;overflow-y:auto;min-height:0}
-.fcard .szrow{display:flex;justify-content:space-between;align-items:baseline;width:100%;background:none;border:0;border-bottom:1px solid #EDE7DC;padding:6.5px 2px;font-family:var(--head);text-align:left}
-.fcard .szrow:last-child{border-bottom:0}
-.fcard .szrow .fss{font-weight:600;font-size:12.5px;letter-spacing:.04em;color:#3D342A;text-transform:uppercase}
-.fcard .szrow .fsp{font-weight:700;font-size:13.5px;color:var(--ink)}
-.fcard .szrow.sel .fss,.fcard .szrow.sel .fsp{color:var(--or)}
+.fcard .szrow{display:flex;justify-content:space-between;align-items:center;width:100%;background:#fff;border:1.5px solid var(--or);border-radius:100px;padding:6px 13px;margin-bottom:6px;font-family:var(--head);text-align:left}
+.fcard .szrow:last-child{margin-bottom:0}
+.fcard .szrow .fss{font-weight:600;font-size:12px;letter-spacing:.05em;color:var(--or);text-transform:uppercase}
+.fcard .szrow .fsp{font-weight:700;font-size:13px;color:var(--or)}
+.fcard .szrow.sel{background:var(--or)}
+.fcard .szrow.sel .fss,.fcard .szrow.sel .fsp{color:#fff}
+.fcard .fstep{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--or);border-radius:100px;overflow:hidden}
+.fcard .fstep button{flex:none;width:42px;align-self:stretch;border:0;background:none;color:var(--or);font-family:var(--head);font-weight:700;font-size:18px;line-height:1;padding:7px 0}
+.fcard .fstep button:active{background:var(--or);color:#fff}
+.fcard .fstep b{flex:1;text-align:center;font-family:var(--head);font-weight:700;font-size:15px;color:var(--or)}
 .fcard .fsadd{margin-top:8px}
 .fcard .fpr{font-family:var(--head);font-weight:700;font-size:16px;color:var(--ink);margin:4px 0 8px}
 .fcard .fszs{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}
@@ -1002,7 +1007,7 @@ function renderFinish(){
   }).join("");
   $("#finishwrap").innerHTML='<div class="intro">You chose to see items from these feelings.<br>Select one to explore related products:</div><div class="learn tap" id="finishlearn">Learn more ›</div><div class="feelchips">'+chips+'</div>'+groupHtml+'<div class="backshop"><button class="continue cue" id="tobackshop">Back to Shop →</button></div>';
   $("#finishlearn").addEventListener("click",function(){openEduFor(G.method,0);}); /* Recommendations: Learn more -> matching Origins U page */
-  $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow"))return;openProduct(+c.dataset.p);});});
+  $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
     S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;S.sub2=null;
@@ -1094,7 +1099,7 @@ function renderShop(){
     return '<div class="feed-sec"><div class="feed-h"><div class="ft">'+labels[k]+'</div><button class="fsee tap" data-see="'+k+'">See All ›</button></div><div class="feedrow">'+prods.map(feedCard).join("")+'</div></div>';
   }).join("");
   $("#feed").querySelectorAll("[data-see]").forEach(function(b){b.addEventListener("click",function(){S.type=b.dataset.see;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.size=null;nav("list");});});
-  $("#feed").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow"))return;openProduct(+c.dataset.p);});});
+  $("#feed").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#feed").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
 }
 function renderList(){
@@ -1176,7 +1181,7 @@ function renderList(){
   $("#fcount").textContent=activeCount();
   $("#grid").innerHTML=r.length?r.map(feedCard).join("")
    :'<div class="noresults"><b>0 products</b><p>No matches for this combo — but notice you could never pick a size that doesn’t exist for the product type. That’s the point.</p></div>';
-  $("#grid").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow"))return;openProduct(+c.dataset.p);});});
+  $("#grid").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#grid").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
 }
 /* cannabinoid chips — THC on every product, CBD alongside it once a measured
@@ -1184,6 +1189,14 @@ function renderList(){
    legacy has-CBD flag the "CBD" filter reads; it is not a measurement. */
 /* the size sheet: slides up over the card. Sizes far left, prices far right,
    the size shown on the card front pre-selected. Chevron drops it back down. */
+function cartQty(id,size){var k=id+"|"+size,n=0;S.cart.forEach(function(c){if(c.key===k)n=c.q;});return n;}
+/* the sheet's Add to Cart turns into the same stepper the product page uses */
+function cardCart(id,size){
+  var q=cartQty(id,size);
+  return q>0
+    ? '<div class="fstep" data-id="'+id+'" data-sz="'+size+'"><button class="fsdec">&minus;</button><b>'+q+'</b><button class="fsinc">+</button></div>'
+    : '<button class="fadd fsadd" data-id="'+id+'" data-sz="'+size+'">Add to Cart</button>';
+}
 function sizeSheet(p,sel,all){
   var rows=all.map(function(s){
     return '<button class="szrow'+(s===sel?" sel":"")+'" data-size="'+s+'">'+
@@ -1192,7 +1205,7 @@ function sizeSheet(p,sel,all){
   return '<div class="fsheet">'+
     '<button class="fsclose" aria-label="Back to product"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>'+
     '<div class="fsrows">'+rows+'</div>'+
-    '<button class="fadd fsadd" data-add="'+p.id+'" data-sz="'+sel+'">Add to Cart</button></div>';
+    cardCart(p.id,sel)+'</div>';
 }
 /* sheet controls, delegated once — cards are re-rendered constantly */
 document.addEventListener("click",function(e){
@@ -1212,6 +1225,22 @@ document.addEventListener("click",function(e){
     if(pr)pr.innerHTML=pp.was?'<span class="was">'+money(pp.was)+'</span><span class="now">'+money(pp.now)+'</span>':money(pp.now);
   }
   card.querySelectorAll("[data-add]").forEach(function(b){b.dataset.sz=sz;});
+  var ctl=card.querySelector(".fsadd,.fstep");
+  if(ctl)ctl.outerHTML=cardCart(+card.dataset.p,sz);
+});
+document.addEventListener("click",function(e){
+  var add=e.target.closest(".fsadd");
+  if(add){addToCart(+add.dataset.id,add.dataset.sz);add.outerHTML=cardCart(+add.dataset.id,add.dataset.sz);return;}
+  var st=e.target.closest(".fstep button");
+  if(!st)return;
+  var box=st.closest(".fstep"),id=+box.dataset.id,sz=box.dataset.sz;
+  if(st.classList.contains("fsinc"))addToCart(id,sz);
+  else{
+    var key=id+"|"+sz;
+    for(var i=0;i<S.cart.length;i++){if(S.cart[i].key===key){S.cart[i].q--;if(S.cart[i].q<1)S.cart.splice(i,1);break;}}
+    setBag();
+  }
+  box.outerHTML=cardCart(id,sz);
 });
 function cannHtml(p){
   var t=p.pot?p.pot:(p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+" mg"):""));
@@ -1248,7 +1277,7 @@ function renderHome(){
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">40% Off</span><span class="bs">Get any 14g or 28g of flower for 40% off</span></div><div class="dealrow">'+
     d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+'</div></div>';
   $("#deals").innerHTML=html;
-  $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow"))return;openProduct(+c.dataset.p);});});
+  $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#deals").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz);});});
 }
 
