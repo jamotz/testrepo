@@ -93,6 +93,19 @@ ST = {"Indica":"Indica","Indica Hybrid":"Indica","Sativa":"Sativa","Sativa Hybri
 
 def esc(s): return s.replace('"', '\\"')
 
+def strip_form(name, sub, cat):
+    """Drop the consistency (and category) off the tail of a product name.
+
+    The breadcrumb above the name already reads "Rosin > Rosin Sap", so
+    "Lemon Cherry Gelato Rosin Sap" says it twice and costs a whole line on
+    the tile. Edibles deliberately keep their form ("Blackberry Gummies").
+    """
+    norm = name.replace("&amp;", "&")
+    for tail in (sub.replace("&amp;", "&").strip(), cat.strip()):
+        if tail and norm.lower().endswith(tail.lower()):
+            norm = norm[:-len(tail)].strip(" -\u2013")
+    return norm.replace("&", "&amp;")
+
 out, unmatched = [], []
 for i, r in enumerate(recs):
     key = (r["Category"], r["Subcategory"].replace("&amp;", "&"))
@@ -112,7 +125,7 @@ for i, r in enumerate(recs):
         ' {t:"concentrate",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"1 g":%g},szs:["1 g"],'
         'thc:%g%s,sub:"%s",sub2:"%s",st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,'
         'fe:["%s"],ta:["%s"],d:"%s"},'
-        % (esc(r["Product Name"]), esc(r["Brand"]), img, price, price,
+        % (esc(strip_form(r["Product Name"], r["Subcategory"], r["Category"])), esc(r["Brand"]), img, price, price,
            thc, (",cbd:1" if st == "CBD" else ""), cat, form, st, terp, life,
            rating, revs, '","'.join(effects), '","'.join(flavors[:3]), esc(r["Description"])))
 
