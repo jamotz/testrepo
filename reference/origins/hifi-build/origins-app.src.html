@@ -26,10 +26,33 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .taptoggle.on{border-color:var(--or);color:var(--or)}
 .taptoggle.on .d{background:var(--or);box-shadow:0 0 0 3px rgba(241,96,28,.3)}
 
-.phone{background:#000;border-radius:52px;padding:11px;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px #2A2119,0 0 70px rgba(241,96,28,.13)}
+.phonebox{position:relative}   /* JS sizes this to the scaled phone so the page stays tight */
+.phone{background:#000;border-radius:52px;padding:11px;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px #2A2119,0 0 70px rgba(241,96,28,.13);transform-origin:top left}
 /* phone frame — widened 15% over iPhone 393w (→452) so 2-up grids have room */
-.scr{position:relative;background:var(--bg);border-radius:44px;overflow:hidden;aspect-ratio:452/852;height:min(852px,86vh);width:auto;max-width:96vw;display:flex;flex-direction:column}
-@media(max-width:520px){.scr{height:min(852px,84vh)}.phone{border-radius:44px;padding:9px}}
+/* The app always lays out in 452 CSS px of width — that is the design unit.
+   Height is whatever the device gives us, and the whole frame is scaled to
+   fit. Width is never derived from a capped height, so content cannot clip. */
+.scr{position:relative;background:var(--bg);border-radius:44px;overflow:hidden;width:452px;height:852px;display:flex;flex-direction:column}
+/* full screen: the phone fills the viewport, bezel and fake hardware gone */
+body.fs .stage{padding:0;gap:0;min-height:0}
+body.fs .stage-h,body.fs .taptoggle,body.fs .fsopen{display:none}
+body.fs .phonebox{position:fixed;inset:0;z-index:200}
+body.fs .phone{padding:0;border-radius:0;box-shadow:none}
+/* the exit chip gets its own strip so it never covers the app's header, and
+   the tab bar clears the home indicator (viewport-fit=cover lets us under it) */
+body.fs .scr{border-radius:0;padding-top:calc(48px + env(safe-area-inset-top,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+body.fs .fsexit{top:calc(9px + env(safe-area-inset-top,0px))}
+body.fs .island,body.fs .status{display:none}
+.fsexit{display:none}
+body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-flex;align-items:center;gap:8px;
+  background:rgba(23,18,13,.82);color:#F3EADB;border:0;border-radius:100px;padding:9px 15px 9px 11px;
+  font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.1em;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 3px 12px rgba(0,0,0,.3)}
+.fsexit svg{width:15px;height:15px;stroke-width:2.8}
+.fsopen{display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid #45392C;border-radius:100px;
+  color:#C9BCA9;font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:11px;letter-spacing:.12em;padding:8px 16px}
+.fsopen:hover{border-color:var(--or);color:var(--or)}
+.fsopen svg{width:14px;height:14px;stroke-width:2.4}
 .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:112px;height:30px;background:#000;border-radius:100px;z-index:60}
 .view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);color:var(--ink)}
 .status{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 4px;font-family:var(--head);font-weight:600;font-size:14px;color:var(--ink);background:var(--bg)}
@@ -497,8 +520,10 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
     <div class="s">Explore confidently &middot; Redmond, WA</div>
   </div>
   <button class="taptoggle" id="taptoggle" type="button"><span class="d"></span>Show tap points</button>
+  <button class="fsopen" id="fsopen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/></svg>Open full screen</button>
 
-  <div class="phone"><div class="scr" id="scr">
+  <div class="phonebox" id="phonebox"><div class="phone" id="phone"><div class="scr" id="scr">
+    <button class="fsexit" id="fsexit" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Exit</button>
     <span class="island"></span>
     <div class="status"><span>6:25</span><span class="r">&#9679;&#9679;&#9679;&#9675; &nbsp;&#9889;</span></div>
 
@@ -639,7 +664,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
       <button data-nav="edu" data-tab="edu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M7 9v5c0 1.5 5 3 5 3s5-1.5 5-3V9"/></svg>Origins U</button>
       <button data-nav="account" data-tab="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3-6.5 7-6.5s7 2.9 7 6.5"/></svg>Account</button>
     </div>
-  </div></div>
+  </div></div></div>
 
   <p class="hintline">Full <b>Guide Me</b> wizard &rarr; feel, method, type &amp; taste &rarr; a preview of popular picks &rarr; <b>Browse products</b> drops you into the Shop pre&#8209;filtered. Toggle <b>Show tap points</b> to reveal every interaction.</p>
 </div>
@@ -877,6 +902,59 @@ function linePrice(p,size,q){
   if(pp.was&&size==="3.5 g"){var d=q-(q%2);return{total:d*pp.now+(q%2)*reg,regTotal:reg*q};}
   return{total:pp.now*q,regTotal:reg*q};
 }
+/* ---- frame fitting ------------------------------------------------------
+   The app is designed in 452 CSS px of width. That never changes; what
+   changes is how big it is drawn and how tall the viewport is.
+     framed  - 452 x 852, scaled down to fit the window
+     full    - 452 wide scaled to the device width, height run out to fill
+   Text renders proportionally smaller on a phone, which is the accepted
+   trade for keeping one layout that never reflows or clips. */
+/* Without a viewport meta a phone browser lays the page out at ~980px and
+   zooms out, so innerWidth lies and full screen cannot fill the screen. The
+   build emits a fragment with no <head> of its own, so declare it here —
+   guarded, in case the host page already set one. */
+(function(){
+  if(document.querySelector('meta[name="viewport"]'))return;
+  var m=document.createElement("meta");
+  m.name="viewport";
+  m.content="width=device-width,initial-scale=1,viewport-fit=cover";
+  (document.head||document.documentElement).appendChild(m);
+})();
+var DESIGN_W=452, DESIGN_H=852;
+function fitFrame(){
+  var box=document.getElementById("phonebox"),ph=document.getElementById("phone"),
+      scr=document.getElementById("scr");
+  if(!box||!ph||!scr)return;
+  var full=document.body.classList.contains("fs"),
+      bez=full?0:22,                                   /* .phone padding, both sides */
+      vw=window.innerWidth,vh=window.innerHeight,k,h;
+  if(full){
+    k=vw/(DESIGN_W+bez);
+    h=Math.round(vh/k);                                /* let height run to fill */
+  }else{
+    /* width is the only constraint: full size whenever it fits, and the page
+       scrolls rather than shrinking the phone on a short window */
+    k=Math.min(1,(vw-32)/(DESIGN_W+bez));
+    h=DESIGN_H;
+  }
+  scr.style.height=h+"px";
+  ph.style.transform="scale("+k+")";
+  /* transform does not change layout size — keep the page box honest */
+  box.style.width=Math.round((DESIGN_W+bez)*k)+"px";
+  box.style.height=Math.round((h+bez)*k)+"px";
+}
+addEventListener("resize",fitFrame);
+addEventListener("orientationchange",function(){setTimeout(fitFrame,120);});
+function setFull(on){
+  document.body.classList.toggle("fs",on);
+  fitFrame();
+  if(!on)document.getElementById("phonebox").scrollIntoView({block:"center"});
+}
+document.addEventListener("click",function(e){
+  if(e.target.closest("#fsopen")){setFull(true);return;}
+  if(e.target.closest("#fsexit"))setFull(false);
+});
+addEventListener("keydown",function(e){if(e.key==="Escape")setFull(false);});
 function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}
 
 const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],size:null,thc:null,terp:null,sale:false,sort:"best",cart:[],screen:"home"};
@@ -1490,5 +1568,5 @@ $("#seattlebtn").addEventListener("click",function(){toast("Seattle store — co
 renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderHome();
 $("#dealscal1").addEventListener("click",function(){toast("Deals calendar — coming soon");});
 $("#dealscal2").addEventListener("click",function(){toast("Deals calendar — coming soon");});
-setBag();nav("landing");
+setBag();nav("landing");fitFrame();
 </script>
