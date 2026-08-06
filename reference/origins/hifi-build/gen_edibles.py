@@ -135,8 +135,8 @@ for i, r in enumerate(recs):
     st = strain if cat == "THC Edibles" else ("CBD" if thc == 0 else "Hybrid")
     sub2 = r["Extraction"] if cat == "THC Edibles" else effect
     p = price(r)
-    base = baked_name(r["Product Name"], flavor) if etype == "Baked Goods" else r["Product Name"]
-    name = base if combo == "THC Only" else (base + " " + combo + (" " + ratio if ratio else ""))
+    # the combo + ratio ride on the photo as a tile overlay, so the name stays short
+    name = baked_name(r["Product Name"], flavor) if etype == "Baked Goods" else r["Product Name"]
     out.append(
         ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s%s'
         'sub:"%s",sub2:"%s"%s,etype:"%s",pot:"%s",combo:"%s",ratio:"%s",'
