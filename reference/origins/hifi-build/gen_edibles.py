@@ -119,22 +119,30 @@ for i, r in enumerate(recs):
     flavor, effect = r["Flavor"], r["Effect Filter"]
     strain = r["Lifestyle"]                      # sheet calls Sativa/Hybrid/Indica "Lifestyle"
     thc, cbd, other = float(r["THC mg"] or 0), float(r["CBD mg"] or 0), float(r["Other mg"] or 0)
-    # the tile's potency line: combo + ratio, or total CBD mg for the CBD-only product
     combo, ratio = r["Cannabinoid Combo"], r["Ratio (Tile)"]
-    if combo == "CBD Only":      pot, pack = "%g mg CBD" % cbd, "%g mg" % cbd
-    elif combo == "THC Only":    pot, pack = "%g mg THC" % thc, "100 mg"
-    else:                        pot, pack = "%s %s" % (combo, ratio), "100 mg"
-    life = LIFE_STRAIN.get(strain, "social") if cat == "THC Edibles" else LIFE_EFFECT.get(effect, "social")
+    # the tile chips carry real numbers only — the cannabinoid combo and its ratio
+    # live in the product name instead (Jack, 2026-08-06)
+    pot  = "%g mg THC" % thc
+    pack = "%g mg" % cbd if combo == "CBD Only" else "100 mg"
+    cbdf = 'cbdv:%g,cbdu:" mg",' % cbd if (combo != "THC Only" and cbd) else ""
+    # anything carrying more than straight THC is a Holistic product, whatever the
+    # strain or effect would otherwise suggest
+    if combo != "THC Only":
+        life = "holistic"
+    else:
+        life = LIFE_STRAIN.get(strain, "social") if cat == "THC Edibles" else LIFE_EFFECT.get(effect, "social")
     feels = FEEL_STRAIN.get(strain, ["Balanced","Calm","Giddy"]) if cat == "THC Edibles" else FEEL.get(effect, ["Balanced","Calm","Giddy"])
     st = strain if cat == "THC Edibles" else ("CBD" if thc == 0 else "Hybrid")
     sub2 = r["Extraction"] if cat == "THC Edibles" else effect
     p = price(r)
+    base = baked_name(r["Product Name"], flavor) if etype == "Baked Goods" else r["Product Name"]
+    name = base if combo == "THC Only" else (base + " " + combo + (" " + ratio if ratio else ""))
     out.append(
-        ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s'
+        ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s%s'
         'sub:"%s",sub2:"%s"%s,etype:"%s",pot:"%s",combo:"%s",ratio:"%s",'
         'st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
-        % (esc(baked_name(r["Product Name"], flavor) if etype == "Baked Goods" else r["Product Name"]), esc(r["Brand"]), photo(etype, flavor, i), p, pack, p, pack,
-           thc if thc else cbd, ("cbd:1," if cbd and cbd >= thc else ""),
+        % (esc(name), esc(r["Brand"]), photo(etype, flavor, i), p, pack, p, pack,
+           thc if thc else cbd, ("cbd:1," if cbd and cbd >= thc else ""), cbdf,
            cat, sub2, (',sub3:"%s"' % strain if cat == "THC Edibles" else ""), etype,
            pot, combo, ratio, st, TERP.get(flavor, "Fruity"), life,
            round(4.0 + (i % 10) * 0.1, 1), 5 + (i * 5) % 34,
