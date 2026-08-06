@@ -914,11 +914,17 @@ function linePrice(p,size,q){
    build emits a fragment with no <head> of its own, so declare it here —
    guarded, in case the host page already set one. */
 (function(){
-  if(document.querySelector('meta[name="viewport"]'))return;
-  var m=document.createElement("meta");
-  m.name="viewport";
-  m.content="width=device-width,initial-scale=1,viewport-fit=cover";
-  (document.head||document.documentElement).appendChild(m);
+  var m=document.querySelector('meta[name="viewport"]');
+  if(!m){
+    m=document.createElement("meta");
+    m.name="viewport";
+    m.content="width=device-width,initial-scale=1,viewport-fit=cover";
+    (document.head||document.documentElement).appendChild(m);
+  }else if(m.content.indexOf("viewport-fit")<0){
+    /* the artifact host sets its own viewport meta without viewport-fit, and
+       without it env(safe-area-inset-*) reports 0 on a notched phone */
+    m.content=m.content+",viewport-fit=cover";
+  }
 })();
 var DESIGN_W=452, DESIGN_H=852;
 function fitFrame(){
