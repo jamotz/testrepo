@@ -241,6 +241,11 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .fcard .fmeta{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .fcard .fbr{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.03em;color:var(--olive)}
 .fcard .fthc{font-family:var(--head);font-weight:600;font-size:12px;color:#C0392B;white-space:nowrap}
+.fcard .fcann{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.fcard .cchip{font-family:var(--head);font-weight:600;font-size:10.5px;letter-spacing:.04em;padding:2.5px 7px;border-radius:3px;white-space:nowrap;text-transform:uppercase}
+.fcard .cchip.t{background:rgba(192,57,43,.11);color:#C0392B}
+.fcard .cchip.c{background:rgba(126,154,91,.17);color:#5C7540}
+.fcard .fmeta{flex-wrap:wrap}
 .fcard .fpr{font-family:var(--head);font-weight:700;font-size:19px;color:var(--ink);margin:5px 0 9px}
 .fcard .fszs{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}
 .fcard .fsz{background:var(--brown);opacity:.6;color:#F0EAD8;border-radius:100px;font-family:var(--head);font-weight:600;font-size:11px;padding:5px 12px;letter-spacing:.03em}
@@ -1051,11 +1056,10 @@ function feedCard(p){
   var sizes=all.slice(start,start+3).map(function(s){return '<span class="fsz'+(s===dispSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
   var pp=priceFor(p,dispSize),price=pp.now,was=pp.was;
   var bc=crumb(p);
-  var thc=p.pot?p.pot:(p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):""));
   var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
   return '<div class="fcard '+lc+' tap" data-p="'+p.id+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
     '<div class="fdiv">'+badge+'</div><div class="fbc">'+bc+'</div><div class="fnm">'+p.n+'</div>'+
-    '<div class="fmeta"><span class="fbr">'+p.b+'</span><span class="fthc">'+thc+'</span></div>'+
+    '<div class="fmeta"><span class="fbr">'+p.b+'</span>'+cannHtml(p)+'</div>'+
     '<div class="fpr">'+(was?'<span class="was">'+money(was)+'</span><span class="now">'+money(price)+'</span>':money(price))+'</div><div class="fszs">'+sizes+'</div>'+
     '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dispSize+'">Add to Cart</button></div>';
 }
@@ -1159,16 +1163,24 @@ function renderList(){
   $("#grid").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add]"))return;openProduct(+c.dataset.p);});});
   $("#grid").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
 }
+/* cannabinoid chips — THC on every product, CBD alongside it once a measured
+   value exists (p.cbdv, supplied by the topicals/CBD sheet). p.cbd stays the
+   legacy has-CBD flag the "CBD" filter reads; it is not a measurement. */
+function cannHtml(p){
+  var t=p.pot?p.pot:(p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+" mg"):""));
+  var out=t?'<span class="cchip t">'+t+'</span>':"";
+  if(p.cbdv!=null) out+='<span class="cchip c">CBD '+p.cbdv+(p.cbdu||"%")+'</span>';
+  return '<span class="fcann">'+out+'</span>';
+}
 function dealCard(p,dealSize,struck,sale){
   var lc=LIFECLASS[p.f[0]]||"soc";
   var all=sizesFor(p),idx=all.indexOf(dealSize),start=Math.max(0,Math.min(idx-2,all.length-4));
   var szs=all.slice(start,start+4).map(function(s){return '<span class="fsz'+(s===dealSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
   var bc=crumb(p);
-  var thc=p.pot?p.pot:(p.thc!=null?("THC "+p.thc+"%"):(p.mg?(p.mg+"mg"):""));
   var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
   return '<div class="fcard dcard '+lc+' tap" data-p="'+p.id+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'"></div>'+
     '<div class="fdiv">'+badge+'</div><div class="fbc">'+bc+'</div><div class="fnm">'+p.n+'</div>'+
-    '<div class="fmeta"><span class="fbr">'+p.b+'</span><span class="fthc">'+thc+'</span></div>'+
+    '<div class="fmeta"><span class="fbr">'+p.b+'</span>'+cannHtml(p)+'</div>'+
     '<div class="fpr"><span class="was">'+money(struck)+'</span><span class="now">'+money(sale)+'</span></div>'+
     '<div class="fszs">'+szs+'</div><button class="fadd tap" data-add="'+p.id+'" data-sz="'+dealSize+'">Add to Cart</button></div>';
 }
