@@ -93,6 +93,11 @@ ST = {"Indica":"Indica","Indica Hybrid":"Indica","Sativa":"Sativa","Sativa Hybri
 
 def esc(s): return s.replace('"', '\\"')
 
+def strip_cbd(name):
+    """Same reasoning as the consistency: the Holistic signal is already carried
+    by the border, the badge and the chip."""
+    return re.sub(r"\s*\bCBD\b\s*", " ", name).strip()
+
 def strip_form(name, sub, cat):
     """Drop the consistency (and category) off the tail of a product name.
 
@@ -125,7 +130,7 @@ for i, r in enumerate(recs):
         ' {t:"concentrate",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"1 g":%g},szs:["1 g"],'
         'thc:%g%s,sub:"%s",sub2:"%s",st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,'
         'fe:["%s"],ta:["%s"],d:"%s"},'
-        % (esc(strip_form(r["Product Name"], r["Subcategory"], r["Category"])), esc(r["Brand"]), img, price, price,
+        % (esc(strip_cbd(strip_form(r["Product Name"], r["Subcategory"], r["Category"]))), esc(r["Brand"]), img, price, price,
            thc, (",cbd:1" if st == "CBD" else ""), cat, form, st, terp, life,
            rating, revs, '","'.join(effects), '","'.join(flavors[:3]), esc(r["Description"])))
 

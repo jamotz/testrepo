@@ -4,6 +4,11 @@ DOCX = "/home/user/testrepo/reference/origins/product info/Flower Product Catalo
 x = zipfile.ZipFile(DOCX).read("word/document.xml").decode("utf-8")
 paras = re.findall(r"<w:p[ >].*?</w:p>", x, re.S)
 lines = []
+def strip_cbd(name):
+    """Holistic products already say CBD three ways — the green border, the
+    Holistic badge and the potency chip. The name doesn't need to as well."""
+    return re.sub(r"\s*\bCBD\b\s*", " ", name).strip()
+
 for p in paras:
     t = "".join(re.findall(r"<w:t[^>]*>(.*?)</w:t>", p, re.S))
     t = t.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").strip()
@@ -85,7 +90,7 @@ for pr in prods:
     cbd = ",cbd:1" if st == "CBD" else ""
     entry = (' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%s,pz:%s,szs:%s,thc:%s%s,sub:"%s",st:"%s",tp:"%s",'
              'f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},') % (
-        esc(strain), esc(pr["brand"]), img, eighth,
+        esc(strip_cbd(strain)), esc(pr["brand"]), img, eighth,
         json.dumps(pr["prices"]).replace('"', '"'), json.dumps(sizes),
         thc, cbd, sub, st, terp, life,
         rating, revs, '","'.join(feels), '","'.join(taste), esc(desc))
