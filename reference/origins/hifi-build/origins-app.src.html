@@ -26,6 +26,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .taptoggle.on{border-color:var(--or);color:var(--or)}
 .taptoggle.on .d{background:var(--or);box-shadow:0 0 0 3px rgba(241,96,28,.3)}
 
+.stagebtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .phonebox{position:relative}   /* JS sizes this to the scaled phone so the page stays tight */
 .phone{background:#000;border-radius:52px;padding:11px;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px #2A2119,0 0 70px rgba(241,96,28,.13);transform-origin:top left}
 /* phone frame — widened 15% over iPhone 393w (→452) so 2-up grids have room */
@@ -518,8 +519,10 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
     <div class="t">ORIGINS <em>&mdash;</em> APP PROTOTYPE</div>
     <div class="s">Explore confidently &middot; Redmond, WA</div>
   </div>
+  <div class="stagebtns">
   <button class="taptoggle" id="taptoggle" type="button"><span class="d"></span>Show tap points</button>
   <button class="fsopen" id="fsopen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/></svg>Open full screen</button>
+  </div>
 
   <div class="phonebox" id="phonebox"><div class="phone" id="phone"><div class="scr" id="scr">
     <button class="fsexit" id="fsexit" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Exit</button>
@@ -925,7 +928,7 @@ function linePrice(p,size,q){
     m.content=m.content+",viewport-fit=cover";
   }
 })();
-var DESIGN_W=452, DESIGN_H=852;
+var DESIGN_W=452, DESIGN_H=852, MAX_K=440/452;  /* 440pt = iPhone 16 Pro Max */
 function fitFrame(){
   var box=document.getElementById("phonebox"),ph=document.getElementById("phone"),
       scr=document.getElementById("scr");
@@ -937,9 +940,13 @@ function fitFrame(){
     k=vw/(DESIGN_W+bez);
     h=Math.round(vh/k);                                /* let height run to fill */
   }else{
-    /* width is the only constraint: full size whenever it fits, and the page
-       scrolls rather than shrinking the phone on a short window */
-    k=Math.min(1,(vw-32)/(DESIGN_W+bez));
+    /* Desktop: never larger than a 16 Pro Max screen (440pt wide), and always
+       short enough to see the whole phone without zooming the browser out.
+       The chrome above is measured rather than guessed, so the fit holds if
+       the header ever changes. */
+    var top=box.offsetTop||0, availH=vh-top-56;
+    k=Math.min(MAX_K,(vw-32)/(DESIGN_W+bez),availH/(DESIGN_H+bez));
+    k=Math.max(k,0.5);
     h=DESIGN_H;
   }
   scr.style.height=h+"px";
