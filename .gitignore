@@ -1,0 +1,4 @@
+# Python bytecode — regenerated on every run, and it churns the diff whenever a
+# generator is imported rather than executed
+__pycache__/
+*.py[cod]
