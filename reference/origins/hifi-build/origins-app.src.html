@@ -928,7 +928,7 @@ function linePrice(p,size,q){
     m.content=m.content+",viewport-fit=cover";
   }
 })();
-var DESIGN_W=452, DESIGN_H=852, MAX_K=440/452;  /* 440pt = iPhone 16 Pro Max */
+var DESIGN_W=452, DESIGN_H=852, MAX_K=440/452, FS_MAX_K=1.5;  /* 440pt = iPhone 16 Pro Max; full screen stops growing at 1.5x */
 function fitFrame(){
   var box=document.getElementById("phonebox"),ph=document.getElementById("phone"),
       scr=document.getElementById("scr");
@@ -937,8 +937,15 @@ function fitFrame(){
       bez=full?0:22,                                   /* .phone padding, both sides */
       vw=window.innerWidth,vh=window.innerHeight,k,h;
   if(full){
-    k=vw/(DESIGN_W+bez);
-    h=Math.round(vh/k);                                /* let height run to fill */
+    /* Fill the viewport, but stay phone-shaped. On a phone the width binds, so
+       the frame fills edge to edge and the height runs out. On a desktop the
+       width term is enormous (1440/452 = 3.2x), so the height binds instead and
+       the app sits centred at a sane size rather than blown up past the edges. */
+    var kw=vw/(DESIGN_W+bez);
+    k=kw<=1
+      ? kw                                   /* phone-shaped: fill the width, height runs out */
+      : Math.min(Math.max(vh/DESIGN_H,1),FS_MAX_K);  /* wider than a phone: fill the height instead */
+    h=Math.round(vh/k);
   }else{
     /* Desktop: never larger than a 16 Pro Max screen (440pt wide), and always
        short enough to see the whole phone without zooming the browser out.
@@ -951,6 +958,8 @@ function fitFrame(){
   }
   scr.style.height=h+"px";
   ph.style.transform="scale("+k+")";
+  var drawnW=(DESIGN_W+bez)*k;
+  ph.style.marginLeft=full?Math.max(0,Math.round((vw-drawnW)/2))+"px":"";
   /* transform does not change layout size — keep the page box honest */
   box.style.width=Math.round((DESIGN_W+bez)*k)+"px";
   box.style.height=Math.round((h+bez)*k)+"px";
