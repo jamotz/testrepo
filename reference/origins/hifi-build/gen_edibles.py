@@ -125,6 +125,10 @@ for i, r in enumerate(recs):
     pot  = "%g mg THC" % thc
     pack = "%g mg" % cbd if combo == "CBD Only" else "100 mg"
     cbdf = 'cbdv:%g,cbdu:" mg",' % cbd if (combo != "THC Only" and cbd) else ""
+    # the third cannabinoid (CBG/CBN) — its name comes from the combo, its
+    # weight from the sheet's "Other mg"
+    if combo != "THC Only" and other:
+        cbdf += 'othv:%g,' % other
     # anything carrying more than straight THC is a Holistic product, whatever the
     # strain or effect would otherwise suggest
     if combo != "THC Only":
