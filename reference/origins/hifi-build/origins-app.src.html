@@ -378,7 +378,9 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .pbrand{display:flex;justify-content:space-between;align-items:baseline}
 .pbrand .b{font-family:var(--head);font-weight:600;font-size:15px;color:var(--olive);text-transform:none;letter-spacing:.01em}
 .pbrand .t{font-family:var(--head);font-weight:600;font-size:15px;color:var(--or)}
-.pratio{display:flex;justify-content:flex-end;margin:2px 0 3px}
+.pcatrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pcatrow .pcat{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcatrow .bub{flex:none;font-size:11.5px;padding:3.5px 9px}
 .pbrand .pcann{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
 .pbrand .pcann .bub{font-size:11.5px;padding:3.5px 9px}
 .pricerow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
@@ -1442,11 +1444,10 @@ function drawProduct(){
   var taste='<div class="chipset taste"><div class="csh">Taste</div><div class="iconrow">'+p.ta.map(function(t){return '<div class="icard">'+pIcon(t)+'<b>'+t+'</b></div>';}).join("")+'</div></div>';
   $("#pwrap").innerHTML='<div class="pihead"><button class="pihback tap" data-b="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Product Info</h2></div>'+
     '<div class="pimg '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+life+'</div>'+
-    '<div class="pcat">'+crumb(p)+'</div>'+
+    '<div class="pcatrow"><div class="pcat">'+crumb(p)+'</div>'+
+      (p.ratio&&p.combo&&p.combo!=="THC Only"?'<span class="bub ratio">'+p.ratio+'</span>':"")+
+    '</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
-    /* the ratio gets its own right-aligned line above the cannabinoids */
-    (p.ratio&&p.combo&&p.combo!=="THC Only"
-      ? '<div class="pratio"><span class="bub ratio">'+p.ratio+'</span></div>' : "")+
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="pcann">'+
       cannList(p).map(function(c){return '<span class="bub '+c[0].toLowerCase()+'">'+c[0]+' '+c[1]+'</span>';}).join("")+
       '</span></div>'+
