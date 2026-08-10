@@ -148,6 +148,15 @@ M = {
 
  # edible + flower photos (Jack's uploads)
  "top_balm": "product assets/Topicals/Balm:Salve.png",
+ "top_bath": "product assets/Topicals/Bath Salts.png",
+ "top_cream": "product assets/Topicals/Cream.png",
+ "top_gel": "product assets/Topicals/Gel.png",
+ "top_lotion": "product assets/Topicals/Lotion.png",
+ "top_lube": "product assets/Topicals/Lubricant.png",
+ "top_oil": "product assets/Topicals/Oil.png",
+ "top_rollon": "product assets/Topicals/Roll-on.png",
+ "top_stick": "product assets/Topicals/Stick.png",
+ "top_patch": "product assets/Topicals/Transdermal Patch.png",
  "ed_gum_orange": "product assets/Edibles/Orange Gummy Edible.png",
  "ed_gum_purple": "product assets/Edibles/Purple Gummy Edible.png",
  "ed_gum_red": "product assets/Edibles/Red Gummy Edible.png",
@@ -303,6 +312,15 @@ def bg_color(relpath):
 NOBG_DIR = "product assets"
 NOBG = {
     "top_balm": "Topicals/Balm:Salve.png",
+    "top_bath": "Topicals/Bath Salts.png",
+    "top_cream": "Topicals/Cream.png",
+    "top_gel": "Topicals/Gel.png",
+    "top_lotion": "Topicals/Lotion.png",
+    "top_lube": "Topicals/Lubricant.png",
+    "top_oil": "Topicals/Oil.png",
+    "top_rollon": "Topicals/Roll-on.png",
+    "top_stick": "Topicals/Stick.png",
+    "top_patch": "Topicals/Transdermal Patch.png",
     "ed_gum_orange": "Edibles/Orange Gummy Edible.png",
     "ed_gum_purple": "Edibles/Purple Gummy Edible.png",
     "ed_gum_red": "Edibles/Red Gummy Edible.png",
