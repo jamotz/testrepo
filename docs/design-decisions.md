@@ -146,20 +146,20 @@ Explicitly authored, flagged in code:
   `AUTHORED` block in `gen_concentrates.py`.
 - **Kief rows 51–56** — supplied by Jack in chat, kept in an `EXTRA` block since
   they're not in the xlsx.
-- **Edible prices** — the sheet has none; authored to realistic WA levels,
-  scaled by form and extraction premium.
+- **Edible prices** — *superseded.* The curated sheet now carries real WA retail
+  prices ($18–$30) and they're used directly. The authored `BASE`/`EXTRA` table
+  is gone.
 
-### Edible photo assignment
-Photos are assigned by flavour where it reads (Blackberry → purple gummy, Mango
-→ yellow hard candy). Three adjustments to use all 15:
+### Edible photos come from the product name, not the Flavor column
+The curated sheet's `Flavor` column doesn't track its own product names — 24 of
+50 disagree (Espresso Chocolates reads "Dark Chocolate", Green Apple Hard Candy
+reads "Blue Raspberry"). Jack: *flavour doesn't matter, apply the one that looks
+closest.* So `flavour_of(name)` derives it and `Flavor` is never read.
 
-- Chocolates rotate all three shots — no chocolate product has a "Dark
-  Chocolate" flavour, so reserving the dark photo for it left it unused.
-- Huckleberry → **red** gummy (red huckleberry is a real PNW species), so purple,
-  red and orange are all in play across only three gummy flavours.
-- Some baked goods renamed with Jack's blessing: Raspberry / Blood Orange →
-  **Brownie Bites**, Peach / Lemon → **Crispy Treats**. They were all "Cookie
-  Bites", leaving the brownie and rice-crispy photos unused.
+Cookies take the cookie shot, brownies the brownie, capsules rotate all three.
+Only the rice-crispy photo goes unused — nothing in the catalog is a crispy
+treat. Capsules have no flavour in their names ("Daily", "Rest"), so they fall
+back to **Unflavored** rather than emitting a blank taste chip.
 
 ---
 
@@ -177,3 +177,104 @@ Photos are assigned by flavour where it reads (Blackberry → purple gummy, Mang
   from SOCIAL) so the font matches exactly.
 - **Landing store cards**: phone top-right, address stacked below, no "Open
   until" line ("people can use their brain").
+
+---
+
+## Naming
+
+### Concentrate names drop the consistency
+The breadcrumb directly above already reads "Rosin › Rosin Sap", so "Lemon
+Cherry Gelato Rosin Sap" said it twice and cost a second line on the tile.
+`strip_form()` removes the sheet's Subcategory then its Category from the tail.
+Longest concentrate name: 34 → 25 characters.
+
+Flower now has two products called **Northern Lights** — Royal Tree at 0.8% THC
+and Passion Flower at 26.8%. Jack: *two growers selling the same strain is
+realistic.* Brand, breadcrumb, border colour and the THC bubble separate them.
+
+### CBD comes out of Holistic names
+The tile already says CBD three ways — green border, Holistic badge, CBD bubble.
+`strip_cbd()` handles it in both generators. Edibles keep their form
+("Blackberry Gummies") because it fills the tile and reads naturally.
+
+---
+
+## Tiles
+
+### One line, ellipsis, uniform height
+Names clamp to one line. Ragged two-line names were adding 17px to *some* tiles,
+which is what made a row look uneven rather than merely tall. Only a handful of
+edibles ("Blue Raspberry Chocolates") ever truncate.
+
+### Size far left, price far right, one row
+Merging them saved ~28px on **every** tile. Together with the one-line name,
+cards went from a ragged 294–311px to a uniform 222px.
+
+### The photo overlay means one thing
+Ratio top-left, cannabinoids top-right. An earlier version put the lead *feeling*
+top-left on all 149 products; it was dropped because 28% of the catalog leads
+with "Relaxed", only 16 distinct values covered everything, and the lifestyle
+badge two lines below already carries the mood. The combo string was dropped too
+— the bubbles name the cannabinoids, so "THC:CBD:CBG" beside three chips saying
+THC, CBD and CBG was the same fact twice.
+
+### The tile's cart affordance
+Add to Cart became **See more sizes**, opening the sheet. Tapping the card
+anywhere still opens the product page — the sheet's own controls are excluded
+from that handler, which is easy to forget when adding a new one.
+
+---
+
+## Holistic
+
+**Any product carrying a non-psychoactive cannabinoid is Holistic** — CBD, CBG
+or CBN. CBC isn't common enough to include and doesn't appear in the data.
+Verified against the sheet: no THC-only edible carries any of them, so the rule
+and the data agree exactly.
+
+This overrides whatever strain or effect would otherwise suggest. 65 products.
+
+---
+
+## Topicals
+
+### The filter path is effect → form
+From sheet 1 of the catalog: Pain Relief, Recovery, Cooling, Warming, Massage,
+Skincare, Intimacy, then the form as the second level — the same shape as
+concentrates' category → consistency. This replaced three placeholder words
+(Cooling / Warming / Soothing) that predated the sheet.
+
+### Sizes and prices are per product
+Every topical carries one size and its own MSRP, so `pz`/`szs` override the
+multiplier path entirely. Sizes run 50–250 mL plus "1 Patch" for transdermals.
+
+### The Ratio column is mixed and isn't trusted
+It holds `1:1`, `CBD`, and `CBD:CBG 4:1` in the same column. The combo is derived
+from which cannabinoids actually carry milligrams; only the numeric tail of
+Ratio is kept.
+
+### Massage and Intimacy aren't Holistic
+Every other effect is. Massage reads closer to Unwind and Intimacy to Nightlife,
+which keeps the Holistic badge meaning relief rather than "topical".
+
+---
+
+## The phone frame
+
+### The design width is 452 and never changes
+Width used to be *derived* from a height capped at `86vh`, so on any window
+under ~990px tall the frame shrank below 452 and content built for 452 ran off
+the right edge. On a 900px window it rendered at 411px.
+
+Now the app always lays out at 452 and the frame is **scaled** to fit. Framed
+mode is capped at 440pt — an iPhone 16 Pro Max, the largest real screen — and
+shrinks further to keep the whole phone visible without zooming the browser.
+
+### Full screen fills the height on desktop, the width on a phone
+Scaling to the viewport width is right on a phone and absurd on a 1440px
+monitor (3.2×). The width only binds when the viewport is phone-shaped.
+
+### Mobile type is accepted as smaller
+A 14px name renders near 12px on a 393px iPhone. Jack accepted this rather than
+bump the design type — phones are held a foot from your face. Revisit only after
+looking at it on a real device.

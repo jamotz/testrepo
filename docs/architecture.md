@@ -7,10 +7,19 @@ Information architecture, data model and build pipeline.
 ## Build pipeline
 
 ```
+Jack's sheets ─→ gen_catalog_products.py ─┐
+                 gen_concentrates.py      ├─→ product rows, spliced by hand
+                 gen_edibles.py           │   into the P array
+                 gen_topicals.py         ─┘
+
 origins-app.src.html  ──┐
 assets/**             ──┼─→  asm_app.py  →  origins-app.html  →  Artifact
-fontcache/oswald-*.woff2┘                    (single file, ~2.3 MB)
+fontcache/oswald-*.woff2┘                    (single file, ~2.5 MB)
 ```
+
+Every generator prints rows to stdout. They all share one xlsx reader that
+places cells **by column letter** — Excel omits empty cells from the file, so
+appending in document order shifts every column after a blank.
 
 `asm_app.py` replaces two markers in the source:
 
@@ -61,7 +70,10 @@ these lines; the array is the single runtime source of truth.
 | `szs` | this product's own size list; falls back to `SIZES[type]` |
 | `sub` `sub2` `sub3` | filter levels (meaning varies by type — see below) |
 | `etype` | edible form (Gummies / Chocolate / …) |
-| `pot` `combo` `ratio` | edible potency line, cannabinoid combo, ratio |
+| `pot` `combo` `ratio` | potency line, cannabinoid combo, ratio (edibles + topicals) |
+| `cbdv` `cbdu` | measured CBD and its unit (`" mg"`, or `%` when absent) |
+| `othv` | the third cannabinoid's weight; its name comes from `combo` |
+| `cbd` | legacy has-CBD **flag** the CBD filter reads — not a measurement |
 | `st` | strain: Indica / Sativa / Hybrid / CBD |
 | `f` | lifestyles — drives card border colour + monogram badge |
 | `fe` `ta` | feelings, taste (product-info chips) |
@@ -74,6 +86,7 @@ these lines; the array is the single runtime source of truth.
 | Flower | Indoor / Outdoor | — | — |
 | Concentrate | category (Live Resin, Rosin…) | consistency (Badder, Sauce…) | — |
 | Edible | cannabinoid category | extraction *or* effect | strain (THC path only) |
+| Topical | effect (Pain Relief, Recovery…) | form (Cream, Roll-On…) | — |
 
 ---
 
@@ -181,3 +194,60 @@ Lifestyle drives the product-card border colour and the monogram badge.
 
 Orange `#F1601C` · brown `#2E261E` · olive `#555624` · cream `#E6C7A7` ·
 white background. Headings **Oswald** (self-hosted woff2), body **Georgia**.
+
+---
+
+## Cannabinoid display
+
+`cannList(p)` returns `[[name, value], …]` — the single source for both the tile
+bubbles and the product-page row.
+
+```
+combo present and not "X Only"  →  split it; values come from pot / cbdv / othv
+otherwise                       →  THC (pot, thc%, or mg) then CBD (cbdv)
+```
+
+A cannabinoid with no number is **left out rather than guessed at**. Colours:
+THC `#C0392B`, CBD `#5C7540` (the Holistic green), CBN `#6F53A3`, CBG `#B4651A`
+— deliberately not the brand orange, so a bubble never reads as a button. Fills
+are opaque, not tinted alpha, because a photo behind them bleeds through.
+
+`tileOverlay(p)` places the ratio pill top-left and the bubbles top-right, both
+flush to the card's inner edge and top-aligned. The product page puts the ratio
+on the breadcrumb line and the bubbles in a horizontal row on the brand line, at
+11.5 px instead of 10.
+
+---
+
+## The phone frame
+
+The app always lays out in **452 CSS px of width** — the design unit. Height and
+render scale vary; width never derives from a capped height, which is what used
+to clip content on short windows.
+
+| Mode | Scale | Height |
+|---|---|---|
+| Framed | `min(440/452, (vw−32)/474)` — never larger than an iPhone 16 Pro Max, and shrunk to fit the window | 852 |
+| Full screen | width binds only when the viewport is phone-shaped (≤1×); anything wider fills the height, clamped 1×–1.5×, centred | `vh / scale` |
+
+`fitFrame()` measures the page chrome from the phone's own offset rather than
+assuming a header height. Full screen is entered by tapping **Open full screen**
+— never automatically, so it can't hijack a tile tap — and exited by the `✕ Exit`
+chip or Escape.
+
+The script injects a `viewport` meta if the host page has none, and appends
+`viewport-fit=cover` if it has one without it. Without that, `env(safe-area-inset-*)`
+reports 0 and the full-screen tab bar sits under the home indicator.
+
+---
+
+## The size sheet
+
+Tiles show one size and a **See more sizes** control instead of Add to Cart. The
+sheet slides up over the whole card: size/price pill buttons (white outlined,
+solid orange when selected), a chevron to drop it back, and Add to Cart at the
+bottom that becomes the product page's quantity stepper.
+
+Products with a single size (edibles, concentrates, topicals) keep Add to Cart —
+there's nothing to open. Sheet classes live in the `fs*` namespace because `.s`
+is a global `display:none` rule.
