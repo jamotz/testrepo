@@ -1,4 +1,4 @@
-import re, json, random, zipfile
+import re, json, random, zipfile, sys
 
 DOCX = "/home/user/testrepo/reference/origins/product info/Flower Product Catalog.docx"
 x = zipfile.ZipFile(DOCX).read("word/document.xml").decode("utf-8")
@@ -31,7 +31,7 @@ for ln in lines:
         cur["prices"][size] = float(m2.group(2))
 if cur: prods.append(cur)
 
-print("parsed", len(prods), "products")
+print("parsed", len(prods), "products", file=sys.stderr)
 
 # --- supporting attributes. Catalog gives brand/strain/type/prices only, so the
 # rest is authored from each real strain's well-known profile (doc is mock data).
@@ -69,7 +69,9 @@ PROFILE = {
 }
 
 rnd = random.Random(20260730)              # seeded: same shuffle every build
-IMG_POOL = ["bud1","bud2","bud3","bud4","flower","gdp"]   # new uploads + the ones already in use
+IMG_POOL = ["fl_indica","fl_indica2","fl_indica3","fl_sativa","fl_sativa2",
+            "fl_hybrid","fl_hybrid2","fl_indhyb","fl_indhyb2","fl_sathyb",
+            "fl_sathyb2","fl_universal"]   # keys that exist in asm_app.py's map   # new uploads + the ones already in use
 
 def esc(s): return s.replace("'", "\\'")
 
@@ -83,11 +85,15 @@ for pr in prods:
     sizes = list(pr["prices"].keys())
     eighth = pr["prices"].get("3.5 g") or list(pr["prices"].values())[0]
     thc = round(rnd.uniform(0.4, 0.9), 1) if st == "CBD" else round(rnd.uniform(19.5, 29.5), 1)
+    # the catalog doc carries no CBD, so author it the way THC already is. The
+    # bands mirror the concentrate sheet's real numbers: CBD cultivars land
+    # around 15%, everything else keeps a trace.
+    cbdpct = round(rnd.uniform(12.0, 17.5), 1) if st == "CBD" else round(rnd.uniform(0.1, 0.8), 1)
     img = rnd.choice(IMG_POOL)
     sub = rnd.choice(["Indoor", "Indoor", "Outdoor"])
     rating = round(rnd.uniform(3.9, 4.9), 1)
     revs = rnd.randint(4, 40)
-    cbd = ",cbd:1" if st == "CBD" else ""
+    cbd = (",cbd:1" if st == "CBD" else "") + ",cbdv:%g" % cbdpct
     entry = (' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%s,pz:%s,szs:%s,thc:%s%s,sub:"%s",st:"%s",tp:"%s",'
              'f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},') % (
         esc(strip_cbd(strain)), esc(pr["brand"]), img, eighth,
@@ -96,9 +102,9 @@ for pr in prods:
         rating, revs, '","'.join(feels), '","'.join(taste), esc(desc))
     out.append(entry)
 
-open("/tmp/claude-0/-home-user-testrepo/45b5274a-c590-52ef-87ec-446920eeef26/scratchpad/new_products.txt", "w").write("\n".join(out))
-print("generated", len(out), "entries")
-print("\n".join(out[:3]))
+# stdout, like the other two generators — this used to write to a scratchpad
+# path from a long-dead session, which made the script unrunnable
+print("\n".join(out))
 # image distribution
 from collections import Counter
-print(Counter(re.search(r'img:"(\w+)"', e).group(1) for e in out))
+# print(Counter(re.search(r'img:"(\w+)"', e).group(1) for e in out))

@@ -131,7 +131,7 @@ for i, r in enumerate(recs):
         'thc:%g%s,sub:"%s",sub2:"%s",st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,'
         'fe:["%s"],ta:["%s"],d:"%s"},'
         % (esc(strip_cbd(strip_form(r["Product Name"], r["Subcategory"], r["Category"]))), esc(r["Brand"]), img, price, price,
-           thc, (",cbd:1" if st == "CBD" else ""), cat, form, st, terp, life,
+           thc, ((",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbd if cbd else "")), cat, form, st, terp, life,
            rating, revs, '","'.join(effects), '","'.join(flavors[:3]), esc(r["Description"])))
 
 print("\n".join(out))
