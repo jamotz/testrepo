@@ -3,7 +3,7 @@
 
 Sources (reference/origins/product info/):
   - Edible_Filter_Architecture_v2.xlsx  -> the filter IA (levels + effect tiles)
-  - WA_Edibles_By_Brand_Sectioned.xlsx  -> the 50 products
+  - WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx -> the 50 products + prices
 
 Filter path per the IA (Jack confirmed the THC drill-down):
   Edibles -> category  (THC Edibles / CBD Edibles / THC Dominant / CBD Dominant / Balanced)
@@ -18,7 +18,7 @@ Run: python3 reference/origins/hifi-build/gen_edibles.py
 import os, re, zipfile
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-XLSX = os.path.join(REPO, "reference/origins/product info/WA_Edibles_By_Brand_Sectioned.xlsx")
+XLSX = os.path.join(REPO, "reference/origins/product info/WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx")
 
 def read_rows(path):
     z = zipfile.ZipFile(path); names = z.namelist()
@@ -31,6 +31,13 @@ def read_rows(path):
     for r in re.findall(r"<(?:x:)?row[^>]*>(.*?)</(?:x:)?row>", sh, re.S):
         cells = []
         for c in re.findall(r"<(?:x:)?c[^>]*>.*?</(?:x:)?c>|<(?:x:)?c[^>]*/>", r, re.S):
+            # place each cell by its column letter — Excel omits empty cells
+            # entirely, so appending in document order silently shifts columns
+            ref = re.search(r'r="([A-Z]+)\d+"', c)
+            if ref:
+                col = 0
+                for ch in ref.group(1): col = col * 26 + ord(ch) - 64
+                while len(cells) < col - 1: cells.append("")
             t = re.search(r't="(\w+)"', c)
             ins = re.search(r"<(?:x:)?is>(.*?)</(?:x:)?is>", c, re.S)
             v = re.search(r"<(?:x:)?v>(.*?)</(?:x:)?v>", c)
@@ -42,54 +49,51 @@ def read_rows(path):
 
 rows = read_rows(XLSX)
 hdr = rows[0]
-recs = [dict(zip(hdr, r)) for r in rows[1:] if any(x.strip() for x in r)]
+# pad short rows, and drop the sheet's "=== SECTION ===" separators
+recs = [dict(zip(hdr, r + [""] * (len(hdr) - len(r))))
+        for r in rows[1:]
+        if len(r) > 3 and r[0].strip() and not r[0].startswith("===")]
 
-# ---- photos: 3 variants per edible form, picked by flavour where it reads ----
-GUMMY  = {"Blackberry":"ed_gum_purple","Blue Raspberry":"ed_gum_purple",
-          "Huckleberry":"ed_gum_red",   # red huckleberry — uses the red gummy photo
+# ---- photos: 3 variants per form, chosen by the product name ----
+# The sheet's Flavor column doesn't track the names, so the name is the source
+# of truth here (Jack: "flavor doesn't matter, apply the one that looks closest").
+GUMMY = [(("blackberry","marionberry","elderberry"), "ed_gum_purple"),
+         (("huckleberry","raspberry"),               "ed_gum_red"),
+         (("peach","pear","pineapple"),              "ed_gum_orange")]
+CANDY = [(("green apple","pear"),                    "ed_hard_green"),
+         (("cherry","strawberry","watermelon","blue raspberry"), "ed_hard_red"),
+         (("mango","lemon","pineapple","peach"),      "ed_hard_yellow")]
+CHOC  = [(("dark","espresso","raspberry"),           "ed_choc_dark"),
+         (("milk","peanut butter","sea salt caramel"),"ed_choc_milk"),
+         (("cookies & cream","cookies and cream"),   "ed_choc_white")]
+BAKED = [(("brownie",),                              "ed_baked_brownie"),
+         (("crispy","rice"),                         "ed_baked_rice")]
+CAP_ALT = ["ed_cap_brown", "ed_cap_white", "ed_cap_yellow"]
 
-          "Raspberry":"ed_gum_red","Strawberry":"ed_gum_red","Cherry Lime":"ed_gum_red","Watermelon":"ed_gum_red",
-          "Pineapple":"ed_gum_orange","Mango":"ed_gum_orange","Tangerine":"ed_gum_orange",
-          "Blood Orange":"ed_gum_orange","Peach":"ed_gum_orange","Lemon":"ed_gum_orange","Pear":"ed_gum_orange"}
-CANDY  = {"Blue Raspberry":"ed_hard_green","Pear":"ed_hard_green","Cherry Lime":"ed_hard_green",
-          "Huckleberry":"ed_hard_green","Blackberry":"ed_hard_green",
-          "Strawberry":"ed_hard_red","Raspberry":"ed_hard_red","Watermelon":"ed_hard_red","Blood Orange":"ed_hard_red",
-          "Mango":"ed_hard_yellow","Lemon":"ed_hard_yellow","Peach":"ed_hard_yellow",
-          "Pineapple":"ed_hard_yellow","Tangerine":"ed_hard_yellow","Dark Chocolate":"ed_hard_red"}
-# no chocolate product carries a "Dark Chocolate" flavour, so rotate all three
-CHOC_ALT = ["ed_choc_dark", "ed_choc_milk", "ed_choc_white"]
-CAP_ALT  = ["ed_cap_brown", "ed_cap_white", "ed_cap_yellow"]
-# baked goods were all "Cookie Bites"; rename some so the brownie and rice-crispy
-# photos get used too (Jack: "rename some things to fit the variety of pictures")
-BAKED_RENAME = {"Raspberry":("Brownie Bites","ed_baked_brownie"),
-                "Blood Orange":("Brownie Bites","ed_baked_brownie"),
-                "Peach":("Crispy Treats","ed_baked_rice"),
-                "Lemon":("Crispy Treats","ed_baked_rice")}
+def pick(table, name, default):
+    n = name.replace("&amp;", "&").lower()
+    for words, key in table:
+        if any(w in n for w in words): return key
+    return default
 
-def photo(etype, flavor, i):
-    if etype == "Gummies":  return GUMMY.get(flavor, "ed_gum_red")
-    if etype == "Hard Candy": return CANDY.get(flavor, "ed_hard_red")
-    if etype == "Chocolate":
-        return CHOC_ALT[i % len(CHOC_ALT)]
-    if etype == "Capsules / Softgels":
-        return "ed_cap_brown" if flavor == "Dark Chocolate" else CAP_ALT[i % len(CAP_ALT)]
-    return BAKED_RENAME.get(flavor, (None, "ed_baked_cookie"))[1]
+def photo(etype, name, i):
+    if etype == "Gummies":    return pick(GUMMY, name, "ed_gum_red")
+    if etype == "Hard Candy": return pick(CANDY, name, "ed_hard_red")
+    if etype == "Chocolate":  return pick(CHOC,  name, "ed_choc_milk")
+    if etype == "Baked Goods":return pick(BAKED, name, "ed_baked_cookie")  # cookies get the cookie
+    return CAP_ALT[i % len(CAP_ALT)]                                       # capsules rotate
 
-def baked_name(name, flavor):
-    """Rename some Cookie Bites to Brownie Bites / Crispy Treats for variety."""
-    ren = BAKED_RENAME.get(flavor)
-    return name.replace("Cookie Bites", ren[0]) if ren else name
-
-# ---- authored WA-realistic prices: base by form + extraction/formulation premium ----
-BASE = {"Gummies": 18, "Chocolate": 22, "Hard Candy": 15, "Baked Goods": 20, "Capsules / Softgels": 25}
-EXTRA = {"Distillate": 0, "Live Resin": 6, "Rosin": 4, "Live Rosin": 10}
-def price(r):
-    p = BASE.get(r["Edible Type"], 20) + EXTRA.get(r["Extraction"], 0)
-    if r["Category"] != "THC Edibles":
-        p += 5                       # ratio/formulated products carry a premium
-    if r["Effect Filter"] == "Pain Relief":
-        p += 4                       # high-mg CBD
-    return p
+def flavour_of(name):
+    """The flavour is in the name; the Flavor column is not reliable."""
+    n = name.replace("&amp;", "&")
+    for w in ("Cookies & Cream","Sea Salt Caramel","Peanut Butter","Double Chocolate",
+              "Chocolate Chip","Oatmeal Raisin","Snickerdoodle","Fudge Brownie",
+              "Blue Raspberry","Green Apple","Dark Chocolate","Milk Chocolate",
+              "Marionberry","Elderberry","Huckleberry","Blackberry","Raspberry",
+              "Strawberry","Watermelon","Pineapple","Espresso","Cherry","Mango",
+              "Peach","Lemon","Pear"):
+        if w.lower() in n.lower(): return w
+    return ""
 
 # effect / strain -> the app's six lifestyles (drives card colour + badge)
 LIFE_EFFECT = {"Pain Relief":"holistic","Relax":"holistic","Focus":"discovery","Unwind":"unwind",
@@ -116,7 +120,9 @@ def esc(s): return s.replace('"', '\\"')
 out = []
 for i, r in enumerate(recs):
     etype, cat = r["Edible Type"], r["Category"]
-    flavor, effect = r["Flavor"], r["Effect Filter"]
+    name   = r["Product Name"]
+    flavor = flavour_of(name)          # derived; the sheet's Flavor column is unreliable
+    effect = r["Effect Filter"]
     strain = r["Lifestyle"]                      # sheet calls Sativa/Hybrid/Indica "Lifestyle"
     thc, cbd, other = float(r["THC mg"] or 0), float(r["CBD mg"] or 0), float(r["Other mg"] or 0)
     combo, ratio = r["Cannabinoid Combo"], r["Ratio (Tile)"]
@@ -138,18 +144,15 @@ for i, r in enumerate(recs):
     feels = FEEL_STRAIN.get(strain, ["Balanced","Calm","Giddy"]) if cat == "THC Edibles" else FEEL.get(effect, ["Balanced","Calm","Giddy"])
     st = strain if cat == "THC Edibles" else ("CBD" if thc == 0 else "Hybrid")
     sub2 = r["Extraction"] if cat == "THC Edibles" else effect
-    p = price(r)
-    # the combo + ratio ride on the photo as a tile overlay, so the name stays short
-    name = baked_name(r["Product Name"], flavor) if etype == "Baked Goods" else r["Product Name"]
-    name = name.replace("Chocolate Squares", "Chocolates")   # Jack's wording
+    p = float(r["WA Retail Price (USD)"])   # real WA retail, straight from the sheet
     out.append(
         ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s%s'
         'sub:"%s",sub2:"%s"%s,etype:"%s",pot:"%s",combo:"%s",ratio:"%s",'
         'st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
-        % (esc(name), esc(r["Brand"]), photo(etype, flavor, i), p, pack, p, pack,
+        % (esc(name), esc(r["Brand"]), photo(etype, name, i), p, pack, p, pack,
            thc if thc else cbd, ("cbd:1," if cbd and cbd >= thc else ""), cbdf,
            cat, sub2, (',sub3:"%s"' % strain if cat == "THC Edibles" else ""), etype,
-           pot, combo, ratio, st, TERP.get(flavor, "Fruity"), life,
+           pot, combo, ratio, st, TERP.get(flavor, "Sweet"), life,
            round(4.0 + (i % 10) * 0.1, 1), 5 + (i * 5) % 34,
            '","'.join(feels), flavor, esc(r["Description"])))
 
