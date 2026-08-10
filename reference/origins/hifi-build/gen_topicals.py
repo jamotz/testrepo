@@ -120,7 +120,16 @@ def cannabinoids(r):
     return ("%g mg THC" % thc if thc else "", cbd, othv, othname, combo, ratio)
 
 
+# ---- AUTHORED: not in Jack's sheet, added on request (2026-08-10).
+# Two THC-only Pain Relief products and one CBD:CBN Recovery cream. Columns
+# match the sheet exactly so they flow through the same code path.
+AUTHORED = """Agro Couture\tDeep Relief Roll-On\tRoll-On\tPain Relief\t200\t0\t\t\t100\t27.99\tTHC-forward roll-on built for targeted relief on sore joints and hard-worked muscles.
+Heylo\tRescue Balm\tBalm / Salve\tPain Relief\t200\t0\t\t\t60\t22.99\tThick THC balm that stays where it is applied, for concentrated relief on a single sore spot.
+Mary's Medicinals\tNight Recovery Cream\tCream\tRecovery\t0\t100\tCBN 100mg\tCBD:CBN 1:1\t50\t32.99\tEvening recovery cream pairing CBD with CBN, formulated for the end of a long day."""
+
 hdr, recs = read_rows(XLSX, 1)
+for line in AUTHORED.strip().split("\n"):
+    recs.append(dict(zip(hdr, line.split("\t"))))
 out = []
 for i, r in enumerate(recs):
     form, effect = r["Product Type"].strip(), r["Effect"].strip()
