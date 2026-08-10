@@ -259,6 +259,78 @@ which keeps the Holistic badge meaning relief rather than "topical".
 
 ---
 
+## Pre-rolls
+
+### The sheet's columns don't match its header — read by letter *and* row family
+The catalog's header labels 14 columns, but the data doesn't sit in them. Flower
+rows put sizes in `E` ("Concentrate Type") and leave `F` empty; Infused and
+Trifecta rows use `E`/`F` as labelled. Every row keeps its price in `K` ("Other
+Cannabinoids"), and `L`/`M` are empty throughout. Reading by header name yields
+50 silently shifted products.
+
+`gen_prerolls.py` therefore addresses cells by column letter *and* branches on
+the row's type family, then re-asserts the entire layout on every run. If Jack
+re-saves the sheet with its columns fixed, the assertion fails loudly and the
+generator exits rather than emitting garbage. *Don't "simplify" it back to
+header-name lookup.*
+
+### The filter path is cannabinoid branch → type → concentrate type
+Straight from the IA: THC / CBD / Blend first, then Flower / Infused / Trifecta,
+then the concentrate type on Infused only. Same drill-in-place bubbles as
+concentrates. This replaced three placeholder words (Traditional / Infused /
+Blunt) that predated the sheet.
+
+**Trifecta deliberately stops at the type level.** The IA calls its component
+combination metadata, not navigation, so "Live Resin / Kief" rides in `sub3` and
+shows only in the breadcrumb — no third-level bubble is ever offered for it.
+
+### Size is a drawer facet, and the labels drop "each"
+The IA keeps size as a filter "because products may not exist in all three
+sizes", and names exactly three: 0.5 g, 0.75 g, 1 g. So sizes are stored bare —
+the sheet's "0.5 g each" on the 20-packs is normalised away. Adding "each" for
+multi-packs would have produced six distinct size strings and put six options in
+the drawer, breaking the IA's three. Pack count already reads in the product
+name ("Mimosa 20-Pack").
+
+### No ratios on pre-rolls
+The IA reserves ratios for standardized-dose formats (edibles, tinctures,
+drinks) and says Blend should "display actual THC % and CBD %, no ratios". So
+every pre-roll emits `thc` and `cbdv` and no `ratio` — the app's ratio count
+stays at 45.
+
+### The sheet's "Lifestyle" column is the app's *strain*, not its lifestyle
+The IA's Lifestyle metadata is Indica / Indica Hybrid / Hybrid / Sativa Hybrid /
+Sativa — that's the app's `st`, and it's kept verbatim, which adds the two
+hybrid variants to the four `st` already used. It is **not** the app's `f`
+(Discovery / Adventurous / Social / Unwind / Nightlife / Holistic), which drives
+tile border colour and the monogram badge and which the sheet doesn't supply.
+
+`f` is instead: **reused** from the flower catalog for the 12 strains that
+already exist there, so a strain reads the same on every shelf; and
+**authored** per real strain for the other 23, the way flower was done. Both
+tables are marked in `gen_prerolls.py`.
+
+(`S.strain` is never assigned a non-null value anywhere in the app, so the two
+new `st` values change no filter behaviour today.)
+
+### Blend counts as Holistic, at a 1% CBD threshold
+The standing rule — any product carrying a meaningful non-psychoactive
+cannabinoid is Holistic — applied literally. The families separate cleanly: THC
+pre-rolls are uniformly 0.1% CBD, CBD ones 10.8–24.8%, Blend 8.9–15.2%. A 1%
+threshold puts all 15 CBD and all 10 Blend products on Holistic (25 of 50) and
+excludes the THC family's trace without a special case.
+
+### One photo per type family × pack count
+Jack supplied seven shots; six are used, keyed on (Flower/Infused/Trifecta ×
+1-Pack/2-Pack/20-Pack). The **3-pack shot goes unused** — nothing in these 50 is
+a 3-pack — but it stays wired so a 3-pack product would pick it up with no code
+change, the same way the rice-crispy edible photo sits unused.
+
+All seven carry real alpha, including the two `.webp` files, so they all take
+the `embed_rgba` path.
+
+---
+
 ## The phone frame
 
 ### The design width is 452 and never changes

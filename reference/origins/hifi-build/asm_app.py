@@ -146,6 +146,18 @@ M = {
  "crso_oil": "product assets/Concentrate/RSO/RSO Oil.png",
  "crso_applicator": "product assets/Concentrate/RSO/RSO Applicator .png",
 
+ # pre-roll photos (Jack's uploads), one per type family + pack count.
+ # "preroll" is the generic key the category circle and Guide Me method icon
+ # use; it shares the single-joint shot.
+ "preroll": "product assets/Prerolls/Pre-roll Flower Single Background Removed.png",
+ "pr_flower": "product assets/Prerolls/Pre-roll Flower Single Background Removed.png",
+ "pr_flower_2pk": "product assets/Prerolls/Pre-roll Flower 2-pack.webp",
+ "pr_flower_3pk": "product assets/Prerolls/Pre-roll Flower 3-pack Background Removed.png",
+ "pr_flower_20pk": "product assets/Prerolls/Pre-roll flower 20-pack.webp",
+ "pr_infused": "product assets/Prerolls/Pre-roll infused Single Background Removed.png",
+ "pr_infused_2pk": "product assets/Prerolls/Pre-roll infused 2-pack Background Removed.png",
+ "pr_trifecta": "product assets/Prerolls/Pre-roll Trifecta Single Background Removed.png",
+
  # edible + flower photos (Jack's uploads)
  "top_balm": "product assets/Topicals/Balm:Salve.png",
  "top_bath": "product assets/Topicals/Bath Salts.png",
@@ -374,6 +386,16 @@ NOBG = {
     "ch_templeball": "Concentrate/Hash/Temple Ball Hash.png",
     "crso_oil": "Concentrate/RSO/RSO Oil.png",
     "crso_applicator": "Concentrate/RSO/RSO Applicator .png",
+    # pre-rolls — every shot Jack supplied is already background-free (the two
+    # .webp files carry alpha too), so they all take the embed_rgba path.
+    "preroll": "Prerolls/Pre-roll Flower Single Background Removed.png",
+    "pr_flower": "Prerolls/Pre-roll Flower Single Background Removed.png",
+    "pr_flower_2pk": "Prerolls/Pre-roll Flower 2-pack.webp",
+    "pr_flower_3pk": "Prerolls/Pre-roll Flower 3-pack Background Removed.png",
+    "pr_flower_20pk": "Prerolls/Pre-roll flower 20-pack.webp",
+    "pr_infused": "Prerolls/Pre-roll infused Single Background Removed.png",
+    "pr_infused_2pk": "Prerolls/Pre-roll infused 2-pack Background Removed.png",
+    "pr_trifecta": "Prerolls/Pre-roll Trifecta Single Background Removed.png",
     # extra bud photos, mixed in across the catalog flower products
 }
 def nobg_file(k):

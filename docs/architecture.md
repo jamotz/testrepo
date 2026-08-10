@@ -8,8 +8,9 @@ Information architecture, data model and build pipeline.
 
 ```
 Jack's sheets ─→ gen_catalog_products.py ─┐
-                 gen_concentrates.py      ├─→ product rows, spliced by hand
-                 gen_edibles.py           │   into the P array
+                 gen_concentrates.py      │
+                 gen_edibles.py           ├─→ product rows, spliced by hand
+                 gen_prerolls.py          │   into the P array
                  gen_topicals.py         ─┘
 
 origins-app.src.html  ──┐
@@ -86,6 +87,7 @@ these lines; the array is the single runtime source of truth.
 | Flower | Indoor / Outdoor | — | — |
 | Concentrate | category (Live Resin, Rosin…) | consistency (Badder, Sauce…) | — |
 | Edible | cannabinoid category | extraction *or* effect | strain (THC path only) |
+| Pre-roll | cannabinoid branch (THC / CBD / Blend) | type (Flower / Infused / Trifecta) | concentrate type (Infused); component combination (Trifecta) |
 | Topical | effect (Pain Relief, Recovery…) | form (Cream, Roll-On…) | — |
 
 ---
@@ -148,8 +150,28 @@ products appear. The CBD-only *Pain Relief* product shows **total CBD mg**
 instead of a ratio. Edible **form** isn't in the IA path, so it's a facet in the
 Filter drawer (`S.eform`).
 
-Both systems share the same bubble component (`.cc` + `.ring`), the far-left
-filled back bubble, and dimming for zero-result options.
+### Pre-rolls — up to three layers
+Source: `WA_PreRolls_IA_Condensed.xlsx`.
+
+```
+THC ───→ Flower / Infused / Trifecta
+CBD ───→ Flower / Infused          ──→ Infused only: Live Resin / Rosin /
+Blend ─→ Flower / Infused                            Distillate / Hash / Kief
+```
+
+`PREROLL` holds the branches and their types; `PRCONC` the five concentrate
+types. **Trifecta stops at the type level** — its component combination
+("Live Resin / Kief") rides in `sub3` as metadata the breadcrumb shows, and no
+Trifecta third-level bubble is ever rendered, per the IA's "concentrate
+components are metadata, not navigation."
+
+Size stays a Filter-drawer facet (`S.size`) rather than a bubble level, because
+products don't exist in all three sizes. **No pre-roll carries a ratio**: the IA
+reserves ratios for standardized-dose formats and asks for actual THC % and
+CBD % on Blend instead.
+
+All three systems share the same bubble component (`.cc` + `.ring`), the
+far-left filled back bubble, and dimming for zero-result options.
 
 ---
 

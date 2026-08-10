@@ -58,18 +58,19 @@ already shared stops being the live one.
 
 ## Current state
 
-**186 products** across six types:
+**234 products** across six types:
 
 | Type | Count | Source | Photos |
 |---|---:|---|---|
 | Flower | 35 | `Flower Product Catalog.docx` + 5 legacy mock rows | strain-based ✓ |
 | Concentrate | 60 | `WA_Mock_Concentrate_Inventory_50…xlsx` + 10 added rows | per consistency ✓ |
 | Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
+| Pre-roll | 50 | `WA_PreRolls_50_Product_List.xlsx` | by type + pack count ✓ |
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
-| Pre-roll | 2 | original mock data | ✗ **missing** |
 | Drink | 1 | original mock data | reuses a gummy shot |
 
-**65 Holistic products**; **45 carry a cannabinoid ratio**.
+**90 Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
+by design — see `design-decisions.md`).
 
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
@@ -83,15 +84,17 @@ hub + 8 topic pages) · vape dead-end.
 
 ## Immediate next steps
 
-1. **Pre-rolls** — the only products still short of data. Two legacy mock rows,
-   no photos, no CBD figures. Needs a sheet like the others.
-2. **Account screens** — the remaining frames.
-3. **Terpene + feeling setup** — Jack wants a proper pass over both once the
-   product data is finished. They're currently mapped from form/effect tables in
-   the generators.
-4. **Drinks** — the edibles IA says drinks are "intentionally excluded and will
+1. **Account screens** — the remaining frames.
+2. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
+   product data is finished. They're currently mapped from form/effect/strain
+   tables in the generators.
+3. **Drinks** — the edibles IA says drinks are "intentionally excluded and will
    be implemented separately." The app still has 1 legacy drink and a Drinks
    category circle.
+4. **Pre-roll branch bubbles** — the first level (THC / CBD / Blend) shows the
+   same joint photo three times, because every branch starts with a flower
+   1-pack and that is the only asset for it. Needs Jack's call: leave it, go
+   photo-less like the concentrate sub-filters once did, or supply three shots.
 
 ---
 
@@ -105,6 +108,7 @@ reference/origins/
 │   ├── gen_catalog_products.py   ← flower products from the .docx
 │   ├── gen_concentrates.py       ← concentrates from the .xlsx (+ authored rows)
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA
+│   ├── gen_prerolls.py           ← pre-rolls from the .xlsx (asserts its columns)
 │   ├── gen_topicals.py           ← topicals from the .xlsx (+ authored rows)
 │   ├── gen_holistic_logo.py      ← generates the Holistic lifestyle logo
 │   └── origins-case.src.html     ← case-study page, built by asm_case.py
@@ -153,6 +157,15 @@ per-product assignment would still be reshuffled. Patch flower rows in place.
   now place cells by column letter. Copy that reader for any new sheet.
 - **Sectioned sheets carry `=== SECTION ===` rows.** Filter them out or they
   parse as products.
+- **The pre-roll sheet's header does not match its own columns.** Flower rows
+  put the sizes in `E` (the "Concentrate Type" column) and leave `F` empty,
+  while Infused/Trifecta rows use `E`/`F` as labelled; and *every* row keeps its
+  price in `K`, labelled "Other Cannabinoids", with `L`/`M` empty throughout.
+  Reading it by header name silently yields shifted products. `gen_prerolls.py`
+  reads by column letter *and* row family, and re-asserts the whole layout on
+  every run (`check_columns()`) — it exits non-zero rather than emit shifted
+  data, so a re-saved sheet with fixed columns will fail loudly instead of
+  quietly corrupting 50 products.
 - **Don't publish with missing photos.** The build still succeeds when assets are
   gone (WARN + blank tiles) — check the WARN lines before publishing.
 - **Jack sometimes uploads an older `origins-app.src.html`** alongside his data
