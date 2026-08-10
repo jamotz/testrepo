@@ -93,7 +93,7 @@ def flavour_of(name):
               "Strawberry","Watermelon","Pineapple","Espresso","Cherry","Mango",
               "Peach","Lemon","Pear"):
         if w.lower() in n.lower(): return w
-    return ""
+    return "Unflavored"   # the capsules; an empty taste chip renders blank
 
 # effect / strain -> the app's six lifestyles (drives card colour + badge)
 LIFE_EFFECT = {"Pain Relief":"holistic","Relax":"holistic","Focus":"discovery","Unwind":"unwind",
@@ -101,10 +101,22 @@ LIFE_EFFECT = {"Pain Relief":"holistic","Relax":"holistic","Focus":"discovery","
                "Creative":"discovery","Balanced":"social","Deep Sleep":"unwind","Happy":"social"}
 LIFE_STRAIN = {"Sativa":"adventurous","Hybrid":"social","Indica":"unwind"}
 # flavour -> the app's terpene list
-TERP = {"Blackberry":"Fruity","Huckleberry":"Fruity","Blue Raspberry":"Fruity","Raspberry":"Fruity",
-        "Strawberry":"Fruity","Watermelon":"Fruity","Pineapple":"Citrus","Mango":"Citrus",
-        "Tangerine":"Citrus","Blood Orange":"Citrus","Lemon":"Citrus","Cherry Lime":"Citrus",
-        "Peach":"Fruity","Pear":"Fruity","Dark Chocolate":"Earthy"}
+TERP = {# berries and stone fruit
+        "Blackberry":"Fruity","Marionberry":"Fruity","Elderberry":"Fruity",
+        "Huckleberry":"Fruity","Raspberry":"Fruity","Blue Raspberry":"Fruity",
+        "Strawberry":"Fruity","Cherry":"Fruity","Watermelon":"Fruity",
+        "Peach":"Fruity","Pear":"Fruity","Green Apple":"Fruity",
+        # bright and sharp
+        "Lemon":"Citrus","Mango":"Citrus","Pineapple":"Citrus","Blood Orange":"Citrus",
+        "Tangerine":"Citrus","Cherry Lime":"Citrus",
+        # bakery and confection
+        "Dark Chocolate":"Earthy","Espresso":"Earthy","Double Chocolate":"Earthy",
+        "Milk Chocolate":"Creamy","Cookies & Cream":"Creamy","Sea Salt Caramel":"Creamy",
+        "Chocolate Chip":"Creamy","Fudge Brownie":"Creamy","Snickerdoodle":"Creamy",
+        "Peanut Butter":"Nutty","Oatmeal Raisin":"Nutty",
+        # capsules
+        "Unflavored":"Herbal"}
+
 # effect -> the three "Feelings" chips on the product page
 FEEL = {"Pain Relief":["Relief","Calm","Clear"],"Relax":["Relaxed","Calm","Mellow"],
         "Focus":["Focused","Clear","Uplifted"],"Unwind":["Relaxed","Mellow","Calm"],
