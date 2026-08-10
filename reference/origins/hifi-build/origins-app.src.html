@@ -378,6 +378,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .pbrand{display:flex;justify-content:space-between;align-items:baseline}
 .pbrand .b{font-family:var(--head);font-weight:600;font-size:15px;color:var(--olive);text-transform:none;letter-spacing:.01em}
 .pbrand .t{font-family:var(--head);font-weight:600;font-size:15px;color:var(--or)}
+.pratio{display:flex;justify-content:flex-end;margin:2px 0 3px}
 .pbrand .pcann{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
 .pbrand .pcann .bub{font-size:11.5px;padding:3.5px 9px}
 .pricerow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
@@ -1443,8 +1444,10 @@ function drawProduct(){
     '<div class="pimg '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+life+'</div>'+
     '<div class="pcat">'+crumb(p)+'</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
+    /* the ratio gets its own right-aligned line above the cannabinoids */
+    (p.ratio&&p.combo&&p.combo!=="THC Only"
+      ? '<div class="pratio"><span class="bub ratio">'+p.ratio+'</span></div>' : "")+
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="pcann">'+
-      (p.ratio&&p.combo&&p.combo!=="THC Only"?'<span class="bub ratio">'+p.ratio+'</span>':"")+
       cannList(p).map(function(c){return '<span class="bub '+c[0].toLowerCase()+'">'+c[0]+' '+c[1]+'</span>';}).join("")+
       '</span></div>'+
     '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
