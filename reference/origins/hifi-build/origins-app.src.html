@@ -262,12 +262,12 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .fcard .ovleft,.fcard .ovright{display:flex;flex-direction:column;gap:3px}
 .fcard .ovleft{align-items:flex-start}
 .fcard .ovright{align-items:flex-end}
-.fcard .bub{font-family:var(--head);font-weight:600;font-size:10px;letter-spacing:.03em;padding:2.5px 7px;border-radius:100px;white-space:nowrap;line-height:1.25}
-.fcard .bub.ratio{font-weight:700;background:#ECF1E6;color:#5C7540}
-.fcard .bub.thc{background:#FAEBE9;color:#C0392B}
-.fcard .bub.cbd{background:#ECF1E6;color:#5C7540}
-.fcard .bub.cbn{background:#EEEAF5;color:#6F53A3}
-.fcard .bub.cbg{background:#F7EDE3;color:#B4651A}
+.bub{font-family:var(--head);font-weight:600;font-size:10px;letter-spacing:.03em;padding:2.5px 7px;border-radius:100px;white-space:nowrap;line-height:1.25}
+.bub.ratio{font-weight:700;background:#ECF1E6;color:#5C7540}
+.bub.thc{background:#FAEBE9;color:#C0392B}
+.bub.cbd{background:#ECF1E6;color:#5C7540}
+.bub.cbn{background:#EEEAF5;color:#6F53A3}
+.bub.cbg{background:#F7EDE3;color:#B4651A}
 .fcard .fim img{max-height:84px;max-width:80%;object-fit:contain}
 .fcard .fdiv{position:relative;height:1.5px;background:#DAD3C5;margin:8px 0 11px}
 .fcard .fbadge{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -378,6 +378,8 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .pbrand{display:flex;justify-content:space-between;align-items:baseline}
 .pbrand .b{font-family:var(--head);font-weight:600;font-size:15px;color:var(--olive);text-transform:none;letter-spacing:.01em}
 .pbrand .t{font-family:var(--head);font-weight:600;font-size:15px;color:var(--or)}
+.pbrand .pcann{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.pbrand .pcann .bub{font-size:11.5px;padding:3.5px 9px}
 .pricerow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 .prating{color:var(--or);font-family:var(--head);font-size:17px;letter-spacing:1.5px;white-space:nowrap}
 .prating i{font-style:normal;color:var(--or);margin-left:6px;letter-spacing:0;font-size:14px;font-weight:600}
@@ -1441,7 +1443,10 @@ function drawProduct(){
     '<div class="pimg '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+life+'</div>'+
     '<div class="pcat">'+crumb(p)+'</div>'+
     '<h2 class="pname">'+p.n+'</h2>'+
-    '<div class="pbrand"><span class="b">'+p.b+'</span><span class="t">'+(p.pot?p.pot:(p.thc!=null?("THC "+p.thc+"%"):(p.mg?p.mg+" mg":"")))+'</span></div>'+
+    '<div class="pbrand"><span class="b">'+p.b+'</span><span class="pcann">'+
+      (p.ratio&&p.combo&&p.combo!=="THC Only"?'<span class="bub ratio">'+p.ratio+'</span>':"")+
+      cannList(p).map(function(c){return '<span class="bub '+c[0].toLowerCase()+'">'+c[0]+' '+c[1]+'</span>';}).join("")+
+      '</span></div>'+
     '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
     hint+szpick+
     (q>0?'<div class="pistep"><button class="tap" id="pidec">&minus;</button><b>'+q+'</b><button class="tap" id="piinc">+</button></div>'
