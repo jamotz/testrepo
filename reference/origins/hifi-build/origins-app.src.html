@@ -563,15 +563,22 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .acmini .acbtn{margin-bottom:0;font-size:.72rem;padding:9px 6px}
 /* loyalty */
 .acbal{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}
-.acbal .acbt{font-family:var(--head);font-weight:600;font-size:1.28rem;color:var(--brown)}
-.acbal .aclink{display:block;font-family:var(--head);font-weight:600;font-size:.84rem;color:var(--or);background:none;border:0;padding:3px 0;text-align:left}
+/* the loyalty header runs on the account header's type scale: first line at
+   .acname's size, the link at .acmail's, and the points value as the page's
+   hero — same size as the name */
+.acbal .acbt{font-family:var(--head);font-weight:600;font-size:1.72rem;color:var(--brown);line-height:1.1}
+.acbal .aclink{display:block;font-family:var(--head);font-weight:600;font-size:.82rem;color:var(--or);background:none;border:0;padding:2px 0 4px;text-align:left}
 .acbal .actot{font-family:var(--head);font-weight:600;font-size:1.28rem;color:var(--brown)}
-.acbal .actot b{color:var(--olive);font-size:1.62rem;font-weight:700;margin-left:6px}
-.acbell{flex:none;position:relative;width:36px;height:36px;color:var(--brown)}
-.acbell svg{width:36px;height:36px}
-.acbell i{position:absolute;top:-1px;right:-1px;width:15px;height:15px;border-radius:50%;background:var(--or);color:#fff;font:700 10px/15px var(--head);text-align:center;font-style:normal}
+.acbal .actot b{color:var(--olive);font-size:1.72rem;font-weight:700;margin-left:6px}
+/* same ring and icon sizing as the account page's gear */
+.acbell{flex:none;position:relative;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1.5px solid var(--brown);color:var(--brown);margin-top:2px}
+.acbell svg{width:22px;height:22px}
+.acbell i{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:var(--or);color:#fff;font:700 10px/16px var(--head);text-align:center;font-style:normal}
 .actbl{width:100%;border-collapse:collapse;font-family:var(--head)}
 .actbl th{font-weight:600;font-size:.88rem;color:var(--brown);padding:5px 4px;border-bottom:1.5px solid var(--brown)}
+/* headers sit over their own data: Date hard left, Total hard right, Status centred */
+.actbl th:first-child{text-align:left}
+.actbl th:last-child{text-align:right}
 .actbl td{font-weight:600;font-size:1.02rem;color:var(--ink);padding:12px 4px;border-bottom:1.5px solid #CFC8B8;text-align:center}
 .actbl td:first-child{text-align:left}
 .actbl td:last-child{text-align:right}
@@ -777,7 +784,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
               <button class="aclink tap" data-actoast="How to Earn &amp; Use Points">How to Earn &amp; Use Points &rsaquo;</button>
               <div class="actot">Total: <b id="acpts2">3400</b></div>
             </div>
-            <span class="acbell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="11"/><path d="M12 6.5a3.6 3.6 0 0 0-3.6 3.6c0 3.2-1.2 4.2-1.2 4.2h9.6s-1.2-1-1.2-4.2A3.6 3.6 0 0 0 12 6.5z"/><path d="M10.7 16.5a1.5 1.5 0 0 0 2.6 0"/></svg><i>!</i></span>
+            <span class="acbell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5.4 5.4 0 0 0-5.4 5.4c0 4.6-1.9 6.1-1.9 6.1h14.6s-1.9-1.5-1.9-6.1A5.4 5.4 0 0 0 12 3z"/><path d="M10 17.6a2.3 2.3 0 0 0 4 0"/></svg><i>!</i></span>
           </div>
           <table class="actbl"><thead><tr><th>Date</th><th>Status</th><th>Total</th></tr></thead><tbody id="acledger"></tbody></table>
         </div>

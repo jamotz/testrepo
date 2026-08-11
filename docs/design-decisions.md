@@ -357,6 +357,19 @@ the `embed_rgba` path.
 
 ## Account
 
+### The Loyalty header runs on the Account header's type scale
+The two page-tops are built from the same three sizes so they read as one
+family: first line at `.acname`'s 1.72rem ("Noelle Smith" / "Current Balance"),
+second line at `.acmail`'s 0.82rem (the email / the "How to Earn & Use Points"
+link), and the **points value at name size** — it's the hero of its page the way
+the name is of its own. The gear and the notification bell share one treatment:
+a 42px ring around a 22px icon, right-aligned to the same edge.
+
+The ledger's `Date` and `Total` headers are left- and right-aligned onto their
+own data (`Status` stays centred). They were centred over columns whose values
+sat hard left and hard right, so the header never lined up with what was
+beneath it.
+
 ### The circle holds a gear, and it opens Account Settings
 The ring beside Noelle's name in `ACCOUNT.png` reads as an empty circle because
 the icon didn't survive the frame export — Jack confirmed it's a **gear**. It
