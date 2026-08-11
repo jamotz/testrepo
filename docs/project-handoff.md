@@ -31,7 +31,7 @@ python3 -m pip install --quiet Pillow          # recycles remove it
 python3 reference/origins/hifi-build/asm_app.py
 ```
 
-The build prints `wrote <path> (NNNN KB); imgs=93; markers left=0` and a `WARN`
+The build prints `wrote <path> (NNNN KB); imgs=101; markers left=0` and a `WARN`
 line for any asset it can't resolve. **Containers are ephemeral — commit and
 push often.**
 
