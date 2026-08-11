@@ -537,7 +537,10 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .achead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
 .acname{font-family:var(--head);font-weight:600;font-size:1.72rem;color:var(--brown);line-height:1.1}
 .acmail{font-family:var(--head);font-weight:600;font-size:.82rem;color:var(--olive);margin-top:2px}
-.acav{flex:none;width:42px;height:42px;border-radius:50%;border:1.5px solid var(--brown);margin-top:2px}
+/* the circle in ACCOUNT.png holds a gear — the icon didn't survive the frame
+   export, so it reads as an empty ring there. It opens Account Settings. */
+.acav{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1.5px solid var(--brown);background:none;color:var(--brown);margin-top:2px;padding:0}
+.acav svg{width:22px;height:22px}
 .acrows{margin:20px 0 26px;border-top:1.5px solid #CFC8B8}
 .acrow{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-bottom:1.5px solid #CFC8B8;padding:15px 2px;text-align:left;font-family:var(--head);font-weight:600;font-size:1.12rem;color:var(--brown)}
 .acrow .acpts{margin-left:auto;color:var(--olive);font-weight:700}
@@ -546,11 +549,16 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* the frames square these off and inset the last rule */
 .acrows .acrow:last-child{border-bottom:0}
 .acrows{border-bottom:1.5px solid #CFC8B8;margin-bottom:26px}
-.acbtn{display:block;width:100%;text-align:center;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:12px 14px;border-radius:2px;margin-bottom:11px;background:none}
-.acbtn.acout{background:var(--or);color:#fff;border:1.5px solid #000;font-size:1.32rem;letter-spacing:.06em;padding:9px 14px}
+/* pills, matching .continue / .st-btn everywhere else in the app — the frames
+   draw these square, but the app's button shape wins for consistency */
+.acbtn{display:block;width:100%;text-align:center;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:12px 14px;border-radius:100px;margin-bottom:11px;background:none}
+.acbtn.acout{background:var(--or);color:#fff;border:1.5px solid var(--or);font-size:1.32rem;letter-spacing:.06em;padding:10px 14px}
 .acbtn.acsec{border:1.5px solid var(--olive);color:var(--olive)}
 .acbtn.acsec.acdanger{border-color:var(--or);color:var(--or)}
-.acbtn.acdark{border:1.5px solid #000;color:#000}
+/* the frames draw these pure black; brown is the palette's near-black, so the
+   legal buttons stay visually lesser than the olive actions without introducing
+   a colour the app doesn't otherwise use */
+.acbtn.acdark{border:1.5px solid var(--brown);color:var(--brown)}
 .acmini{display:flex;gap:11px}
 .acmini .acbtn{margin-bottom:0;font-size:.72rem;padding:9px 6px}
 /* loyalty */
@@ -578,7 +586,36 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .accheck{display:flex;align-items:center;gap:11px;background:none;border:0;padding:0;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
 .accheck .acbox{width:19px;height:19px;border:1.5px solid var(--olive);border-radius:2px;flex:none}
 .accheck.on .acbox{background:var(--olive)}
-.s[data-s="account"] .sbar h2,.s[data-s="acloyalty"] .sbar h2,.s[data-s="acsettings"] .sbar h2{text-transform:uppercase}
+/* order history */
+.acord{border:1.5px solid #CFC8B8;border-radius:10px;padding:13px 14px;margin-bottom:12px}
+.acord .acoh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:3px}
+.acord .acon{font-family:var(--head);font-weight:600;font-size:1.06rem;color:var(--brown)}
+.acord .acod{font-family:var(--head);font-weight:600;font-size:.8rem;color:var(--ink-2)}
+.acord .acost{display:inline-block;font-family:var(--head);font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--olive);background:#EDEFE1;border-radius:100px;padding:3px 9px;margin-bottom:9px}
+.acord .acoi{display:flex;justify-content:space-between;gap:10px;font-family:var(--head);font-size:.92rem;color:var(--ink);padding:3px 0}
+.acord .acoi span:last-child{color:var(--ink-2);white-space:nowrap}
+.acord .acot{display:flex;justify-content:space-between;font-family:var(--head);font-weight:600;font-size:1rem;color:var(--brown);border-top:1.5px solid #CFC8B8;margin-top:8px;padding-top:8px}
+/* past reviews */
+.acrev{border-bottom:1.5px solid #CFC8B8;padding:14px 2px}
+.acrev:last-child{border-bottom:0}
+.acrev .acrh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.acrev .acrn{font-family:var(--head);font-weight:600;font-size:1.06rem;color:var(--brown)}
+.acrev .acrd{font-family:var(--head);font-weight:600;font-size:.8rem;color:var(--ink-2);white-space:nowrap}
+.acrev .acrb{font-family:var(--head);font-weight:600;font-size:.8rem;color:var(--olive);text-transform:uppercase;letter-spacing:.04em}
+.acrev .acrs{color:var(--or);font-size:.95rem;letter-spacing:.08em;margin:3px 0 5px}
+.acrev p{margin:0;font-size:.92rem;line-height:1.45;color:var(--ink)}
+/* about us */
+.acabout p{font-size:.95rem;line-height:1.5;color:var(--ink);margin:0 0 13px}
+.acabout .acsub{font-family:var(--head);font-weight:600;font-size:1.06rem;color:var(--brown);margin:20px 0 7px;text-transform:none}
+.acabout .achours div{display:flex;justify-content:space-between;font-family:var(--head);font-size:.92rem;color:var(--ink);padding:3px 0}
+.acabout .achours span:first-child{color:var(--ink-2)}
+/* recommended products reuses the shop's .pgrid verbatim — .fcard carries a
+   fixed width for the carousels and .pgrid is what overrides it to auto */
+.acintro{font-size:.92rem;line-height:1.45;color:var(--ink-2);margin:0}
+.acwrap.acflush{padding-bottom:4px}
+.s[data-s="account"] .sbar h2,.s[data-s="acloyalty"] .sbar h2,.s[data-s="acsettings"] .sbar h2,
+.s[data-s="acorders"] .sbar h2,.s[data-s="acrecs"] .sbar h2,.s[data-s="acreviews"] .sbar h2,
+.s[data-s="acabout"] .sbar h2{text-transform:uppercase}
 </style>
 
 <div class="stage">
@@ -718,7 +755,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
         <div class="acwrap">
           <div class="achead">
             <div><div class="acname">Noelle Smith</div><div class="acmail">Noellesmith@gmail.com</div></div>
-            <span class="acav"></span>
+            <button class="acav tap" data-acnav="acsettings" aria-label="Account settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.6a1.6 1.6 0 0 0 .32 1.77l.06.06a1.94 1.94 0 1 1-2.75 2.75l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47v.16a1.94 1.94 0 1 1-3.88 0v-.09a1.6 1.6 0 0 0-1.05-1.47 1.6 1.6 0 0 0-1.77.32l-.06.06a1.94 1.94 0 1 1-2.75-2.75l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97h-.16a1.94 1.94 0 1 1 0-3.88h.09a1.6 1.6 0 0 0 1.47-1.05 1.6 1.6 0 0 0-.32-1.77l-.06-.06a1.94 1.94 0 1 1 2.75-2.75l.06.06a1.6 1.6 0 0 0 1.77.32h.08a1.6 1.6 0 0 0 .97-1.47v-.16a1.94 1.94 0 1 1 3.88 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a1.94 1.94 0 1 1 2.75 2.75l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97h.16a1.94 1.94 0 1 1 0 3.88h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg></button>
           </div>
           <div class="acrows" id="acrows"></div>
           <button class="acbtn acout tap">Logout</button>
@@ -767,6 +804,45 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
           </div>
           <button class="acbtn acdark tap" data-actoast="Privacy Policy">Privacy Policy</button>
           <button class="acbtn acdark tap" data-actoast="Terms and Conditions">Terms and Conditions</button>
+        </div>
+      </section>
+
+      <section class="s" data-s="acorders">
+        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Order History</h2></div>
+        <div class="acwrap" id="acorders"></div>
+      </section>
+
+      <section class="s" data-s="acrecs">
+        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Recommended</h2></div>
+        <div class="acwrap acflush"><p class="acintro" id="acrecintro"></p></div>
+        <div class="pgrid" id="acrecs"></div>
+      </section>
+
+      <section class="s" data-s="acreviews">
+        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Past Reviews</h2></div>
+        <div class="acwrap" id="acreviews"></div>
+      </section>
+
+      <section class="s" data-s="acabout">
+        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>About Us</h2></div>
+        <div class="acwrap acabout">
+          <p>Origins is a Washington cannabis retailer built around a simple
+          idea: the plant makes more sense when someone explains it. Our shelves
+          are organised the way people actually shop &mdash; by how you want to
+          feel, not by the chemistry on the label.</p>
+          <p>Every product carries its lifestyle, its cannabinoids and its real
+          numbers up front, and <b>Origins University</b> is there whenever you
+          want the longer answer. No jargon, no upsell &mdash; just a shop where
+          the first-time buyer and the daily regular can both find their footing.</p>
+          <h3 class="acsub">Our shop</h3>
+          <p>16390 Cleveland St,<br>Redmond, WA 98052, USA</p>
+          <h3 class="acsub">Hours</h3>
+          <div class="achours">
+            <div><span>Mon &ndash; Thu</span><span>8 AM to 10:30 PM</span></div>
+            <div><span>Fri &ndash; Sat</span><span>8 AM to 11:30 PM</span></div>
+            <div><span>Sunday</span><span>9 AM to 9:00 PM</span></div>
+          </div>
+          <button class="acbtn acsec tap" data-actoast="Contact Us" style="margin-top:22px">Contact Us</button>
         </div>
       </section>
 
@@ -1247,7 +1323,7 @@ function pIcon(name){var n=(name||"").toLowerCase();
  else if(/hung/.test(n))k="hungry";
  return svgIco(ICONS[k]||ICONS.spark);}
 
-const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account",acloyalty:"account",acsettings:"account"};
+const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account",acloyalty:"account",acsettings:"account",acorders:"account",acrecs:"account",acreviews:"account",acabout:"account"};
 var WIZ=["guide","method","subtype","taste","finish"];
 var IMMERSIVE=["landing"].concat(WIZ);
 function nav(k){
@@ -1277,10 +1353,32 @@ const ACLEDGER=[
  ["1/10/23","Redeemed",-3000],["1/5/23","Redeemed",-1500],["1/2/23","Added",1250],
  ["12/28/22","Added",50]
 ];
-/* Loyalty Points is the only row with a frame behind it; the rest toast rather
-   than invent screens Jack hasn't drawn. */
-const ACROWS=[["Loyalty Points","acloyalty",ACPTS],["Order History",null,null],
- ["Recommended Products",null,null],["Past Reviews",null,null],["About Us",null,null]];
+const ACROWS=[["Loyalty Points","acloyalty",ACPTS],["Order History","acorders",null],
+ ["Recommended Products","acrecs",null],["Past Reviews","acreviews",null],["About Us","acabout",null]];
+
+/* AUTHORED (Jack asked for pages behind the ACCOUNT rows he hasn't framed yet;
+   these are first drafts to edit against, not final copy). Noelle's history
+   references real catalog products by name so the pages can't drift out of
+   sync with P — acFind returns null and the line is skipped if one is renamed. */
+function acFind(n,t){for(var i=0;i<P.length;i++)if(P[i].n===n&&(!t||P[i].t===t))return P[i];return null;}
+const ACORDERS=[
+ {id:"#10428",date:"Jan 24, 2023",status:"Picked up",
+  items:[["Blue Dream","preroll","0.5 g",2],["Blackberry Gummies","edible","100 mg",1]]},
+ {id:"#10322",date:"Jan 10, 2023",status:"Picked up",
+  items:[["Jet Fuel","flower","3.5 g",1],["Harlequin 2-Pack","preroll","0.5 g",1]]},
+ {id:"#10197",date:"Dec 28, 2022",status:"Picked up",
+  items:[["Dragon Balm","topical","60 mL",1]]}
+];
+const ACREVIEWS=[
+ {n:"Jet Fuel",t:"flower",r:5,date:"Jan 12, 2023",
+  d:"Exactly what I wanted for a morning hike — sharp and piney, and it didn't flatten me out at all."},
+ {n:"Blackberry Gummies",t:"edible",r:4,date:"Jan 26, 2023",
+  d:"Nice even 10 mg pieces. Easy to stop at one, which is the whole point for me."},
+ {n:"Dragon Balm",t:"topical",r:5,date:"Jan 3, 2023",
+  d:"Bought it for a bad shoulder. Not greasy, and the smell fades fast."},
+ {n:"Blue Dream",t:"preroll",r:4,date:"Jan 25, 2023",
+  d:"Rolled well and burned clean the whole way down. Would grab the 2-pack next time."}
+];
 function renderAccount(){
   var ch='<svg class="acch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
   $("#acrows").innerHTML=ACROWS.map(function(r){
@@ -1290,9 +1388,43 @@ function renderAccount(){
     return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="'+(r[2]>0?'acup':'acdn')+'">'+
       (r[2]>0?'+':'−')+Math.abs(r[2])+'</td></tr>';}).join("");
   $("#acpts2").textContent=ACPTS;
+
+  /* order history — totals come from priceFor so they track the real catalog */
+  $("#acorders").innerHTML=ACORDERS.map(function(o){
+    var tot=0,lines=o.items.map(function(it){
+      var p=acFind(it[0],it[1]); if(!p)return "";
+      var lp=linePrice(p,it[2],it[3]); tot+=lp.total;
+      return '<div class="acoi"><span>'+p.n+(it[3]>1?' <b>&times;'+it[3]+'</b>':'')+
+        '</span><span>'+feedPill(it[2])+' &middot; '+money(lp.total)+'</span></div>';}).join("");
+    return '<div class="acord"><div class="acoh"><span class="acon">'+o.id+
+      '</span><span class="acod">'+o.date+'</span></div><span class="acost">'+o.status+'</span>'+
+      lines+'<div class="acot"><span>Total <small>(tax incl.)</small></span><span>'+money(tot)+'</span></div></div>';
+  }).join("");
+
+  /* recommended — the lifestyles she actually buys, top-rated first, minus
+     anything already in her order history */
+  var bought={},lifes={};
+  ACORDERS.forEach(function(o){o.items.forEach(function(it){
+    var p=acFind(it[0],it[1]); if(p){bought[p.n]=1;(p.f||[]).forEach(function(l){lifes[l]=1;});}});});
+  var recs=P.filter(function(p){return !bought[p.n]&&(p.f||[]).some(function(l){return lifes[l];});})
+            .sort(function(a,b){return (b.r||0)-(a.r||0);}).slice(0,6);
+  $("#acrecintro").innerHTML="Based on what you've bought before &mdash; "+
+    Object.keys(lifes).map(function(l){return FEEL[l];}).join(", ")+".";
+  $("#acrecs").innerHTML=recs.map(feedCard).join("");
+  $("#acrecs").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){
+    if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
+  $("#acrecs").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){
+    addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
+
+  /* past reviews */
+  $("#acreviews").innerHTML=ACREVIEWS.map(function(v){
+    var p=acFind(v.n,v.t); if(!p)return "";
+    return '<div class="acrev"><div class="acrh"><span class="acrn">'+p.n+
+      '</span><span class="acrd">'+v.date+'</span></div><div class="acrb">'+p.b+
+      '</div><div class="acrs">'+stars(v.r)+'</div><p>'+v.d+'</p></div>';}).join("");
 }
 /* scoped delegation so the dynamic rows work without a document-wide handler */
-document.querySelectorAll('.s[data-s="account"],.s[data-s="acloyalty"],.s[data-s="acsettings"]').forEach(function(sec){
+document.querySelectorAll('.s[data-s="account"],.s[data-s="acloyalty"],.s[data-s="acsettings"],.s[data-s="acorders"],.s[data-s="acrecs"],.s[data-s="acreviews"],.s[data-s="acabout"]').forEach(function(sec){
   sec.addEventListener("click",function(e){
     var n=e.target.closest("[data-acnav]");   if(n){nav(n.dataset.acnav);return;}
     var c=e.target.closest("[data-acchk]");   if(c){c.classList.toggle("on");return;}

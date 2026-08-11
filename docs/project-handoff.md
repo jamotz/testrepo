@@ -76,7 +76,7 @@ by design — see `design-decisions.md`).
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
 with filters · product info · cart · order confirmation · Origins U (education
 hub + 8 topic pages) · vape dead-end · Account · Loyalty Points · Account
-Settings.
+Settings · Order History · Recommended Products · Past Reviews · About Us.
 
 **Every frame in Jack's `hifi-final/` set is now built.** What's left is polish
 and the open questions below, not new screens.
@@ -85,9 +85,10 @@ and the open questions below, not new screens.
 
 ## Immediate next steps
 
-1. **Account rows without frames** — Order History, Recommended Products, Past
-   Reviews and About Us are rows in `ACCOUNT.png` with no screen behind them, so
-   they toast. Each needs a frame before it can be built.
+1. **Review the four authored Account pages** — Order History, Recommended
+   Products, Past Reviews and About Us have no frames; they're first drafts in
+   the app's visual language, built to be edited against. Noelle's order and
+   review history is authored mock data (`AUTHORED` in the source).
 2. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
    product data is finished. They're currently mapped from form/effect/strain
    tables in the generators.

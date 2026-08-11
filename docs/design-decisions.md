@@ -357,17 +357,32 @@ the `embed_rgba` path.
 
 ## Account
 
-### Manage Notifications is the way into Account Settings
-`ACCOUNT.png` has no "Settings" row and no gear in its header — the only thing
-pointing at the settings frame is its **Manage Notifications** button, and the
-settings screen does contain that section. So that button opens it. If Jack
-wants a plainer route later, a header gear or a dedicated row is the change.
+### The circle holds a gear, and it opens Account Settings
+The ring beside Noelle's name in `ACCOUNT.png` reads as an empty circle because
+the icon didn't survive the frame export — Jack confirmed it's a **gear**. It
+opens Account Settings, which is also what **Manage Notifications** does (that
+button was the only route the frames drew before the gear was identified).
 
-### Rows with no frame behind them toast
-Order History, Recommended Products, Past Reviews and About Us are rows in the
-frame with no screen drawn for them. They toast their own label rather than
-invent an IA Jack hasn't designed. Loyalty Points is the one row with a frame,
-so it's the one that navigates.
+### The four unframed rows are authored first drafts
+Order History, Recommended Products, Past Reviews and About Us are rows in
+`ACCOUNT.png` with no screen behind them. Jack asked for pages built "based on
+the other frames … we can edit it as we go", so each is a draft in the app's
+existing visual language rather than a guess at a frame:
+
+- **Order History** — order cards (number, date, status pill, lines, total).
+  Prices run through `priceFor`/`linePrice`, so the totals track the real
+  catalog instead of being typed in.
+- **Recommended Products** — the shop's own `.pgrid` and `feedCard`, showing
+  top-rated products in the lifestyles her order history implies, minus what
+  she already bought. Cards behave exactly as they do in the shop.
+- **Past Reviews** — product, brand, stars via the existing `stars()`, date and
+  body copy.
+- **About Us** — brand copy plus the Redmond address and hours already used on
+  the order-confirmation screen.
+
+Noelle's orders and reviews are **authored mock history**, marked `AUTHORED` in
+the source. Every line references a real catalog product through `acFind()`, so
+renaming a product drops the line rather than leaving a phantom.
 
 ### The points ledger doesn't sum to the balance — that's the frame
 `AC - LOYALTY POINTS.png` shows a 3400 balance over ten entries that total
@@ -381,10 +396,13 @@ The global `h1–h4` rule uppercases every heading. Jack's settings frame draws
 with `text-transform:none`. The three screen titles in the brown bar *are*
 uppercase, matching the frames and the Origins U bars.
 
-### Square corners, not the app's pills
-Every other button in the app is a 100px pill. The Account frames draw
-rectangles — LOGOUT with a black border, the secondaries olive-outlined, Delete
-Account in orange, and the policy buttons black. Kept as drawn.
+### Pills, not the frames' square corners
+The Account frames draw square buttons, but every other button in the app is a
+100px pill. Jack's call: the app's shape wins. Colour assignments stay as drawn
+— orange fill for the primary action, olive outline for secondaries, orange
+outline for Delete Account — with one change: the frames' pure-black policy
+buttons use `--brown`, the palette's near-black, so they stay visually lesser
+than the olive actions without introducing a colour the app never uses.
 
 ---
 

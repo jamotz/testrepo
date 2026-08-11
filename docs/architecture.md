@@ -197,9 +197,9 @@ applies `.immersive` (hides nav) for the landing screen and the Guide Me wizard.
 
 `landing · home · guide · method · subtype · taste · finish · shop · list ·
 vape · product · cart · confirm · edu · edutopic · account · acloyalty ·
-acsettings`
+acsettings · acorders · acrecs · acreviews · acabout`
 
-The three Account screens all map to the `account` tab via `TABMAP`, so the tab
+The seven Account screens all map to the `account` tab via `TABMAP`, so the tab
 stays lit while drilling into Loyalty Points or Settings. Their markup is static
 (it mirrors the frames one-for-one); only the row list and the points ledger are
 rendered from data, by `renderAccount()`. Clicks are delegated from the three
