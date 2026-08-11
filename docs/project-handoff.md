@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-08-10 · branch `claude/project-docs-review-sz8jwv`
+**Last updated:** 2026-08-11 · branch `claude/project-docs-review-sz8jwv`
 **Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
@@ -40,7 +40,9 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 `require('/opt/node22/lib/node_modules/playwright/index.js')`).
 
 Publishing: republish to the **same artifact URL** above, or the link Jack has
-already shared stops being the live one.
+already shared stops being the live one. Pass the URL as `url=` — publishing
+without it mints a separate artifact. **The live link is current as of
+`339010f`** (pre-rolls, serving/total, all seven Account screens).
 
 ---
 
@@ -51,8 +53,10 @@ already shared stops being the live one.
 3. **Ask clarifying questions before building anything non-trivial.** Wrong
    guesses on structure cost real rework (see `design-decisions.md`).
 4. **Never invent product data** that contradicts his sheets. Authored filler is
-   fine when he's asked for it, but mark it clearly (see the `AUTHORED` blocks in
-   `gen_concentrates.py` and `gen_topicals.py`).
+   fine when he's asked for it, but mark it clearly — see the `AUTHORED` blocks
+   in `gen_concentrates.py`, `gen_topicals.py` and `gen_prerolls.py`, and the
+   Account block in `origins-app.src.html` (Noelle's orders and reviews, and
+   Seattle's opening hours).
 
 ---
 
@@ -85,19 +89,16 @@ and the open questions below, not new screens.
 
 ## Immediate next steps
 
-1. **Review the four authored Account pages** — Order History, Recommended
-   Products, Past Reviews and About Us have no frames; they're first drafts in
-   the app's visual language, built to be edited against. Noelle's order and
-   review history is authored mock data (`AUTHORED` in the source).
-2. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
+1. **General touch-ups** — Jack is doing a pass across the app. The Account
+   screens have been through one round already (see `design-decisions.md`).
+2. **Drinks** — the edibles IA says drinks are "intentionally excluded and will
+   be implemented separately." The app still has 1 legacy drink and a Drinks
+   category circle, and no sheet behind either. Needs a catalog like the others.
+   Once it has one, the tile's serving/total slot picks drinks up automatically —
+   they're already wired to the edible path, they just have no serving data.
+3. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
    product data is finished. They're currently mapped from form/effect/strain
    tables in the generators.
-3. **Drinks** — the edibles IA says drinks are "intentionally excluded and will
-   be implemented separately." The app still has 1 legacy drink and a Drinks
-   category circle.
-4. **Serving/total for drinks** — edibles and pre-rolls now state serving and
-   total in the tile's size slot. Drinks are wired to the same path but the one
-   legacy drink row has no serving data, so it still shows a plain size.
 
 ---
 
