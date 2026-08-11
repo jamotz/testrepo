@@ -527,6 +527,58 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .hintline{font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:10.5px;letter-spacing:.16em;color:#6E6355;text-align:center;max-width:54ch;line-height:1.8}
 .hintline b{color:var(--or)}
+/* ---- Account, Loyalty Points, Account Settings (Jack's AC frames) ----
+   Everything here is namespaced ac* — `.s` is a global display:none rule and
+   the frames' controls are square-cornered, not the pill shapes used elsewhere. */
+.acwrap{padding:18px 20px 26px}
+/* the global h1-h4 rule uppercases; Jack's settings frame is sentence case */
+.acwrap .ach3{font-family:var(--head);font-size:1.3rem;color:var(--brown);margin:22px 0 8px;text-transform:none}
+.acwrap .ach3:first-child{margin-top:0}
+.achead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.acname{font-family:var(--head);font-weight:600;font-size:1.72rem;color:var(--brown);line-height:1.1}
+.acmail{font-family:var(--head);font-weight:600;font-size:.82rem;color:var(--olive);margin-top:2px}
+.acav{flex:none;width:42px;height:42px;border-radius:50%;border:1.5px solid var(--brown);margin-top:2px}
+.acrows{margin:20px 0 26px;border-top:1.5px solid #CFC8B8}
+.acrow{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-bottom:1.5px solid #CFC8B8;padding:15px 2px;text-align:left;font-family:var(--head);font-weight:600;font-size:1.12rem;color:var(--brown)}
+.acrow .acpts{margin-left:auto;color:var(--olive);font-weight:700}
+.acrow .acch{margin-left:auto;width:15px;height:15px;color:var(--brown);flex:none}
+.acrow .acpts+.acch{margin-left:12px}
+/* the frames square these off and inset the last rule */
+.acrows .acrow:last-child{border-bottom:0}
+.acrows{border-bottom:1.5px solid #CFC8B8;margin-bottom:26px}
+.acbtn{display:block;width:100%;text-align:center;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:12px 14px;border-radius:2px;margin-bottom:11px;background:none}
+.acbtn.acout{background:var(--or);color:#fff;border:1.5px solid #000;font-size:1.32rem;letter-spacing:.06em;padding:9px 14px}
+.acbtn.acsec{border:1.5px solid var(--olive);color:var(--olive)}
+.acbtn.acsec.acdanger{border-color:var(--or);color:var(--or)}
+.acbtn.acdark{border:1.5px solid #000;color:#000}
+.acmini{display:flex;gap:11px}
+.acmini .acbtn{margin-bottom:0;font-size:.72rem;padding:9px 6px}
+/* loyalty */
+.acbal{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}
+.acbal .acbt{font-family:var(--head);font-weight:600;font-size:1.28rem;color:var(--brown)}
+.acbal .aclink{display:block;font-family:var(--head);font-weight:600;font-size:.84rem;color:var(--or);background:none;border:0;padding:3px 0;text-align:left}
+.acbal .actot{font-family:var(--head);font-weight:600;font-size:1.28rem;color:var(--brown)}
+.acbal .actot b{color:var(--olive);font-size:1.62rem;font-weight:700;margin-left:6px}
+.acbell{flex:none;position:relative;width:36px;height:36px;color:var(--brown)}
+.acbell svg{width:36px;height:36px}
+.acbell i{position:absolute;top:-1px;right:-1px;width:15px;height:15px;border-radius:50%;background:var(--or);color:#fff;font:700 10px/15px var(--head);text-align:center;font-style:normal}
+.actbl{width:100%;border-collapse:collapse;font-family:var(--head)}
+.actbl th{font-weight:600;font-size:.88rem;color:var(--brown);padding:5px 4px;border-bottom:1.5px solid var(--brown)}
+.actbl td{font-weight:600;font-size:1.02rem;color:var(--ink);padding:12px 4px;border-bottom:1.5px solid #CFC8B8;text-align:center}
+.actbl td:first-child{text-align:left}
+.actbl td:last-child{text-align:right}
+.actbl td.acup{color:var(--olive)}
+.actbl td.acdn{color:var(--or)}
+/* settings */
+.acinfo{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;margin:4px 0 18px;padding-left:6px}
+.acinfo .aclab{font-family:var(--head);font-weight:600;font-size:.86rem;color:var(--olive);align-self:center}
+.acinfo .acval{font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
+.acnote{font-family:var(--head);font-weight:600;font-size:.88rem;color:var(--ink);margin:0 0 12px;padding-left:6px;line-height:1.35}
+.acchecks{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding-left:14px}
+.accheck{display:flex;align-items:center;gap:11px;background:none;border:0;padding:0;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
+.accheck .acbox{width:19px;height:19px;border:1.5px solid var(--olive);border-radius:2px;flex:none}
+.accheck.on .acbox{background:var(--olive)}
+.s[data-s="account"] .sbar h2,.s[data-s="acloyalty"] .sbar h2,.s[data-s="acsettings"] .sbar h2{text-transform:uppercase}
 </style>
 
 <div class="stage">
@@ -659,6 +711,63 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       <section class="s" data-s="edutopic">
         <div class="sbar"><button class="bk" data-back="edu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Origins University</h2></div>
         <div class="edutopic" id="edutopic"></div>
+      </section>
+
+      <section class="s" data-s="account">
+        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Account</h2></div>
+        <div class="acwrap">
+          <div class="achead">
+            <div><div class="acname">Noelle Smith</div><div class="acmail">Noellesmith@gmail.com</div></div>
+            <span class="acav"></span>
+          </div>
+          <div class="acrows" id="acrows"></div>
+          <button class="acbtn acout tap">Logout</button>
+          <button class="acbtn acsec tap" data-actoast="Contact Us">Contact Us</button>
+          <button class="acbtn acsec tap" data-acnav="acsettings">Manage Notifications</button>
+          <div class="acmini">
+            <button class="acbtn acdark tap" data-actoast="Privacy Policy">Privacy Policy</button>
+            <button class="acbtn acdark tap" data-actoast="Terms &amp; Conditions">Terms &amp; Conditions</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="s" data-s="acloyalty">
+        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Loyalty Points</h2></div>
+        <div class="acwrap">
+          <div class="acbal">
+            <div>
+              <div class="acbt">Current Balance</div>
+              <button class="aclink tap" data-actoast="How to Earn &amp; Use Points">How to Earn &amp; Use Points &rsaquo;</button>
+              <div class="actot">Total: <b id="acpts2">3400</b></div>
+            </div>
+            <span class="acbell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="11"/><path d="M12 6.5a3.6 3.6 0 0 0-3.6 3.6c0 3.2-1.2 4.2-1.2 4.2h9.6s-1.2-1-1.2-4.2A3.6 3.6 0 0 0 12 6.5z"/><path d="M10.7 16.5a1.5 1.5 0 0 0 2.6 0"/></svg><i>!</i></span>
+          </div>
+          <table class="actbl"><thead><tr><th>Date</th><th>Status</th><th>Total</th></tr></thead><tbody id="acledger"></tbody></table>
+        </div>
+      </section>
+
+      <section class="s" data-s="acsettings">
+        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Account Settings</h2></div>
+        <div class="acwrap">
+          <h3 class="ach3">Account Info</h3>
+          <div class="acinfo">
+            <span class="aclab">Name:</span><span class="acval">Noelle Smith</span>
+            <span class="aclab">Email:</span><span class="acval">Noellesmith@gmail.com</span>
+            <span class="aclab">Phone:</span><span class="acval">(425) 345-6789</span>
+          </div>
+          <button class="acbtn acsec tap" data-actoast="Edit Personal Info">Edit Personal Info</button>
+          <button class="acbtn acsec tap" data-actoast="Change Password">Change Password</button>
+          <button class="acbtn acsec acdanger tap" data-actoast="Delete Account">Delete Account</button>
+          <h3 class="ach3">Manage Notifications</h3>
+          <p class="acnote">Receive alerts about sales and loyalty points through;</p>
+          <div class="acchecks">
+            <button class="accheck on tap" data-acchk><span class="acbox"></span>Email</button>
+            <button class="accheck tap" data-acchk><span class="acbox"></span>Phone</button>
+            <button class="accheck tap" data-acchk><span class="acbox"></span>App</button>
+          </div>
+          <button class="acbtn acdark tap" data-actoast="Privacy Policy">Privacy Policy</button>
+          <button class="acbtn acdark tap" data-actoast="Terms and Conditions">Terms and Conditions</button>
+        </div>
       </section>
 
     </div>
@@ -1138,7 +1247,7 @@ function pIcon(name){var n=(name||"").toLowerCase();
  else if(/hung/.test(n))k="hungry";
  return svgIco(ICONS[k]||ICONS.spark);}
 
-const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account"};
+const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account",acloyalty:"account",acsettings:"account"};
 var WIZ=["guide","method","subtype","taste","finish"];
 var IMMERSIVE=["landing"].concat(WIZ);
 function nav(k){
@@ -1152,10 +1261,45 @@ function nav(k){
 document.querySelectorAll("[data-nav]").forEach(function(b){b.addEventListener("click",function(){
   var k=b.dataset.nav;
   if(k==="edu"){renderEduHub();nav("edu");return;}
-  if(k==="account"){toast("Account — loyalty, orders & reviews");return;}
+  if(k==="account"){nav("account");return;}
   nav(k);
 });});
 document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener("click",function(){nav(b.dataset.back);});});
+
+/* ---- Account / Loyalty Points / Account Settings (Jack's AC frames) ----
+   The ledger is his mock data from AC - LOYALTY POINTS.png, reproduced
+   verbatim. Note the entries sum to -3184, not the 3400 balance above them —
+   that is how the frame is drawn, and the frame is the source of truth. */
+const ACPTS=3400;
+const ACLEDGER=[
+ ["1/24/23","Added",1000],["1/24/23","Redeemed",-3000],["1/24/23","Expired",-1500],
+ ["1/22/23","Added",50],["1/20/23","Added",1466],["1/11/23","Added",2000],
+ ["1/10/23","Redeemed",-3000],["1/5/23","Redeemed",-1500],["1/2/23","Added",1250],
+ ["12/28/22","Added",50]
+];
+/* Loyalty Points is the only row with a frame behind it; the rest toast rather
+   than invent screens Jack hasn't drawn. */
+const ACROWS=[["Loyalty Points","acloyalty",ACPTS],["Order History",null,null],
+ ["Recommended Products",null,null],["Past Reviews",null,null],["About Us",null,null]];
+function renderAccount(){
+  var ch='<svg class="acch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  $("#acrows").innerHTML=ACROWS.map(function(r){
+    return '<button class="acrow tap" '+(r[1]?'data-acnav="'+r[1]+'"':'data-actoast="'+r[0]+'"')+'>'+
+      '<b>'+r[0]+'</b>'+(r[2]!=null?'<span class="acpts">'+r[2]+'</span>':'')+ch+'</button>';}).join("");
+  $("#acledger").innerHTML=ACLEDGER.map(function(r){
+    return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="'+(r[2]>0?'acup':'acdn')+'">'+
+      (r[2]>0?'+':'−')+Math.abs(r[2])+'</td></tr>';}).join("");
+  $("#acpts2").textContent=ACPTS;
+}
+/* scoped delegation so the dynamic rows work without a document-wide handler */
+document.querySelectorAll('.s[data-s="account"],.s[data-s="acloyalty"],.s[data-s="acsettings"]').forEach(function(sec){
+  sec.addEventListener("click",function(e){
+    var n=e.target.closest("[data-acnav]");   if(n){nav(n.dataset.acnav);return;}
+    var c=e.target.closest("[data-acchk]");   if(c){c.classList.toggle("on");return;}
+    var t=e.target.closest("[data-actoast]"); if(t){toast(t.dataset.actoast);}
+  });
+});
+renderAccount();
 
 function renderFeel(){
   /* feel = the Lifestyle Overview: real brand logos, per Jack's request */

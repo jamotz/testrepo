@@ -75,16 +75,19 @@ by design — see `design-decisions.md`).
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
 with filters · product info · cart · order confirmation · Origins U (education
-hub + 8 topic pages) · vape dead-end.
+hub + 8 topic pages) · vape dead-end · Account · Loyalty Points · Account
+Settings.
 
-**Screens still to build:** **Account** (`ACCOUNT.png`, `AC - AC SETTINGS.png`,
-`AC - LOYALTY POINTS.png`) — the last major frame in Jack's set.
+**Every frame in Jack's `hifi-final/` set is now built.** What's left is polish
+and the open questions below, not new screens.
 
 ---
 
 ## Immediate next steps
 
-1. **Account screens** — the remaining frames.
+1. **Account rows without frames** — Order History, Recommended Products, Past
+   Reviews and About Us are rows in `ACCOUNT.png` with no screen behind them, so
+   they toast. Each needs a frame before it can be built.
 2. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
    product data is finished. They're currently mapped from form/effect/strain
    tables in the generators.

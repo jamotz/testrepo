@@ -196,7 +196,15 @@ deeper ones (`S.sub = null` also clears `sub2`/`sub3`).
 applies `.immersive` (hides nav) for the landing screen and the Guide Me wizard.
 
 `landing · home · guide · method · subtype · taste · finish · shop · list ·
-vape · product · cart · confirm · edu · edutopic`
+vape · product · cart · confirm · edu · edutopic · account · acloyalty ·
+acsettings`
+
+The three Account screens all map to the `account` tab via `TABMAP`, so the tab
+stays lit while drilling into Loyalty Points or Settings. Their markup is static
+(it mirrors the frames one-for-one); only the row list and the points ledger are
+rendered from data, by `renderAccount()`. Clicks are delegated from the three
+sections rather than the document, so the dynamic rows work without a global
+handler. Everything is namespaced `ac*` — `.s` is a global `display:none`.
 
 ---
 

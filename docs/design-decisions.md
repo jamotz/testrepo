@@ -355,6 +355,39 @@ the `embed_rgba` path.
 
 ---
 
+## Account
+
+### Manage Notifications is the way into Account Settings
+`ACCOUNT.png` has no "Settings" row and no gear in its header — the only thing
+pointing at the settings frame is its **Manage Notifications** button, and the
+settings screen does contain that section. So that button opens it. If Jack
+wants a plainer route later, a header gear or a dedicated row is the change.
+
+### Rows with no frame behind them toast
+Order History, Recommended Products, Past Reviews and About Us are rows in the
+frame with no screen drawn for them. They toast their own label rather than
+invent an IA Jack hasn't designed. Loyalty Points is the one row with a frame,
+so it's the one that navigates.
+
+### The points ledger doesn't sum to the balance — that's the frame
+`AC - LOYALTY POINTS.png` shows a 3400 balance over ten entries that total
+**−3184**. Reproduced verbatim: the frame is the source of truth and this is
+mock data, not product data. Worth fixing if the case study ever shows the
+screen full-size, but it isn't a bug in the build.
+
+### Section headings are sentence case here
+The global `h1–h4` rule uppercases every heading. Jack's settings frame draws
+"Account Info" and "Manage Notifications" in sentence case, so `.ach3` opts out
+with `text-transform:none`. The three screen titles in the brown bar *are*
+uppercase, matching the frames and the Origins U bars.
+
+### Square corners, not the app's pills
+Every other button in the app is a 100px pill. The Account frames draw
+rectangles — LOGOUT with a black border, the secondaries olive-outlined, Delete
+Account in orange, and the policy buttons black. Kept as drawn.
+
+---
+
 ## The phone frame
 
 ### The design width is 452 and never changes
