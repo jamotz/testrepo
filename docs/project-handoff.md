@@ -91,10 +91,9 @@ hub + 8 topic pages) · vape dead-end.
 3. **Drinks** — the edibles IA says drinks are "intentionally excluded and will
    be implemented separately." The app still has 1 legacy drink and a Drinks
    category circle.
-4. **Pre-roll branch bubbles** — the first level (THC / CBD / Blend) shows the
-   same joint photo three times, because every branch starts with a flower
-   1-pack and that is the only asset for it. Needs Jack's call: leave it, go
-   photo-less like the concentrate sub-filters once did, or supply three shots.
+4. **Serving/total for drinks** — edibles and pre-rolls now state serving and
+   total in the tile's size slot. Drinks are wired to the same path but the one
+   legacy drink row has no serving data, so it still shows a plain size.
 
 ---
 

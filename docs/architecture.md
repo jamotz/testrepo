@@ -75,6 +75,8 @@ these lines; the array is the single runtime source of truth.
 | `cbdv` `cbdu` | measured CBD and its unit (`" mg"`, or `%` when absent) |
 | `othv` | the third cannabinoid's weight; its name comes from `combo` |
 | `cbd` | legacy has-CBD **flag** the CBD filter reads — not a measurement |
+| `mg` | an edible's serving (the size is the whole package) |
+| `pk` | a pre-roll's pack count (the size is one joint); absent on 1-packs |
 | `st` | strain: Indica / Sativa / Hybrid / CBD |
 | `f` | lifestyles — drives card border colour + monogram badge |
 | `fe` `ta` | feelings, taste (product-info chips) |
@@ -260,6 +262,31 @@ chip or Escape.
 The script injects a `viewport` meta if the host page has none, and appends
 `viewport-fit=cover` if it has one without it. Without that, `env(safe-area-inset-*)`
 reports 0 and the full-screen tab bar sits under the home indicator.
+
+---
+
+## Serving vs. total
+
+`servTotal(p, size)` returns the tile's size-slot text, or `null` when there is
+only one serving. The two formats had drifted in opposite directions:
+
+| Type | `size` means | serving | total |
+|---|---|---|---|
+| Edible | the whole package (`100 mg`) | `p.mg` | the size |
+| Pre-roll | one joint (`0.5 g`) | the size | size × `p.pk` |
+
+So an edible tile read `100mg` with the 10 mg serving invisible, while a
+2-pack pre-roll read `0.5G` with the 1 g total invisible. Both now read
+serving-first: `10mg / 100mg`, `0.5G / 1G`, `0.5G / 10G` for a 20-pack.
+
+A 1-pack pre-roll or single-dose edible returns `null` and keeps the plain
+size pill — there is nothing to compare. Flower, concentrates and topicals
+never enter the function. Drinks fall through the edible path already, for
+whenever they get real data.
+
+`sizePill()` renders either form as the same `.fsz` element so the size
+sheet's live update keeps its selector; the serving/total variant just adds
+`.serv`.
 
 ---
 

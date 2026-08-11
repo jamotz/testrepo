@@ -218,6 +218,22 @@ badge two lines below already carries the mood. The combo string was dropped too
 — the bubbles name the cannabinoids, so "THC:CBD:CBG" beside three chips saying
 THC, CBD and CBG was the same fact twice.
 
+### The size slot states serving *and* total
+The size on a tile meant two different things depending on the shelf: an
+edible's `100 mg` is the whole package, a pre-roll's `0.5 g` is one joint. So an
+edible hid its serving and a multi-pack pre-roll hid its total. The slot now
+reads serving-first — `10mg / 100mg`, `0.5G / 1G` — for edibles and pre-rolls,
+with drinks wired to the same path for when they get data.
+
+It keeps the olive it already had but takes the **cannabinoid bubbles' tinted
+treatment** rather than the solid fill: serving/total is a fact about the
+product, and the solid fill means *the selected size*. Products with one serving
+(1-pack pre-rolls, single-dose edibles) keep the plain solid pill, so the two
+readings never collide. Flower, concentrates and topicals are untouched.
+
+**The underlying sizes did not change** — `szs`, `pz`, `S.size` and the size
+sheet all still key on the same strings. This is display only.
+
 ### The tile's cart affordance
 Add to Cart became **See more sizes**, opening the sheet. Tapping the card
 anywhere still opens the product page — the sheet's own controls are excluded
@@ -319,6 +335,14 @@ cannabinoid is Holistic — applied literally. The families separate cleanly: TH
 pre-rolls are uniformly 0.1% CBD, CBD ones 10.8–24.8%, Blend 8.9–15.2%. A 1%
 threshold puts all 15 CBD and all 10 Blend products on Holistic (25 of 50) and
 excludes the THC family's trace without a special case.
+
+### The branch bubbles pick a photo no earlier branch used
+A THC joint and a CBD joint photograph identically, so taking the first product
+of each branch put the same shot in all three bubbles. Jack confirmed the
+photos themselves are fine — you genuinely can't tell the types apart — so the
+row instead prefers, per branch, a product whose photo no earlier branch has
+already claimed. That lands on a single joint, a crossed pair and a parallel
+pair. It's a display-time choice, not a reordering of `P`.
 
 ### One photo per type family × pack count
 Jack supplied seven shots; six are used, keyed on (Flower/Infused/Trifecta ×

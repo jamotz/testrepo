@@ -253,13 +253,19 @@ def main():
             print("gen_prerolls: no photo for %s / %s (%s)" % (fam, pack, name), file=sys.stderr)
             img = "pr_flower"
 
+        # pack count drives the serving-vs-total bubble on the tile: the size is
+        # per joint, so a 2-pack of 0.5 g totals 1 g. Emitted only when there is
+        # more than one joint — a 1-pack has nothing to compare.
+        npk = int(re.match(r"(\d+)", pack).group(1))
+
         pz = ",".join('"%s":%g' % (s, p) for s, p in zip(szs, prices))
         out.append(
             ' {t:"preroll",n:"%s",b:"%s",img:"%s",pr:%g,pz:{%s},szs:["%s"],'
-            'thc:%g,cbdv:%g,%ssub:"%s",sub2:"%s",%sst:"%s",tp:"%s",f:["%s"],'
+            'thc:%g,cbdv:%g,%s%ssub:"%s",sub2:"%s",%sst:"%s",tp:"%s",f:["%s"],'
             'sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
             % (esc(name), esc(brand), img, prices[0], pz, '","'.join(szs),
                thc, cbd, ("cbd:1," if cbd >= 1 else ""),
+               ("pk:%d," % npk if npk > 1 else ""),
                br, fam, ('sub3:"%s",' % esc(sub3) if sub3 else ""),
                esc(st), terp, life,
                round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
