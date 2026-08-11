@@ -567,14 +567,19 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    .acname's size, the link at .acmail's, and the points value as the page's
    hero — same size as the name */
 .acbal .acbt{font-family:var(--head);font-weight:600;font-size:1.72rem;color:var(--brown);line-height:1.1}
+/* the points sit on the balance line, inheriting its size — no separate total */
+.acbal .acbt b{color:var(--olive);font-weight:700;margin-left:8px}
 .acbal .aclink{display:block;font-family:var(--head);font-weight:600;font-size:.82rem;color:var(--or);background:none;border:0;padding:2px 0 4px;text-align:left}
-.acbal .actot{font-family:var(--head);font-weight:600;font-size:1.28rem;color:var(--brown)}
-.acbal .actot b{color:var(--olive);font-size:1.72rem;font-weight:700;margin-left:6px}
 /* same ring and icon sizing as the account page's gear */
 .acbell{flex:none;position:relative;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1.5px solid var(--brown);color:var(--brown);margin-top:2px}
 .acbell svg{width:22px;height:22px}
 .acbell i{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:var(--or);color:#fff;font:700 10px/16px var(--head);text-align:center;font-style:normal}
-.actbl{width:100%;border-collapse:collapse;font-family:var(--head)}
+/* fixed 30/40/30 so Status is centred on the table, not on whatever width its
+   own content happened to claim */
+.actbl{width:100%;border-collapse:collapse;font-family:var(--head);table-layout:fixed}
+.actbl th:first-child,.actbl td:first-child{width:30%}
+.actbl th:nth-child(2),.actbl td:nth-child(2){width:40%}
+.actbl th:last-child,.actbl td:last-child{width:30%}
 .actbl th{font-weight:600;font-size:.88rem;color:var(--brown);padding:5px 4px;border-bottom:1.5px solid var(--brown)}
 /* headers sit over their own data: Date hard left, Total hard right, Status centred */
 .actbl th:first-child{text-align:left}
@@ -780,9 +785,8 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
         <div class="acwrap">
           <div class="acbal">
             <div>
-              <div class="acbt">Current Balance</div>
+              <div class="acbt">Current Balance <b id="acpts2">3400</b></div>
               <button class="aclink tap" data-actoast="How to Earn &amp; Use Points">How to Earn &amp; Use Points &rsaquo;</button>
-              <div class="actot">Total: <b id="acpts2">3400</b></div>
             </div>
             <span class="acbell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5.4 5.4 0 0 0-5.4 5.4c0 4.6-1.9 6.1-1.9 6.1h14.6s-1.9-1.5-1.9-6.1A5.4 5.4 0 0 0 12 3z"/><path d="M10 17.6a2.3 2.3 0 0 0 4 0"/></svg><i>!</i></span>
           </div>
@@ -1359,11 +1363,16 @@ document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener(
    and the running balance never dips below zero. Read oldest-first, it goes
    50 → 1300 → 800 → 550 → 2550 → 4016 → 4066 → 5066 → 3866 → 3400. */
 const ACLEDGER=[
- ["1/24/23","Added",1000],["1/24/23","Redeemed",-1200],["1/24/23","Expired",-466],
- ["1/22/23","Added",50],["1/20/23","Added",1466],["1/11/23","Added",2000],
- ["1/10/23","Redeemed",-250],["1/5/23","Redeemed",-500],["1/2/23","Added",1250],
- ["12/28/22","Added",50]
+ ["1/24/23",null,1000],["1/24/23","Redeemed",-1200],["1/24/23","Expired",-466],
+ ["1/22/23",null,50],["1/20/23",null,1466],["1/11/23",null,2000],
+ ["1/10/23","Redeemed",-250],["1/5/23","Redeemed",-500],["1/2/23",null,1250],
+ ["12/28/22",null,50]
 ];
+/* Points coming out carry their own reason (Redeemed / Expired). Points going
+   in are named from the amount — a 50 is the credit for leaving a review,
+   anything larger came from a purchase — so editing an amount can never leave
+   a stale label behind. */
+function acStatus(r){return r[1]||(r[2]>50?"Purchase":"Review");}
 /* derived, so the headline balance and the ledger can never disagree again */
 const ACPTS=ACLEDGER.reduce(function(a,r){return a+r[2];},0);
 const ACROWS=[["Loyalty Points","acloyalty",ACPTS],["Order History","acorders",null],
@@ -1398,7 +1407,7 @@ function renderAccount(){
     return '<button class="acrow tap" '+(r[1]?'data-acnav="'+r[1]+'"':'data-actoast="'+r[0]+'"')+'>'+
       '<b>'+r[0]+'</b>'+(r[2]!=null?'<span class="acpts">'+r[2]+'</span>':'')+ch+'</button>';}).join("");
   $("#acledger").innerHTML=ACLEDGER.map(function(r){
-    return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="'+(r[2]>0?'acup':'acdn')+'">'+
+    return '<tr><td>'+r[0]+'</td><td>'+acStatus(r)+'</td><td class="'+(r[2]>0?'acup':'acdn')+'">'+
       (r[2]>0?'+':'−')+Math.abs(r[2])+'</td></tr>';}).join("");
   $("#acpts2").textContent=ACPTS;
 

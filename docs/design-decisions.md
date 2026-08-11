@@ -358,17 +358,31 @@ the `embed_rgba` path.
 ## Account
 
 ### The Loyalty header runs on the Account header's type scale
-The two page-tops are built from the same three sizes so they read as one
-family: first line at `.acname`'s 1.72rem ("Noelle Smith" / "Current Balance"),
-second line at `.acmail`'s 0.82rem (the email / the "How to Earn & Use Points"
-link), and the **points value at name size** — it's the hero of its page the way
-the name is of its own. The gear and the notification bell share one treatment:
-a 42px ring around a 22px icon, right-aligned to the same edge.
+The two page-tops are built from the same two lines so they read as one family:
 
-The ledger's `Date` and `Total` headers are left- and right-aligned onto their
-own data (`Status` stays centred). They were centred over columns whose values
-sat hard left and hard right, so the header never lined up with what was
-beneath it.
+| | Account | Loyalty |
+|---|---|---|
+| line 1, 1.72rem | Noelle Smith | Current Balance **3400** |
+| line 2, 0.82rem | the email | How to Earn & Use Points |
+| right, 42px ring / 22px icon | gear | notification bell |
+
+The points sit **on** the balance line rather than under it — the frame drew a
+separate "Total:" row, but the number is the balance, so it inherits that
+line's size instead of restating it one line down. The gear and bell share one
+treatment; the bell used to carry its ring inside its own SVG at 36px.
+
+### The ledger's table is a fixed 30/40/30
+`Date` is left-aligned and `Total` right-aligned onto their own data, and the
+columns are fixed so `Status` is centred **on the table** rather than on
+whatever width its content happened to claim. Before, the headers were centred
+over columns whose values sat hard left and hard right, so nothing lined up.
+
+### Points-in are named from the amount
+Points coming *out* carry their own reason (Redeemed / Expired) because you
+can't infer it. Points going *in* are derived: a 50 is the credit for leaving a
+**Review**, anything larger came from a **Purchase**. So the label can't go
+stale when an amount is edited — the same reason `ACPTS` sums the ledger rather
+than being written twice.
 
 ### The circle holds a gear, and it opens Account Settings
 The ring beside Noelle's name in `ACCOUNT.png` reads as an empty circle because
