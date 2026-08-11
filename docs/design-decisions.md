@@ -389,8 +389,20 @@ screen. It became a second Redeemed, placed on 1/11 alongside that day's
 purchase, since points get spent at the till. The 1/20 purchase is 1500 rather
 than the frame's 1466 so the ledger still lands on 3400 with the expiry gone.
 
-*Still open:* the 1/10 and 1/5 redemptions have no purchase on their day. Left
-as drawn — only the replaced entry was in scope.
+Every redemption now sits under a purchase on the same day. The purchase
+amounts absorb the difference so the ledger still lands on 3400 — that's why
+1/20 reads 450 rather than the frame's 1466.
+
+### Both stores live in one `STORES` table
+The landing frame gave Redmond and Seattle **identical** hours, which would have
+made the About Us store switch look broken. Seattle's hours are authored, and
+both locations now live in a single `STORES` const that the landing cards *and*
+the About Us tiles render from — so the two screens can't drift apart. Adding a
+third shop is one row.
+
+On About Us the two locations are orange pills (solid when selected, outlined
+when not, matching `.st-btn`), and picking one swaps the address, phone and
+hours beneath them.
 
 ### Order lines state total weight, tiles state serving/total
 An order line shows the size multiplied by the pack count **and** the quantity
