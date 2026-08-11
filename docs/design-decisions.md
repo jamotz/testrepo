@@ -384,11 +384,17 @@ Noelle's orders and reviews are **authored mock history**, marked `AUTHORED` in
 the source. Every line references a real catalog product through `acFind()`, so
 renaming a product drops the line rather than leaving a phantom.
 
-### The points ledger doesn't sum to the balance — that's the frame
-`AC - LOYALTY POINTS.png` shows a 3400 balance over ten entries that total
-**−3184**. Reproduced verbatim: the frame is the source of truth and this is
-mock data, not product data. Worth fixing if the case study ever shows the
-screen full-size, but it isn't a bug in the build.
+### The points ledger is derived, not typed
+`AC - LOYALTY POINTS.png` drew a 3400 balance over ten entries totalling
+**−3184**. Jack's call: make both 3400. His dates and his Added/Redeemed/
+Expired pattern are kept; the three redemptions and the expiry were re-cut so
+the ledger lands exactly on 3400 *and* the running balance never dips below
+zero (oldest-first it runs 50 → 1300 → 800 → 550 → 2550 → 4016 → 4066 →
+5066 → 3866 → 3400).
+
+`ACPTS` is now **summed from `ACLEDGER`** rather than written twice, so the
+headline balance, the Account row and the table can't drift apart again. Edit
+the entries and the balance follows.
 
 ### Section headings are sentence case here
 The global `h1–h4` rule uppercases every heading. Jack's settings frame draws
