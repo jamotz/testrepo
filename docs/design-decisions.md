@@ -378,11 +378,28 @@ whatever width its content happened to claim. Before, the headers were centred
 over columns whose values sat hard left and hard right, so nothing lined up.
 
 ### Points-in are named from the amount
-Points coming *out* carry their own reason (Redeemed / Expired) because you
-can't infer it. Points going *in* are derived: a 50 is the credit for leaving a
-**Review**, anything larger came from a **Purchase**. So the label can't go
-stale when an amount is edited — the same reason `ACPTS` sums the ledger rather
-than being written twice.
+Points coming *out* carry their own stored reason because you can't infer it.
+Points going *in* are derived: a 50 is the credit for leaving a **Review**,
+anything larger came from a **Purchase**. So the label can't go stale when an
+amount is edited — the same reason `ACPTS` sums the ledger rather than being
+written twice.
+
+**There is no "Expired".** Jack cut it: losing points reads badly on a loyalty
+screen. It became a second Redeemed, placed on 1/11 alongside that day's
+purchase, since points get spent at the till. The 1/20 purchase is 1500 rather
+than the frame's 1466 so the ledger still lands on 3400 with the expiry gone.
+
+*Still open:* the 1/10 and 1/5 redemptions have no purchase on their day. Left
+as drawn — only the replaced entry was in scope.
+
+### Order lines state total weight, tiles state serving/total
+An order line shows the size multiplied by the pack count **and** the quantity
+ordered: a 2-pack of 0.5 g joints reads `1G`, and two of a single 0.5 g joint
+reads `1G` too. The price beside it is already a line total, so a per-unit
+weight next to a total price was a mismatched pair.
+
+Product tiles keep `servTotal`'s `0.5G / 1G` instead, because there the question
+is what one package contains — not what someone walked out with.
 
 ### The circle holds a gear, and it opens Account Settings
 The ring beside Noelle's name in `ACCOUNT.png` reads as an empty circle because

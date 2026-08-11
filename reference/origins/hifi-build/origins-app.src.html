@@ -1362,16 +1362,23 @@ document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener(
    redemptions and the expiry were re-cut so the ledger lands exactly on 3400
    and the running balance never dips below zero. Read oldest-first, it goes
    50 → 1300 → 800 → 550 → 2550 → 4016 → 4066 → 5066 → 3866 → 3400. */
+/* The 1/11 redemption sits alongside that day's purchase — points get spent at
+   the till. 1/20 is 1500 rather than Jack's 1466 so the ledger still lands on
+   3400 after the expiry came out. Oldest-first the balance runs
+   50 → 1300 → 800 → 550 → 2550 → 2050 → 3550 → 3600 → 4600 → 3400, never
+   dipping below zero. */
 const ACLEDGER=[
- ["1/24/23",null,1000],["1/24/23","Redeemed",-1200],["1/24/23","Expired",-466],
- ["1/22/23",null,50],["1/20/23",null,1466],["1/11/23",null,2000],
- ["1/10/23","Redeemed",-250],["1/5/23","Redeemed",-500],["1/2/23",null,1250],
+ ["1/24/23",null,1000],["1/24/23","Redeemed",-1200],
+ ["1/22/23",null,50],
+ ["1/20/23",null,1500],
+ ["1/11/23",null,2000],["1/11/23","Redeemed",-500],
+ ["1/10/23","Redeemed",-250],["1/5/23","Redeemed",-500],
+ ["1/2/23",null,1250],
  ["12/28/22",null,50]
 ];
-/* Points coming out carry their own reason (Redeemed / Expired). Points going
-   in are named from the amount — a 50 is the credit for leaving a review,
-   anything larger came from a purchase — so editing an amount can never leave
-   a stale label behind. */
+/* Points coming out carry their own reason; points going in are named from the
+   amount — a 50 is the credit for leaving a review, anything larger came from a
+   purchase — so editing an amount can never leave a stale label behind. */
 function acStatus(r){return r[1]||(r[2]>50?"Purchase":"Review");}
 /* derived, so the headline balance and the ledger can never disagree again */
 const ACPTS=ACLEDGER.reduce(function(a,r){return a+r[2];},0);
@@ -1383,6 +1390,18 @@ const ACROWS=[["Loyalty Points","acloyalty",ACPTS],["Order History","acorders",n
    references real catalog products by name so the pages can't drift out of
    sync with P — acFind returns null and the line is skipped if one is renamed. */
 function acFind(n,t){for(var i=0;i<P.length;i++)if(P[i].n===n&&(!t||P[i].t===t))return P[i];return null;}
+/* An order line states what actually came home: the size multiplied by the
+   pack count and the quantity ordered. A 2-pack of 0.5 g joints reads 1G, not
+   0.5G, and two of a single 0.5 g joint reads 1G too. The price beside it is
+   already a line total, so the weight matching it keeps the pair honest.
+   (Product tiles still show serving/total — there the question is what one
+   package contains, not what you bought.) */
+function acLineWeight(p,size,qty){
+  var m=/^([\d.]+)\s*(.*)$/.exec(size);
+  if(!m)return feedPill(size);
+  var tot=parseFloat(m[1])*(p.pk||1)*(qty||1);
+  return feedPill((Math.round(tot*100)/100)+" "+m[2]);
+}
 const ACORDERS=[
  {id:"#10428",date:"Jan 24, 2023",status:"Picked up",
   items:[["Blue Dream","preroll","0.5 g",2],["Blackberry Gummies","edible","100 mg",1]]},
@@ -1417,7 +1436,7 @@ function renderAccount(){
       var p=acFind(it[0],it[1]); if(!p)return "";
       var lp=linePrice(p,it[2],it[3]); tot+=lp.total;
       return '<div class="acoi"><span>'+p.n+(it[3]>1?' <b>&times;'+it[3]+'</b>':'')+
-        '</span><span>'+feedPill(it[2])+' &middot; '+money(lp.total)+'</span></div>';}).join("");
+        '</span><span>'+acLineWeight(p,it[2],it[3])+' &middot; '+money(lp.total)+'</span></div>';}).join("");
     return '<div class="acord"><div class="acoh"><span class="acon">'+o.id+
       '</span><span class="acod">'+o.date+'</span></div><span class="acost">'+o.status+'</span>'+
       lines+'<div class="acot"><span>Total <small>(tax incl.)</small></span><span>'+money(tot)+'</span></div></div>';
