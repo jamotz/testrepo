@@ -36,10 +36,20 @@ woody, hoppy, musky, peppery, skunky, tropical, berry, diesel
 
 ## Colour
 
-As supplied the icons are **#F54001** (orange) and **#44420F** (olive), which is
-close to but not the app palette — `--or` is `#F1601C` and `--olive` is
-`#555624`. They are flat single-colour shapes with clean alpha, so recolouring
-to the exact tokens is a per-pixel swap if Jack wants them to match.
+Recoloured to the app palette (Jack, 2026-08-12): feelings are **`#F1601C`**
+(`--or`) and smell/taste are **`#555624`** (`--olive`). As supplied they were
+#F54001 and #44420F — close enough to look right alone, visibly off beside real
+app chrome.
+
+The art is flat single-colour with every edge carried by the alpha channel, so
+the recolour sets RGB across the whole image and leaves alpha alone. That keeps
+the anti-aliasing exactly as drawn *and* flattens the slight per-icon noise the
+source had (each icon was a few units off from its neighbours). Every one of the
+30 files now contains exactly one RGB triple.
+
+Re-running the recolour is idempotent. If Jack ever supplies a fresh sheet,
+slice first, then recolour — the slicer keys off ink, which needs the original
+contrast.
 
 ## Naming
 
