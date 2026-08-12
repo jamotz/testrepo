@@ -30,7 +30,7 @@ def read_rows(path):
     sh = z.read(sheet).decode("utf-8"); rows = []
     for r in re.findall(r"<(?:x:)?row[^>]*>(.*?)</(?:x:)?row>", sh, re.S):
         cells = []
-        for c in re.findall(r"<(?:x:)?c[^>]*>.*?</(?:x:)?c>|<(?:x:)?c[^>]*/>", r, re.S):
+        for c in re.findall(r"<(?:x:)?c[^>]*/>|<(?:x:)?c[^>]*>.*?</(?:x:)?c>", r, re.S):
             # place each cell by its column letter — Excel omits empty cells
             # entirely, so appending in document order silently shifts columns
             ref = re.search(r'r="([A-Z]+)\d+"', c)

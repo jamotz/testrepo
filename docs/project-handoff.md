@@ -163,21 +163,23 @@ per-product assignment would still be reshuffled. Patch flower rows in place.
 
 - **The artifact URL is stable.** Republish with `url=` to keep it; a new path
   mints a new URL.
-- **Excel omits empty cells entirely.** A reader that appends cells in document
-  order silently shifts every column after a blank — this is why a sheet once
-  parsed with `Cannabinoid Combo` landing in `Effect Filter`. All the generators
-  now place cells by column letter. Copy that reader for any new sheet.
+- **Empty cells shift rows two different ways.** Excel omits some empty cells
+  entirely (a reader appending in document order shifts every column after a
+  blank — this is why a sheet once parsed with `Cannabinoid Combo` landing in
+  `Effect Filter`), *and* writes others self-closing, `<c r="E2" s="29"
+  t="str"/>`. A cell regex that tries the open-tag branch before the
+  self-closing one reads `<c …/>` as an open tag and swallows the next cell's
+  value — the same shift, but silent even when you address by column letter.
+  Address by letter **and** match the self-closing branch first. Copy the reader
+  in `gen_prerolls.py`; the other three now match it.
 - **Sectioned sheets carry `=== SECTION ===` rows.** Filter them out or they
   parse as products.
-- **The pre-roll sheet's header does not match its own columns.** Flower rows
-  put the sizes in `E` (the "Concentrate Type" column) and leave `F` empty,
-  while Infused/Trifecta rows use `E`/`F` as labelled; and *every* row keeps its
-  price in `K`, labelled "Other Cannabinoids", with `L`/`M` empty throughout.
-  Reading it by header name silently yields shifted products. `gen_prerolls.py`
-  reads by column letter *and* row family, and re-asserts the whole layout on
-  every run (`check_columns()`) — it exits non-zero rather than emit shifted
-  data, so a re-saved sheet with fixed columns will fail loudly instead of
-  quietly corrupting 50 products.
+- **Don't trust a "this sheet is malformed" note without re-checking it.** The
+  pre-roll catalog was documented for two days as having columns that didn't
+  match its own header. It doesn't — that was the self-closing-cell bug above,
+  and `gen_prerolls.py` had been written to compensate for it. Both are fixed
+  and the emitted products never changed. If a sheet looks shifted, parse it
+  with `xml.etree` first and compare before writing code around it.
 - **Don't publish with missing photos.** The build still succeeds when assets are
   gone (WARN + blank tiles) — check the WARN lines before publishing.
 - **Jack sometimes uploads an older `origins-app.src.html`** alongside his data

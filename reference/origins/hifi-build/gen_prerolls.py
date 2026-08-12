@@ -20,14 +20,20 @@ Ratios are deliberately absent: the IA reserves them for standardized-dose
 formats (edibles, tinctures, drinks) and says to display actual THC % and CBD %
 for Blend instead.
 
-*** The sheet's columns do not line up with its own header. ***
-Verified against all 50 rows (see check_columns() below, which re-runs on every
-invocation and aborts on a mismatch):
-  - Flower rows put Available Sizes in column E, leaving F empty; Infused and
-    Trifecta rows use E for Concentrate Type and F for Available Sizes.
-  - The price is in column K on every row, which the header labels "Other
-    Cannabinoids". L (Ratio) and M (WA Retail Price) are empty throughout.
-So cells are read by column letter and by row family, never by header name.
+The sheet's columns match its header exactly: E Concentrate Type (empty on
+Flower rows), F Available Sizes, K Other Cannabinoids and L Ratio (empty
+throughout), M WA Retail Price. check_columns() re-asserts that layout on every
+invocation and aborts rather than emit shifted products.
+
+This file used to claim the opposite — that Flower rows kept sizes in E and
+every row kept its price in K — and read the sheet accordingly. That was never
+true of the sheet. read_cells() matched a self-closing empty cell
+(`<c r="E2" s="29" t="str"/>`) with the *open-tag* branch of its alternation, so
+the `.*?</c>` ran on to the next cell's closing tag and E swallowed F's value.
+Every empty cell shifted the row one column left, which is what made sizes look
+like they sat in E and the price in K. The two compensations cancelled the bug
+and the emitted products were correct, so it went unnoticed. The alternation now
+tries the self-closing branch first; see read_cells().
 
 Run: python3 reference/origins/hifi-build/gen_prerolls.py
 """
@@ -38,8 +44,11 @@ XLSX = os.path.join(REPO, "reference/origins/product info/WA_PreRolls_50_Product
 
 
 def read_cells(path, sheet_idx=0):
-    """Rows as {column letter: value}. Excel omits empty cells entirely, so the
-    only safe way to address this sheet is by the letter in each cell's r=""."""
+    """Rows as {column letter: value}, addressed by the letter in each cell's
+    r="". Excel may omit an empty cell entirely *or* write it self-closing
+    (`<c r="E2" s="29" t="str"/>`), so the self-closing branch of the cell
+    pattern must come first — matched the other way round it reads as an open
+    tag and swallows the next cell's value, shifting the row one column left."""
     z = zipfile.ZipFile(path)
     names = z.namelist()
     ss = []
@@ -52,7 +61,7 @@ def read_cells(path, sheet_idx=0):
     rows = []
     for r in re.findall(r"<(?:x:)?row[^>]*>(.*?)</(?:x:)?row>", sh, re.S):
         d = {}
-        for c in re.findall(r"<(?:x:)?c[^>]*>.*?</(?:x:)?c>|<(?:x:)?c[^>]*/>", r, re.S):
+        for c in re.findall(r"<(?:x:)?c[^>]*/>|<(?:x:)?c[^>]*>.*?</(?:x:)?c>", r, re.S):
             ref = re.search(r'r="([A-Z]+)\d+"', c)
             if not ref:
                 continue
@@ -80,26 +89,29 @@ def branch(row):
 
 
 def size_cell(row):
-    """Flower keeps sizes in E (no concentrate type); everything else in F."""
-    return (row.get("E") if family(row) == "Flower" else row.get("F", "")) or ""
+    """Available Sizes is column F on every row, as the header says."""
+    return row.get("F", "") or ""
 
 
 def check_columns(rows):
-    """The sheet's header is wrong, so assert the real layout before trusting a
-    single value. Any drift and we stop rather than emit shifted products."""
+    """Assert the sheet's layout before trusting a single value. Any drift and
+    we stop rather than emit shifted products — a reader that mis-handles empty
+    cells shifts whole rows one column left and still looks plausible."""
     bad = []
     for i, r in enumerate(rows, 1):
-        fam, sz, price = family(r), size_cell(r), r.get("K", "")
+        fam, sz, price = family(r), size_cell(r), r.get("M", "")
         if not SIZE_RE.match(sz):
             bad.append("row %d: size cell %r" % (i, sz))
         if not PRICE_RE.match(price):
             bad.append("row %d: price cell %r" % (i, price))
         if len(sz.split(" / ")) != len(price.split(" / ")):
             bad.append("row %d: %d sizes but %d prices" % (i, len(sz.split(" / ")), len(price.split(" / "))))
-        if fam == "Flower" and r.get("F"):
-            bad.append("row %d: flower row has column F populated (%r)" % (i, r.get("F")))
-        if r.get("L") or r.get("M"):
-            bad.append("row %d: L/M populated — the sheet may have been re-saved with its columns fixed" % i)
+        if fam == "Flower" and r.get("E"):
+            bad.append("row %d: flower row has a concentrate type in E (%r)" % (i, r.get("E")))
+        if fam != "Flower" and not r.get("E"):
+            bad.append("row %d: %s row has no concentrate type in E" % (i, fam))
+        if r.get("K") or r.get("L"):
+            bad.append("row %d: K/L populated — expected Other Cannabinoids and Ratio to be empty" % i)
         for col in "ABCDGHIJN":
             if not r.get(col):
                 bad.append("row %d: column %s empty" % (i, col))
@@ -214,7 +226,7 @@ def sizes_and_prices(row):
     1 g, and pack count already reads in the product name ('Mimosa 20-Pack').
     """
     szs = [s.replace(" each", "").strip() for s in size_cell(row).split(" / ")]
-    prices = [float(p.strip().lstrip("$")) for p in row["K"].split(" / ")]
+    prices = [float(p.strip().lstrip("$")) for p in row["M"].split(" / ")]
     return szs, prices
 
 

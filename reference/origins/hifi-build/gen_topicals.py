@@ -36,7 +36,7 @@ def read_rows(path, sheet_idx=0):
     rows = []
     for r in re.findall(r"<(?:x:)?row[^>]*>(.*?)</(?:x:)?row>", sh, re.S):
         cells = []
-        for c in re.findall(r"<(?:x:)?c[^>]*>.*?</(?:x:)?c>|<(?:x:)?c[^>]*/>", r, re.S):
+        for c in re.findall(r"<(?:x:)?c[^>]*/>|<(?:x:)?c[^>]*>.*?</(?:x:)?c>", r, re.S):
             ref = re.search(r'r="([A-Z]+)\d+"', c)
             if ref:
                 col = 0

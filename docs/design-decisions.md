@@ -277,18 +277,35 @@ which keeps the Holistic badge meaning relief rather than "topical".
 
 ## Pre-rolls
 
-### The sheet's columns don't match its header — read by letter *and* row family
-The catalog's header labels 14 columns, but the data doesn't sit in them. Flower
-rows put sizes in `E` ("Concentrate Type") and leave `F` empty; Infused and
-Trifecta rows use `E`/`F` as labelled. Every row keeps its price in `K` ("Other
-Cannabinoids"), and `L`/`M` are empty throughout. Reading by header name yields
-50 silently shifted products.
+### The sheet was never broken — the reader was
+**Superseded 2026-08-12.** This section used to say the catalog's columns didn't
+match its own header: that Flower rows kept sizes in `E` ("Concentrate Type")
+and that every row kept its price in `K` ("Other Cannabinoids") with `L`/`M`
+empty. None of that is true of the sheet. Every column sits exactly where its
+header says — `E` Concentrate Type (empty on Flower rows), `F` Available Sizes,
+`M` WA Retail Price.
 
-`gen_prerolls.py` therefore addresses cells by column letter *and* branches on
-the row's type family, then re-asserts the entire layout on every run. If Jack
-re-saves the sheet with its columns fixed, the assertion fails loudly and the
-generator exits rather than emitting garbage. *Don't "simplify" it back to
-header-name lookup.*
+The shift was produced by the readers themselves. `read_cells()` matched cells
+with `<c[^>]*>.*?</c>|<c[^>]*/>` — open-tag branch first — so a self-closing
+empty cell (`<c r="E2" s="29" t="str"/>`) matched the *open* branch and its
+`.*?</c>` ran on to the following cell's closing tag, swallowing that cell's
+value. Every empty cell shifted its row one column left. That is exactly what
+made sizes look like they sat in `E` and the price in `K`.
+
+`gen_prerolls.py` had been written to compensate, reading sizes from `E` for
+Flower rows and the price from `K`. The two errors cancelled, so the 50 emitted
+products were correct all along and nothing looked wrong. What it cost was a
+`check_columns()` that asserted the corrupted layout and would have rejected the
+sheet if the reader were ever fixed — the guard was holding the bug in place.
+
+Both halves are now fixed: the alternation tries the self-closing branch first
+in all four generators, and `gen_prerolls.py` reads `F` and `M` as labelled.
+Verified by regenerating all four before and after — **output is byte-identical**,
+which is what proves the product data was never affected.
+
+*Two things to keep:* read cells by column letter (not document order), and keep
+`check_columns()` asserting the real layout — a reader that mishandles empty
+cells shifts whole rows and still looks plausible.
 
 ### The filter path is cannabinoid branch → type → concentrate type
 Straight from the IA: THC / CBD / Blend first, then Flower / Infused / Trifecta,

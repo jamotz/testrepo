@@ -18,9 +18,21 @@ assets/**             ──┼─→  asm_app.py  →  origins-app.html  →  A
 fontcache/oswald-*.woff2┘                    (single file, ~2.5 MB)
 ```
 
-Every generator prints rows to stdout. They all share one xlsx reader that
-places cells **by column letter** — Excel omits empty cells from the file, so
-appending in document order shifts every column after a blank.
+Every generator prints rows to stdout. `gen_edibles`, `gen_topicals` and
+`gen_prerolls` place cells **by column letter**; `gen_concentrates` still zips
+its rows against the header positionally, which is safe only because its sheet
+has no empty cells.
+
+Two distinct hazards, both of which have bitten:
+
+1. **Excel omits empty cells** from the file, so appending in document order
+   shifts every column after a blank. Hence addressing by letter.
+2. **Excel also writes empty cells self-closing** (`<c r="E2" s="29" t="str"/>`).
+   A cell pattern that tries `<c…>.*?</c>` before `<c…/>` matches the
+   self-closing tag as an *open* tag and swallows the next cell's value — the
+   same one-column shift, but silent even when you address by letter. The
+   self-closing branch must come first. This was live in all four generators
+   until 2026-08-12; see `design-decisions.md`.
 
 `asm_app.py` replaces two markers in the source:
 

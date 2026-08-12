@@ -24,7 +24,7 @@ def cell(c):
     return v.group(1) if v else ""
 rows = []
 for r in re.findall(r"<row[^>]*>(.*?)</row>", sheet, re.S):
-    rows.append([cell(c) for c in re.findall(r"<c[^>]*>.*?</c>|<c[^>]*/>", r, re.S)])
+    rows.append([cell(c) for c in re.findall(r"<c[^>]*/>|<c[^>]*>.*?</c>", r, re.S)])
 hdr, recs = rows[0], [dict(zip(rows[0], r)) for r in rows[1:]]
 
 # Kief rows 51-56, supplied by Jack as an addendum to the sheet (same columns).
