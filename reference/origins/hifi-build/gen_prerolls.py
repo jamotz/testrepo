@@ -133,11 +133,25 @@ PHOTO = {("Flower", "1-Pack"):   "pr_flower",
          ("Infused", "2-Pack"):  "pr_infused_2pk",
          ("Trifecta", "1-Pack"): "pr_trifecta"}
 
-# ---- Lifestyle, terpene, feelings and taste are not in Jack's sheet. ----
+# ---- The app's six lifestyles are the sheet's five Lifestyle values plus CBD,
+#      renamed. Jack, 2026-08-12: "Sativa, Sativa hybrid, hybrid, Indica Hybrid,
+#      Indica = Discovery, Adventurous, Social, Unwind, Nightlife in that order.
+#      CBD = Holistic." A settings toggle will later swap the two vocabularies
+#      for advanced users, so they must stay one-to-one. ----
+LIFESTYLE = {"Sativa":        "discovery",
+             "Sativa Hybrid": "adventurous",
+             "Hybrid":        "social",
+             "Indica Hybrid": "unwind",
+             "Indica":        "nightlife",
+             "CBD":           "holistic"}
+
+# ---- Terpene, feelings and taste are not in Jack's sheet. ----
 #
 # REUSED: these 12 strains already exist in the flower catalog, so the app's
-# lifestyle and terpene are taken from those rows verbatim — the same strain
-# should not read differently depending on which shelf it sits on.
+# terpene is taken from those rows verbatim — the same strain should not read
+# differently depending on which shelf it sits on. (The lifestyle half of each
+# pair is now dead: lifestyle comes from the sheet. Kept so the tables stay
+# diffable against the flower catalog.)
 REUSED = {
     "ACDC":              ("holistic",    "Earthy"),
     "Animal Face":       ("unwind",      "Earthy"),
@@ -247,14 +261,16 @@ def main():
         # not the app's `f`. Kept verbatim, including the two hybrid variants.
         st = r["H"].strip()
 
-        life, terp = STRAIN.get(strain, ("social", "Earthy"))
+        terp = STRAIN.get(strain, ("", "Earthy"))[1]
         if strain not in STRAIN:
             unknown.add(strain)
-        # Holistic rule: any product carrying a meaningful non-psychoactive
-        # cannabinoid is Holistic. 1% cleanly separates the CBD and Blend
-        # families (8.9-24.8%) from the THC family's trace 0.1%.
-        if cbd >= 1:
-            life = "holistic"
+        # Lifestyle is the sheet's own Lifestyle column, renamed (Jack,
+        # 2026-08-12) - not something derived here. The branch in column D is
+        # the sheet's cannabinoid decision, so CBD rows are Holistic and Blend
+        # rows keep their strain's lifestyle. An earlier version forced
+        # Holistic at >=1% CBD, which swept the Blend family in against the
+        # sheet's own classification.
+        life = "holistic" if br == "CBD" else LIFESTYLE[st]
 
         # sub3 carries the concentrate type on Infused and the component
         # combination on Trifecta; Trifecta's is metadata, never a bubble.

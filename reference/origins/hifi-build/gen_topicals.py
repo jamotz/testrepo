@@ -62,11 +62,13 @@ PHOTO = {"Balm / Salve": "top_balm", "Bath Soak": "top_bath", "Cream": "top_crea
          "Oil": "top_oil", "Roll-On": "top_rollon", "Stick": "top_stick",
          "Transdermal Patch": "top_patch"}
 
-# ---- effect -> lifestyle. Topicals are relief-led, so most land on Holistic;
-#      massage and intimacy read closer to Unwind and Nightlife. ----
-LIFE = {"Pain Relief": "holistic", "Recovery": "holistic", "Cooling": "holistic",
-        "Warming": "holistic", "Skincare": "holistic",
-        "Massage": "unwind", "Intimacy": "nightlife"}
+# ---- Every topical is Holistic (Jack, 2026-08-12). ----
+# Topicals aren't psychoactive - you can't get high off one unless it's a
+# mainly-THC transdermal, and the catalog has none. So the strain axis doesn't
+# apply to this shelf at all: the use case (Pain Relief, Massage, Intimacy, ...)
+# stands in for it, and that's already `sub`. An earlier version routed Massage
+# to Unwind and Intimacy to Nightlife; that's overruled.
+LIFE = {}
 
 # ---- effect -> the three Feelings chips on the product page ----
 FEEL = {"Pain Relief": ["Relief", "Calm", "Clear"], "Recovery": ["Relief", "Relaxed", "Calm"],
@@ -153,8 +155,8 @@ for i, r in enumerate(recs):
            ("thc:%g," % thc if thc else ""), extra,
            esc(effect), esc(form), esc(form),
            ('pot:"%s",' % pot if pot else ""), combo, ratio,
-           "CBD" if thc == 0 else "Hybrid", TERP.get(form, "Herbal"),
-           LIFE.get(effect, "holistic"),
+           "CBD", TERP.get(form, "Herbal"),
+           "holistic",
            round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
            '","'.join(FEEL.get(effect, ["Calm", "Relief", "Clear"])),
            esc(form), esc(r["Description"])))

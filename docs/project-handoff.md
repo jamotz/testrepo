@@ -81,8 +81,16 @@ new session can tell whether the link is behind the branch.
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
 | Drink | 1 | original mock data | reuses a gummy shot |
 
-**90 Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
+**85 Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
 by design — see `design-decisions.md`).
+
+**Lifestyle is the strain, renamed** (Jack, 2026-08-12) — Sativa/Sativa
+Hybrid/Hybrid/Indica Hybrid/Indica/CBD = Discovery/Adventurous/Social/Unwind/
+Nightlife/Holistic, one-to-one, with a settings toggle planned to swap the two
+vocabularies. Every catalog states the strain, so **no generator authors a
+lifestyle** — read the column, don't invent a rule. Four generators each had
+their own invented rule until this landed; all four disagreed with their sheets.
+Topicals are uniformly Holistic (nothing there is psychoactive).
 
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
@@ -106,7 +114,16 @@ and the open questions below, not new screens.
    they're already wired to the edible path, they just have no serving data.
 3. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
    product data is finished. They're currently mapped from form/effect/strain
-   tables in the generators.
+   tables in the generators. These are the *last* authored attributes: lifestyle
+   left that list on 2026-08-12, and no sheet states terpene or feelings.
+4. **Size as a navigation step.** Jack confirmed size is a step *and* a filter —
+   people want to see the smaller joints. Today only the filter half exists
+   (`S.size`, a drawer facet); there is no size bubble level. Note 0.75 g is
+   carried by only 14 of 50 pre-rolls, so that bubble dims often.
+5. **The settings toggle** that swaps strain names for lifestyle names. Needs
+   the 15 CBD-branch pre-rolls resolved first — their branch says CBD (Holistic)
+   while their Lifestyle column says Sativa Hybrid, so the two vocabularies
+   aren't one-to-one for those rows. See `design-decisions.md`.
 
 ---
 

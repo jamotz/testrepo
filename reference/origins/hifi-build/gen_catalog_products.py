@@ -73,6 +73,11 @@ IMG_POOL = ["fl_indica","fl_indica2","fl_indica3","fl_sativa","fl_sativa2",
             "fl_hybrid","fl_hybrid2","fl_indhyb","fl_indhyb2","fl_sathyb",
             "fl_sathyb2","fl_universal"]   # keys that exist in asm_app.py's map   # new uploads + the ones already in use
 
+# The app's six lifestyles are the catalog's six Type values renamed (Jack,
+# 2026-08-12). A settings toggle will swap the vocabularies, so they stay 1:1.
+LIFESTYLE = {"Sativa":"discovery","Sativa Hybrid":"adventurous","Hybrid":"social",
+             "Indica Hybrid":"unwind","Indica":"nightlife","CBD":"holistic"}
+
 def esc(s): return s.replace("'", "\\'")
 
 out = []
@@ -81,7 +86,16 @@ for pr in prods:
     prof = PROFILE.get(strain)
     if not prof:
         print("!! no profile for", strain); continue
-    st, life, feels, taste, terp, desc = prof
+    _st_authored, _life_authored, feels, taste, terp, desc = prof
+    # The catalog states the strain in its own "Type:" field - all six values,
+    # including a CBD Flower Options section - so it is read, not authored, and
+    # the lifestyle is that value renamed (Jack, 2026-08-12). PROFILE's first
+    # two entries are ignored: they had flattened Indica Hybrid -> Indica and
+    # Sativa Hybrid -> Sativa, and assigned lifestyles that disagreed with the
+    # doc. They stay in the table only because feelings/taste/terpene/copy sit
+    # in the same tuples.
+    st = pr["type"].strip()
+    life = LIFESTYLE[st]
     sizes = list(pr["prices"].keys())
     eighth = pr["prices"].get("3.5 g") or list(pr["prices"].values())[0]
     thc = round(rnd.uniform(0.4, 0.9), 1) if st == "CBD" else round(rnd.uniform(19.5, 29.5), 1)

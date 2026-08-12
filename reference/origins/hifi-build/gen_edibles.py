@@ -99,7 +99,11 @@ def flavour_of(name):
 LIFE_EFFECT = {"Pain Relief":"holistic","Relax":"holistic","Focus":"discovery","Unwind":"unwind",
                "Sleep":"unwind","Giggly":"social","Calm":"holistic","Chill":"unwind",
                "Creative":"discovery","Balanced":"social","Deep Sleep":"unwind","Happy":"social"}
-LIFE_STRAIN = {"Sativa":"adventurous","Hybrid":"social","Indica":"unwind"}
+# The sheet's Lifestyle column, renamed (Jack, 2026-08-12): Sativa, Sativa
+# Hybrid, Hybrid, Indica Hybrid, Indica = Discovery, Adventurous, Social,
+# Unwind, Nightlife; CBD = Holistic. This sheet only uses three of the six.
+LIFE_STRAIN = {"Sativa":"discovery","Sativa Hybrid":"adventurous","Hybrid":"social",
+               "Indica Hybrid":"unwind","Indica":"nightlife","CBD":"holistic"}
 # flavour -> the app's terpene list
 TERP = {# berries and stone fruit
         "Blackberry":"Fruity","Marionberry":"Fruity","Elderberry":"Fruity",
@@ -154,7 +158,12 @@ for i, r in enumerate(recs):
     else:
         life = LIFE_STRAIN.get(strain, "social") if cat == "THC Edibles" else LIFE_EFFECT.get(effect, "social")
     feels = FEEL_STRAIN.get(strain, ["Balanced","Calm","Giddy"]) if cat == "THC Edibles" else FEEL.get(effect, ["Balanced","Calm","Giddy"])
-    st = strain if cat == "THC Edibles" else ("CBD" if thc == 0 else "Hybrid")
+    # Only "THC Edibles" rows carry a Lifestyle on the sheet. The rest are the
+    # CBD/Dominant/Balanced categories, which are Holistic - so they read "CBD"
+    # on the strain axis, keeping strain and lifestyle one-to-one for the
+    # settings toggle. This used to fall back to "Hybrid" for any row with THC
+    # in it, which invented a strain the sheet never stated.
+    st = strain if cat == "THC Edibles" else "CBD"
     sub2 = r["Extraction"] if cat == "THC Edibles" else effect
     p = float(r["WA Retail Price (USD)"])   # real WA retail, straight from the sheet
     out.append(

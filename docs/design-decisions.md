@@ -135,10 +135,15 @@ Kept in the file as a fallback.
 
 ## Content authored vs. supplied
 
-Jack's sheets supply brand, name, category, prices and copy. The app also needs
-THC%, lifestyle, feelings, taste and terpene, which the sheets don't carry.
-Those were **authored per real strain** (Jack Herer piney/energizing, GMO
-Cookies garlicky/heavy, ACDC clear/CBD → Holistic) rather than randomized.
+Jack's sheets supply brand, name, category, prices, copy **and the strain** —
+which, since 2026-08-12, also supplies the lifestyle. What the sheets don't
+carry is feelings, taste and terpene; those are **authored per real strain**
+(Jack Herer piney, GMO Cookies garlicky/heavy) rather than randomized.
+
+*Lifestyle was on this list until 2026-08-12 and should never have been.* Every
+catalog stated the strain outright and four generators derived it anyway, each
+with a different invented rule. Before writing a table that assigns something
+per strain, check the source for a column that already says it.
 
 Explicitly authored, flagged in code:
 
@@ -241,14 +246,63 @@ from that handler, which is easy to forget when adding a new one.
 
 ---
 
-## Holistic
+## Lifestyle is the strain, renamed
 
-**Any product carrying a non-psychoactive cannabinoid is Holistic** — CBD, CBG
-or CBN. CBC isn't common enough to include and doesn't appear in the data.
-Verified against the sheet: no THC-only edible carries any of them, so the rule
-and the data agree exactly.
+**Jack, 2026-08-12:** *"Sativa, Sativa hybrid, hybrid, Indica Hybrid, Indica =
+Discovery, Adventurous, Social, Unwind, Nightlife in that order. CBD = Holistic.
+We will later create a toggle in the settings that switches them back and forth
+for advanced users."*
 
-This overrides whatever strain or effect would otherwise suggest. 65 products.
+So lifestyle and strain are **one axis with two vocabularies**, not two
+independent facts:
+
+| Strain | Lifestyle |
+|---|---|
+| Sativa | Discovery |
+| Sativa Hybrid | Adventurous |
+| Hybrid | Social |
+| Indica Hybrid | Unwind |
+| Indica | Nightlife |
+| CBD | Holistic |
+
+They must stay one-to-one or the planned toggle can't work. 218 of 234 products
+satisfy it exactly; the exceptions are listed below and each is the sheet's own
+doing, not a judgment call here.
+
+### Every catalog states this — read it, don't derive it
+Each source already carries the strain, so no generator authors a lifestyle any
+more:
+
+| Type | Column | Notes |
+|---|---|---|
+| Flower | `Type:` in the .docx | all six values, plus a "CBD Flower Options" section |
+| Pre-roll | `H` Lifestyle + `D` branch | branch (THC/CBD/Blend) is the cannabinoid decision |
+| Concentrate | `F` Type | all six values |
+| Edible | `F` Lifestyle | only on `THC Edibles` rows; the rest are Holistic by category |
+| Topical | — | all Holistic, see below |
+
+**The rules this replaced were all invented, and each one fought its sheet:**
+
+- *"Any product carrying a non-psychoactive cannabinoid is Holistic."* Applied
+  literally at a **1% CBD threshold** on pre-rolls, it swept the whole Blend
+  family into Holistic — even though the sheet files those rows under `Blend`,
+  not `CBD`. The sheet had already made that call.
+- *Concentrates* collapsed `Indica Hybrid → Indica` and `Sativa Hybrid → Sativa`
+  in an `ST` table, throwing away two of the six values the app now needs.
+- *Edibles* fell back to `st:"Hybrid"` for any row where the sheet left Lifestyle
+  blank, inventing a strain the sheet never stated. Those rows read `CBD` now.
+- *Flower* authored Indica/Sativa per strain in `PROFILE` while the .docx stated
+  the type outright — and the doc's `Indica Hybrid` / `Sativa Hybrid` had been
+  flattened to `Indica` / `Sativa`.
+
+### The 16 rows that don't satisfy the bijection
+- **15 CBD-branch pre-rolls.** The sheet's own two columns disagree: column D
+  says `CBD - Flower`, column H says `Sativa Hybrid`. Per *CBD = Holistic* the
+  branch decides the lifestyle, and column H is left as written rather than
+  overwritten with `CBD`. Harlequin therefore reads Holistic with a Sativa
+  Hybrid strain. **If the settings toggle needs a strict bijection, this is the
+  set to revisit.**
+- **1 legacy drink**, which has no catalog behind it at all (see next steps).
 
 ---
 
@@ -269,9 +323,16 @@ It holds `1:1`, `CBD`, and `CBD:CBG 4:1` in the same column. The combo is derive
 from which cannabinoids actually carry milligrams; only the numeric tail of
 Ratio is kept.
 
-### Massage and Intimacy aren't Holistic
-Every other effect is. Massage reads closer to Unwind and Intimacy to Nightlife,
-which keeps the Holistic badge meaning relief rather than "topical".
+### Every topical is Holistic
+**Jack, 2026-08-12:** you can't get high off a topical unless it's a mainly-THC
+transdermal, and the catalog has none. So the strain axis doesn't apply to this
+shelf at all — the use case (Pain Relief, Recovery, Massage, Intimacy, …) stands
+in for it, and that's already `sub`. All 38 read `st:"CBD"`, `f:["holistic"]`.
+
+This overrules the previous split, which routed Massage to Unwind and Intimacy
+to Nightlife on the reasoning that they read closer to those moods. That was a
+judgment about mood; the deciding fact is that none of these products are
+psychoactive.
 
 ---
 
@@ -331,27 +392,34 @@ drinks) and says Blend should "display actual THC % and CBD %, no ratios". So
 every pre-roll emits `thc` and `cbdv` and no `ratio` — the app's ratio count
 stays at 45.
 
-### The sheet's "Lifestyle" column is the app's *strain*, not its lifestyle
-The IA's Lifestyle metadata is Indica / Indica Hybrid / Hybrid / Sativa Hybrid /
-Sativa — that's the app's `st`, and it's kept verbatim, which adds the two
-hybrid variants to the four `st` already used. It is **not** the app's `f`
-(Discovery / Adventurous / Social / Unwind / Nightlife / Holistic), which drives
-tile border colour and the monogram badge and which the sheet doesn't supply.
+### The sheet's "Lifestyle" column is *both* — it's the strain and the lifestyle
+**Corrected 2026-08-12.** This section used to say the IA's Lifestyle metadata
+(Indica / Indica Hybrid / Hybrid / Sativa Hybrid / Sativa) was the app's `st`
+and emphatically **not** its `f`, on the grounds that the sheet doesn't supply
+lifestyle. That reading was wrong: the two are the same axis under different
+names, so the column supplies both. See *Lifestyle is the strain, renamed*.
 
-`f` is instead: **reused** from the flower catalog for the 12 strains that
-already exist there, so a strain reads the same on every shelf; and
-**authored** per real strain for the other 23, the way flower was done. Both
-tables are marked in `gen_prerolls.py`.
+`f` used to be **reused** from the flower catalog for the 12 strains that exist
+there and **authored** per real strain for the other 23. Both tables are now
+dead for lifestyle — they still carry the terpene, which the sheet genuinely
+doesn't state — and `gen_prerolls.py` reads `LIFESTYLE[st]` instead.
 
 (`S.strain` is never assigned a non-null value anywhere in the app, so the two
-new `st` values change no filter behaviour today.)
+extra `st` values still change no filter behaviour today. They will matter to
+the settings toggle.)
 
-### Blend counts as Holistic, at a 1% CBD threshold
-The standing rule — any product carrying a meaningful non-psychoactive
-cannabinoid is Holistic — applied literally. The families separate cleanly: THC
-pre-rolls are uniformly 0.1% CBD, CBD ones 10.8–24.8%, Blend 8.9–15.2%. A 1%
-threshold puts all 15 CBD and all 10 Blend products on Holistic (25 of 50) and
-excludes the THC family's trace without a special case.
+### Blend is not Holistic — the sheet already said so
+**Superseded 2026-08-12.** This used to force Holistic at a 1% CBD threshold,
+which put all 15 CBD *and* all 10 Blend products on Holistic. The threshold was
+invented and it contradicted the sheet: column D files those rows under `Blend`,
+a branch the IA defines separately from `CBD`, and Jack's rule names only CBD as
+Holistic.
+
+Blend rows now take their strain's lifestyle like any other row. Holistic on
+this shelf is exactly the 15 rows whose branch says `CBD` — no threshold, no
+inference. (The families do separate cleanly by percentage — THC 0.1%, Blend
+8.9–15.2%, CBD 10.8–24.8% — which is why the threshold looked right. It was
+still deriving a fact the sheet stated outright.)
 
 ### The branch bubbles pick a photo no earlier branch used
 A THC joint and a CBD joint photograph identically, so taking the first product

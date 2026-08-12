@@ -88,8 +88,16 @@ TERP = {"Citrus":"Citrus","Lemon":"Citrus","Lime":"Citrus","Orange":"Citrus","Tr
         "Coffee":"Earthy","Chocolate":"Earthy","Dough":"Earthy","Cookie":"Earthy",
         "Berry":"Fruity","Blueberry":"Fruity","Grape":"Fruity","Apple":"Fruity","Pear":"Fruity",
         "Fruit":"Fruity","Sweet":"Fruity","Candy":"Fruity","Cream":"Fruity"}
-ST = {"Indica":"Indica","Indica Hybrid":"Indica","Sativa":"Sativa","Sativa Hybrid":"Sativa",
-      "Hybrid":"Hybrid","CBD":"CBD"}
+# The sheet's Type column already carries all six values; it used to be
+# collapsed to four here (Indica Hybrid -> Indica, Sativa Hybrid -> Sativa),
+# which threw away the two the app now needs. Kept verbatim.
+ST = {"Indica":"Indica","Indica Hybrid":"Indica Hybrid","Sativa":"Sativa",
+      "Sativa Hybrid":"Sativa Hybrid","Hybrid":"Hybrid","CBD":"CBD"}
+
+# The app's six lifestyles are the six strain values renamed (Jack, 2026-08-12).
+# A settings toggle will swap the vocabularies, so they stay one-to-one.
+LIFESTYLE = {"Sativa":"discovery","Sativa Hybrid":"adventurous","Hybrid":"social",
+             "Indica Hybrid":"unwind","Indica":"nightlife","CBD":"holistic"}
 
 def esc(s): return s.replace('"', '\\"')
 
@@ -119,7 +127,7 @@ for i, r in enumerate(recs):
     cat, form, img = JOIN[key]
     st = ST.get(r["Type"], "Hybrid")
     effects = [r["Effect 1"], r["Effect 2"], r["Effect 3"]]
-    life = LIFE.get(effects[0], "social") if st != "CBD" else "holistic"
+    life = LIFESTYLE[st]          # the sheet's Type column, renamed
     flavors = [f.strip() for f in r["Flavor Notes"].split(",")]
     terp = next((TERP[f] for f in flavors if f in TERP), "Earthy")
     price = float(r["Price"])
