@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-08-11 · branch `claude/project-docs-review-sz8jwv`
+**Last updated:** 2026-08-12 · branch `claude/project-docs-review-4b84p7`
 **Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
@@ -20,13 +20,19 @@ root `HANDOFF.md` covers the site; this folder covers the app.
 browse that "can't find the files" is almost always looking at `main`. All work
 lives on the `claude/*` branches.
 
+**Only the branch named at the top of this file is current.** Superseded
+`claude/project-docs-review-*` branches stay on origin and look plausible —
+`sz8jwv` is 18 commits behind and predates the pre-rolls and every Account
+screen. Check this line against `git log` before trusting a branch, and update
+it here when the work moves.
+
 ---
 
 ## Start here (new session)
 
 ```bash
-git fetch origin claude/project-docs-review-sz8jwv
-git checkout -B claude/project-docs-review-sz8jwv origin/claude/project-docs-review-sz8jwv
+git fetch origin claude/project-docs-review-4b84p7
+git checkout -B claude/project-docs-review-4b84p7 origin/claude/project-docs-review-4b84p7
 python3 -m pip install --quiet Pillow          # recycles remove it
 python3 reference/origins/hifi-build/asm_app.py
 ```
