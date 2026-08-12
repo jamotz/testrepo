@@ -581,3 +581,61 @@ monitor (3.2×). The width only binds when the viewport is phone-shaped.
 A 14px name renders near 12px on a 393px iPhone. Jack accepted this rather than
 bump the design type — phones are held a foot from your face. Revisit only after
 looking at it on a real device.
+
+---
+
+## Drinks
+
+### The photo is the vessel; the colour is the flavour
+Jack supplied 11 shots: three bottle colours, four shot colours, two can sizes,
+one sorbet, one honey. One flat photo per Type would have made all 20 bottled
+drinks identical on the shelf, so the **Type picks the vessel and the flavour
+picks its colour** (`COLOR_RULES` in `gen_drinks.py`).
+
+The rules are an ordered list, first match wins, so the specific idea has to
+precede the generic one: `grapefruit` before `grape`, `blue raspberry` before
+`raspberry`, `peach` before `apple` (Apple Peach reads as a peach). All 11
+photos end up used, 9/8/3 across the red/orange/yellow bottles.
+
+**Seltzers are the exception** — the two cans differ by *size*, not colour, so
+size picks them. **Bottles have no blue**, so a Blueberry Lemonade bottle falls
+back to red and reads with the other berries rather than borrowing a shot glass.
+
+### A drink's size is a volume, so the tile states the dose instead
+`servTotal` derived an edible's total from its size (`100 mg` is the package).
+A drink's size is `12 oz` — a volume — so the same code compared milligrams to
+ounces and would have rendered `10 mg / 12 oz`. Drinks now carry `tot` (the
+package milligrams) explicitly and the tile reads `10mg / 100mg`.
+
+Nothing is lost: every drink names its volume in the product name ("Blackberry
+Lemonade 12 oz"), so the slot is free to carry the dose.
+
+### THC is milligrams here, and `cannList` assumes percent
+`cannList()` renders `p.thc` as `"%"` unless a potency string is present, so a
+100 mg drink read **"THC 100%"**. Drinks emit `pot:"100 mg THC"` the way edibles
+do. *If you add another mg-dosed type, emit `pot` or it will claim to be 100%
+THC.*
+
+### Two rows are still on the sheet's old layout
+The catalog gained a `Serving Size` column at H, which pushed everything after
+it one to the right. The last two rows (Peach Lemonade 12 oz, Blueberry Lemonade
+12 oz) were appended before that and never moved, so for them H is THC mg, K is
+the price and L is the source note. `LEGACY_MAP` in `gen_drinks.py` reads them
+correctly and the generator names them on stderr on every run.
+
+Every value is recoverable **except the serving size, which those rows simply
+don't have** — so those two products state no dose rather than being given an
+invented one. Add the serving size to the sheet and the fallback stops firing.
+
+### Which drinks file to use
+There are two 50-row drinks catalogs. Use
+`..._Source_Inspired_Unique_Descriptions.xlsx`. The other one,
+`..._Final_CBG_Fix.xlsx`, is **identical except for the Description and Source
+columns** — the CBG data it is named for is the same in both — and 17 of its 50
+descriptions are truncated mid-word.
+
+### Not yet done: the bubble path
+`sub` carries THC/CBD/Blend and `sub2` the Type, matching the IA, but
+`renderList` has no drinks branch so the shelf renders as a flat grid. The
+first level is the same THC/CBD/Blend the pre-rolls use, so it can share that
+bubble component.

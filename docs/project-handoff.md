@@ -37,7 +37,7 @@ python3 -m pip install --quiet Pillow          # recycles remove it
 python3 reference/origins/hifi-build/asm_app.py
 ```
 
-The build prints `wrote <path> (NNNN KB); imgs=101; markers left=0` and a `WARN`
+The build prints `wrote <path> (NNNN KB); imgs=113; markers left=0` and a `WARN`
 line for any asset it can't resolve. **Containers are ephemeral — commit and
 push often.**
 
@@ -59,8 +59,7 @@ fetchable despite the claude.ai login, and it saves the full HTML locally so
 you can diff the live body against your build before deciding. Only use
 `force:true` if Jack says to discard the other version.
 
-**Drinks are not in the published build.** The catalog, the IA and all 11
-photos are in the repo; nothing is wired up yet.
+**The published link is behind again** — it predates drinks. Republish.
 
 ---
 
@@ -80,18 +79,18 @@ photos are in the repo; nothing is wired up yet.
 
 ## Current state
 
-**234 products** across six types:
+**282 products** across six types:
 
 | Type | Count | Source | Photos |
 |---|---:|---|---|
-| Flower | 35 | `Flower Product Catalog.docx` + 5 legacy mock rows | strain-based ✓ |
+| Flower | 34 | `Flower Product Catalog.docx` (30) + 4 legacy mock rows | strain-based ✓ |
 | Concentrate | 60 | `WA_Mock_Concentrate_Inventory_50…xlsx` + 10 added rows | per consistency ✓ |
 | Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
-| Pre-roll | 50 | `WA_PreRolls_50_Product_List.xlsx` | by type + pack count ✓ |
+| Pre-roll | 50 | `WA_PreRolls_50_Product_List_CBD_Lifestyle_Fixed.xlsx` | by type + pack count ✓ |
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
-| Drink | 1 | original mock data | reuses a gummy shot |
+| Drink | 50 | `WA_Drinks_50_Product_List_Source_Inspired_Unique_Descriptions.xlsx` | by type + flavour colour ✓ |
 
-**85 Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
+**92 Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
 by design — see `design-decisions.md`).
 
 **Lifestyle is the strain, renamed** (Jack, 2026-08-12) — Sativa/Sativa
@@ -117,23 +116,21 @@ and the open questions below, not new screens.
 
 1. **General touch-ups** — Jack is doing a pass across the app. The Account
    screens have been through one round already (see `design-decisions.md`).
-2. **Drinks** — the edibles IA says drinks are "intentionally excluded and will
-   be implemented separately." The app still has 1 legacy drink and a Drinks
-   category circle, and no sheet behind either. Needs a catalog like the others.
-   Once it has one, the tile's serving/total slot picks drinks up automatically —
-   they're already wired to the edible path, they just have no serving data.
+2. **Drinks — the bubble path.** The shelf is built (50 products, own IA, 11
+   photos) but `renderList` has no drinks branch, so it renders a flat grid
+   instead of the THC/CBD/Blend → type drill-in that pre-rolls get. The data is
+   already there: `sub` carries the branch and `sub2` the type.
 3. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
    product data is finished. They're currently mapped from form/effect/strain
    tables in the generators. These are the *last* authored attributes: lifestyle
    left that list on 2026-08-12, and no sheet states terpene or feelings.
-4. **Size as a navigation step.** Jack confirmed size is a step *and* a filter —
-   people want to see the smaller joints. Today only the filter half exists
-   (`S.size`, a drawer facet); there is no size bubble level. Note 0.75 g is
-   carried by only 14 of 50 pre-rolls, so that bubble dims often.
-5. **The settings toggle** that swaps strain names for lifestyle names. Needs
-   the 15 CBD-branch pre-rolls resolved first — their branch says CBD (Holistic)
-   while their Lifestyle column says Sativa Hybrid, so the two vocabularies
-   aren't one-to-one for those rows. See `design-decisions.md`.
+4. **The settings toggle** that swaps strain names for lifestyle names. Now
+   unblocked: Jack re-cut the pre-roll sheet so all **282 products** satisfy
+   strain ↔ lifestyle, making the swap a label lookup rather than a data
+   migration. Slated for the touch-up pass.
+
+*Size as a navigation step was considered and rejected* (Jack, 2026-08-12):
+size lives in the product tile, not the filter path. Don't re-propose it.
 
 ---
 

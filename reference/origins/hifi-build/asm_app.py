@@ -158,6 +158,22 @@ M = {
  "pr_infused_2pk": "product assets/Prerolls/Pre-roll infused 2-pack Background Removed.png",
  "pr_trifecta": "product assets/Prerolls/Pre-roll Trifecta Single Background Removed.png",
 
+ # drinks — the vessel comes from the product's Type, the colour from its
+ # flavour (see gen_drinks.py). "drink" is the generic key the category circle
+ # uses; it shares the orange bottle.
+ "drink": "product assets/Drinks/Orange 12oz Bottle.png",
+ "dr_bottle_red": "product assets/Drinks/Red 12oz Bottle.png",
+ "dr_bottle_orange": "product assets/Drinks/Orange 12oz Bottle.png",
+ "dr_bottle_yellow": "product assets/Drinks/Yellow 12oz Bottle.png",
+ "dr_shot_blue": "product assets/Drinks/Blue Shot.png",
+ "dr_shot_orange": "product assets/Drinks/Orange Shot.png",
+ "dr_shot_red": "product assets/Drinks/Red Shot.png",
+ "dr_shot_yellow": "product assets/Drinks/Yellow Shot.png",
+ "dr_can_12": "product assets/Drinks/12oz Can.png",
+ "dr_can_16": "product assets/Drinks/16oz Can.png",
+ "dr_sorbet": "product assets/Drinks/Sorbet.png",
+ "dr_honey": "product assets/Drinks/Honey.png",
+
  # edible + flower photos (Jack's uploads)
  "top_balm": "product assets/Topicals/Balm:Salve.png",
  "top_bath": "product assets/Topicals/Bath Salts.png",
@@ -396,6 +412,19 @@ NOBG = {
     "pr_infused": "Prerolls/Pre-roll infused Single Background Removed.png",
     "pr_infused_2pk": "Prerolls/Pre-roll infused 2-pack Background Removed.png",
     "pr_trifecta": "Prerolls/Pre-roll Trifecta Single Background Removed.png",
+    # drinks — all 11 of Jack's shots carry real alpha, so they take embed_rgba
+    "drink": "Drinks/Orange 12oz Bottle.png",
+    "dr_bottle_red": "Drinks/Red 12oz Bottle.png",
+    "dr_bottle_orange": "Drinks/Orange 12oz Bottle.png",
+    "dr_bottle_yellow": "Drinks/Yellow 12oz Bottle.png",
+    "dr_shot_blue": "Drinks/Blue Shot.png",
+    "dr_shot_orange": "Drinks/Orange Shot.png",
+    "dr_shot_red": "Drinks/Red Shot.png",
+    "dr_shot_yellow": "Drinks/Yellow Shot.png",
+    "dr_can_12": "Drinks/12oz Can.png",
+    "dr_can_16": "Drinks/16oz Can.png",
+    "dr_sorbet": "Drinks/Sorbet.png",
+    "dr_honey": "Drinks/Honey.png",
     # extra bud photos, mixed in across the catalog flower products
 }
 def nobg_file(k):
