@@ -48,9 +48,19 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`9130b3f`** — pre-rolls, serving/total, all seven Account screens, and the
-Account polish pass. Bump this line whenever you republish; it's the only way a
-new session can tell whether the link is behind the branch.
+`1e03a07`** (published 2026-08-12) — the whole lifestyle-from-catalogs pass,
+the xlsx reader fix, and every Account screen. Bump this line whenever you
+republish; it's the only way a new session can tell whether the link is behind
+the branch.
+
+If the publish is refused with *"hasn't viewed the latest version"*, another
+session republished since. `WebFetch` the artifact URL first — it **is**
+fetchable despite the claude.ai login, and it saves the full HTML locally so
+you can diff the live body against your build before deciding. Only use
+`force:true` if Jack says to discard the other version.
+
+**Drinks are not in the published build.** The catalog, the IA and all 11
+photos are in the repo; nothing is wired up yet.
 
 ---
 
