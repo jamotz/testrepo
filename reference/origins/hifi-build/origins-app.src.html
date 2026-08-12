@@ -621,8 +621,11 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .acstores{display:flex;gap:10px;margin:0 0 13px}
 .acstore{flex:1;background:none;border:1.5px solid var(--or);color:var(--or);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.84rem;padding:10px 6px}
 .acstore.on{background:var(--or);color:#fff}
-.acabout .acaddr{font-size:.95rem;line-height:1.5;color:var(--ink)}
+.acabout .acsub{text-align:center}
+.acabout .acaddr{font-size:.95rem;line-height:1.5;color:var(--ink);text-align:center}
 .acabout .acphone{display:block;font-family:var(--head);font-weight:600;font-size:.86rem;color:var(--olive);margin-top:5px}
+.accopy{display:inline-flex;align-items:center;gap:6px;margin-top:9px;background:none;border:0;padding:4px 6px;font-family:var(--head);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--or)}
+.accopy svg{width:15px;height:15px;flex:none}
 .acabout p{font-size:.95rem;line-height:1.5;color:var(--ink);margin:0 0 13px}
 .acabout .acsub{font-family:var(--head);font-weight:600;font-size:1.06rem;color:var(--brown);margin:20px 0 7px;text-transform:none}
 .acabout .achours div{display:flex;justify-content:space-between;font-family:var(--head);font-size:.92rem;color:var(--ink);padding:3px 0}
@@ -854,6 +857,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
           the first-time buyer and the daily regular can both find their footing.</p>
           <h3 class="acsub">Our shops</h3>
           <div class="acstores" id="acstores"></div>
+          <h3 class="acsub">Address</h3>
           <div class="acaddr" id="acaddr"></div>
           <h3 class="acsub">Hours</h3>
           <div class="achours" id="achours"></div>
@@ -1411,9 +1415,31 @@ function renderStores(){
   $("#acstores").innerHTML=STORES.map(function(s,i){
     return '<button class="acstore tap'+(i===acStore?" on":"")+'" data-acstore="'+i+'">'+s.city+'</button>';}).join("");
   var s=STORES[acStore];
-  $("#acaddr").innerHTML=s.addr+'<span class="acphone">'+s.phone+'</span>';
+  $("#acaddr").innerHTML=s.addr+'<span class="acphone">'+s.phone+'</span>'+
+    '<button class="accopy tap" data-accopy><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+
+    '<rect x="9" y="9" width="11" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy address</button>';
   $("#achours").innerHTML=s.hours.map(function(h){
     return '<div><span>'+h[0]+'</span><span>'+h[1]+'</span></div>';}).join("");
+}
+/* navigator.clipboard needs a clipboard-write permission the artifact's iframe
+   may not carry, so fall back to the execCommand + offscreen textarea trick.
+   The copied string is derived from the same addr field the page renders — the
+   <br>s become spaces, so there's no second copy of the address to keep in sync. */
+function acCopyAddr(){
+  var text=STORES[acStore].addr.replace(/<br>/g," ").replace(/\s+/g," ").trim();
+  var ok=function(){toast("Address copied");};
+  var fallback=function(){
+    var ta=document.createElement("textarea");
+    ta.value=text;ta.setAttribute("readonly","");
+    ta.style.cssText="position:fixed;top:0;left:0;width:1px;height:1px;opacity:0";
+    document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,text.length);
+    var done=false;try{done=document.execCommand("copy");}catch(e){}
+    document.body.removeChild(ta);
+    toast(done?"Address copied":text);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(text).then(ok,fallback);
+  else fallback();
 }
 function acFind(n,t){for(var i=0;i<P.length;i++)if(P[i].n===n&&(!t||P[i].t===t))return P[i];return null;}
 /* An order line states what actually came home: the size multiplied by the
@@ -1498,6 +1524,7 @@ document.querySelectorAll('.s[data-s="account"],.s[data-s="acloyalty"],.s[data-s
     var n=e.target.closest("[data-acnav]");   if(n){nav(n.dataset.acnav);return;}
     var c=e.target.closest("[data-acchk]");   if(c){c.classList.toggle("on");return;}
     var st=e.target.closest("[data-acstore]");if(st){acStore=+st.dataset.acstore;renderStores();return;}
+    var cp=e.target.closest("[data-accopy]"); if(cp){acCopyAddr();return;}
     var t=e.target.closest("[data-actoast]"); if(t){toast(t.dataset.actoast);}
   });
 });

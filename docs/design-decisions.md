@@ -402,7 +402,16 @@ third shop is one row.
 
 On About Us the two locations are orange pills (solid when selected, outlined
 when not, matching `.st-btn`), and picking one swaps the address, phone and
-hours beneath them.
+hours beneath them. The three section headings (Our shops / Address / Hours)
+and the address block are centred; the hours keep their day-left, time-right
+split.
+
+**Copy address** derives its string from the same `addr` field the page renders
+— the `<br>`s become spaces — so there is no second copy of the address to keep
+in sync, and it always copies whichever shop is selected. `navigator.clipboard`
+needs a `clipboard-write` permission the artifact's iframe may not carry, so it
+falls back to an offscreen textarea plus `execCommand`, and the toast reports
+which happened.
 
 ### Order lines state total weight, tiles state serving/total
 An order line shows the size multiplied by the pack count **and** the quantity
