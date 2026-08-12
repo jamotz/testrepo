@@ -201,10 +201,29 @@ acsettings · acorders · acrecs · acreviews · acabout`
 
 The seven Account screens all map to the `account` tab via `TABMAP`, so the tab
 stays lit while drilling into Loyalty Points or Settings. Their markup is static
-(it mirrors the frames one-for-one); only the row list and the points ledger are
-rendered from data, by `renderAccount()`. Clicks are delegated from the three
-sections rather than the document, so the dynamic rows work without a global
-handler. Everything is namespaced `ac*` — `.s` is a global `display:none`.
+(it mirrors the frames one-for-one); the row list, the points ledger, the order
+cards, the recommendations, the reviews and the store block are rendered from
+data by `renderAccount()` and `renderStores()`. Clicks are delegated from the
+seven sections rather than the document, so the dynamic rows work without a
+global handler. Everything is namespaced `ac*` — `.s` is a global
+`display:none`.
+
+### Account data is derived, not restated
+
+Nothing on these screens is written down twice. Each of these exists so that
+editing one number can't leave a stale label or total somewhere else:
+
+| Helper | Derives |
+|---|---|
+| `ACPTS` | the headline balance, summed from `ACLEDGER` |
+| `acStatus(row)` | Purchase / Review from a positive amount; negatives keep their stored reason |
+| `acLineWeight(p,size,qty)` | an order line's total weight — size × `pk` × quantity |
+| `acFind(name,type)` | resolves order and review rows against `P`, so a renamed product drops the line rather than leaving a phantom |
+| `acCopyAddr()` | the copyable address, from the rendered `addr` with `<br>`s flattened |
+
+`STORES` holds both shop locations once. The landing store cards *and* the
+About Us tiles render their address and hours from it, so the two screens can't
+disagree; adding a third shop is one row.
 
 ---
 
