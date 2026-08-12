@@ -3,7 +3,8 @@
 
 Source (reference/origins/product info/):
   - WA_PreRolls_IA_Condensed.xlsx    the filter IA + the rules sheet
-  - WA_PreRolls_50_Product_List.xlsx sheet 1: the 50 products
+  - WA_PreRolls_50_Product_List_CBD_Lifestyle_Fixed.xlsx
+                                     sheet 1: the 50 products
                                      sheet 2: the catalog rules
 
 Filter path (from the IA): Pre-Rolls -> cannabinoid branch (THC / CBD / Blend)
@@ -40,7 +41,8 @@ Run: python3 reference/origins/hifi-build/gen_prerolls.py
 import os, re, sys, zipfile
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-XLSX = os.path.join(REPO, "reference/origins/product info/WA_PreRolls_50_Product_List.xlsx")
+XLSX = os.path.join(REPO, "reference/origins/product info/"
+                    "WA_PreRolls_50_Product_List_CBD_Lifestyle_Fixed.xlsx")
 
 
 def read_cells(path, sheet_idx=0):
@@ -115,6 +117,11 @@ def check_columns(rows):
         for col in "ABCDGHIJN":
             if not r.get(col):
                 bad.append("row %d: column %s empty" % (i, col))
+        # A re-export once clipped every Description to 80 chars ending in an
+        # ellipsis. It parses fine and reads plausibly, so nothing else would
+        # have caught it - the copy just silently gets worse.
+        if r.get("N", "").rstrip().endswith(("...", "…")):
+            bad.append("row %d: description is truncated (%r)" % (i, r["N"][-40:]))
     if bad:
         print("gen_prerolls: sheet layout changed — refusing to emit shifted data:",
               file=sys.stderr)
@@ -264,13 +271,12 @@ def main():
         terp = STRAIN.get(strain, ("", "Earthy"))[1]
         if strain not in STRAIN:
             unknown.add(strain)
-        # Lifestyle is the sheet's own Lifestyle column, renamed (Jack,
-        # 2026-08-12) - not something derived here. The branch in column D is
-        # the sheet's cannabinoid decision, so CBD rows are Holistic and Blend
-        # rows keep their strain's lifestyle. An earlier version forced
-        # Holistic at >=1% CBD, which swept the Blend family in against the
-        # sheet's own classification.
-        life = "holistic" if br == "CBD" else LIFESTYLE[st]
+        # Lifestyle is the sheet's own Lifestyle column, renamed - no
+        # conditionals. Jack re-cut the sheet on 2026-08-12 so the 15 CBD-branch
+        # rows read "CBD" in column H rather than their botanical strain, which
+        # removed the last special case here (branch == "CBD" -> holistic) and
+        # makes strain <-> lifestyle a clean bijection.
+        life = LIFESTYLE[st]
 
         # sub3 carries the concentrate type on Infused and the component
         # combination on Trifecta; Trifecta's is metadata, never a bubble.
