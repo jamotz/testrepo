@@ -42,7 +42,9 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`339010f`** (pre-rolls, serving/total, all seven Account screens).
+`9130b3f`** — pre-rolls, serving/total, all seven Account screens, and the
+Account polish pass. Bump this line whenever you republish; it's the only way a
+new session can tell whether the link is behind the branch.
 
 ---
 
@@ -175,6 +177,15 @@ per-product assignment would still be reshuffled. Patch flower rows in place.
 - **Jack sometimes uploads an older `origins-app.src.html`** alongside his data
   files via the GitHub web UI, which silently reverts work. Diff before rebasing;
   it happened once and was caught.
+- **Copy address can't be verified from a build container.** The About Us copy
+  control tries `navigator.clipboard` and falls back to an offscreen textarea +
+  `execCommand`; both branches are tested locally (including with the Clipboard
+  API removed and with `writeText` rejecting), but which one the *published*
+  artifact takes depends on the iframe's permission policy, which isn't visible
+  from outside the frame. The published page can't be clicked from here — it's
+  behind claude.ai auth and WebFetch only reads HTML. Ask Jack to tap it once.
+  If the toast shows the address instead of "Address copied", both branches were
+  blocked and the fallback is to render the address in a selectable `<input>`.
 - **Git drops empty directories.** Every asset folder has a `README.md` so the
   structure survives deleting its photos (learned the hard way with `Rosin/`).
 - **`.s` and `.empty` are global CSS classes** — `.s{display:none}` in
