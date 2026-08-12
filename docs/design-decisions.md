@@ -362,7 +362,7 @@ The two page-tops are built from the same two lines so they read as one family:
 
 | | Account | Loyalty |
 |---|---|---|
-| line 1, 1.72rem | Noelle Smith | Current Balance **3400** |
+| line 1, 1.72rem | Noelle Smith | Current Balance: **3400** |
 | line 2, 0.82rem | the email | How to Earn & Use Points |
 | right, 42px ring / 22px icon | gear | notification bell |
 
