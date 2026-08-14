@@ -728,3 +728,30 @@ could not survive the move to terpene-driven chips.
 Kief and RSO rows, or the two categories come out of `CONC`. This is a visible
 gap, not a silent one.
 
+### Flower is regenerated from a sheet now, and nothing about it is authored
+The "Final pt2" flower catalog added **THC %, CBD % and Grow Method** to the
+columns the first Final sheet had. Those were the three fields the old generator
+invented with a seeded RNG because the original `.docx` carried none of them.
+All three inventions are gone; every value on a flower tile comes from the
+sheet or from the terpene mapping.
+
+**The "don't regenerate flower" warning is retired.** It existed because photos
+were drawn sequentially from a shuffled pool, so inserting one product
+reshuffled the photo of every product after it. Photos are now chosen by
+hashing the strain name against a pool *scoped to that strain's type* — an
+Indica draws from the indica shots. A strain keeps its photo across rebuilds,
+and row order no longer matters. Star rating and review count are derived the
+same way; they are the only two display fields no sheet supplies.
+
+Flower went 34 -> 50 products. The four legacy mock rows are gone with the
+rest — they predated every catalog and carried no terpenes.
+
+### The home-page deals have no products behind them
+`sale:1` came off the four legacy mock flowers, and the Final sheet has no deal
+column, so **nothing is flagged**. `renderHome()` now skips a deal section whose
+row would be empty rather than printing a "2 For $50" banner above nothing.
+
+This is deliberately visible, not papered over: the two flower deal sections
+simply don't appear until Jack nominates the products. The 30% Off brand row is
+unaffected — it renders from a brand list, not from `sale`.
+

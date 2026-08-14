@@ -1,124 +1,133 @@
-import re, json, random, zipfile, sys
+#!/usr/bin/env python3
+"""Turn Jack's flower catalog into the app's flower products.
 
-DOCX = "/home/user/testrepo/reference/origins/product info/Flower Product Catalog.docx"
-x = zipfile.ZipFile(DOCX).read("word/document.xml").decode("utf-8")
-paras = re.findall(r"<w:p[ >].*?</w:p>", x, re.S)
-lines = []
+Source: reference/origins/product info/Flower Final pt2 Product List for WA.xlsx
+
+  A Brand  B Strain  C Type  D THC %  E CBD %  F Grow Method
+  G 1g  H 3.5g  I 7g  J 14g  K 28g   (prices)
+  L/M/N Terp 1-3   O Description
+
+Everything on a flower tile now comes from that sheet. **Nothing here is
+authored.** The previous version of this file invented THC %, CBD % and
+Indoor/Outdoor with a seeded RNG because the old .docx carried none of them;
+the "pt2" sheet supplies all three, so those three inventions are gone.
+
+Photos are the one thing the sheet doesn't name, and they're chosen
+*deterministically from the strain name* rather than by drawing from a shuffled
+pool. Two reasons: a strain keeps the same photo across rebuilds, and inserting
+or removing a product no longer reshuffles the photo of every product after it.
+That sequential-RNG behaviour is why this generator used to carry a "don't
+regenerate flower" warning. It no longer does.
+
+Run: python3 reference/origins/hifi-build/gen_catalog_products.py
+"""
+import hashlib, json, os, re, sys
+
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+XLSX = os.path.join(REPO, "reference/origins/product info/Flower Final pt2 Product List for WA.xlsx")
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from xlsxread import read_cells
+from terpmap import pairs as terp_pairs, check as terp_check
+from html import unescape as unesc
+
+# The app's six lifestyles are the catalog's six Type values renamed.
+LIFESTYLE = {"Sativa": "discovery", "Sativa Hybrid": "adventurous", "Hybrid": "social",
+             "Indica Hybrid": "unwind", "Indica": "nightlife", "CBD": "holistic"}
+
+# ---- photo per strain type. Picked by hashing the strain name, so it is
+#      stable across rebuilds and independent of row order. ----
+POOL = {"Indica":        ["fl_indica", "fl_indica2", "fl_indica3"],
+        "Indica Hybrid": ["fl_indhyb", "fl_indhyb2"],
+        "Hybrid":        ["fl_hybrid", "fl_hybrid2"],
+        "Sativa Hybrid": ["fl_sathyb", "fl_sathyb2"],
+        "Sativa":        ["fl_sativa", "fl_sativa2"],
+        "CBD":           ["fl_universal", "fl_hybrid2"]}
+
+SIZE_COLS = [("G", "1 g"), ("H", "3.5 g"), ("I", "7 g"), ("J", "14 g"), ("K", "28 g")]
+
+
+def photo(strain, st):
+    pool = POOL.get(st) or POOL["Hybrid"]
+    h = int(hashlib.md5(strain.encode("utf-8")).hexdigest()[:8], 16)
+    return pool[h % len(pool)]
+
+
+def stable(strain, lo, hi):
+    """A stable pseudo-value per strain, for the two display-only fields the
+    catalog has never carried: star rating and review count."""
+    h = int(hashlib.md5(("r" + strain).encode("utf-8")).hexdigest()[8:16], 16)
+    return lo + h % (hi - lo + 1)
+
+
+def esc(s):
+    return unesc(s).replace('"', '\\"').replace("&", "&amp;")
+
+
 def strip_cbd(name):
-    """Holistic products already say CBD three ways — the green border, the
-    Holistic badge and the potency chip. The name doesn't need to as well."""
+    """The tile already says CBD three ways - green border, Holistic badge, CBD
+    chip - so the name doesn't need to as well."""
     return re.sub(r"\s*\bCBD\b\s*", " ", name).strip()
 
-for p in paras:
-    t = "".join(re.findall(r"<w:t[^>]*>(.*?)</w:t>", p, re.S))
-    t = t.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").strip()
-    if t:
-        lines.append(t)
 
-# parse: "Brand: XStrain: YType: ZSizes & Prices:" followed by "<size> — $<price>" lines
-prods = []
-cur = None
-for ln in lines:
-    m = re.match(r"Brand:\s*(.+?)Strain:\s*(.+?)Type:\s*(.+?)Sizes & Prices:", ln)
-    if m:
-        if cur: prods.append(cur)
-        cur = {"brand": m.group(1).strip(), "strain": m.group(2).strip(),
-               "type": m.group(3).strip(), "prices": {}}
-        continue
-    m2 = re.match(r"([\d.]+g)\s*[—-]\s*\$([\d.]+)", ln)
-    if m2 and cur:
-        size = m2.group(1).replace("g", " g")
-        cur["prices"][size] = float(m2.group(2))
-if cur: prods.append(cur)
+def check(rows):
+    bad = []
+    for i, r in enumerate(rows, 3):          # sheet row 1 is a title, 2 the header
+        if r.get("C", "").strip() not in LIFESTYLE:
+            bad.append("row %d: Type %r" % (i, r.get("C")))
+        if r.get("F", "").strip() not in ("Indoor", "Outdoor"):
+            bad.append("row %d: Grow Method %r" % (i, r.get("F")))
+        for col, label in (("D", "THC %"), ("E", "CBD %")):
+            try:
+                float(r.get(col, ""))
+            except ValueError:
+                bad.append("row %d: %s %r" % (i, label, r.get(col)))
+        if not any(r.get(c) for c, _ in SIZE_COLS):
+            bad.append("row %d: no prices at all" % i)
+        if not r.get("H"):
+            bad.append("row %d: no 3.5 g price - `pr` is the eighth" % i)
+        if r.get("O", "").rstrip().endswith(("...", "…")):
+            bad.append("row %d: description is truncated (%r)" % (i, r["O"][-38:]))
+        for col in "ABCDEFO":
+            if not r.get(col):
+                bad.append("row %d: column %s empty" % (i, col))
+    if bad:
+        print("gen_catalog_products: sheet layout changed - refusing to emit:", file=sys.stderr)
+        for b in bad[:20]:
+            print("   " + b, file=sys.stderr)
+        sys.exit(1)
 
-print("parsed", len(prods), "products", file=sys.stderr)
 
-# --- supporting attributes. Catalog gives brand/strain/type/prices only, so the
-# rest is authored from each real strain's well-known profile (doc is mock data).
-PROFILE = {
- "Power":            ("Indica","unwind",   ["Relaxed","Heavy","Calm"],      ["Earthy","Skunky","Herbal"], "Earthy",  "A heavy indica-leaning cut with a deep earthy nose and full-body ease."),
- "Purple Ripple":    ("Indica","unwind",   ["Sleepy","Relaxed","Giddy"],    ["Fruity","Flowery","Herbal"],"Lavender","Grape-forward purple genetics with a soft floral finish."),
- "Trop Cherry":      ("Sativa","social",   ["Uplifted","Giddy","Social"],   ["Fruity","Citrus","Creamy"], "Citrus",  "Tropical cherry candy on the nose, bright and conversational."),
- "Red Velvet":       ("Hybrid","social",   ["Balanced","Giddy","Relaxed"],  ["Creamy","Fruity","Nutty"],  "Fruity",  "Dessert-leaning hybrid — smooth, sweet and even-keeled."),
- "Gelato Cake":      ("Indica","unwind",   ["Relaxed","Heavy","Hungry"],    ["Creamy","Fruity","Earthy"], "Fruity",  "Rich gelato dessert genetics with a weighty, cozy finish."),
- "Jack Herer":       ("Sativa","adventurous",["Focused","Energized","Clear"],["Pine","Peppery","Citrus"], "Piney",   "The classic daytime sativa — piney, sharp and clear-headed."),
- "Blue Dream":       ("Hybrid","discovery",["Uplifted","Creative","Balanced"],["Fruity","Flowery","Herbal"],"Fruity", "Blueberry-sweet hybrid, gentle and famously easy to enjoy."),
- "Gas Face":         ("Indica","nightlife",["Heavy","Relaxed","Euphoric"],  ["Diesel","Skunky","Peppery"],"Pepper",  "Loud, gassy indica built for the end of the night."),
- "Permanent Marker": ("Hybrid","nightlife",["Euphoric","Giddy","Relaxed"],  ["Diesel","Creamy","Peppery"],"Pepper",  "Sharp solvent-y nose over a creamy exhale. A modern favorite."),
- "Zour Beltz":       ("Hybrid","social",   ["Giddy","Uplifted","Social"],   ["Citrus","Fruity","Diesel"], "Citrus",  "Sour candy terps with a lively, social lift."),
- "GMO BX":           ("Indica","unwind",   ["Heavy","Relaxed","Hungry"],    ["Skunky","Diesel","Earthy"], "Earthy",  "Savory garlic-and-diesel GMO backcross. Deeply sedating."),
- "Ginger Tea":       ("Sativa","discovery",["Clear","Focused","Uplifted"],  ["Peppery","Herbal","Citrus"],"Pepper",  "Warm spiced nose, clean and clear in effect."),
- "Animal Face":      ("Indica","unwind",   ["Relaxed","Euphoric","Heavy"],  ["Skunky","Diesel","Herbal"], "Earthy",  "Animal Mints x Face Off OG — potent and full-bodied."),
- "Wedding Cake":     ("Indica","unwind",   ["Relaxed","Giddy","Hungry"],    ["Creamy","Nutty","Fruity"],  "Fruity",  "Vanilla frosting sweetness with a calm, heavy landing."),
- "Super Lemon Haze": ("Sativa","adventurous",["Energized","Uplifted","Focused"],["Citrus","Peppery","Herbal"],"Citrus","Zesty lemon haze — bright, fast and energizing."),
- "Cosmic Queen":     ("Sativa","adventurous",["Energized","Creative","Clear"],["Citrus","Pine","Fruity"], "Citrus",  "Bright sativa hybrid with a crisp citrus-pine lift."),
- "Blueberry Muffin": ("Hybrid","social",   ["Giddy","Balanced","Relaxed"],  ["Fruity","Creamy","Flowery"],"Fruity",  "True blueberry baked-goods nose. Warm and easygoing."),
- "GMO Cookies":      ("Indica","unwind",   ["Heavy","Relaxed","Sleepy"],    ["Skunky","Diesel","Earthy"], "Earthy",  "Garlic-forward GMO with a savory, couch-bound finish."),
- "Cherry Pie":       ("Hybrid","social",   ["Giddy","Relaxed","Balanced"],  ["Fruity","Creamy","Earthy"], "Fruity",  "Tart cherry over a doughy sweetness. A reliable hybrid."),
- "Pineapple Express":("Sativa","social",   ["Uplifted","Social","Energized"],["Citrus","Fruity","Pine"],  "Citrus",  "Tropical pineapple and pine — famously upbeat."),
- "Northern Lights":  ("Indica","unwind",   ["Sleepy","Relaxed","Calm"],     ["Earthy","Herbal","Pine"],   "Earthy",  "The legendary indica benchmark. Quiet, heavy, restful."),
- "Royal Kush":       ("Indica","unwind",   ["Relaxed","Heavy","Calm"],      ["Earthy","Pine","Herbal"],   "Earthy",  "Old-school kush structure with a grounded, piney depth."),
- "Strawberry Cough": ("Sativa","social",   ["Uplifted","Social","Giddy"],   ["Fruity","Flowery","Herbal"],"Fruity",  "Sweet strawberry on the inhale, open and talkative."),
- "Sunset Sherbet":   ("Hybrid","social",   ["Giddy","Relaxed","Euphoric"],  ["Fruity","Creamy","Citrus"], "Fruity",  "Creamy sherbet terps with a smooth, sunny lift."),
- "ACDC":             ("CBD","holistic",    ["Clear","Calm","Relief"],       ["Herbal","Earthy","Pine"],   "Earthy",  "High-CBD, very low THC. Clear-headed relief without the high."),
- "Charlotte's Web":  ("CBD","holistic",    ["Calm","Clear","Relief"],       ["Herbal","Flowery","Earthy"],"Earthy",  "The best-known CBD cultivar — gentle and non-intoxicating."),
- "Harlequin":        ("CBD","holistic",    ["Clear","Balanced","Calm"],     ["Citrus","Herbal","Earthy"], "Citrus",  "CBD-dominant with a touch of THC for a balanced calm."),
- "Sour Space Candy": ("CBD","holistic",    ["Calm","Uplifted","Clear"],     ["Citrus","Fruity","Herbal"], "Citrus",  "Sour hemp candy terps, relaxed but clear."),
- "Lifter":           ("CBD","holistic",    ["Clear","Uplifted","Calm"],     ["Herbal","Citrus","Earthy"], "Herbal",  "Daytime CBD flower with a light, lifted feel."),
- "Hawaiian Haze CBD":("CBD","holistic",    ["Uplifted","Clear","Calm"],     ["Fruity","Citrus","Flowery"],"Citrus",  "Tropical hemp haze — bright, breezy and non-intoxicating."),
-}
+def main():
+    rows = [r for r in read_cells(XLSX)[2:] if r.get("A")]
+    check(rows)
+    terp_check([[r.get("L", ""), r.get("M", ""), r.get("N", "")] for r in rows], "gen_catalog_products")
 
-rnd = random.Random(20260730)              # seeded: same shuffle every build
-IMG_POOL = ["fl_indica","fl_indica2","fl_indica3","fl_sativa","fl_sativa2",
-            "fl_hybrid","fl_hybrid2","fl_indhyb","fl_indhyb2","fl_sathyb",
-            "fl_sathyb2","fl_universal"]   # keys that exist in asm_app.py's map   # new uploads + the ones already in use
+    out = []
+    for r in rows:
+        strain = unesc(r["B"]).strip()
+        st = r["C"].strip()
+        life = LIFESTYLE[st]
+        thc, cbdpct = float(r["D"]), float(r["E"])
+        prices = {label: float(r[col]) for col, label in SIZE_COLS if r.get(col)}
+        feels, scents = terp_pairs([r.get("L", ""), r.get("M", ""), r.get("N", "")])
+        cbd = (",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbdpct if cbdpct else "")
+        out.append(
+            ' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%g,pz:%s,szs:%s,thc:%g%s,sub:"%s",st:"%s",'
+            'f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+            % (esc(strip_cbd(strain)), esc(r["A"].strip()), photo(strain, st),
+               prices["3.5 g"], json.dumps(prices), json.dumps(list(prices)),
+               thc, cbd, r["F"].strip(), st, life,
+               round(3.9 + stable(strain, 0, 10) / 10.0, 1), stable(strain, 4, 40),
+               '","'.join(feels), '","'.join(scents), esc(r["O"])))
 
-# The app's six lifestyles are the catalog's six Type values renamed (Jack,
-# 2026-08-12). A settings toggle will swap the vocabularies, so they stay 1:1.
-LIFESTYLE = {"Sativa":"discovery","Sativa Hybrid":"adventurous","Hybrid":"social",
-             "Indica Hybrid":"unwind","Indica":"nightlife","CBD":"holistic"}
+    print("\n".join(out))
+    import collections
+    print("%d flower - %s" % (len(out), dict(collections.Counter(r["C"] for r in rows))), file=sys.stderr)
+    print("grow: %s" % dict(collections.Counter(r["F"] for r in rows)), file=sys.stderr)
+    print("photos: %s" % dict(collections.Counter(re.search(r'img:"([^"]*)"', o).group(1) for o in out)),
+          file=sys.stderr)
 
-def esc(s): return s.replace("'", "\\'")
 
-out = []
-for pr in prods:
-    strain = pr["strain"]
-    prof = PROFILE.get(strain)
-    if not prof:
-        print("!! no profile for", strain); continue
-    _st_authored, _life_authored, feels, taste, _terp_dead, desc = prof
-    # The catalog states the strain in its own "Type:" field - all six values,
-    # including a CBD Flower Options section - so it is read, not authored, and
-    # the lifestyle is that value renamed (Jack, 2026-08-12). PROFILE's first
-    # two entries are ignored: they had flattened Indica Hybrid -> Indica and
-    # Sativa Hybrid -> Sativa, and assigned lifestyles that disagreed with the
-    # doc. They stay in the table only because feelings/taste/terpene/copy sit
-    # in the same tuples.
-    st = pr["type"].strip()
-    life = LIFESTYLE[st]
-    sizes = list(pr["prices"].keys())
-    eighth = pr["prices"].get("3.5 g") or list(pr["prices"].values())[0]
-    thc = round(rnd.uniform(0.4, 0.9), 1) if st == "CBD" else round(rnd.uniform(19.5, 29.5), 1)
-    # the catalog doc carries no CBD, so author it the way THC already is. The
-    # bands mirror the concentrate sheet's real numbers: CBD cultivars land
-    # around 15%, everything else keeps a trace.
-    cbdpct = round(rnd.uniform(12.0, 17.5), 1) if st == "CBD" else round(rnd.uniform(0.1, 0.8), 1)
-    img = rnd.choice(IMG_POOL)
-    sub = rnd.choice(["Indoor", "Indoor", "Outdoor"])
-    rating = round(rnd.uniform(3.9, 4.9), 1)
-    revs = rnd.randint(4, 40)
-    cbd = (",cbd:1" if st == "CBD" else "") + ",cbdv:%g" % cbdpct
-    entry = (' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%s,pz:%s,szs:%s,thc:%s%s,sub:"%s",st:"%s",'
-             'f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},') % (
-        esc(strip_cbd(strain)), esc(pr["brand"]), img, eighth,
-        json.dumps(pr["prices"]).replace('"', '"'), json.dumps(sizes),
-        thc, cbd, sub, st, life,
-        rating, revs, '","'.join(feels), '","'.join(taste), esc(desc))
-    out.append(entry)
-
-# stdout, like the other two generators — this used to write to a scratchpad
-# path from a long-dead session, which made the script unrunnable
-print("\n".join(out))
-# image distribution
-from collections import Counter
-# print(Counter(re.search(r'img:"(\w+)"', e).group(1) for e in out))
+if __name__ == "__main__":
+    main()
