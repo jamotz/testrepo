@@ -37,7 +37,7 @@ python3 -m pip install --quiet Pillow          # recycles remove it
 python3 reference/origins/hifi-build/asm_app.py
 ```
 
-The build prints `wrote <path> (NNNN KB); imgs=112; markers left=0` and a `WARN`
+The build prints `wrote <path> (NNNN KB); imgs=142; markers left=0` and a `WARN`
 line for any asset it can't resolve. **Containers are ephemeral — commit and
 push often.**
 
@@ -48,8 +48,8 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`a559940`** (published 2026-08-14) — the Final/pt2 catalogs for flower,
-concentrates and pre-rolls, terpene-driven feelings and scents, and drinks. Bump this line whenever you
+`8f65bc8`** (published 2026-08-14) — the Final/pt2 catalogs, terpene-driven
+feelings and scents rendered with Jack's icon set, and drinks. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
