@@ -231,10 +231,19 @@ reads serving-first — `10mg / 100mg`, `0.5G / 1G` — for edibles and pre-roll
 with drinks wired to the same path for when they get data.
 
 It keeps the olive it already had but takes the **cannabinoid bubbles' tinted
-treatment** rather than the solid fill: serving/total is a fact about the
-product, and the solid fill means *the selected size*. Products with one serving
-(1-pack pre-rolls, single-dose edibles) keep the plain solid pill, so the two
-readings never collide. Flower, concentrates and topicals are untouched.
+treatment** rather than the solid fill.
+
+**Superseded 2026-08-14:** every weight on a product tile now uses that tinted
+treatment — pale green ground (`#EDEFE1`), dark olive text (`--olive`) — not
+just the serving/total ones. Jack asked for the whole shelf to match the
+multi-pack "0.5G EACH" pill.
+
+That drops the distinction this section used to draw, where a solid fill meant
+*the selected size* and a tint meant *a fact about the product*. On a product
+tile there is only ever one weight shown, so nothing is being selected and the
+distinction had nothing to carry. **Deal cards keep the solid fill**, because
+they do show a row of sizes with one selected — `.fcard.dcard .fsz.sel` outranks
+the new rule on specificity. The product-info page is unchanged for now.
 
 **The underlying sizes did not change** — `szs`, `pz`, `S.size` and the size
 sheet all still key on the same strings. This is display only.

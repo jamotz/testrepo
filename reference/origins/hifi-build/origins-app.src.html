@@ -300,7 +300,13 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .fcard .fpr{font-family:var(--head);font-weight:700;font-size:15px;color:var(--ink);margin:0}
 .fcard .fszs{display:flex;gap:7px;flex-wrap:wrap}
 .fcard .fsz{background:var(--brown);opacity:.6;color:#F0EAD8;border-radius:100px;font-family:var(--head);font-weight:600;font-size:10px;padding:4px 11px;letter-spacing:.03em}
-.fcard .fsz.sel{background:var(--olive);opacity:1}
+/* Every weight on a product tile uses the tinted treatment — pale green ground,
+   dark olive text — matching the multi-pack "0.5G EACH" pill (Jack, 2026-08-14).
+   Deal cards keep the solid fill: they show a row of sizes where one is
+   selected, and the fill is what marks the selection. `.fcard.dcard .fsz.sel`
+   outranks this on specificity, so that override still wins. The product-info
+   page is untouched for now. */
+.fcard .fsz.sel{background:#EDEFE1;color:var(--olive);opacity:1}
 /* serving/total reads as a fact about the product, not a chosen size — so it
    takes the cannabinoid bubbles' tinted treatment in the olive it already had,
    rather than the solid fill that marks the selected size. */
