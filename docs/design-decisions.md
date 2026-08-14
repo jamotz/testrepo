@@ -677,3 +677,54 @@ Verified by regenerating all five sheet-driven types and diffing against the app
 16/14-term vocabularies with their own icons, arranged in three tiers, and the
 terpene name is backing data rather than something the shopper filters on.
 Don't reintroduce a single `tp` string.
+
+---
+
+## Terpenes drive the feelings and scents
+
+**Landed 2026-08-14.** Jack's rebuilt catalogs name three terpenes per product
+(`Terp 1/2/3`). `cannabis_terpene_mapping.xlsx` maps every terpene to three
+(Feeling, Smell & Taste) pairs ranked Primary / Secondary / Tertiary, and
+`terpmap.py` is the bridge. **Nothing is authored in a generator any more.**
+
+### Each terpene contributes its Primary pair
+Not "Terp 1 -> Primary, Terp 2 -> Secondary, Terp 3 -> Tertiary". That reading
+looks reasonable and is wrong: it repeats a feeling inside the same tile on
+**56%** of products. Taking each terpene's Primary pair in Terp 1/2/3 order
+yields three distinct feelings and three distinct scents on **all 160** products
+across the three smokeable catalogs — zero collisions, which is what shows the
+sheets were authored for it.
+
+Secondary and Tertiary aren't dead: they're the fallback when a product names
+fewer than three terpenes, which nothing else could supply.
+
+`terpmap.check()` runs on every generation and refuses to emit if a terpene is
+missing from the mapping, if a product's terms collapse to fewer than three, or
+if any emitted term falls outside the 30 in `cannabis_feelings.xlsx` /
+`cannabis_smell_taste.xlsx` — the 30 that have icons.
+
+### One reader, in one place
+`xlsxread.py` now holds the xlsx reader all six generators share. It used to be
+copy-pasted per generator, which is how the self-closing-cell bug survived in
+four copies at once.
+
+### Pre-roll multi-packs read "0.5 G EACH"
+**Jack, 2026-08-14.** A 3-pack of 0.5 g joints states the size of one joint, not
+the total: `0.5G EACH`, not `0.5G / 1.5G`. The pack count is already in the
+product name and nobody shops on total gram weight.
+
+The stored size stays **bare**. Jack's sheet writes "0.5 g each" on multi-packs,
+but `szs`/`pz` strip it so the Filter drawer keeps the IA's three size options
+instead of growing to six. The tile re-adds "each" from `pk`. Note `feedPill()`
+strips the word itself, so it has to be appended *outside* that call.
+
+### Kief and RSO now have no products
+The "Final" concentrate sheet covers Live Resin (25), Rosin (14), Hash (8) and
+Distillate (3) only. The old Kief and RSO rows were an `EXTRA`/`AUTHORED` block
+Jack supplied in chat, not sheet data, and they carried no terpenes — so they
+could not survive the move to terpene-driven chips.
+
+**Both bubbles still render, with nothing behind them.** Either the sheet gains
+Kief and RSO rows, or the two categories come out of `CONC`. This is a visible
+gap, not a silent one.
+

@@ -31,7 +31,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.a
 XLSX = os.path.join(REPO, "reference/origins/product info/"
                     "WA_Drinks_50_Product_List_Source_Inspired_Unique_Descriptions.xlsx")
 
-from gen_prerolls import read_cells      # same reader: by column letter, self-closing first
+from xlsxread import read_cells
 
 LIFESTYLE = {"Sativa": "discovery", "Sativa Hybrid": "adventurous", "Hybrid": "social",
              "Indica Hybrid": "unwind", "Indica": "nightlife", "CBD": "holistic"}

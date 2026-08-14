@@ -12,38 +12,20 @@ Prints the product entries for origins-app.src.html (P array).
 import json, os, re, zipfile
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-XLSX = os.path.join(REPO, "reference/origins/product info/WA_Mock_Concentrate_Inventory_50_with_Flavors.xlsx")
+XLSX = os.path.join(REPO, "reference/origins/product info/Concentrate Final Product List for WA.xlsx")
 
-# --- read the sheet (inline-string xlsx, no sharedStrings) ---
-z = zipfile.ZipFile(XLSX)
-sheet = z.read("xl/worksheets/sheet1.xml").decode("utf-8")
-def cell(c):
-    ins = re.search(r"<is>(.*?)</is>", c, re.S)
-    if ins: return re.sub(r"<[^>]+>", "", ins.group(1))
-    v = re.search(r"<v>(.*?)</v>", c)
-    return v.group(1) if v else ""
-rows = []
-for r in re.findall(r"<row[^>]*>(.*?)</row>", sheet, re.S):
-    rows.append([cell(c) for c in re.findall(r"<c[^>]*/>|<c[^>]*>.*?</c>", r, re.S)])
-hdr, recs = rows[0], [dict(zip(rows[0], r)) for r in rows[1:]]
+# --- read the sheet ---
+# The "Final" sheet uses sharedStrings where the old mock one used inline
+# strings, so it goes through the shared reader (by column letter, self-closing
+# cells first) rather than the positional one this file used to carry.
+from xlsxread import read_cells
+from terpmap import pairs as terp_pairs, check as terp_check
+from html import unescape as _u
 
-# Kief rows 51-56, supplied by Jack as an addendum to the sheet (same columns).
-EXTRA = """51\tSkord\tMAC 1 Loose Kief\tKief\tLoose Kief\tHybrid\t1g\t22\t48.6\t0.2\tFinely sifted trichomes ideal for topping flower or boosting potency.\tBalanced\tHappy\tEuphoric\tCitrus, Pine, Earth
-52\tPlaid Jacket\tBlue Dream Loose Kief\tKief\tLoose Kief\tSativa Hybrid\t1g\t20\t46.9\t0.2\tClassic kief with bright terpene expression and versatile use.\tCreative\tUplifted\tFocused\tBerry, Sweet, Herbal
-53\tRefine\tGMO Dry Sift Kief\tKief\tDry Sift Kief\tIndica Hybrid\t1g\t24\t51.4\t0.1\tTraditional dry sift concentrate with rich cannabinoid content.\tRelaxed\tCalm\tHappy\tGarlic, Diesel, Earth
-54\tDank Czar\tPermanent Marker Dry Sift Kief\tKief\tDry Sift Kief\tHybrid\t1g\t25\t53.2\t0.1\tHigh-quality dry sift with bold aroma and smooth texture.\tEuphoric\tBalanced\tRelaxed\tGas, Candy, Floral
-55\tBuddies\tACDC Infused Kief\tKief\tInfused Kief\tCBD\t1g\t18\t9.8\t38.5\tCBD-rich kief designed for a mellow, clear-headed experience.\tCalm\tClear-Headed\tRelaxed\tLemon, Herbal, Pine
-56\tPassion Flower\tRainbow Belts Infused Kief\tKief\tInfused Kief\tHybrid\t1g\t23\t55.1\t0.2\tTerpene-enhanced kief for sprinkling over flower or bowls.\tHappy\tRelaxed\tCreative\tCandy, Tropical, Citrus"""
-
-# Rows 57-60 authored to Jack's schema (not from the sheet) to stock the two
-# syringe consistencies. Rosin Coins and both applicator forms stay empty.
-AUTHORED = """57\tDabstract\tNorthern Lights Distillate Syringe\tDistillate\tSyringe\tIndica\t1g\t32\t88.4\t0.3\tUltra-refined distillate in an easy-dose syringe for dabbing or infusing.\tRelaxed\tSleepy\tBody High\tEarth, Herbal, Sweet
-58\tRefine\tSour Diesel Distillate Syringe\tDistillate\tSyringe\tSativa\t1g\t34\t90.2\t0.2\tUltra-refined distillate in an easy-dose syringe for dabbing or infusing.\tEnergetic\tFocused\tUplifted\tDiesel, Citrus, Fuel
-59\tSkagit Organics\tFull Spectrum RSO Syringe\tRSO\tOil Syringe\tIndica\t1g\t38\t72.5\t1.8\tUnrefined full-spectrum extract in a measured syringe. Start small.\tRelaxed\tSleepy\tBody High\tEarth, Herbal, Pine
-60\tBuddies\t1:1 CBD RSO Syringe\tRSO\tOil Syringe\tCBD\t1g\t40\t32.4\t31.8\tBalanced full-spectrum RSO for measured, clear-headed relief.\tCalm\tRelaxed\tClear-Headed\tHerbal, Earth, Pepper"""
-
-for line in (EXTRA + "\n" + AUTHORED).strip().split("\n"):
-    recs.append(dict(zip(hdr, line.split("\t"))))
+_COLS = ["ID","Brand","Product Name","Category","Subcategory","Type","Size","Price",
+         "THC %","CBD %","Description","Terp 1","Terp 2","Terp 3"]
+_rows = [r for r in read_cells(XLSX)[1:] if r.get("A")]
+recs = [{k: _u(r.get(chr(65 + i), "")).strip() for i, k in enumerate(_COLS)} for r in _rows]
 
 # --- sheet (Category, Subcategory) -> (app category, app consistency, image key) ---
 # app taxonomy + photo names come from the same source, so this is the join table
@@ -111,6 +93,8 @@ def strip_form(name, sub, cat):
             norm = norm[:-len(tail)].strip(" -\u2013")
     return norm.replace("&", "&amp;")
 
+terp_check([[r["Terp 1"], r["Terp 2"], r["Terp 3"]] for r in recs], "gen_concentrates")
+
 out, unmatched = [], []
 for i, r in enumerate(recs):
     key = (r["Category"], r["Subcategory"].replace("&amp;", "&"))
@@ -118,9 +102,8 @@ for i, r in enumerate(recs):
         unmatched.append(key); continue
     cat, form, img = JOIN[key]
     st = ST.get(r["Type"], "Hybrid")
-    effects = [r["Effect 1"], r["Effect 2"], r["Effect 3"]]
     life = LIFESTYLE[st]          # the sheet's Type column, renamed
-    flavors = [f.strip() for f in r["Flavor Notes"].split(",")]
+    feels, scents = terp_pairs([r["Terp 1"], r["Terp 2"], r["Terp 3"]])
     price = float(r["Price"])
     thc, cbd = float(r["THC %"]), float(r["CBD %"])
     rating = round(3.9 + (i % 11) * 0.1, 1)
@@ -131,7 +114,7 @@ for i, r in enumerate(recs):
         'fe:["%s"],ta:["%s"],d:"%s"},'
         % (esc(strip_cbd(strip_form(r["Product Name"], r["Subcategory"], r["Category"]))), esc(r["Brand"]), img, price, price,
            thc, ((",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbd if cbd else "")), cat, form, st, life,
-           rating, revs, '","'.join(effects), '","'.join(flavors[:3]), esc(r["Description"])))
+           rating, revs, '","'.join(feels), '","'.join(scents), esc(r["Description"])))
 
 print("\n".join(out))
 if unmatched:
