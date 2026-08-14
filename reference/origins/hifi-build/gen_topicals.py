@@ -76,13 +76,6 @@ FEEL = {"Pain Relief": ["Relief", "Calm", "Clear"], "Recovery": ["Relief", "Rela
         "Massage": ["Relaxed", "Mellow", "Calm"],   "Skincare": ["Clear", "Calm", "Balanced"],
         "Intimacy": ["Relaxed", "Giddy", "Calm"]}
 
-# ---- form -> taste/scent stand-in. Topicals aren't eaten; the app still wants
-#      a terpene for the wizard, so use the profile each form reads as. ----
-TERP = {"Balm / Salve": "Herbal", "Bath Soak": "Flowery", "Cream": "Flowery",
-        "Gel": "Piney", "Lotion": "Flowery", "Lubricant": "Herbal",
-        "Oil": "Herbal", "Roll-On": "Piney", "Stick": "Piney",
-        "Transdermal Patch": "Herbal"}
-
 
 def esc(s):
     return s.replace('"', '\\"').replace("&", "&amp;")
@@ -149,13 +142,13 @@ for i, r in enumerate(recs):
     out.append(
         ' {t:"topical",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],'
         '%s%ssub:"%s",sub2:"%s",etype:"%s",%scombo:"%s",ratio:"%s",'
-        'st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+        'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
         % (esc(r["Product Name"]), esc(r["Brand"]), PHOTO.get(form, "top_balm"),
            price, size, price, size,
            ("thc:%g," % thc if thc else ""), extra,
            esc(effect), esc(form), esc(form),
            ('pot:"%s",' % pot if pot else ""), combo, ratio,
-           "CBD", TERP.get(form, "Herbal"),
+           "CBD",
            "holistic",
            round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
            '","'.join(FEEL.get(effect, ["Calm", "Relief", "Clear"])),

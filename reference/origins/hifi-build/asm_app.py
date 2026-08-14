@@ -214,7 +214,6 @@ M = {
  "fl_universal": "product assets/Flower/Universal Nug.png",
  "growbud": "product assets/Flower/Full Bud - educational .webp",
  "map_redmond": "Various other assets/Redmond Map.png",
- "scent_skunky": "scents assets/Scent (Skunky).png",
  "hero_mtn": "origins logos/Origin background.jpeg",
  "brand_royaltree": "Various Brand Logos/Royal Tree Main Logo.png",
  "brand_saints": "Various Brand Logos/Saints Main Logo.png",

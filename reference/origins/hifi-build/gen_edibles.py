@@ -104,23 +104,6 @@ LIFE_EFFECT = {"Pain Relief":"holistic","Relax":"holistic","Focus":"discovery","
 # Unwind, Nightlife; CBD = Holistic. This sheet only uses three of the six.
 LIFE_STRAIN = {"Sativa":"discovery","Sativa Hybrid":"adventurous","Hybrid":"social",
                "Indica Hybrid":"unwind","Indica":"nightlife","CBD":"holistic"}
-# flavour -> the app's terpene list
-TERP = {# berries and stone fruit
-        "Blackberry":"Fruity","Marionberry":"Fruity","Elderberry":"Fruity",
-        "Huckleberry":"Fruity","Raspberry":"Fruity","Blue Raspberry":"Fruity",
-        "Strawberry":"Fruity","Cherry":"Fruity","Watermelon":"Fruity",
-        "Peach":"Fruity","Pear":"Fruity","Green Apple":"Fruity",
-        # bright and sharp
-        "Lemon":"Citrus","Mango":"Citrus","Pineapple":"Citrus","Blood Orange":"Citrus",
-        "Tangerine":"Citrus","Cherry Lime":"Citrus",
-        # bakery and confection
-        "Dark Chocolate":"Earthy","Espresso":"Earthy","Double Chocolate":"Earthy",
-        "Milk Chocolate":"Creamy","Cookies & Cream":"Creamy","Sea Salt Caramel":"Creamy",
-        "Chocolate Chip":"Creamy","Fudge Brownie":"Creamy","Snickerdoodle":"Creamy",
-        "Peanut Butter":"Nutty","Oatmeal Raisin":"Nutty",
-        # capsules
-        "Unflavored":"Herbal"}
-
 # effect -> the three "Feelings" chips on the product page
 FEEL = {"Pain Relief":["Relief","Calm","Clear"],"Relax":["Relaxed","Calm","Mellow"],
         "Focus":["Focused","Clear","Uplifted"],"Unwind":["Relaxed","Mellow","Calm"],
@@ -169,11 +152,11 @@ for i, r in enumerate(recs):
     out.append(
         ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s%s'
         'sub:"%s",sub2:"%s"%s,etype:"%s",pot:"%s",combo:"%s",ratio:"%s",'
-        'st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+        'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
         % (esc(name), esc(r["Brand"]), photo(etype, name, i), p, pack, p, pack,
            thc if thc else cbd, ("cbd:1," if cbd and cbd >= thc else ""), cbdf,
            cat, sub2, (',sub3:"%s"' % strain if cat == "THC Edibles" else ""), etype,
-           pot, combo, ratio, st, TERP.get(flavor, "Sweet"), life,
+           pot, combo, ratio, st, life,
            round(4.0 + (i % 10) * 0.1, 1), 5 + (i * 5) % 34,
            '","'.join(feels), flavor, esc(r["Description"])))
 

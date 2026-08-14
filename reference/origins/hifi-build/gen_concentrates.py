@@ -80,14 +80,6 @@ LIFE = {"Relaxed":"unwind","Sleepy":"unwind","Body High":"unwind","Calm":"unwind
         "Happy":"social","Euphoric":"nightlife","Balanced":"social","Uplifted":"social",
         "Energetic":"adventurous","Focused":"adventurous","Creative":"discovery",
         "Clear-Headed":"discovery"}
-# flavour note -> the app's terpene list
-TERP = {"Citrus":"Citrus","Lemon":"Citrus","Lime":"Citrus","Orange":"Citrus","Tropical":"Citrus",
-        "Mango":"Citrus","Pine":"Piney","Herbal":"Piney","Mint":"Piney","Pepper":"Pepper",
-        "Diesel":"Pepper","Fuel":"Pepper","Gas":"Pepper","Garlic":"Pepper","Skunk":"Pepper",
-        "Floral":"Lavender","Vanilla":"Lavender","Earth":"Earthy","Earthy":"Earthy",
-        "Coffee":"Earthy","Chocolate":"Earthy","Dough":"Earthy","Cookie":"Earthy",
-        "Berry":"Fruity","Blueberry":"Fruity","Grape":"Fruity","Apple":"Fruity","Pear":"Fruity",
-        "Fruit":"Fruity","Sweet":"Fruity","Candy":"Fruity","Cream":"Fruity"}
 # The sheet's Type column already carries all six values; it used to be
 # collapsed to four here (Indica Hybrid -> Indica, Sativa Hybrid -> Sativa),
 # which threw away the two the app now needs. Kept verbatim.
@@ -129,17 +121,16 @@ for i, r in enumerate(recs):
     effects = [r["Effect 1"], r["Effect 2"], r["Effect 3"]]
     life = LIFESTYLE[st]          # the sheet's Type column, renamed
     flavors = [f.strip() for f in r["Flavor Notes"].split(",")]
-    terp = next((TERP[f] for f in flavors if f in TERP), "Earthy")
     price = float(r["Price"])
     thc, cbd = float(r["THC %"]), float(r["CBD %"])
     rating = round(3.9 + (i % 11) * 0.1, 1)
     revs = 4 + (i * 7) % 37
     out.append(
         ' {t:"concentrate",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"1 g":%g},szs:["1 g"],'
-        'thc:%g%s,sub:"%s",sub2:"%s",st:"%s",tp:"%s",f:["%s"],sale:0,r:%s,rv:%d,'
+        'thc:%g%s,sub:"%s",sub2:"%s",st:"%s",f:["%s"],sale:0,r:%s,rv:%d,'
         'fe:["%s"],ta:["%s"],d:"%s"},'
         % (esc(strip_cbd(strip_form(r["Product Name"], r["Subcategory"], r["Category"]))), esc(r["Brand"]), img, price, price,
-           thc, ((",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbd if cbd else "")), cat, form, st, terp, life,
+           thc, ((",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbd if cbd else "")), cat, form, st, life,
            rating, revs, '","'.join(effects), '","'.join(flavors[:3]), esc(r["Description"])))
 
 print("\n".join(out))

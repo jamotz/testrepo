@@ -176,7 +176,6 @@ def check_columns(rows):
         sys.exit(1)
 
 
-TERP = {"blue": "Fruity", "red": "Fruity", "orange": "Citrus", "yellow": "Citrus"}
 FEEL = {"discovery":   ["Creative", "Focused", "Uplifted"],
         "adventurous": ["Energetic", "Focused", "Uplifted"],
         "social":      ["Giddy", "Chatty", "Happy"],
@@ -221,10 +220,10 @@ def main():
 
         out.append(
             ' {t:"drink",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],'
-            'thc:%g,%ssub:"%s",sub2:"%s",st:"%s",tp:"%s",f:["%s"],sale:0,'
+            'thc:%g,%ssub:"%s",sub2:"%s",st:"%s",f:["%s"],sale:0,'
             'r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
             % (esc(name), esc(brand), img, price, size, price, size,
-               thc, extra, br, typ, esc(st), TERP[colour_of(unesc(r["C"]))], life,
+               thc, extra, br, typ, esc(st), life,
                round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
                '","'.join(FEEL[life]), esc(unesc(r["C"]).strip()),
                esc(r["M"].strip())))

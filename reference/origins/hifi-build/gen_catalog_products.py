@@ -86,7 +86,7 @@ for pr in prods:
     prof = PROFILE.get(strain)
     if not prof:
         print("!! no profile for", strain); continue
-    _st_authored, _life_authored, feels, taste, terp, desc = prof
+    _st_authored, _life_authored, feels, taste, _terp_dead, desc = prof
     # The catalog states the strain in its own "Type:" field - all six values,
     # including a CBD Flower Options section - so it is read, not authored, and
     # the lifestyle is that value renamed (Jack, 2026-08-12). PROFILE's first
@@ -108,11 +108,11 @@ for pr in prods:
     rating = round(rnd.uniform(3.9, 4.9), 1)
     revs = rnd.randint(4, 40)
     cbd = (",cbd:1" if st == "CBD" else "") + ",cbdv:%g" % cbdpct
-    entry = (' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%s,pz:%s,szs:%s,thc:%s%s,sub:"%s",st:"%s",tp:"%s",'
+    entry = (' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%s,pz:%s,szs:%s,thc:%s%s,sub:"%s",st:"%s",'
              'f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},') % (
         esc(strip_cbd(strain)), esc(pr["brand"]), img, eighth,
         json.dumps(pr["prices"]).replace('"', '"'), json.dumps(sizes),
-        thc, cbd, sub, st, terp, life,
+        thc, cbd, sub, st, life,
         rating, revs, '","'.join(feels), '","'.join(taste), esc(desc))
     out.append(entry)
 

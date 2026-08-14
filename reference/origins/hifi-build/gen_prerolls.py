@@ -268,7 +268,6 @@ def main():
         # not the app's `f`. Kept verbatim, including the two hybrid variants.
         st = r["H"].strip()
 
-        terp = STRAIN.get(strain, ("", "Earthy"))[1]
         if strain not in STRAIN:
             unknown.add(strain)
         # Lifestyle is the sheet's own Lifestyle column, renamed - no
@@ -295,13 +294,13 @@ def main():
         pz = ",".join('"%s":%g' % (s, p) for s, p in zip(szs, prices))
         out.append(
             ' {t:"preroll",n:"%s",b:"%s",img:"%s",pr:%g,pz:{%s},szs:["%s"],'
-            'thc:%g,cbdv:%g,%s%ssub:"%s",sub2:"%s",%sst:"%s",tp:"%s",f:["%s"],'
+            'thc:%g,cbdv:%g,%s%ssub:"%s",sub2:"%s",%sst:"%s",f:["%s"],'
             'sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
             % (esc(name), esc(brand), img, prices[0], pz, '","'.join(szs),
                thc, cbd, ("cbd:1," if cbd >= 1 else ""),
                ("pk:%d," % npk if npk > 1 else ""),
                br, fam, ('sub3:"%s",' % esc(sub3) if sub3 else ""),
-               esc(st), terp, life,
+               esc(st), life,
                round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
                '","'.join(FEEL[life]), '","'.join(TASTE.get(strain, ["Earthy", "Herbal", "Pine"])),
                esc(r["N"])))

@@ -639,3 +639,41 @@ descriptions are truncated mid-word.
 `renderList` has no drinks branch so the shelf renders as a flat grid. The
 first level is the same THC/CBD/Blend the pre-rolls use, so it can share that
 bubble component.
+
+---
+
+## The old terpene vocabulary is gone
+
+**Removed 2026-08-12**, ahead of Jack's feelings/scents mapping.
+
+Products carried a single `tp` field holding one of 11 values — Citrus, Creamy,
+Diesel, Earthy, Flowery, Fruity, Herbal, Lavender, Nutty, Pepper, Piney. These
+were never terpenes; they were *scents* under a terpene label. The real terpene
+names (Myrcene, Limonene, Caryophyllene, …) live in `cannabis_terpenes.xlsx` and
+were never in the app.
+
+The vocabulary was also broken in a way nobody had noticed: the Filter drawer's
+Terpenes section offered only **6** of the 11 values, so `Herbal`, `Flowery`,
+`Creamy`, `Nutty` and `Diesel` were unreachable — 73 products could not be found
+by the one facet that described them.
+
+What came out:
+
+| Where | What |
+|---|---|
+| `origins-app.src.html` | the `TERPS` const, the drawer's Terpenes section and its handler, `S.terp`, the `match()` clause, the `activeCount()` entry, the clear-all reset, and `tp:"…"` from all 282 rows |
+| all six generators | the `tp` field in each row template, its argument, and four now-dead flavour→terpene lookup tables |
+| `asm_app.py` | a stale `scent_skunky` mapping pointing at a file that never existed — the build's only WARN |
+
+`gen_prerolls.py` and `gen_catalog_products.py` keep their tables: those tuples
+carry feelings, taste and copy alongside the terpene, so only the unpacking
+changed. The dead slot is named `_terp_dead` in the flower generator so it can't
+be mistaken for live data.
+
+Verified by regenerating all five sheet-driven types and diffing against the app
+— every one matches byte for byte, so nothing but `tp` moved.
+
+**The replacement is not a like-for-like.** Feelings and scents are separate
+16/14-term vocabularies with their own icons, arranged in three tiers, and the
+terpene name is backing data rather than something the shopper filters on.
+Don't reintroduce a single `tp` string.
