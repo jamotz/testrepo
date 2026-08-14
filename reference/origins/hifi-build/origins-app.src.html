@@ -1404,7 +1404,13 @@ var FLAVORS={
  Skunky:'<path d="M13.2 16.6c3.7.3 6.4-2.4 6.4-6 0-3-2-5.2-4.6-4.6-2 .4-2.8 2.4-2.1 4.2"/><path d="M13.2 16.6H7.3C5.2 16.6 3.6 15 3.6 13c0-1.9 1.6-3.2 3.6-3"/><path d="M7.2 10c-1.6-.2-3 .9-3.3 2.4"/><path d="M4.1 11.1 2.4 10.4M3.9 12.6l-1.6.4"/><path d="M8.7 10.8c.8-.9 1.9-1.2 3-1.1"/><path d="M7.4 16.6v1.9M10.9 16.5v1.9"/><circle cx="5.7" cy="12.2" r=".55" fill="currentColor" stroke="none"/>'};
 function svgIco(inner){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>';}
 function pIcon(name){var n=(name||"").toLowerCase();
- if(/skunk/.test(n)&&IMG["scent_skunky"])return '<img class="flavimg" src="'+IMG["scent_skunky"]+'" alt="">';
+ /* Jack's 30 supplied icons are keyed by their own lowercase term, so a chip
+    reading "Relaxed" resolves straight to IMG["relaxed"]. Flower, concentrates
+    and pre-rolls draw their feelings and scents from the terpene mapping, which
+    only ever emits those 30 terms — so they always hit here. Edibles, topicals
+    and drinks still carry the old vocabulary and fall through to the generated
+    SVGs below until their sheets catch up. */
+ if(IMG[n])return '<img class="flavimg" src="'+IMG[n]+'" alt="">';
  var fk=FLAVORS[name]||FLAVORS[n.charAt(0).toUpperCase()+n.slice(1)];
  if(fk)return svgIco(fk);
  var k="spark";

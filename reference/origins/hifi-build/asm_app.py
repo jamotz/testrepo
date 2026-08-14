@@ -161,6 +161,41 @@ M = {
  # drinks — the vessel comes from the product's Type, the colour from its
  # flavour (see gen_drinks.py). "drink" is the generic key the category circle
  # uses; it shares the orange bottle.
+
+ # feeling + smell/taste icons, sliced from Jack's contact sheet and
+ # recoloured to --or (feelings) / --olive (smell & taste). Keyed by their
+ # own lowercase term, which is what pIcon() looks up.
+ "berry": "scents assets/icons/berry.png",
+ "calm": "scents assets/icons/calm.png",
+ "cerebral": "scents assets/icons/cerebral.png",
+ "citrus": "scents assets/icons/citrus.png",
+ "creative": "scents assets/icons/creative.png",
+ "diesel": "scents assets/icons/diesel.png",
+ "earthy": "scents assets/icons/earthy.png",
+ "energized": "scents assets/icons/energized.png",
+ "euphoric": "scents assets/icons/euphoric.png",
+ "floral": "scents assets/icons/floral.png",
+ "focused": "scents assets/icons/focused.png",
+ "fruity": "scents assets/icons/fruity.png",
+ "grounded": "scents assets/icons/grounded.png",
+ "happy": "scents assets/icons/happy.png",
+ "herbal": "scents assets/icons/herbal.png",
+ "hoppy": "scents assets/icons/hoppy.png",
+ "mellow": "scents assets/icons/mellow.png",
+ "motivated": "scents assets/icons/motivated.png",
+ "musky": "scents assets/icons/musky.png",
+ "peppery": "scents assets/icons/peppery.png",
+ "pine": "scents assets/icons/pine.png",
+ "relaxed": "scents assets/icons/relaxed.png",
+ "skunky": "scents assets/icons/skunky.png",
+ "sleepy": "scents assets/icons/sleepy.png",
+ "social": "scents assets/icons/social.png",
+ "spicy": "scents assets/icons/spicy.png",
+ "sweet": "scents assets/icons/sweet.png",
+ "tropical": "scents assets/icons/tropical.png",
+ "uplifted": "scents assets/icons/uplifted.png",
+ "woody": "scents assets/icons/woody.png",
+
  "drink": "product assets/Drinks/Orange 12oz Bottle.png",
  "dr_bottle_red": "product assets/Drinks/Red 12oz Bottle.png",
  "dr_bottle_orange": "product assets/Drinks/Orange 12oz Bottle.png",
@@ -442,6 +477,10 @@ for k, rel in M.items():
             IMG["bg_" + k] = bg_color(rel)
         elif k == "hero_mtn":
             IMG[k] = embed_hero(rel)
+        elif rel.startswith("scents assets/icons/"):
+            # flat single-colour art with real alpha - embed_rgba keeps both.
+            # embed_glyph would repaint them black and throw the palette away.
+            IMG[k] = embed_rgba(rel, 128)
         elif k.startswith("life_") or k.startswith("sm_") or k.startswith("scent_"):
             IMG[k] = embed_glyph(rel)
         else:

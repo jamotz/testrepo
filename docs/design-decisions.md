@@ -755,3 +755,18 @@ This is deliberately visible, not papered over: the two flower deal sections
 simply don't appear until Jack nominates the products. The 30% Off brand row is
 unaffected — it renders from a brand list, not from `sale`.
 
+### The 30 icons are keyed by their own term
+`pIcon("Relaxed")` resolves to `IMG["relaxed"]` — no lookup table. The icons are
+registered in `asm_app.py` as bare lowercase terms (checked: none of the 30
+collides with an existing image key), and the terpene mapping only ever emits
+those 30 terms, so flower, concentrates and pre-rolls always hit.
+
+They go through **`embed_rgba` at 128px, not `embed_glyph`**. `embed_glyph`
+repaints its input black, which would throw away the orange/olive palette; the
+default path would flatten the alpha onto white and box each icon. The dispatch
+keys off the asset folder rather than a key prefix, so the term stays clean.
+
+Edibles, topicals and drinks still carry the old vocabulary and fall through to
+the generated SVGs. Across the catalog **1288 chips resolve to a supplied icon
+and 284 fall back** — the 284 are exactly those three shelves.
+
