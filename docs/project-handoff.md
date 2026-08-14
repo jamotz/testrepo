@@ -79,18 +79,18 @@ you can diff the live body against your build before deciding. Only use
 
 ## Current state
 
-**282 products** across six types:
+**308 products** across six types:
 
 | Type | Count | Source | Photos |
 |---|---:|---|---|
-| Flower | 34 | `Flower Product Catalog.docx` (30) + 4 legacy mock rows | strain-based ✓ |
-| Concentrate | 60 | `WA_Mock_Concentrate_Inventory_50…xlsx` + 10 added rows | per consistency ✓ |
+| Flower | 50 | `Flower Final pt2 Product List for WA.xlsx` | by strain type ✓ |
+| Concentrate | 60 | `Concentrate Final Product List for WA.xlsx` (50 + 10 Kief/RSO appended) | per consistency ✓ |
 | Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
-| Pre-roll | 50 | `WA_PreRolls_50_Product_List_CBD_Lifestyle_Fixed.xlsx` | by type + pack count ✓ |
+| Pre-roll | 60 | `Pre-roll pt2 Product List Final for WA.xlsx` | by type + pack count ✓ |
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
 | Drink | 50 | `WA_Drinks_50_Product_List_Source_Inspired_Unique_Descriptions.xlsx` | by type + flavour colour ✓ |
 
-**92 Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
+**Feelings and scents come from terpenes** on flower, concentrates and pre-rolls (170 products) via `terpmap.py`; edibles, topicals and drinks still carry the old placeholders. **Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
 by design — see `design-decisions.md`).
 
 **Lifestyle is the strain, renamed** (Jack, 2026-08-12) — Sativa/Sativa

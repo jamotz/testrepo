@@ -3,7 +3,7 @@
 
 Source (reference/origins/product info/):
   - WA_PreRolls_IA_Condensed.xlsx        the filter IA + the rules sheet
-  - Pre-roll Product List Final for WA.xlsx   the 60 products
+  - Pre-roll pt2 Product List Final for WA.xlsx   the 60 products
 
 Filter path (from the IA): Pre-Rolls -> cannabinoid branch (THC / CBD / Blend)
 -> type (Flower / Infused / Trifecta) -> concentrate type, Infused only. Size
@@ -36,7 +36,7 @@ import os, re, sys, zipfile
 from html import unescape as unesc
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-XLSX = os.path.join(REPO, "reference/origins/product info/Pre-roll Product List Final for WA.xlsx")
+XLSX = os.path.join(REPO, "reference/origins/product info/Pre-roll pt2 Product List Final for WA.xlsx")
 
 
 from xlsxread import read_cells
