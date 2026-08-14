@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-08-12 · branch `claude/project-docs-review-4b84p7`
+**Last updated:** 2026-08-14 · branch `claude/project-docs-review-4b84p7`
 **Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
@@ -37,7 +37,7 @@ python3 -m pip install --quiet Pillow          # recycles remove it
 python3 reference/origins/hifi-build/asm_app.py
 ```
 
-The build prints `wrote <path> (NNNN KB); imgs=113; markers left=0` and a `WARN`
+The build prints `wrote <path> (NNNN KB); imgs=112; markers left=0` and a `WARN`
 line for any asset it can't resolve. **Containers are ephemeral — commit and
 push often.**
 
@@ -48,8 +48,8 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`1e03a07`** (published 2026-08-12) — the whole lifestyle-from-catalogs pass,
-the xlsx reader fix, and every Account screen. Bump this line whenever you
+`a559940`** (published 2026-08-14) — the Final/pt2 catalogs for flower,
+concentrates and pre-rolls, terpene-driven feelings and scents, and drinks. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
@@ -59,7 +59,7 @@ fetchable despite the claude.ai login, and it saves the full HTML locally so
 you can diff the live body against your build before deciding. Only use
 `force:true` if Jack says to discard the other version.
 
-**The published link is behind again** — it predates drinks. Republish.
+
 
 ---
 
@@ -90,8 +90,12 @@ you can diff the live body against your build before deciding. Only use
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
 | Drink | 50 | `WA_Drinks_50_Product_List_Source_Inspired_Unique_Descriptions.xlsx` | by type + flavour colour ✓ |
 
-**Feelings and scents come from terpenes** on flower, concentrates and pre-rolls (170 products) via `terpmap.py`; edibles, topicals and drinks still carry the old placeholders. **Holistic products**; **45 carry a cannabinoid ratio** (pre-rolls carry none
-by design — see `design-decisions.md`).
+**87 Holistic products**; **62 carry a cannabinoid ratio** (pre-rolls carry
+none by design — see `design-decisions.md`).
+
+**Feelings and scents come from the terpenes** on flower, concentrates and
+pre-rolls (170 products) via `terpmap.py` — nothing authored. Edibles, topicals
+and drinks still carry the old placeholders and are the remaining work.
 
 **Lifestyle is the strain, renamed** (Jack, 2026-08-12) — Sativa/Sativa
 Hybrid/Hybrid/Indica Hybrid/Indica/CBD = Discovery/Adventurous/Social/Unwind/
@@ -125,7 +129,7 @@ and the open questions below, not new screens.
    tables in the generators. These are the *last* authored attributes: lifestyle
    left that list on 2026-08-12, and no sheet states terpene or feelings.
 4. **The settings toggle** that swaps strain names for lifestyle names. Now
-   unblocked: Jack re-cut the pre-roll sheet so all **282 products** satisfy
+   unblocked: all **308 products** satisfy
    strain ↔ lifestyle, making the swap a label lookup rather than a data
    migration. Slated for the touch-up pass.
 
@@ -141,7 +145,10 @@ reference/origins/
 ├── hifi-build/
 │   ├── origins-app.src.html      ← THE app (markup + CSS + JS + product data)
 │   ├── asm_app.py                ← build: inlines fonts + images -> one HTML file
-│   ├── gen_catalog_products.py   ← flower products from the .docx
+│   ├── gen_catalog_products.py   ← flower products from the .xlsx
+│   ├── gen_drinks.py             ← drinks from the .xlsx + drinks IA
+│   ├── terpmap.py                ← terpenes -> feelings + scents
+│   ├── xlsxread.py               ← the one xlsx reader they all share
 │   ├── gen_concentrates.py       ← concentrates from the .xlsx (+ authored rows)
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA
 │   ├── gen_prerolls.py           ← pre-rolls from the .xlsx (asserts its columns)
