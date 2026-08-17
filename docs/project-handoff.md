@@ -71,10 +71,21 @@ you can diff the live body against your build before deciding. Only use
 3. **Ask clarifying questions before building anything non-trivial.** Wrong
    guesses on structure cost real rework (see `design-decisions.md`).
 4. **Never invent product data** that contradicts his sheets. Authored filler is
-   fine when he's asked for it, but mark it clearly — see the `AUTHORED` blocks
-   in `gen_concentrates.py`, `gen_topicals.py` and `gen_prerolls.py`, and the
-   Account block in `origins-app.src.html` (Noelle's orders and reviews, and
-   Seattle's opening hours).
+   fine when he's asked for it, but mark it clearly. As of 2026-08-14 almost
+   nothing is authored: the generators' invented tables are gone and the sheets
+   supply strain, lifestyle, potency, prices, copy and the terpenes that drive
+   feelings and scents. What remains, all flagged in place:
+   - the 10 Kief/RSO rows appended to the concentrate sheet — strains, types and
+     terpenes copied from the flower catalog; only brand, size and copy written
+   - flower's star rating and review count (`gen_catalog_products.stable()`) —
+     no sheet states them
+   - the Account block in `origins-app.src.html`: Noelle's orders and reviews,
+     and Seattle's opening hours
+   - topical and edible feelings/taste, until those sheets catch up
+
+   **Before writing a table that assigns something per strain, check the source
+   for a column that already says it.** That mistake has been made twice — once
+   with lifestyle, once with terpenes.
 
 ---
 
@@ -121,18 +132,36 @@ and the open questions below, not new screens.
 
 1. **General touch-ups** — Jack is doing a pass across the app. The Account
    screens have been through one round already (see `design-decisions.md`).
-2. **Drinks — the bubble path.** The shelf is built (50 products, own IA, 11
-   photos) but `renderList` has no drinks branch, so it renders a flat grid
-   instead of the THC/CBD/Blend → type drill-in that pre-rolls get. The data is
-   already there: `sub` carries the branch and `sub2` the type.
-3. **Terpene + feeling setup** — Jack wants a proper pass over both now that the
-   product data is finished. They're currently mapped from form/effect/strain
-   tables in the generators. These are the *last* authored attributes: lifestyle
-   left that list on 2026-08-12, and no sheet states terpene or feelings.
-4. **The settings toggle** that swaps strain names for lifestyle names. Now
-   unblocked: all **308 products** satisfy
-   strain ↔ lifestyle, making the swap a label lookup rather than a data
-   migration. Slated for the touch-up pass.
+2. **Feelings and scents on edibles, topicals and drinks.** The other three
+   shelves are done; these 138 products still carry the old vocabulary, so their
+   chips fall back to generated SVGs while flower/concentrate/pre-roll show
+   Jack's icons. The mismatch is visible side by side. Three separate problems:
+   - **topicals use their own *form* as a taste** — `Roll-On`, `Lotion`,
+     `Balm / Salve`. Always wrong; just never noticed. A topical arguably
+     shouldn't carry a taste at all.
+   - **drinks use the whole flavour string** as one value (`Blackberry Lemonade`,
+     `Mojo-Rita`) — product names, not descriptors.
+   - **edibles use raw flavour words** (Cream, Gas, Candy, Lemon), most of which
+     map cleanly onto the 16.
+
+   These sheets have no terpene columns, so they can't use `terpmap`. Either add
+   terpenes, or map their existing flavour/effect columns onto the 30 terms.
+   Offered but not built: a remapping sheet listing all ~120 old values with a
+   proposed new term and product counts, so Jack reviews 120 rows instead of 138
+   products.
+3. **The home-page deals have no products.** `sale:1` came off the four legacy
+   mock flowers, which are gone, and no sheet has a deal column. `renderHome()`
+   skips a deal section whose row would be empty, so **the "2 For $50" and
+   "40% Off" sections simply don't render**. Jack is nominating four strains; the
+   30% Off brand row is unaffected.
+4. **Drinks — the bubble path.** `sub`/`sub2` carry THC/CBD/Blend and the type,
+   but `renderList` has no drinks branch, so the shelf is a flat grid.
+5. **The settings toggle** that swaps strain names for lifestyle names. Unblocked
+   — all 308 products satisfy strain ↔ lifestyle, so it's a label lookup, not a
+   data migration.
+6. **Kief/RSO sub-bubbles and two Distillate ones** have photos but no products
+   (`Rosin Coins`, `Full Melt Hash`, `Distillate Syringe`, `Dab Applicator`).
+   Categories are all stocked; these are one level down.
 
 *Size as a navigation step was considered and rejected* (Jack, 2026-08-12):
 size lives in the product tile, not the filter path. Don't re-propose it.
@@ -150,10 +179,10 @@ reference/origins/
 │   ├── gen_drinks.py             ← drinks from the .xlsx + drinks IA
 │   ├── terpmap.py                ← terpenes -> feelings + scents
 │   ├── xlsxread.py               ← the one xlsx reader they all share
-│   ├── gen_concentrates.py       ← concentrates from the .xlsx (+ authored rows)
+│   ├── gen_concentrates.py       ← concentrates from the .xlsx
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA
-│   ├── gen_prerolls.py           ← pre-rolls from the .xlsx (asserts its columns)
-│   ├── gen_topicals.py           ← topicals from the .xlsx (+ authored rows)
+│   ├── gen_prerolls.py           ← pre-rolls from the .xlsx
+│   ├── gen_topicals.py           ← topicals from the .xlsx (+ 3 authored rows)
 │   ├── gen_holistic_logo.py      ← generates the Holistic lifestyle logo
 │   └── origins-case.src.html     ← case-study page, built by asm_case.py
 ├── product info/                 ← Jack's source data (.docx/.xlsx)

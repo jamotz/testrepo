@@ -6,10 +6,10 @@ Source (reference/origins/product info/):
   - WA_Drinks_50_Product_List_Source_Inspired_Unique_Descriptions.xlsx
                                   the 50 products
 
-  There is also a ..._Final_CBG_Fix.xlsx. Don't use it: the two files are
-  identical except for the Description and Source columns, the CBG data it is
-  named for is the same in both, and 17 of its 50 descriptions are truncated
-  mid-word. The Unique_Descriptions file is the same catalog with full copy.
+  A ..._Final_CBG_Fix.xlsx was uploaded alongside this one and has since been
+  deleted. It was identical except for the Description and Source columns - the
+  CBG data it was named for was the same in both - and 17 of its 50 descriptions
+  were truncated mid-word. If it reappears, this is still the file to use.
 
 Filter path (from the IA): Drinks -> cannabinoid branch (THC / CBD / Blend)
 -> type (Drink / Shot / Seltzer / Sorbet / Honey). Same first level as

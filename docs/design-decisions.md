@@ -135,25 +135,37 @@ Kept in the file as a fallback.
 
 ## Content authored vs. supplied
 
-Jack's sheets supply brand, name, category, prices, copy **and the strain** —
-which, since 2026-08-12, also supplies the lifestyle. What the sheets don't
-carry is feelings, taste and terpene; those are **authored per real strain**
-(Jack Herer piney, GMO Cookies garlicky/heavy) rather than randomized.
+**Almost nothing is authored any more.** Jack's sheets supply brand, name,
+category, prices, copy, the strain — which is also the lifestyle — the potency,
+and the three terpenes that produce the feelings and smell/taste chips.
 
-*Lifestyle was on this list until 2026-08-12 and should never have been.* Every
-catalog stated the strain outright and four generators derived it anyway, each
-with a different invented rule. Before writing a table that assigns something
-per strain, check the source for a column that already says it.
+Two things were on this list and should never have been. **Lifestyle** left on
+2026-08-12: every catalog stated the strain outright and four generators derived
+it anyway, each with a different invented rule, and all four disagreed with their
+own sheet. **Terpene** left on 2026-08-14, when the rebuilt catalogs added
+`Terp 1/2/3` and the per-generator flavour tables came out.
 
-Explicitly authored, flagged in code:
+> **Before writing a table that assigns something per strain, check the source
+> for a column that already says it.** That has now cost two rewrites.
 
-- **Concentrate rows 57–60** (Distillate Syringe ×2, RSO Oil Syringe ×2) —
-  `AUTHORED` block in `gen_concentrates.py`.
-- **Kief rows 51–56** — supplied by Jack in chat, kept in an `EXTRA` block since
-  they're not in the xlsx.
-- **Edible prices** — *superseded.* The curated sheet now carries real WA retail
-  prices ($18–$30) and they're used directly. The authored `BASE`/`EXTRA` table
-  is gone.
+What is still authored, all flagged where it lives:
+
+- **The 10 Kief/RSO rows** appended to the concentrate sheet on 2026-08-14. The
+  strains all exist in the flower catalog, so their Type and terpenes are copied
+  from there — `gen_concentrates` asserts the copied Type still matches — and
+  potency and price follow Jack's own earlier Kief/RSO rows. Only brand, size
+  and the description text are written.
+- **Flower's star rating and review count** — `gen_catalog_products.stable()`
+  hashes the strain name. No sheet states either, and they're display-only.
+- **The Account block** in `origins-app.src.html`: Noelle's orders and reviews,
+  and Seattle's opening hours.
+- **Edible and topical feelings/taste**, until those sheets gain terpenes or
+  their flavour/effect columns are mapped onto the 30 terms.
+
+*Superseded:* the `AUTHORED`/`EXTRA` blocks in `gen_concentrates.py` (Kief rows
+51–56, syringe rows 57–60) are gone — those products live in the sheet now. So
+is the authored edible price table; the curated sheet carries real WA retail
+prices ($18–$30).
 
 ### Edible photos come from the product name, not the Flavor column
 The curated sheet's `Flavor` column doesn't track its own product names — 24 of
@@ -637,11 +649,12 @@ don't have** — so those two products state no dose rather than being given an
 invented one. Add the serving size to the sheet and the fallback stops firing.
 
 ### Which drinks file to use
-There are two 50-row drinks catalogs. Use
-`..._Source_Inspired_Unique_Descriptions.xlsx`. The other one,
-`..._Final_CBG_Fix.xlsx`, is **identical except for the Description and Source
-columns** — the CBG data it is named for is the same in both — and 17 of its 50
-descriptions are truncated mid-word.
+Two 50-row drinks catalogs were uploaded together. Use
+`..._Source_Inspired_Unique_Descriptions.xlsx`; the other,
+`..._Final_CBG_Fix.xlsx`, has since been deleted. It was **identical except for
+the Description and Source columns** — the CBG data it was named for was the
+same in both — and 17 of its 50 descriptions were truncated mid-word. Noted in
+case it reappears.
 
 ### Not yet done: the bubble path
 `sub` carries THC/CBD/Blend and `sub2` the Type, matching the IA, but

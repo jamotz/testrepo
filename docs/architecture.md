@@ -7,21 +7,29 @@ Information architecture, data model and build pipeline.
 ## Build pipeline
 
 ```
-Jack's sheets ─→ gen_catalog_products.py ─┐
-                 gen_concentrates.py      │
-                 gen_edibles.py           ├─→ product rows, spliced by hand
-                 gen_prerolls.py          │   into the P array
-                 gen_topicals.py         ─┘
+                  ┌─ xlsxread.py  (the one reader — by column letter)
+Jack's sheets ─→ ─┤
+                  └─ terpmap.py   (terpenes → feelings + scents)
+                         │
+                         ├─→ gen_catalog_products.py ─┐
+                         ├─→ gen_concentrates.py      │
+                         ├─→ gen_edibles.py           ├─→ product rows,
+                         ├─→ gen_prerolls.py          │   spliced by hand
+                         ├─→ gen_topicals.py          │   into the P array
+                         └─→ gen_drinks.py           ─┘
 
 origins-app.src.html  ──┐
 assets/**             ──┼─→  asm_app.py  →  origins-app.html  →  Artifact
-fontcache/oswald-*.woff2┘                    (single file, ~2.5 MB)
+fontcache/oswald-*.woff2┘                    (single file, ~3.2 MB)
 ```
 
-Every generator prints rows to stdout. `gen_edibles`, `gen_topicals` and
-`gen_prerolls` place cells **by column letter**; `gen_concentrates` still zips
-its rows against the header positionally, which is safe only because its sheet
-has no empty cells.
+Every generator prints rows to stdout and **all six share `xlsxread.read_cells`**,
+which places cells by column letter. It used to be copy-pasted per generator,
+which is how one bug survived in four copies at once.
+
+`gen_catalog_products`, `gen_concentrates` and `gen_prerolls` also call
+`terpmap.pairs()` — their sheets name three terpenes per product and the chips
+are derived from those, not authored.
 
 Two distinct hazards, both of which have bitten:
 
@@ -33,6 +41,11 @@ Two distinct hazards, both of which have bitten:
    same one-column shift, but silent even when you address by letter. The
    self-closing branch must come first. This was live in all four generators
    until 2026-08-12; see `design-decisions.md`.
+
+Each generator re-asserts its sheet's layout on every run (`check_columns`) and
+exits non-zero rather than emit shifted data. `gen_prerolls` and `gen_drinks`
+also reject a description ending in `...`, after a re-export once clipped all 50
+of them to 80 characters.
 
 `asm_app.py` replaces two markers in the source:
 
@@ -69,8 +82,8 @@ these lines; the array is the single runtime source of truth.
 {t:"flower", n:"Animal Sherbert", b:"Gold Leaf", img:"fl_indica", pr:58,
  pz:{"1 g":12,"3.5 g":38,…}, szs:["1 g","3.5 g",…], thc:22.5, cbd:1,
  sub:"Indoor", sub2:…, sub3:…, etype:…, pot:…, combo:…, ratio:…,
- st:"Indica", tp:"Diesel", f:["unwind"], sale:0, r:4.0, rv:11,
- fe:["Giddy","Relaxed","Hungry"], ta:["Aromatic","Skunky"], d:"…"}
+ st:"Indica Hybrid", f:["unwind"], sale:0, r:4.0, rv:11,
+ fe:["Relaxed","Grounded","Uplifted"], ta:["Earthy","Peppery","Citrus"], d:"…"}
 ```
 
 | Field | Meaning |
@@ -87,12 +100,17 @@ these lines; the array is the single runtime source of truth.
 | `cbdv` `cbdu` | measured CBD and its unit (`" mg"`, or `%` when absent) |
 | `othv` | the third cannabinoid's weight; its name comes from `combo` |
 | `cbd` | legacy has-CBD **flag** the CBD filter reads — not a measurement |
-| `mg` | an edible's serving (the size is the whole package) |
+| `mg` `tot` | a serving and its package total — edibles state `mg`, drinks both |
 | `pk` | a pre-roll's pack count (the size is one joint); absent on 1-packs |
-| `st` | strain: Indica / Sativa / Hybrid / CBD |
-| `f` | lifestyles — drives card border colour + monogram badge |
-| `fe` `ta` | feelings, taste (product-info chips) |
-| `sale` | 1 = eligible for the home flower deals |
+| `st` | strain: Sativa / Sativa Hybrid / Hybrid / Indica Hybrid / Indica / CBD |
+| `f` | lifestyle — **`st` renamed**, one-to-one; drives border colour + badge |
+| `fe` `ta` | feelings, smell/taste (product-info chips, and the icon keys) |
+| `sale` | 1 = eligible for the home flower deals. **Nothing carries it today** |
+
+There is no `tp`. A single "terpene" string held one of 11 values that were
+really scents, and only 6 of them were reachable in the filter; it was deleted
+on 2026-08-12 along with the Terpenes drawer facet. Real terpene names live in
+the sheets and reach the app only through `terpmap.py`.
 
 ### Filter levels per type
 
@@ -103,6 +121,11 @@ these lines; the array is the single runtime source of truth.
 | Edible | cannabinoid category | extraction *or* effect | strain (THC path only) |
 | Pre-roll | cannabinoid branch (THC / CBD / Blend) | type (Flower / Infused / Trifecta) | concentrate type (Infused); component combination (Trifecta) |
 | Topical | effect (Pain Relief, Recovery…) | form (Cream, Roll-On…) | — |
+| Drink | cannabinoid branch (THC / CBD / Blend) | type (Drink / Shot / Seltzer / Sorbet / Honey) | — |
+
+**Drinks carry the data but have no bubbles yet.** `renderList` has no drinks
+branch, so the shelf renders a flat grid. Its first level is the same
+THC/CBD/Blend the pre-rolls use, so it can share that bubble component.
 
 ---
 
@@ -265,6 +288,47 @@ Lifestyle drives the product-card border colour and the monogram badge.
 
 ---
 
+## Feelings & smell/taste
+
+Two closed vocabularies, defined by Jack's sheets and rendered with his icons:
+
+| | Sheet | Terms | Icon colour |
+|---|---|---:|---|
+| Feelings | `cannabis_feelings.xlsx` | 14 | `--or` `#F1601C` |
+| Smell & Taste | `cannabis_smell_taste.xlsx` | 16 | `--olive` `#555624` |
+
+Products don't state either. They state **three terpenes**, and
+`cannabis_terpene_mapping.xlsx` maps each of the 10 terpenes to three
+(Feeling, Smell & Taste) pairs ranked Primary / Secondary / Tertiary.
+
+**`terpmap.pairs()` takes each terpene's Primary pair, in Terp 1/2/3 order.**
+That is checkable, not a guess: it yields three distinct feelings and three
+distinct scents on all 160 smokeable products, where the obvious alternative
+(Terp 1 → Primary, Terp 2 → Secondary, Terp 3 → Tertiary) repeats a feeling
+inside the same tile on 56% of them. Secondary and Tertiary are the fallback for
+a product naming fewer than three terpenes.
+
+`terpmap.check()` runs on every generation and refuses to emit if a terpene is
+missing from the mapping, if a product collapses to fewer than three terms, or
+if any term falls outside the 30.
+
+### Icons
+The 30 icons live in `assets/scents assets/icons/`, sliced from Jack's contact
+sheet and recoloured to the two palette tokens. They are registered as image
+keys under their **own bare lowercase term**, so `pIcon("Relaxed")` resolves to
+`IMG["relaxed"]` with no lookup table.
+
+They embed via **`embed_rgba` at 128px**, dispatched on the asset folder.
+`embed_glyph` would repaint them black and throw the palette away; the default
+path would flatten the alpha onto white and box each one.
+
+**Coverage:** flower, concentrates and pre-rolls are fully on this vocabulary.
+Edibles, topicals and drinks still carry the old placeholder terms and fall
+through to `pIcon`'s generated SVGs — 1288 chips resolve to a supplied icon,
+284 fall back, and the 284 are exactly those three shelves.
+
+---
+
 ## Palette & type
 
 Orange `#F1601C` · brown `#2E261E` · olive `#555624` · cream `#E6C7A7` ·
@@ -316,28 +380,36 @@ reports 0 and the full-screen tab bar sits under the home indicator.
 
 ---
 
-## Serving vs. total
+## The tile's size slot
 
-`servTotal(p, size)` returns the tile's size-slot text, or `null` when there is
-only one serving. The two formats had drifted in opposite directions:
+`servTotal(p, size)` returns the slot's text, or `null` to fall back to the
+plain size pill. `size` means something different on each shelf, so each has its
+own branch:
 
-| Type | `size` means | serving | total |
-|---|---|---|---|
-| Edible | the whole package (`100 mg`) | `p.mg` | the size |
-| Pre-roll | one joint (`0.5 g`) | the size | size × `p.pk` |
+| Type | `size` means | slot reads |
+|---|---|---|
+| Pre-roll | one joint (`0.5 g`) | `0.5G EACH` on multi-packs; `null` on 1-packs |
+| Edible | the whole package (`100 mg`) | `10mg / 100mg` — serving `p.mg`, total the size |
+| Drink | a **volume** (`12 oz`) | `10mg / 100mg` — serving `p.mg`, total `p.tot` |
 
-So an edible tile read `100mg` with the 10 mg serving invisible, while a
-2-pack pre-roll read `0.5G` with the 1 g total invisible. Both now read
-serving-first: `10mg / 100mg`, `0.5G / 1G`, `0.5G / 10G` for a 20-pack.
+Flower, concentrates and topicals never enter the function.
 
-A 1-pack pre-roll or single-dose edible returns `null` and keeps the plain
-size pill — there is nothing to compare. Flower, concentrates and topicals
-never enter the function. Drinks fall through the edible path already, for
-whenever they get real data.
+Two traps here, both of which have already been hit:
 
-`sizePill()` renders either form as the same `.fsz` element so the size
-sheet's live update keeps its selector; the serving/total variant just adds
-`.serv`.
+- **A drink's size is a volume, not a dose.** It used to share the edible branch,
+  which derived the total from the size — comparing milligrams to ounces and
+  rendering `10 mg / 12 oz`. Drinks carry `tot` explicitly. Nothing is lost from
+  the tile: every drink names its volume in the product name.
+- **`feedPill()` strips the word "each"**, left over from when sizes arrived
+  carrying it. Append "each" *outside* that call or it silently vanishes.
+
+`sizePill()` renders every form as the same `.fsz` element so the size sheet's
+live update keeps its selector.
+
+**Styling:** every weight on a product tile is `#D2DBBC` with `--olive` text —
+deliberately a few steps darker than the CBD bubble's `#ECF1E6`, which it was
+otherwise indistinguishable from. Deal cards keep the solid fill, because they
+show a row of sizes where one is selected.
 
 ---
 
