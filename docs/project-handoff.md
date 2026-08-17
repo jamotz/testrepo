@@ -48,8 +48,9 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`8f65bc8`** (published 2026-08-14) — the Final/pt2 catalogs, terpene-driven
-feelings and scents rendered with Jack's icon set, and drinks. Bump this line whenever you
+`023226a`** (published 2026-08-14) — the Final/pt2 catalogs, terpene-driven
+feelings and scents rendered with Jack's icon set, drinks, and the tinted
+weight pill. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
