@@ -46,6 +46,17 @@ POOL = {"Indica":        ["fl_indica", "fl_indica2", "fl_indica3"],
 
 SIZE_COLS = [("G", "1 g"), ("H", "3.5 g"), ("I", "7 g"), ("J", "14 g"), ("K", "28 g")]
 
+# ---- the flowers the home-page deals run on (Jack, 2026-08-17): two Passion
+#      Flower, two Lifestyles. The sheet has no deal column, so the nomination
+#      lives here rather than in the spliced rows - regenerating flower keeps
+#      the deal instead of silently clearing it. `sale:1` drives both home
+#      deals: 2-for-$50 mix & match on the eighth, 40% off the 14 g / 28 g.
+DEAL_EIGHTH = 25.0
+DEALS = [("Passion Flower", "Northern Lights"),
+         ("Passion Flower", "Pineapple Express"),
+         ("Lifestyles", "Gelato Cake"),
+         ("Lifestyles", "Jack Herer")]
+
 
 def photo(strain, st):
     pool = POOL.get(st) or POOL["Hybrid"]
@@ -91,6 +102,23 @@ def check(rows):
         for col in "ABCDEFO":
             if not r.get(col):
                 bad.append("row %d: column %s empty" % (i, col))
+    # A nomination that no longer matches a row would drop the deal silently,
+    # and one whose own eighth is at or under $25 would advertise a discount
+    # that is really a markup. Both are refusals, not warnings.
+    for brand, strain in DEALS:
+        hits = [r for r in rows if r.get("A", "").strip() == brand
+                and unesc(r.get("B", "")).strip() == strain]
+        if len(hits) != 1:
+            bad.append("deal %s / %s: matches %d rows, expected 1" % (brand, strain, len(hits)))
+            continue
+        try:
+            eighth = float(hits[0].get("H", ""))
+        except ValueError:
+            continue                          # already reported by the price checks
+        if eighth <= DEAL_EIGHTH:
+            bad.append("deal %s / %s: eighth is $%g, not above the $%g deal price"
+                       % (brand, strain, eighth, DEAL_EIGHTH))
+
     if bad:
         print("gen_catalog_products: sheet layout changed - refusing to emit:", file=sys.stderr)
         for b in bad[:20]:
@@ -112,12 +140,13 @@ def main():
         prices = {label: float(r[col]) for col, label in SIZE_COLS if r.get(col)}
         feels, scents = terp_pairs([r.get("L", ""), r.get("M", ""), r.get("N", "")])
         cbd = (",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbdpct if cbdpct else "")
+        sale = 1 if (r["A"].strip(), strain) in DEALS else 0
         out.append(
             ' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%g,pz:%s,szs:%s,thc:%g%s,sub:"%s",st:"%s",'
-            'f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+            'f:["%s"],sale:%d,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
             % (esc(strip_cbd(strain)), esc(r["A"].strip()), photo(strain, st),
                prices["3.5 g"], json.dumps(prices), json.dumps(list(prices)),
-               thc, cbd, r["F"].strip(), st, life,
+               thc, cbd, r["F"].strip(), st, life, sale,
                round(3.9 + stable(strain, 0, 10) / 10.0, 1), stable(strain, 4, 40),
                '","'.join(feels), '","'.join(scents), esc(r["O"])))
 
@@ -125,6 +154,7 @@ def main():
     import collections
     print("%d flower - %s" % (len(out), dict(collections.Counter(r["C"] for r in rows))), file=sys.stderr)
     print("grow: %s" % dict(collections.Counter(r["F"] for r in rows)), file=sys.stderr)
+    print("deals (sale:1): %s" % ", ".join("%s / %s" % d for d in DEALS), file=sys.stderr)
     print("photos: %s" % dict(collections.Counter(re.search(r'img:"([^"]*)"', o).group(1) for o in out)),
           file=sys.stderr)
 

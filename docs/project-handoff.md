@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-08-14 · branch `claude/project-docs-review-4b84p7`
+**Last updated:** 2026-08-17 · branch `claude/project-docs-review-todos-os7hx4`
 **Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
@@ -31,8 +31,8 @@ it here when the work moves.
 ## Start here (new session)
 
 ```bash
-git fetch origin claude/project-docs-review-4b84p7
-git checkout -B claude/project-docs-review-4b84p7 origin/claude/project-docs-review-4b84p7
+git fetch origin claude/project-docs-review-todos-os7hx4
+git checkout -B claude/project-docs-review-todos-os7hx4 origin/claude/project-docs-review-todos-os7hx4
 python3 -m pip install --quiet Pillow          # recycles remove it
 python3 reference/origins/hifi-build/asm_app.py
 ```
@@ -50,7 +50,8 @@ already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
 `023226a`** (published 2026-08-14) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks, and the tinted
-weight pill. Bump this line whenever you
+weight pill. **It is now behind the branch** — the four deal flowers and the
+mix & match pairing are built and unpublished. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
@@ -81,6 +82,8 @@ you can diff the live body against your build before deciding. Only use
      no sheet states them
    - the Account block in `origins-app.src.html`: Noelle's orders and reviews,
      and Seattle's opening hours
+   - which four flowers carry the deal (`DEALS` in `gen_catalog_products.py`) —
+     Jack named the two brands, the strains within them are a first pass
    - topical and edible feelings/taste, until those sheets catch up
 
    **Before writing a table that assigns something per strain, check the source
@@ -149,11 +152,14 @@ and the open questions below, not new screens.
    Offered but not built: a remapping sheet listing all ~120 old values with a
    proposed new term and product counts, so Jack reviews 120 rows instead of 138
    products.
-3. **The home-page deals have no products.** `sale:1` came off the four legacy
-   mock flowers, which are gone, and no sheet has a deal column. `renderHome()`
-   skips a deal section whose row would be empty, so **the "2 For $50" and
-   "40% Off" sections simply don't render**. Jack is nominating four strains; the
-   30% Off brand row is unaffected.
+3. ~~The home-page deals have no products.~~ **Done 2026-08-17.** Four flowers
+   are nominated in `DEALS` (`gen_catalog_products.py`) — Passion Flower's
+   Northern Lights and Pineapple Express, Lifestyles' Gelato Cake and Jack
+   Herer — so both deal sections render again. 2-for-$50 now mixes and matches
+   across the whole bag (any two deal eighths, same strain or not). **Jack still
+   owns the strain picks**: he named the two brands, the four strains were
+   chosen to spread the row across four lifestyles and are one line each to
+   swap.
 4. **Drinks — the bubble path.** `sub`/`sub2` carry THC/CBD/Blend and the type,
    but `renderList` has no drinks branch, so the shelf is a flat grid.
 5. **The settings toggle** that swaps strain names for lifestyle names. Unblocked

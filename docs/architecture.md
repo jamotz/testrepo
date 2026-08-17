@@ -105,7 +105,7 @@ these lines; the array is the single runtime source of truth.
 | `st` | strain: Sativa / Sativa Hybrid / Hybrid / Indica Hybrid / Indica / CBD |
 | `f` | lifestyle — **`st` renamed**, one-to-one; drives border colour + badge |
 | `fe` `ta` | feelings, smell/taste (product-info chips, and the icon keys) |
-| `sale` | 1 = eligible for the home flower deals. **Nothing carries it today** |
+| `sale` | 1 = eligible for the home flower deals. **Four flowers carry it** — set by `DEALS` in `gen_catalog_products.py`, not by the sheet |
 
 There is no `tp`. A single "terpene" string held one of 11 values that were
 really scents, and only 6 of them were reachable in the filter; it was deleted
@@ -146,11 +146,28 @@ $174 while the home deal showed $58 for the same product.
 
 | Deal | Applies to | Rule |
 |---|---|---|
-| 2 for $50 | the 4 `sale:1` flowers, 3.5 g | $25/eighth, **only in pairs** — `linePrice()` gives even units the deal price, odd stays regular |
+| 2 for $50 | the 4 `sale:1` flowers, 3.5 g | $25/eighth, **only in pairs, mixed & matched across the whole bag** |
 | 40% off | same 4 flowers, 14 g / 28 g | 60% of the regular price, no quantity requirement |
 
-`linePrice(p, size, qty)` returns `{total, regTotal}`; the cart shows the struck
-`regTotal` beside `total` and a red **Discount −$X** row.
+The four are two Passion Flower (Northern Lights, Pineapple Express) and two
+Lifestyles (Gelato Cake, Jack Herer) — one per lifestyle colour except Social.
+
+**Mix & match is a pool, not a per-line rule.** `dealAlloc(lines)` takes
+`[{p, size, q}, …]` and returns how many units of each line the pairing covers:
+every deal eighth in the bag joins one pool, `floor(pool / 2)` pairs get $25,
+and the odd eighth left over stays regular. It is the **cheapest** one — the
+units are sorted dearest-first before pairing, so the shopper keeps the largest
+discount the pool can give. Two of one strain and one each of two strains price
+identically, which is what the banner promises.
+
+`cartLines()` runs that allocation once and hands every window the same answer
+(`cartSub`, `cartDiscount`, the cart rows, confirmation, and the product page's
+unit price). Each checkout is its own pool, so an order in Account › Order
+History re-prices against its own lines, not against today's bag.
+
+`linePrice(p, size, qty, dq)` returns `{total, regTotal}`, where `dq` is that
+line's covered units; the cart shows the struck `regTotal` beside `total` and a
+red **Discount −$X** row.
 
 Tax is **inclusive**: listed price = what you pay; tax is 37% *of* the total,
 not added on top.

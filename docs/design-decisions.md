@@ -28,8 +28,9 @@ An earlier version had arbitrary `sale` flags with a flat 1.3× "was" price,
 which put strikethroughs on random products (Distillate, Kief) while three of
 the four actual deal flowers showed none. Now the deals are the only discounts:
 
-- **2 for $50** → $25/eighth on the four deal flowers, **pairs only** (2, 4, …).
-  Odd units stay at regular price. Jack asked for this explicitly.
+- **2 for $50** → $25/eighth on the four deal flowers, **pairs only**, mixed and
+  matched across the bag. Odd units stay at regular price. Jack asked for this
+  explicitly.
 - **40% off** → 14 g / 28 g on the same four, no quantity requirement.
 
 ### Catalog products carry explicit per-size prices
@@ -768,14 +769,58 @@ same way; they are the only two display fields no sheet supplies.
 Flower went 34 -> 50 products. The four legacy mock rows are gone with the
 rest — they predated every catalog and carried no terpenes.
 
-### The home-page deals have no products behind them
-`sale:1` came off the four legacy mock flowers, and the Final sheet has no deal
-column, so **nothing is flagged**. `renderHome()` now skips a deal section whose
-row would be empty rather than printing a "2 For $50" banner above nothing.
+### The four deal flowers, and where the nomination lives
+Jack nominated **two Passion Flower and two Lifestyles** flowers (2026-08-17).
+The sheet has no deal column, so the four are named in `DEALS` in
+`gen_catalog_products.py` rather than hand-flagged in the spliced rows — a
+regeneration would otherwise clear the deal silently. The generator refuses to
+emit if a nomination stops matching exactly one row, or if a nominated eighth is
+at or under $25, which would advertise a discount that is really a markup (the
+two CBD flowers on these brands sit at $24–25, so this is not hypothetical).
 
-This is deliberately visible, not papered over: the two flower deal sections
-simply don't appear until Jack nominates the products. The 30% Off brand row is
-unaffected — it renders from a brand list, not from `sale`.
+Jack named the brands; the strains inside them were picked to spread the row
+across four lifestyles, and each is one line in `DEALS` to swap:
+
+| Brand | Strain | Strain type / lifestyle | Eighth |
+|---|---|---|---:|
+| Passion Flower | Northern Lights | Indica · Nightlife | $35 |
+| Passion Flower | Pineapple Express | Sativa Hybrid · Adventurous | $34 |
+| Lifestyles | Gelato Cake | Indica Hybrid · Unwind | $35 |
+| Lifestyles | Jack Herer | Sativa · Discovery | $32 |
+
+`renderHome()` still skips a deal section whose row would be empty, so the app
+degrades the same way if the four are ever un-flagged. The 30% Off brand row is
+unaffected either way — it renders from a brand list, not from `sale`.
+
+### 2-for-$50 pairs across the bag, not within a line
+The rule used to pair *within one cart line*: two of the same strain hit $50,
+one of each of two deal strains did not, even though the banner said mix &
+match. `dealAlloc()` now pools every deal eighth in the bag, pairs
+`floor(pool / 2)` of them at $25, and leaves the odd one at its regular price.
+
+**The odd one out is the cheapest eighth in the pool.** Units are sorted
+dearest-first before pairing, so three eighths at $35 / $35 / $32 pay
+$25 + $25 + $32, not $25 + $25 + $35. A shopper who adds a fourth expects the
+new one to be the one that was "left over", and any other choice quietly hands
+them a smaller discount than the pool allows.
+
+Each checkout is its own pool — the bag, or one past order in Order History —
+so history re-prices against the lines that were actually bought together.
+
+The product page can't state a unit price from the product alone any more, so it
+asks the live pairing: with deal eighths in the bag it reports what they
+actually cost, and with none it shows $25 only when the pool is odd (one more
+completes a pair). The hint line switches to *one more deal eighth pairs the
+last one* whenever something is unpaired, on the product page and above the cart
+totals.
+
+### The deal card's selected size pill needed its cream text back
+`.fcard .fsz.sel` sets olive text for the tinted `#D2DBBC` ground (2026-08-14).
+Deal cards keep the solid **olive** fill to mark the selected size, so they
+inherited olive-on-olive and the weight vanished. It only became visible when a
+flower carried `sale:1` again and the deal rows rendered for the first time
+since — a reminder that the deal rows are a rendering path nothing else
+exercises.
 
 ### The 30 icons are keyed by their own term
 `pIcon("Relaxed")` resolves to `IMG["relaxed"]` — no lookup table. The icons are

@@ -137,7 +137,11 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    the larger tiles (the current shop size) — reserved for a future a11y toggle. */
 .tiles-compact .feedrow .fcard{zoom:.9}
 .fcard.dcard .fsz{background:var(--brown);opacity:.65}
-.fcard.dcard .fsz.sel{background:var(--olive);opacity:1}
+/* the deal card's selected size keeps the solid olive fill, so it needs the
+   cream text back: the tinted `.fcard .fsz.sel` rule below sets olive text for
+   the tinted ground, and on this fill that reads olive-on-olive (invisible).
+   Only visible once a flower carried sale:1 again. */
+.fcard.dcard .fsz.sel{background:var(--olive);opacity:1;color:#F0EAD8}
 .fcard .fpr .was{color:#8C8478;text-decoration:line-through;font-weight:400;font-size:13px;margin-right:7px}
 .fcard .fpr .now{color:#C0392B}
 .brandrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 12px}
@@ -972,8 +976,8 @@ const P=[
  {t:"flower",n:"Purple Ripple",b:"Plaid Jacket",img:"fl_indhyb2",pr:42,pz:{"1 g": 14.0, "3.5 g": 42.0, "7 g": 80.0, "14 g": 140.0, "28 g": 240.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:23.16,cbdv:0.12,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:0,r:4.8,rv:13,fe:["Relaxed","Calm","Grounded"],ta:["Earthy","Floral","Peppery"],d:"Sweet berry and grape tones fold into soft earth and floral notes for a plush, slow-building evening profile."},
  {t:"flower",n:"Trop Cherry",b:"Plaid Jacket",img:"fl_sathyb2",pr:36,pz:{"1 g": 12.0, "3.5 g": 36.0, "7 g": 68.0, "14 g": 120.0, "28 g": 210.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:26.76,cbdv:0.08,sub:"Indoor",st:"Sativa Hybrid",f:["adventurous"],sale:0,r:4.0,rv:20,fe:["Uplifted","Grounded","Relaxed"],ta:["Citrus","Peppery","Earthy"],d:"Bright cherry-citrus flavor meets floral sweetness in a colorful, lively profile that settles into an easygoing finish."},
  {t:"flower",n:"Red Velvet",b:"Plaid Jacket",img:"fl_hybrid",pr:40,pz:{"1 g": 13.0, "3.5 g": 40.0, "7 g": 75.0, "14 g": 130.0, "28 g": 230.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:23.11,cbdv:0.22,sub:"Indoor",st:"Hybrid",f:["social"],sale:0,r:4.3,rv:19,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"Creamy sweetness, warm spice and a touch of citrus give this balanced hybrid a smooth, dessert-forward character."},
- {t:"flower",n:"Gelato Cake",b:"Lifestyles",img:"fl_indhyb2",pr:35,pz:{"1 g": 10.0, "3.5 g": 35.0, "7 g": 65.0, "14 g": 115.0, "28 g": 200.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:25.76,cbdv:0.1,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:0,r:4.9,rv:19,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"Rich dessert notes and gentle citrus sit over an earthy base, creating a full-bodied profile made for unwinding."},
- {t:"flower",n:"Jack Herer",b:"Lifestyles",img:"fl_sativa2",pr:32,pz:{"1 g": 10.0, "3.5 g": 32.0, "7 g": 60.0, "14 g": 105.0, "28 g": 190.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:19.11,cbdv:0.11,sub:"Indoor",st:"Sativa",f:["discovery"],sale:0,r:4.3,rv:28,fe:["Creative","Focused","Grounded"],ta:["Herbal","Pine","Peppery"],d:"Fresh pine and herbs lead into peppery spice, pairing a crisp aroma with an alert, clear-headed character."},
+ {t:"flower",n:"Gelato Cake",b:"Lifestyles",img:"fl_indhyb2",pr:35,pz:{"1 g": 10.0, "3.5 g": 35.0, "7 g": 65.0, "14 g": 115.0, "28 g": 200.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:25.76,cbdv:0.1,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:1,r:4.9,rv:19,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"Rich dessert notes and gentle citrus sit over an earthy base, creating a full-bodied profile made for unwinding."},
+ {t:"flower",n:"Jack Herer",b:"Lifestyles",img:"fl_sativa2",pr:32,pz:{"1 g": 10.0, "3.5 g": 32.0, "7 g": 60.0, "14 g": 105.0, "28 g": 190.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:19.11,cbdv:0.11,sub:"Indoor",st:"Sativa",f:["discovery"],sale:1,r:4.3,rv:28,fe:["Creative","Focused","Grounded"],ta:["Herbal","Pine","Peppery"],d:"Fresh pine and herbs lead into peppery spice, pairing a crisp aroma with an alert, clear-headed character."},
  {t:"flower",n:"Blue Dream",b:"Lifestyles",img:"fl_hybrid",pr:34,pz:{"1 g": 11.0, "3.5 g": 34.0, "7 g": 64.0, "14 g": 110.0, "28 g": 195.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:19.1,cbdv:0.13,sub:"Indoor",st:"Hybrid",f:["social"],sale:0,r:4.6,rv:5,fe:["Relaxed","Focused","Grounded"],ta:["Earthy","Pine","Peppery"],d:"Sweet berry and soft pine blend with earthy herbs for a familiar, balanced profile that stays bright and approachable."},
  {t:"flower",n:"Gas Face",b:"Torus",img:"fl_indhyb2",pr:45,pz:{"3.5 g": 45.0, "7 g": 85.0, "14 g": 150.0, "28 g": 250.0},szs:["3.5 g", "7 g", "14 g", "28 g"],thc:26.47,cbdv:0.03,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:0,r:4.0,rv:36,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"A pungent mix of fuel, pepper and citrus wrapped around dense, resinous flower with a heavy, savory finish."},
  {t:"flower",n:"Permanent Marker",b:"Torus",img:"fl_hybrid",pr:45,pz:{"3.5 g": 45.0, "7 g": 85.0, "14 g": 150.0, "28 g": 250.0},szs:["3.5 g", "7 g", "14 g", "28 g"],thc:21.44,cbdv:0.12,sub:"Indoor",st:"Hybrid",f:["social"],sale:0,r:4.0,rv:8,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"Sharp gas and sweet funk meet peppery citrus in a bold, terpene-forward hybrid with a lingering finish."},
@@ -987,8 +991,8 @@ const P=[
  {t:"flower",n:"Blueberry Muffin",b:"Skord",img:"fl_hybrid2",pr:38,pz:{"1 g": 12.0, "3.5 g": 38.0, "7 g": 70.0, "14 g": 120.0, "28 g": 215.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:22.45,cbdv:0.2,sub:"Indoor",st:"Hybrid",f:["social"],sale:0,r:4.8,rv:30,fe:["Relaxed","Grounded","Focused"],ta:["Earthy","Peppery","Pine"],d:"Soft blueberry sweetness and baked-goods warmth settle into pine and earth for a cozy, flavorful hybrid."},
  {t:"flower",n:"GMO Cookies",b:"Skord",img:"fl_indhyb",pr:42,pz:{"1 g": 13.0, "3.5 g": 42.0, "7 g": 78.0, "14 g": 135.0, "28 g": 235.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:19.36,cbdv:0.21,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:0,r:4.0,rv:36,fe:["Grounded","Relaxed","Uplifted"],ta:["Peppery","Earthy","Citrus"],d:"Savory funk and peppery earth dominate, rounded by a touch of citrus in a dense, powerful indica-leaning profile."},
  {t:"flower",n:"Cherry Pie",b:"Passion Flower",img:"fl_hybrid",pr:32,pz:{"1 g": 10.0, "3.5 g": 32.0, "7 g": 60.0, "14 g": 105.0, "28 g": 185.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:20.75,cbdv:0.07,sub:"Indoor",st:"Hybrid",f:["social"],sale:0,r:4.7,rv:5,fe:["Relaxed","Grounded","Focused"],ta:["Earthy","Peppery","Pine"],d:"Ripe cherry sweetness blends with earth and pine for a balanced profile that feels familiar, mellow and easy to shop."},
- {t:"flower",n:"Pineapple Express",b:"Passion Flower",img:"fl_sathyb",pr:34,pz:{"1 g": 10.0, "3.5 g": 34.0, "7 g": 62.0, "14 g": 110.0, "28 g": 190.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:17.62,cbdv:0.09,sub:"Indoor",st:"Sativa Hybrid",f:["adventurous"],sale:0,r:3.9,rv:37,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"Juicy tropical sweetness, citrus and light earth create a bright, approachable profile suited to daytime browsing."},
- {t:"flower",n:"Northern Lights",b:"Passion Flower",img:"fl_indica2",pr:35,pz:{"1 g": 11.0, "3.5 g": 35.0, "7 g": 65.0, "14 g": 115.0, "28 g": 200.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:22.03,cbdv:0.13,sub:"Indoor",st:"Indica",f:["nightlife"],sale:0,r:4.4,rv:7,fe:["Relaxed","Grounded","Focused"],ta:["Earthy","Peppery","Pine"],d:"Earthy herbs, pine and soft spice shape a classic, mellow profile with a calm, evening-oriented character."},
+ {t:"flower",n:"Pineapple Express",b:"Passion Flower",img:"fl_sathyb",pr:34,pz:{"1 g": 10.0, "3.5 g": 34.0, "7 g": 62.0, "14 g": 110.0, "28 g": 190.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:17.62,cbdv:0.09,sub:"Indoor",st:"Sativa Hybrid",f:["adventurous"],sale:1,r:3.9,rv:37,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"Juicy tropical sweetness, citrus and light earth create a bright, approachable profile suited to daytime browsing."},
+ {t:"flower",n:"Northern Lights",b:"Passion Flower",img:"fl_indica2",pr:35,pz:{"1 g": 11.0, "3.5 g": 35.0, "7 g": 65.0, "14 g": 115.0, "28 g": 200.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:22.03,cbdv:0.13,sub:"Indoor",st:"Indica",f:["nightlife"],sale:1,r:4.4,rv:7,fe:["Relaxed","Grounded","Focused"],ta:["Earthy","Peppery","Pine"],d:"Earthy herbs, pine and soft spice shape a classic, mellow profile with a calm, evening-oriented character."},
  {t:"flower",n:"Royal Kush",b:"Royal Tree Gardens",img:"fl_indica",pr:38,pz:{"1 g": 12.0, "3.5 g": 38.0, "7 g": 72.0, "14 g": 125.0, "28 g": 220.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:22.45,cbdv:0.06,sub:"Outdoor",st:"Indica",f:["nightlife"],sale:0,r:4.4,rv:22,fe:["Relaxed","Grounded","Uplifted"],ta:["Earthy","Peppery","Citrus"],d:"Deep earth and herbal spice lead this traditional kush profile, softened by citrus and a steady, grounded finish."},
  {t:"flower",n:"Strawberry Cough",b:"Royal Tree Gardens",img:"fl_sativa",pr:35,pz:{"1 g": 11.0, "3.5 g": 35.0, "7 g": 65.0, "14 g": 115.0, "28 g": 200.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:23.11,cbdv:0.08,sub:"Indoor",st:"Sativa",f:["discovery"],sale:0,r:4.1,rv:36,fe:["Relaxed","Focused","Grounded"],ta:["Earthy","Pine","Peppery"],d:"Sweet berry and fresh pine meet light peppery herbs for a bright, aromatic profile with an upbeat feel."},
  {t:"flower",n:"Sunset Sherbet",b:"Royal Tree Gardens",img:"fl_hybrid2",pr:38,pz:{"1 g": 12.0, "3.5 g": 38.0, "7 g": 72.0, "14 g": 125.0, "28 g": 215.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:25.04,cbdv:0.17,sub:"Indoor",st:"Hybrid",f:["social"],sale:0,r:4.7,rv:35,fe:["Grounded","Uplifted","Relaxed"],ta:["Peppery","Citrus","Earthy"],d:"Creamy fruit, citrus and earthy spice combine in a smooth hybrid profile that balances brightness with relaxation."},
@@ -1280,32 +1284,64 @@ const P=[
  {t:"topical",n:"Deep Relief Roll-On",b:"Agro Couture",img:"top_rollon",pr:27.99,pz:{"100 mL":27.99},szs:["100 mL"],thc:200,sub:"Pain Relief",sub2:"Roll-On",etype:"Roll-On",pot:"200 mg THC",combo:"THC Only",ratio:"",st:"CBD",f:["holistic"],sale:0,r:4.5,rv:20,fe:["Relief","Calm","Clear"],ta:["Roll-On"],d:"THC-forward roll-on built for targeted relief on sore joints and hard-worked muscles."},
  {t:"topical",n:"Rescue Balm",b:"Heylo",img:"top_balm",pr:22.99,pz:{"60 mL":22.99},szs:["60 mL"],thc:200,sub:"Pain Relief",sub2:"Balm / Salve",etype:"Balm / Salve",pot:"200 mg THC",combo:"THC Only",ratio:"",st:"CBD",f:["holistic"],sale:0,r:4.6,rv:27,fe:["Relief","Calm","Clear"],ta:["Balm / Salve"],d:"Thick THC balm that stays where it is applied, for concentrated relief on a single sore spot."},
  {t:"topical",n:"Night Recovery Cream",b:"Mary's Medicinals",img:"top_cream",pr:32.99,pz:{"50 mL":32.99},szs:["50 mL"],cbdv:100,cbdu:" mg",othv:100,cbd:1,sub:"Recovery",sub2:"Cream",etype:"Cream",combo:"CBD:CBN",ratio:"1:1",st:"CBD",f:["holistic"],sale:0,r:4.7,rv:34,fe:["Relief","Relaxed","Calm"],ta:["Cream"],d:"Evening recovery cream pairing CBD with CBN, formulated for the end of a long day."},
- /* --- Flower Product Catalog (Jack, mock data): brand/strain/type/prices from the
-    doc; THC, lifestyle, feelings, taste and copy authored per strain. Shop only
-    (sale:0 -> not in the home deal rows). --- */
+ /* --- Flower Product Catalog: every field comes from the "Final pt2" sheet;
+    sale:1 marks the four flowers Jack nominated for the home deals, and it is
+    set in gen_catalog_products.py so regenerating flower keeps it. --- */
 ];
 P.forEach(function(p,i){p.id=i;});
 /* The two home-page flower deals ARE the discounts, applied at their sizes only:
    2-for-$50 mix & match -> $25 per eighth; 40% off any 14g/28g. Same four
    sale-flagged flowers in both. priceFor is the single source of truth for
    every window (home, shop, PI, cart, confirmation). */
-function priceFor(p,size){
+const DEAL_EIGHTH=25,DEAL_SIZE="3.5 g";
+function regPrice(p,size){
   /* p.pz = explicit per-size prices from Jack's catalog; otherwise scale the
      base price by the type's size multipliers */
-  var base=(p.pz&&p.pz[size]!=null)?p.pz[size]:p.pr*sizeMult(p,size);
+  return (p.pz&&p.pz[size]!=null)?p.pz[size]:p.pr*sizeMult(p,size);
+}
+function priceFor(p,size){
+  var base=regPrice(p,size);
   if(p.sale&&p.t==="flower"){
-    if(size==="3.5 g")return{now:25,was:base};
+    if(size===DEAL_SIZE)return{now:DEAL_EIGHTH,was:base};
     if(size==="14 g"||size==="28 g")return{now:base*0.6,was:base};
   }
   return{now:base,was:null};
 }
-/* 2-for-$50 needs pairs: only even units (2,4,…) of a line get the $25 eighth
-   price, the odd one stays regular. The 40%-off 14g/28g deal has no quantity
-   requirement. Used for the cart, confirmation and PI line pricing. */
-function linePrice(p,size,q){
+function inPairDeal(p,size){return !!(p.sale&&p.t==="flower"&&size===DEAL_SIZE);}
+/* 2-for-$50 is mix & match across the whole bag, not per line: every eighth of
+   a deal flower joins one pool, so two different strains pair exactly like two
+   of the same. floor(pool/2) pairs get the $25 price; an odd eighth stays
+   regular, and it is the cheapest one in the pool, so the shopper keeps the
+   largest discount the pairing can give.
+   Takes [{p,size,q},…] and returns the discounted unit count per line, in the
+   same order. Any checkout is its own pool - the bag, or one past order. */
+function dealAlloc(lines){
+  var units=[],alloc=lines.map(function(){return 0;});
+  lines.forEach(function(l,i){
+    if(!inPairDeal(l.p,l.size))return;
+    var reg=regPrice(l.p,l.size);
+    for(var k=0;k<l.q;k++)units.push({i:i,reg:reg});
+  });
+  units.sort(function(a,b){return b.reg-a.reg;});   /* dearest eighths get the deal */
+  var paired=units.length-(units.length%2);
+  for(var j=0;j<paired;j++)alloc[units[j].i]++;
+  return alloc;
+}
+/* dq = how many of this line's units the pairing covers (from dealAlloc). The
+   40%-off 14g/28g deal has no quantity requirement and ignores it. */
+function linePrice(p,size,q,dq){
   var pp=priceFor(p,size),reg=(pp.was||pp.now);
-  if(pp.was&&size==="3.5 g"){var d=q-(q%2);return{total:d*pp.now+(q%2)*reg,regTotal:reg*q};}
+  if(inPairDeal(p,size)){var d=Math.max(0,Math.min(dq||0,q));
+    return{total:d*DEAL_EIGHTH+(q-d)*reg,regTotal:reg*q};}
   return{total:pp.now*q,regTotal:reg*q};
+}
+/* One allocation for the whole bag, so every window that prices the cart -
+   totals, cart rows, confirmation, product page - shares the same pairing. */
+function cartLines(){
+  var lines=S.cart.map(function(c){return{p:P[c.id],size:c.size,q:c.q};});
+  var alloc=dealAlloc(lines);
+  return S.cart.map(function(c,i){
+    return{c:c,i:i,p:P[c.id],dq:alloc[i],lp:linePrice(P[c.id],c.size,c.q,alloc[i])};});
 }
 /* ---- frame fitting ------------------------------------------------------
    The app is designed in 452 CSS px of width. That never changes; what
@@ -1576,11 +1612,14 @@ function renderAccount(){
       (r[2]>0?'+':'−')+Math.abs(r[2])+'</td></tr>';}).join("");
   $("#acpts2").textContent=ACPTS;
 
-  /* order history — totals come from priceFor so they track the real catalog */
+  /* order history — totals come from priceFor so they track the real catalog.
+     Each past order is its own mix & match pool, the way it was at checkout. */
   $("#acorders").innerHTML=ACORDERS.map(function(o){
-    var tot=0,lines=o.items.map(function(it){
-      var p=acFind(it[0],it[1]); if(!p)return "";
-      var lp=linePrice(p,it[2],it[3]); tot+=lp.total;
+    var res=o.items.map(function(it){return{p:acFind(it[0],it[1]),size:it[2],q:it[3]};});
+    var alloc=dealAlloc(res.map(function(r){return{p:r.p||{},size:r.size,q:r.q};}));
+    var tot=0,lines=o.items.map(function(it,n){
+      var p=res[n].p; if(!p)return "";
+      var lp=linePrice(p,it[2],it[3],alloc[n]); tot+=lp.total;
       return '<div class="acoi"><span>'+p.n+(it[3]>1?' <b>&times;'+it[3]+'</b>':'')+
         '</span><span>'+acLineWeight(p,it[2],it[3])+' &middot; '+money(lp.total)+'</span></div>';}).join("");
     return '<div class="acord"><div class="acoh"><span class="acon">'+o.id+
@@ -2084,11 +2123,10 @@ function renderHome(){
   var html='';
   /* A deal banner with an empty row underneath advertises a discount that
      doesn't exist, so the whole section is skipped when no flower carries
-     sale:1. The Final flower sheet has no deal column - the three products
-     that used to be flagged were legacy mock rows - so this is live until
-     Jack nominates the deal flowers. */
+     sale:1. Four flowers carry it today - two Passion Flower, two Lifestyles,
+     nominated in gen_catalog_products.py - and both sections render. */
   if(d1.length)
-  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any of these two eighths for $50</span></div><div class="dealrow">'+
+  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any two of these eighths for $50</span></div><div class="dealrow">'+
     d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+'</div></div>';
   html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">30% Off</span><span class="bs">Try some top-shelf flower for the low</span></div><div class="brandrow">'+
     brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+'</div></div>';
@@ -2109,11 +2147,20 @@ function sizeMult(p,s){var arr=SIZES[p.t]||[],i=arr.indexOf(s);
 function drawProduct(){
   var p=curP,pp=priceFor(p,curSize);
   var q=cartQty(p.id,curSize),reg=(pp.was||pp.now);
-  var isPair=!!pp.was&&curSize==="3.5 g";               /* 2-for-$50: needs qty 2,4,… */
-  var dealOn=pp.was&&(!isPair||q>=2);                    /* 40% off 14g/28g: always on */
+  var isPair=inPairDeal(p,curSize);                     /* 2-for-$50: needs a pair */
+  /* Mix & match, so this eighth's price depends on the whole bag: with some in
+     the bag, ask the live pairing; with none, one more only unlocks a pair when
+     the pool is currently odd. */
+  var dq=0,pool=0;
+  if(isPair)cartLines().forEach(function(l){
+    if(!inPairDeal(l.p,l.c.size))return;
+    pool+=l.c.q;
+    if(l.c.id===p.id&&l.c.size===curSize)dq=l.dq;
+  });
+  var dealOn=!!pp.was&&(!isPair||(q>0?dq>0:pool%2===1));  /* 40% off 14g/28g: always on */
   var priceHtml=dealOn?money(pp.now)+'<span class="was">'+money(reg)+'</span>':money(reg);
   /* each deal labels itself so the shopper knows why the price is discounted */
-  var hint=isPair?'<div class="dealhint">2 for $50 &mdash; deal price unlocks in pairs</div>'
+  var hint=isPair?'<div class="dealhint">2 for $50 &mdash; '+(q>dq?'one more deal eighth pairs the last one':'mix &amp; match any two deal eighths')+'</div>'
     :(pp.was?'<div class="dealhint">40% off &mdash; deal price on 14g &amp; 28g</div>':'');
   var lc=LIFECLASS[p.f[0]]||"soc";
   var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
@@ -2148,8 +2195,8 @@ function drawProduct(){
 function addToCart(id,size){var key=id+"|"+size,ex=null;S.cart.forEach(function(c){if(c.key===key)ex=c;});if(ex)ex.q++;else S.cart.push({key:key,id:id,size:size,q:1});
   setBag();toast("Added to bag");}
 function setBag(){var n=S.cart.reduce(function(a,c){return a+c.q;},0);var e=$("#bagn");e.textContent=n;e.classList.toggle("show",n>0);}
-function cartSub(){return S.cart.reduce(function(a,c){return a+linePrice(P[c.id],c.size,c.q).total;},0);}
-function cartDiscount(){return S.cart.reduce(function(a,c){var lp=linePrice(P[c.id],c.size,c.q);return a+(lp.regTotal-lp.total);},0);}
+function cartSub(){return cartLines().reduce(function(a,l){return a+l.lp.total;},0);}
+function cartDiscount(){return cartLines().reduce(function(a,l){return a+(l.lp.regTotal-l.lp.total);},0);}
 
 /* ===== Origins U (education) ===== */
 const EDU_ORDER=["flower","concentrate","edibles","topicals","lifestyles","cbd","growing","thc"];
@@ -2238,9 +2285,12 @@ function openEduFor(type,idx){renderEduTopic(EDUMAP[type]||"flower",idx==null?0:
 function renderCart(){
   var w=$("#cwrap");
   if(!S.cart.length){w.innerHTML='<h2>Your bag</h2><div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
-  w.innerHTML='<h2>Shopping Cart</h2>'+S.cart.map(function(c,i){var p=P[c.id],lp=linePrice(p,c.size,c.q),lc=LIFECLASS[p.f[0]]||"soc";
+  var lines=cartLines(),unpaired=lines.reduce(function(a,l){return a+(inPairDeal(l.p,l.c.size)?l.c.q-l.dq:0);},0);
+  w.innerHTML='<h2>Shopping Cart</h2>'+lines.map(function(l){var c=l.c,i=l.i,p=l.p,lp=l.lp,lc=LIFECLASS[p.f[0]]||"soc";
     return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+(lp.total<lp.regTotal-0.001?'<span class="was">'+money(lp.regTotal)+'</span><span class="now">'+money(lp.total)+'</span>':money(lp.total))+'</div></div>'+
       '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
+   /* the pool is mix & match, so the nudge belongs to the bag, not to a line */
+   +(unpaired?'<div class="dealhint">2 for $50 &mdash; one more deal eighth pairs the last one</div>':'')
    +'<div class="totals"><div class="trow"><span>Subtotal (pre-tax)</span><span>'+money(cartSub()*0.63)+'</span></div>'+
      '<div class="trow"><span>Excise + tax (37%, incl.)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
      (cartDiscount()>0?'<div class="trow disc"><span>Discount</span><span>&minus;'+money(cartDiscount())+'</span></div>':'')+
@@ -2251,7 +2301,7 @@ function renderCart(){
   var ck=w.querySelector("#ck");if(ck)ck.addEventListener("click",function(){renderConfirm();nav("confirm");});
 }
 function renderConfirm(){
-  var items=S.cart.map(function(c){var p=P[c.id],lp=linePrice(p,c.size,c.q);
+  var items=cartLines().map(function(l){var c=l.c,p=l.p,lp=l.lp;
     return '<div class="li"><div class="li-m"><div class="li-nm">'+p.n+' <span class="lq">&times;'+c.q+'</span></div><div class="li-g">'+c.size.replace(" each","")+'</div></div><span class="li-pr">'+(lp.total<lp.regTotal-0.001?'<span class="was">'+money(lp.regTotal)+'</span><span class="now">'+money(lp.total)+'</span>':money(lp.total))+'</span></div>';}).join("");
   var tot=money(cartSub());
   $("#confwrap").innerHTML='<div class="card"><div class="ch"><h3>We have received your order</h3><p>Please be sure to pick up your order before we close. We will not hold orders overnight.</p></div>'+
