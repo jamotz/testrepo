@@ -200,25 +200,33 @@ same `zoom:.9`, and `sizeDealRows()` measures a rendered product tile rather
 than pinning a number in CSS, because a card's height moves whenever its
 contents do (the tinted weight pill, a second line of name).
 
-**Three traps, all of which were live in the first attempt (222 px tiles shipped
-at 263):**
+**Two traps, both live in the first attempt — 222 px tiles shipped at 263:**
 
 1. **A fixed height on a brand or See All card makes it the tallest thing in a
    flex row, and every product card stretches up to meet it.** `.dealrow` is a
-   flex row at default `align-items:stretch`. So neither `.btile` nor `.dseeall`
-   carries a height at all now — in a `.dealrow` they stretch to the product
-   tiles, and only the **brand row**, which has no product card in it, gets a
-   measured height.
-2. **`offsetHeight` and the rendered rect disagree across `zoom`.** Reading a
-   card's `offsetHeight` and assigning it to an element that also has `zoom:.9`
-   applies the zoom twice — the tile lands 10% short. The height is applied as a
-   *ratio* instead: scale the value `style.height` actually uses by
-   (target rect ÷ current rect) and the units cancel, whatever the browser does
-   with zoom.
-3. **A hidden screen measures zero.** `renderHome()` runs at load, while the app
-   is still on the landing screen, so every rect is 0 and the function bailed.
-   `nav("home")` calls it again when the screen is actually on, and a `load`
-   listener re-runs it once the webfonts have settled the text height.
+   flex row at default `align-items:stretch`, so a 300 px `.dseeall` dragged
+   every deal tile up with it. That was the whole of the visible bug. Neither
+   `.btile` nor `.dseeall` carries a height at all now — in a `.dealrow` they
+   stretch to the product tiles, and only the **brand row**, which has no
+   product card in it, gets a measured height.
+2. **A hidden screen measures zero.** `renderHome()` runs at load, while the app
+   is still on the landing screen, so every rect is 0 and `sizeDealRows()`
+   bailed — which is why the brand tiles sat at their natural 204 px and looked
+   like a failed measurement. `nav("home")` calls it again when the screen is
+   actually on, and a `load` listener re-runs it once the webfonts have settled
+   the text height.
+
+The height is applied as a **ratio** — the value `style.height` uses, scaled by
+(target rect ÷ current rect) — rather than by assigning the card's
+`offsetHeight` directly. Both give the same answer today (both elements are
+`zoom:.9` inside the same frame, so `offsetHeight` 254 → 222.4 rendered for
+either). The ratio is defensive, not a fix: it survives the two rows ever
+carrying different zooms. *An earlier version of this note claimed the direct
+assignment applied the zoom twice and landed 10% short. It doesn't — that 204 px
+was trap 2, not a zoom problem.*
+
+Measured after the fix: the tile's own box is 253.9 px, 228.5 px after its
+`zoom:.9`, and **222.4 px on screen** — the same three numbers as a shop tile.
 
 The brand logos were capped at 98px tall inside the old short tile. The cap is
 now `max-height:100%` — the logo fits whatever height the tile ends up at, so a
