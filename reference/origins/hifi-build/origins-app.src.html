@@ -154,15 +154,17 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .fcard .fpr .now{color:#C0392B}
 .brandrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 12px}
 /* Brand tiles match the product tiles exactly (Jack, 2026-08-18): same width,
-   same zoom, and `sizeDealRows()` copies the rendered height off a deal card
-   after render so the two rows can't drift when a card's contents change. The
-   height here is only the fallback for a page with no deal cards on it. */
-.btile{flex:none;width:218px;height:300px;background:#0b0b0b;border-radius:12px;display:flex;flex-direction:column;align-items:center;padding:16px 12px 15px;zoom:.9}
+   same zoom, and `sizeDealRows()` measures a real product tile after render so
+   the two rows can't drift when a card's contents change. No height here - a
+   fixed one would make the tile the tallest thing in its row and stretch every
+   product card up to meet it. */
+.btile{flex:none;width:218px;background:#0b0b0b;border-radius:12px;display:flex;flex-direction:column;align-items:center;padding:16px 12px 15px;zoom:.9}
 .btile .btl{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
-.btile .btl img{max-width:88%;max-height:150px;object-fit:contain}
+.btile .btl img{max-width:88%;max-height:100%;object-fit:contain}
 /* the last card in a deal row: same footprint as a product tile, obviously not
-   a product - dashed orange, and it opens the whole deal in the shop list */
-.dseeall{flex:none;width:218px;height:300px;zoom:.9;background:#fff;border:1.6px dashed var(--or);border-radius:12px;
+   a product - dashed orange, and it opens the whole deal in the shop list.
+   No height: it stretches to the product tiles beside it. */
+.dseeall{flex:none;width:218px;zoom:.9;background:#fff;border:1.6px dashed var(--or);border-radius:12px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--or);padding:16px}
 .dseeall svg{width:30px;height:30px}
 .dseeall b{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:15px;letter-spacing:.06em}
@@ -1562,6 +1564,9 @@ function nav(k){
   if(k==="list")renderList();
   if(k==="cart")renderCart();
   if(k==="dealcal")renderDealCal();
+  /* a hidden screen measures 0, so the brand row can only be sized once home is
+     actually on - renderHome() runs while the app is still on the landing screen */
+  if(k==="home")sizeDealRows();
 }
 document.querySelectorAll("[data-nav]").forEach(function(b){b.addEventListener("click",function(){
   var k=b.dataset.nav;
@@ -2417,15 +2422,27 @@ function seeAllCard(k){
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'+
     '<b>See All</b><i>'+n+' product'+(n===1?'':'s')+'</i></button>';
 }
-/* Brand tiles and See All cards take their height from a real product tile in
-   the same row, measured after render - matching by eye in CSS would drift the
-   first time a card gains a line. */
+/* Only the brand row needs sizing: it is the one deal row with no product card
+   in it to set the height. Everything else in a `.dealrow` - the See All card
+   included - simply stretches to the product tiles, which is why none of them
+   carries a height of its own.
+
+   The height is measured, not typed, because a product tile's height is its
+   content. It is applied as a *ratio*: `zoom` makes `offsetHeight` and the
+   rendered rect disagree, so scale the value `style.height` actually uses by
+   (target rect / current rect) and the units cancel out. Setting offsetHeight
+   across a zoom boundary is what made every home tile 40px too tall. */
 function sizeDealRows(){
-  var card=$("#deals .dealrow .fcard");
+  var card=$("#deals .dealrow .fcard")||$("#feed .fcard");   /* a deal tile, else a shop tile */
   if(!card)return;
-  var h=card.offsetHeight;
-  if(!h)return;
-  $("#deals").querySelectorAll(".btile,.dseeall").forEach(function(e){e.style.height=h+"px";});
+  /* nothing is measurable while the screen is hidden; nav() calls again on show */
+  var target=card.getBoundingClientRect().height;
+  if(!target)return;
+  $("#deals").querySelectorAll(".brandrow .btile").forEach(function(t){
+    t.style.height="";                                       /* back to natural first */
+    var now=t.getBoundingClientRect().height,set=t.offsetHeight;
+    if(now>0&&set>0)t.style.height=(set*target/now)+"px";
+  });
 }
 /* "See All" -> the shop list, narrowed to that one deal */
 function openDeal(k){
@@ -2639,6 +2656,7 @@ $("#taptoggle").addEventListener("click",function(){this.classList.toggle("on");
 
 $("#landlogo").src=IMG["logo_origins"];$("#landmap").src=IMG["map_redmond"];
 $("#seattlebtn").addEventListener("click",function(){toast("Seattle store — coming soon");});
+window.addEventListener("load",sizeDealRows);   /* webfonts change the tile height */
 renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderHome();
 $("#dealscal1").addEventListener("click",function(){nav("dealcal");});
 $("#dealscal2").addEventListener("click",function(){nav("dealcal");});

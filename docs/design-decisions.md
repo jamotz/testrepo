@@ -193,16 +193,36 @@ tiles' own `servTotal` slot so a 20-pack reads `0.5G EACH` rather than a bare
 `0.5G` beside $79.99.
 
 ### Brand tiles are product tiles, measured not guessed
-Jack, 2026-08-18: the brand row should be exactly the size of the product row.
-They were 160×176 against the cards' 218-wide; both rows now use the same width
-and the same `zoom:.9`, and **`sizeDealRows()` copies the height off a rendered
-deal card** after `renderHome()` rather than pinning a number in CSS. A card's
-height moves whenever its contents do — the tinted weight pill, a second line of
-name — and a hard-coded 262px would silently stop matching the first time that
-happened. The CSS height is only the fallback for a page with no deal cards.
+Jack, 2026-08-18: the brand row should be exactly the size of the product row —
+**the shop's product tile is the reference**, not a size of its own. They were
+160×176 against the cards' 218-wide; both rows now use the same width and the
+same `zoom:.9`, and `sizeDealRows()` measures a rendered product tile rather
+than pinning a number in CSS, because a card's height moves whenever its
+contents do (the tinted weight pill, a second line of name).
 
-The brand logos were capped at 98px tall inside the old short tile; in the taller
-tile that left them stranded, so the cap is 150px.
+**Three traps, all of which were live in the first attempt (222 px tiles shipped
+at 263):**
+
+1. **A fixed height on a brand or See All card makes it the tallest thing in a
+   flex row, and every product card stretches up to meet it.** `.dealrow` is a
+   flex row at default `align-items:stretch`. So neither `.btile` nor `.dseeall`
+   carries a height at all now — in a `.dealrow` they stretch to the product
+   tiles, and only the **brand row**, which has no product card in it, gets a
+   measured height.
+2. **`offsetHeight` and the rendered rect disagree across `zoom`.** Reading a
+   card's `offsetHeight` and assigning it to an element that also has `zoom:.9`
+   applies the zoom twice — the tile lands 10% short. The height is applied as a
+   *ratio* instead: scale the value `style.height` actually uses by
+   (target rect ÷ current rect) and the units cancel, whatever the browser does
+   with zoom.
+3. **A hidden screen measures zero.** `renderHome()` runs at load, while the app
+   is still on the landing screen, so every rect is 0 and the function bailed.
+   `nav("home")` calls it again when the screen is actually on, and a `load`
+   listener re-runs it once the webfonts have settled the text height.
+
+The brand logos were capped at 98px tall inside the old short tile. The cap is
+now `max-height:100%` — the logo fits whatever height the tile ends up at, so a
+number here can't fight the measurement either.
 
 ### Freddy's out, Torus in
 Jack supplied a Torus logo (2026-08-18) — uploaded to the superseded
