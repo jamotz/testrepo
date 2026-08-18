@@ -180,6 +180,13 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    a panel underneath, collapsed until asked for. */
 .dcwrap{padding:14px 16px 26px}
 .dclead{font-family:var(--body);font-size:13px;line-height:1.5;color:var(--ink-2);margin-bottom:16px}
+/* the two halves of the page: what is on now, then what is coming. A small
+   orange label rather than a second big title - the date headings under it are
+   the page's real headings, and two title weights would fight. */
+.dchead{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.14em;color:var(--or);
+  margin:2px 0 12px;padding-bottom:5px;border-bottom:1.5px solid var(--or)}
+.dchead+.dcday .dcdate{padding-top:0}
+.dcday+.dchead{margin-top:22px}
 .dcday{margin-bottom:20px}
 .dcdate{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.15rem;letter-spacing:.04em;color:var(--ink);border-bottom:1.5px solid #E5E0D6;padding-bottom:6px;margin-bottom:10px}
 .dcdate .dcrel{color:var(--or);margin-right:7px}
@@ -2374,9 +2381,15 @@ function dealNextRun(key){
   }
   return now;
 }
-/* what the home banner prints: the end of this deal's current run, from the
-   same generator the calendar uses, unless DEAL_UNTIL pins a date. */
-function dealUntil(key){return DEAL_UNTIL[key]||dcMD(dealEnd(key,dealNextRun(key)));}
+/* What the home banner prints: the end of the run this deal is *in*, and only
+   the next one when nothing is running - the calendar's own occurrence list, so
+   a banner and the calendar's "Running now" entry can't name different days.
+   A pinned DEAL_UNTIL still wins. */
+function dealUntil(key){
+  if(DEAL_UNTIL[key])return DEAL_UNTIL[key];
+  var o=dcOccurrences().filter(function(x){return x.k===key;})[0];   /* live first, then soonest */
+  return dcMD(o?o.end:dealEnd(key,dealNextRun(key)));
+}
 const DEALCAL_ORDER=["pair","bulk","brand","bogo","conc30","edbrand","pre25"];  /* order within a single day */
 const DCMON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DCDOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -2389,31 +2402,67 @@ function dcRow(p,size){
     '<div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' &middot; '+(servTotal(p,sz)||feedPill(sz))+'</div></div>'+
     '<div class="pr">'+(pp.was?'<span class="was">'+money(pp.was)+'</span><span class="now">'+money(pp.now)+'</span>':money(pp.now))+'</div></button>';
 }
-function renderDealCal(){
-  var chev='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
-  var now=new Date(),html='',n=0;
-  for(var i=0;i<DEALCAL_DAYS;i++){
-    var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
-    var todays=DEALCAL_ORDER.filter(function(k){return dcRunsOn(k,d);});
-    if(!todays.length)continue;
-    var rel=(i===0?"Today":(i===1?"Tomorrow":""));
-    html+='<div class="dcday"><div class="dcdate">'+(rel?'<span class="dcrel">'+rel+'</span>':'')+
-      DCDOW[d.getDay()]+", "+DCMON[d.getMonth()]+" "+d.getDate()+'</div>'+
-      todays.map(function(k){
-        var def=DEALDEF[k],items=def.items(),id="dc"+(n++);
-        /* the banner is the deal's title and the toggle both. The date heading
-           says when the deal starts; the banner's own "Until" says when that
-           run ends, the same line the home page carries. */
-        return '<div class="dcdeal" id="'+id+'"><div class="tap" data-dc="'+id+'" role="button" tabindex="0">'+
-          dealBanner(def.label,def.copy,dcMD(dealEnd(k,d)))+'</div>'+
-          '<button class="dctog tap" data-dc="'+id+'"><span class="dccat">'+TYPES[def.t]+'</span>'+
-            (items.length?"See the "+items.length+" product"+(items.length===1?"":"s"):"Nothing flagged yet")+chev+'</button>'+
-          '<div class="dcpanel">'+(def.note?'<div class="dcnote">'+def.note()+'</div>':'')+
-            items.map(function(p){return dcRow(p,def.size);}).join("")+'</div></div>';
-      }).join("")+'</div>';
+/* One occurrence of a deal: which deal, the day it starts, the day it ends, and
+   whether it is running right now. The scan reaches a week *back* as well as
+   forward, because a deal that started before today can still be live - runs
+   last 3-7 days - and a shopper's first question is what they can buy today. */
+function dcOccurrences(){
+  var n=new Date(),today=new Date(n.getFullYear(),n.getMonth(),n.getDate()),out=[];
+  for(var i=-7;i<DEALCAL_DAYS;i++){
+    var d=new Date(today.getFullYear(),today.getMonth(),today.getDate()+i);
+    DEALCAL_ORDER.forEach(function(k){
+      if(!dcRunsOn(k,d))return;
+      var end=dealEnd(k,d);
+      if(end<today)return;                       /* already finished */
+      out.push({k:k,start:d,end:end,live:i<=0,i:i});
+    });
   }
-  $("#dcwrap").innerHTML='<div class="dclead">Every deal running in the next '+DEALCAL_DAYS+
-    ' days. Tap a deal to see what is on it.</div>'+html;
+  return out;
+}
+/* one deal's block: the banner (its title and its toggle), the shelf and count
+   row, and the products, collapsed */
+function dcDealBlock(o,id){
+  var chev='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  var def=DEALDEF[o.k],items=def.items();
+  return '<div class="dcdeal" id="'+id+'"><div class="tap" data-dc="'+id+'" role="button" tabindex="0">'+
+    dealBanner(def.label,def.copy,dcMD(o.end))+'</div>'+
+    '<button class="dctog tap" data-dc="'+id+'"><span class="dccat">'+TYPES[def.t]+'</span>'+
+      (items.length?"See the "+items.length+" product"+(items.length===1?"":"s"):"Nothing flagged yet")+chev+'</button>'+
+    '<div class="dcpanel">'+(def.note?'<div class="dcnote">'+def.note()+'</div>':'')+
+      items.map(function(p){return dcRow(p,def.size);}).join("")+'</div></div>';
+}
+function dcDateLine(rel,d){
+  return '<div class="dcdate">'+(rel?'<span class="dcrel">'+rel+'</span>':'')+
+    DCDOW[d.getDay()]+", "+DCMON[d.getMonth()]+" "+d.getDate()+'</div>';
+}
+function renderDealCal(){
+  /* What is on today comes first; what is coming follows (Jack, 2026-08-18).
+     A live deal is headed by the day it *started* - its end date is already on
+     the banner - and the running ones are ordered by which ends soonest. */
+  var occ=dcOccurrences(),n=0,html='';
+  var live=occ.filter(function(o){return o.live;}).sort(function(a,b){return a.end-b.end;});
+  var soon=occ.filter(function(o){return !o.live;});
+  if(live.length){
+    html+='<div class="dchead">Running now</div>'+live.map(function(o){
+      return '<div class="dcday">'+dcDateLine(o.i===0?"Started today":"Started",o.start)+
+        dcDealBlock(o,"dc"+(n++))+'</div>';}).join("");
+  }
+  if(soon.length){
+    html+='<div class="dchead">Upcoming</div>';
+    var day=null,open=false;
+    soon.forEach(function(o){
+      var key=o.start.toDateString();
+      if(key!==day){
+        if(open)html+='</div>';
+        day=key;open=true;
+        html+='<div class="dcday">'+dcDateLine(o.i===1?"Tomorrow":"",o.start);
+      }
+      html+=dcDealBlock(o,"dc"+(n++));
+    });
+    if(open)html+='</div>';
+  }
+  $("#dcwrap").innerHTML='<div class="dclead">What is on now, and every deal '+
+    'starting in the next '+DEALCAL_DAYS+' days. Tap a deal to see what is on it.</div>'+html;
   $("#dcwrap").querySelectorAll("[data-dc]").forEach(function(b){b.addEventListener("click",function(){
     document.getElementById(b.dataset.dc).classList.toggle("dcopen");});});
   $("#dcwrap").querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(e){

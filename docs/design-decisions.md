@@ -150,6 +150,25 @@ counter, so it stays continuous across months, renders and sessions.
 out; that is also what the home banners' "Until" dates read from, so a home
 banner can now name an end date a few weeks ahead.
 
+**Running now, then upcoming** (Jack, 2026-08-18). The page led with the next
+deal to *start*, which hid the ones a shopper could actually use: a run lasts
+3–7 days, so a deal that began on Monday is still on when they open the app on
+Wednesday. `dcOccurrences()` therefore scans a week **backwards** as well as
+forward and marks each occurrence live or not; the live ones head the page under
+*Running now*, ordered by which ends soonest, and everything else follows under
+*Upcoming*. Two deals surfaced on the first render that the old page couldn't
+show at all.
+
+A live deal is headed by the day it **started** — its end date is already on the
+banner, so repeating it would be the only thing on the card said twice. An empty
+*Running now* is dropped rather than announced; *Upcoming* then explains itself.
+
+**Home reads the same occurrence list.** `dealUntil()` used to take the next
+*start* and date its end, so a home banner could say "Until 9/3" while the
+calendar said the running deal ends 8/20. It now takes the first occurrence of
+that deal from `dcOccurrences()` — the live run if there is one, the next
+otherwise — so the two screens cannot name different days for the same deal.
+
 **The banner is the deal's title and its toggle.** Reusing `dealBanner()` means
 a deal looks identical on the home page and in the calendar, which is the whole
 point of a calendar — you recognise what you're being promised. The expand

@@ -325,8 +325,16 @@ orders same-day deals by `DEALCAL_ORDER`.
 
 Two deals a week, eight in a 30-day view. `dcWeek(date)` derives the cycle
 position from the date (whole weeks since the epoch, turning over on a Sunday),
-so it never drifts; `dcRunsOn(key, date)` is the single test both the calendar
-and `dealNextRun()` use.
+so it never drifts; `dcRunsOn(key, date)` is the single test everything else
+builds on.
+
+`dcOccurrences()` turns the rota into a flat list of runs — `{k, start, end,
+live}` — scanning from **seven days back** (a run lasts 3–7 days, so one that
+started before today can still be on) to `DEALCAL_DAYS` ahead, dropping anything
+already finished. The page renders it in two parts: **Running now**, ordered by
+which ends soonest and headed by the day each started, then **Upcoming**,
+grouped by start day. `dealUntil()` reads the same list, so the home banners and
+the calendar always name the same end date for a deal.
 
 **End dates are generated.** `dealEnd(key, date)` puts a run's end 3–7 days
 after its start, from a hash of the key and the date — stable across renders,
