@@ -48,11 +48,11 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`1182af6`** (published 2026-08-18) — the Final/pt2 catalogs, terpene-driven
+`01104b1`** (published 2026-08-18) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
-rota, running-now first), the home deal rows with matched brand tiles, Torus and
-a See All per deal, and the brown title bar on every screen. Bump this line whenever you
+rota, running-now first), the brown title bar on every screen, the outlined
+button family with one weight pill, and Advanced Settings. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
