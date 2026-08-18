@@ -147,8 +147,8 @@ monthly.
 since the epoch, shifted so a cycle turns over on a Sunday — rather than from a
 counter, so it stays continuous across months, renders and sessions.
 `dealNextRun()` scans the whole cycle now, since a deal can be up to four weeks
-out; that is also what the home banners' "Until" dates read from, so a home
-banner can now name an end date a few weeks ahead.
+out. It is only a fallback for the home banners' dates — those read the live run
+first; see *Running now, then upcoming*.
 
 **Running now, then upcoming** (Jack, 2026-08-18). The page led with the next
 deal to *start*, which hid the ones a shopper could actually use: a run lasts
