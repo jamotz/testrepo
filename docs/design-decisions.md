@@ -95,6 +95,16 @@ Tapping Add to Cart swaps the solid orange pill for a white pill with an orange
 outline, `−` and `+` at the ends, count centred — same footprint, so nothing
 shifts. An earlier version used floating circles and was rejected.
 
+### The deal banner keeps its copy on top and dates itself underneath
+Jack, 2026-08-17. The offer line stays where it was — top line, right side — and
+the run-out date sits under it a step smaller and lighter, so the deal still
+reads first and the date answers the question it raises. `DEAL_UNTIL` holds one
+string per deal, so the three banners can expire on different days; an empty
+string drops the line rather than printing a bare "Until".
+
+**The dates are authored placeholders** (`Until 12/25` on all three) until Jack
+supplies the real ones.
+
 ### The "2 for $50" label is permanent
 It stays visible on eligible eighths at every quantity, as the deal's label
 rather than a temporary prompt. The 40%-off items carry an equivalent line.
@@ -657,11 +667,32 @@ the Description and Source columns** — the CBG data it was named for was the
 same in both — and 17 of its 50 descriptions were truncated mid-word. Noted in
 case it reappears.
 
-### Not yet done: the bubble path
-`sub` carries THC/CBD/Blend and `sub2` the Type, matching the IA, but
-`renderList` has no drinks branch so the shelf renders as a flat grid. The
-first level is the same THC/CBD/Blend the pre-rolls use, so it can share that
-bubble component.
+### The bubble path, built from the IA (2026-08-17)
+`WA_Drinks_IA_Condensed.xlsx` states the whole path: **Drinks → THC / CBD /
+Blend → Drink / Shot / Seltzer / Sorbet / Honey**, and it stops there. The data
+already carried it — `sub` the branch, `sub2` the type — so this was a
+`renderList` branch, not a data change. It reuses the pre-roll bubbles
+wholesale: same `.cc` + `.ring` component, same far-left filled back bubble,
+same first-photo-not-yet-claimed trick (the three branches sell the same
+vessels, so taking each branch's first product would have put the same bottle in
+all three rings).
+
+**Two levels, because the IA rules out the obvious third ones.** It names each
+exclusion outright: size is never a filter, dose is never a navigation layer,
+ratios are metadata. So the shelf ends at the type, and the Filter drawer's size
+facet is locked off for drinks with a note saying why — before this it offered
+the edible mg list, which no drink's own `szs` contains, so every choice
+returned nothing.
+
+**One deviation from the other shelves, and the IA asked for it.** Concentrates,
+edibles and pre-rolls *dim* an option with no products; the drinks IA says
+"only show product types that exist for the selected cannabinoid category", so
+an empty type is dropped instead. All 15 branch × type combinations are stocked,
+so the two behaviours are identical today — the rule only bites when a shelf
+runs out.
+
+The breadcrumb mirrors the filter the way pre-rolls do (`THC › Shot`), rather
+than repeating the category the tab already names.
 
 ---
 
@@ -741,15 +772,32 @@ but `szs`/`pz` strip it so the Filter drawer keeps the IA's three size options
 instead of growing to six. The tile re-adds "each" from `pk`. Note `feedPill()`
 strips the word itself, so it has to be appended *outside* that call.
 
-### Kief and RSO now have no products
-The "Final" concentrate sheet covers Live Resin (25), Rosin (14), Hash (8) and
-Distillate (3) only. The old Kief and RSO rows were an `EXTRA`/`AUTHORED` block
-Jack supplied in chat, not sheet data, and they carried no terpenes — so they
-could not survive the move to terpene-driven chips.
+### Kief and RSO are on the sheet — the note that said otherwise was wrong
+**Corrected 2026-08-17 (Jack).** This section used to claim the "Final"
+concentrate sheet covered only Live Resin, Rosin, Hash and Distillate, and that
+the Kief and RSO rows were an authored `EXTRA` block that couldn't survive the
+move to terpene-driven chips.
 
-**Both bubbles still render, with nothing behind them.** Either the sheet gains
-Kief and RSO rows, or the two categories come out of `CONC`. This is a visible
-gap, not a silent one.
+The sheet has all 60 rows, Kief (6) and RSO (4) included, each with its three
+terpenes. `gen_concentrates.py` maps every one of them in `JOIN`, and re-running
+it emits **byte-identical rows to the ones already in the app** — so both
+bubbles have products behind them (Loose / Dry Sift / Infused Kief, RSO Oil
+Syringe / Applicator, two products each) and their chips are terpene-driven like
+every other smokeable.
+
+What remains true is the narrower note under *Content authored vs. supplied*:
+those ten rows were **written onto the sheet** on 2026-08-14 rather than coming
+from a vendor catalog, with strains and terpenes copied from the flower catalog
+and only brand, size and copy composed. Authored-into-the-sheet is not the same
+as absent from it, and this section conflated the two.
+
+This is the second time a "the sheet is missing/malformed" note has outlived the
+thing it described — see *The sheet was never broken — the reader was*. Re-check
+the sheet before writing code, or a doc line, around a claim like this.
+
+**Still genuinely empty** (photos and bubbles, no products): `Rosin Coins`,
+`Full Melt Hash`, `Distillate Syringe`, `Dab Applicator`. Those four are one
+level down inside Rosin, Hash and Distillate — nothing to do with Kief or RSO.
 
 ### Flower is regenerated from a sheet now, and nothing about it is authored
 The "Final pt2" flower catalog added **THC %, CBD % and Grow Method** to the

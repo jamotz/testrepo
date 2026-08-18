@@ -123,9 +123,7 @@ the sheets and reach the app only through `terpmap.py`.
 | Topical | effect (Pain Relief, Recovery…) | form (Cream, Roll-On…) | — |
 | Drink | cannabinoid branch (THC / CBD / Blend) | type (Drink / Shot / Seltzer / Sorbet / Honey) | — |
 
-**Drinks carry the data but have no bubbles yet.** `renderList` has no drinks
-branch, so the shelf renders a flat grid. Its first level is the same
-THC/CBD/Blend the pre-rolls use, so it can share that bubble component.
+Drinks stop at two levels by their IA's own rule; see below.
 
 ---
 
@@ -148,6 +146,9 @@ $174 while the home deal showed $58 for the same product.
 |---|---|---|
 | 2 for $50 | the 4 `sale:1` flowers, 3.5 g | $25/eighth, **only in pairs, mixed & matched across the whole bag** |
 | 40% off | same 4 flowers, 14 g / 28 g | 60% of the regular price, no quantity requirement |
+
+Each banner carries its own run-out date under its copy (`DEAL_UNTIL`, one
+string per deal; an empty string drops the line).
 
 The four are two Passion Flower (Northern Lights, Pineapple Express) and two
 Lifestyles (Gelato Cake, Jack Herer) — one per lifestyle colour except Social.
@@ -224,8 +225,29 @@ products don't exist in all three sizes. **No pre-roll carries a ratio**: the IA
 reserves ratios for standardized-dose formats and asks for actual THC % and
 CBD % on Blend instead.
 
-All three systems share the same bubble component (`.cc` + `.ring`), the
-far-left filled back bubble, and dimming for zero-result options.
+### Drinks — two layers
+Source: `WA_Drinks_IA_Condensed.xlsx`.
+
+```
+THC ──┐
+CBD ──┼─→ Drink / Shot / Seltzer / Sorbet / Honey
+Blend ┘
+```
+
+`DRINK` holds the three branches, `DRTYPES` the five product types. The IA is as
+explicit about what is *not* a layer as about what is: **size is never a filter**
+(the fl oz rides on the tile and in the name — the Filter drawer locks the size
+facet off for drinks), **dose is never a layer** (mg on the tile), and a
+**ratio is metadata**. So there is no third level to build.
+
+One deviation from the other shelves, and it is the IA's: *"only show product
+types that exist for the selected cannabinoid category"* — an empty type is
+**dropped** here rather than dimmed. All 15 branch × type combinations are
+stocked today, so the two behaviours are currently indistinguishable.
+
+All four systems share the same bubble component (`.cc` + `.ring`), the
+far-left filled back bubble, and dimming for zero-result options (drinks
+excepted, above).
 
 ---
 

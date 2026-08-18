@@ -50,8 +50,9 @@ already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
 `023226a`** (published 2026-08-14) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks, and the tinted
-weight pill. **It is now behind the branch** — the four deal flowers and the
-mix & match pairing are built and unpublished. Bump this line whenever you
+weight pill. **It is now behind the branch** — the four deal flowers, the mix &
+match pairing, the banner run-out dates and the drinks bubble path are built and
+unpublished. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
@@ -76,14 +77,18 @@ you can diff the live body against your build before deciding. Only use
    nothing is authored: the generators' invented tables are gone and the sheets
    supply strain, lifestyle, potency, prices, copy and the terpenes that drive
    feelings and scents. What remains, all flagged in place:
-   - the 10 Kief/RSO rows appended to the concentrate sheet — strains, types and
-     terpenes copied from the flower catalog; only brand, size and copy written
+   - the 10 Kief/RSO rows written onto the concentrate sheet — strains, types
+     and terpenes copied from the flower catalog; only brand, size and copy
+     composed. They **are** on the sheet and in the app (6 Kief, 4 RSO); only
+     their provenance is authored
    - flower's star rating and review count (`gen_catalog_products.stable()`) —
      no sheet states them
    - the Account block in `origins-app.src.html`: Noelle's orders and reviews,
      and Seattle's opening hours
    - which four flowers carry the deal (`DEALS` in `gen_catalog_products.py`) —
      Jack named the two brands, the strains within them are a first pass
+   - the deal banners' run-out dates (`DEAL_UNTIL`) — `Until 12/25` on all
+     three until Jack sets the real ones
    - topical and edible feelings/taste, until those sheets catch up
 
    **Before writing a table that assigns something per strain, check the source
@@ -99,7 +104,7 @@ you can diff the live body against your build before deciding. Only use
 | Type | Count | Source | Photos |
 |---|---:|---|---|
 | Flower | 50 | `Flower Final pt2 Product List for WA.xlsx` | by strain type ✓ |
-| Concentrate | 60 | `Concentrate Final Product List for WA.xlsx` (50 + 10 Kief/RSO appended) | per consistency ✓ |
+| Concentrate | 60 | `Concentrate Final Product List for WA.xlsx` (all 60 rows, Kief and RSO included) | per consistency ✓ |
 | Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
 | Pre-roll | 60 | `Pre-roll pt2 Product List Final for WA.xlsx` | by type + pack count ✓ |
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
@@ -135,10 +140,12 @@ and the open questions below, not new screens.
 
 1. **General touch-ups** — Jack is doing a pass across the app. The Account
    screens have been through one round already (see `design-decisions.md`).
-2. **Feelings and scents on edibles, topicals and drinks.** The other three
-   shelves are done; these 138 products still carry the old vocabulary, so their
-   chips fall back to generated SVGs while flower/concentrate/pre-roll show
-   Jack's icons. The mismatch is visible side by side. Three separate problems:
+2. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
+   2026-08-17: "ignore for now"). Don't pick this up without him. The other
+   three shelves are done; these 138 products still carry the old vocabulary, so
+   their chips fall back to generated SVGs while flower/concentrate/pre-roll
+   show Jack's icons. The mismatch is visible side by side. Three separate
+   problems:
    - **topicals use their own *form* as a taste** — `Roll-On`, `Lotion`,
      `Balm / Salve`. Always wrong; just never noticed. A topical arguably
      shouldn't carry a taste at all.
@@ -160,14 +167,19 @@ and the open questions below, not new screens.
    owns the strain picks**: he named the two brands, the four strains were
    chosen to spread the row across four lifestyles and are one line each to
    swap.
-4. **Drinks — the bubble path.** `sub`/`sub2` carry THC/CBD/Blend and the type,
-   but `renderList` has no drinks branch, so the shelf is a flat grid.
+4. ~~Drinks — the bubble path.~~ **Done 2026-08-17**, from
+   `WA_Drinks_IA_Condensed.xlsx`: THC / CBD / Blend → Drink / Shot / Seltzer /
+   Sorbet / Honey, two levels, reusing the pre-roll bubbles. The IA rules out a
+   third level (size, dose and ratio are all tile metadata, never navigation),
+   so the drawer's size facet is locked off for drinks.
 5. **The settings toggle** that swaps strain names for lifestyle names. Unblocked
    — all 308 products satisfy strain ↔ lifestyle, so it's a label lookup, not a
    data migration.
-6. **Kief/RSO sub-bubbles and two Distillate ones** have photos but no products
-   (`Rosin Coins`, `Full Melt Hash`, `Distillate Syringe`, `Dab Applicator`).
-   Categories are all stocked; these are one level down.
+6. **Four sub-bubbles have photos but no products**: `Rosin Coins`,
+   `Full Melt Hash`, `Distillate Syringe`, `Dab Applicator` — one level down
+   inside Rosin, Hash and Distillate. Every category itself is stocked,
+   **Kief (6) and RSO (4) included** — an earlier note claiming those two were
+   empty was wrong (Jack, 2026-08-17; see `design-decisions.md`).
 
 *Size as a navigation step was considered and rejected* (Jack, 2026-08-12):
 size lives in the product tile, not the filter path. Don't re-propose it.

@@ -131,6 +131,9 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .deal-banner{background:var(--or);color:#fff;border-radius:12px;margin:10px 16px 12px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
 .deal-banner .bl{font-family:var(--head);font-weight:700;font-size:1.8rem;line-height:1;white-space:nowrap;text-transform:uppercase}
 .deal-banner .bs{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.03em;text-align:right;line-height:1.3;max-width:54%}
+/* the run-out date sits under the deal's own copy, a step down in size and
+   weight so the offer still reads first (Jack, 2026-08-17). */
+.deal-banner .bs .bu{display:block;font-size:9.5px;letter-spacing:.07em;opacity:.82;margin-top:4px}
 .dealrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 10px}
 .dealrow .fcard{flex:none;width:218px;zoom:.9}
 /* shop feed tiles match the home tile size. Remove .tiles-compact from #view for
@@ -960,6 +963,17 @@ const PREROLL=[
 ];
 const PRCONC=["Live Resin","Rosin","Distillate","Hash","Kief"];
 function prTypes(n){for(var i=0;i<PREROLL.length;i++)if(PREROLL[i].n===n)return PREROLL[i].types;return [];}
+/* Drinks IA (WA_Drinks_IA_Condensed.xlsx): Drinks -> THC / CBD / Blend ->
+   product type, and it stops there. The sheet's rules are explicit about what
+   is NOT a layer: size is never a filter (the fl oz rides on the tile), dose is
+   never a layer (the mg rides on the tile) and a ratio is metadata. Honey is
+   Swift only, which is a catalog fact, not a filter rule.
+   "Only show product types that exist for the selected cannabinoid category" —
+   so an empty type is dropped here rather than dimmed the way the other
+   shelves dim theirs. All 15 combinations are stocked today, so nothing is
+   dropped yet; the rule matters the first time a shelf runs out. */
+const DRINK=["THC","CBD","Blend"];
+const DRTYPES=["Drink","Shot","Seltzer","Sorbet","Honey"];
 const SUBS={concentrate:CONC.map(function(c){return c.n;}),edible:["Chocolates","Gummies","Mints","Drinks"],flower:["Indoor","Outdoor"],preroll:PREROLL.map(function(c){return c.n;}),topical:["Pain Relief","Recovery","Cooling","Warming","Massage","Skincare","Intimacy"]};
 const BRANDS=["Artizen","Freddy's","Royal Tree","Saints","Skörd","St. Ideal"];
 const FEELOPTS=[
@@ -1790,6 +1804,7 @@ function crumb(p){
   /* pre-rolls mirror their filter path; sub3 carries the concentrate type on
      Infused and the component combination on Trifecta */
   if(p.t==="preroll"&&p.sub)return p.sub+(p.sub2?(" › "+p.sub2):"")+(p.sub3?(" › "+p.sub3):"");
+  if(p.t==="drink"&&p.sub)return p.sub+(p.sub2?(" › "+p.sub2):"");
   return TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
 }
 function feedPill(s){s=s.replace(" each","").trim();return /mg/i.test(s)?s.replace(/\s+/g,""):s.replace(/\s+/g,"").toUpperCase();}
@@ -1986,6 +2001,37 @@ function renderList(){
     sc.querySelectorAll("[data-prback]").forEach(function(b){b.addEventListener("click",function(){
       if(b.dataset.prback==="2"){S.sub2=null;S.sub3=null;}else{S.sub=null;S.sub2=null;S.sub3=null;}
       renderList();});});
+  }else if(S.type==="drink"){
+    /* drinks: cannabinoid branch -> product type. Two levels only, per the IA;
+       the branch parks far-left as a filled back bubble, same as everywhere. */
+    learn.style.display="block";sc.style.display="flex";
+    var db=function(label,cls,attr,img){
+      return '<button class="cc tap '+cls+'" '+attr+'><span class="ring'+(img?'':' noimg')+'">'+
+        (img?'<img src="'+img+'" alt="">':'')+'</span><b>'+label+'</b></button>';};
+    var dpick=function(fn){var r=P.filter(function(p){return p.t==="drink"&&fn(p);})[0];return r?IMG[r.img]:"";};
+    if(!S.sub){
+      /* the three branches sell the same vessels, so taking each branch's first
+         product put the same bottle in all three rings - prefer a photo no
+         earlier branch has claimed, the way the pre-roll branches do. */
+      var dused={};
+      sc.innerHTML=DRINK.map(function(n){
+        var pool=P.filter(function(p){return p.t==="drink"&&p.sub===n;});
+        var rep=pool.filter(function(p){return !dused[p.img];})[0]||pool[0];
+        if(rep)dused[rep.img]=1;
+        return db(n,"",'data-dr1="'+n+'"',rep?IMG[rep.img]:"");}).join("");
+    }else{
+      sc.innerHTML=db(S.sub,"back sel",'data-drback="1"',"")+DRTYPES.filter(function(x){
+        return P.some(function(p){return p.t==="drink"&&p.sub===S.sub&&p.sub2===x;});
+      }).map(function(x){
+        return db(x,(S.sub2===x?"sel":""),'data-dr2="'+x+'"',
+          dpick(function(p){return p.sub===S.sub&&p.sub2===x;}));}).join("");
+    }
+    sc.querySelectorAll("[data-dr1]").forEach(function(b){b.addEventListener("click",function(){
+      S.sub=b.dataset.dr1;S.sub2=null;S.sub3=null;renderList();});});
+    sc.querySelectorAll("[data-dr2]").forEach(function(b){b.addEventListener("click",function(){
+      var v=b.dataset.dr2;S.sub2=(S.sub2===v)?null:v;renderList();});});
+    sc.querySelectorAll("[data-drback]").forEach(function(b){b.addEventListener("click",function(){
+      S.sub=null;S.sub2=null;S.sub3=null;renderList();});});
   }else if(S.type&&subs){
     learn.style.display="block";sc.style.display="flex";
     sc.innerHTML=subs.map(function(x){
@@ -2114,6 +2160,14 @@ function dealCard(p,dealSize,struck,sale){
       ? '<button class="fmore">See more sizes</button>'+sizeSheet(p,dealSize,sizesFor(p))
       : '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dealSize+'">Add to Cart</button>')+'</div>';
 }
+/* AUTHORED — Jack sets the real run-out dates; one string per deal so they can
+   diverge. Empty string drops the line rather than printing "Until". */
+const DEAL_UNTIL={pair:"12/25",brand:"12/25",bulk:"12/25"};
+/* Deal copy keeps its top line and the run-out date sits under it. */
+function dealBanner(label,copy,until){
+  return '<div class="deal-banner"><span class="bl">'+label+'</span><span class="bs">'+copy+
+    (until?'<span class="bu">Until '+until+'</span>':'')+'</span></div>';
+}
 function renderHome(){
   $("#hero").style.backgroundImage="url("+(IMG.hero_mtn||"")+")";
   $("#herologo").src=IMG.logo_origins||"";
@@ -2126,12 +2180,12 @@ function renderHome(){
      sale:1. Four flowers carry it today - two Passion Flower, two Lifestyles,
      nominated in gen_catalog_products.py - and both sections render. */
   if(d1.length)
-  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">2 For $50</span><span class="bs">Mix &amp; match any two of these eighths for $50</span></div><div class="dealrow">'+
+  html+='<div class="deal-sec">'+dealBanner("2 For $50","Mix &amp; match any two of these eighths for $50",DEAL_UNTIL.pair)+'<div class="dealrow">'+
     d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+'</div></div>';
-  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">30% Off</span><span class="bs">Try some top-shelf flower for the low</span></div><div class="brandrow">'+
+  html+='<div class="deal-sec">'+dealBanner("30% Off","Try some top-shelf flower for the low",DEAL_UNTIL.brand)+'<div class="brandrow">'+
     brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+'</div></div>';
   if(d3.length)
-  html+='<div class="deal-sec"><div class="deal-banner"><span class="bl">40% Off</span><span class="bs">Get any 14g or 28g of flower for 40% off</span></div><div class="dealrow">'+
+  html+='<div class="deal-sec">'+dealBanner("40% Off","Get any 14g or 28g of flower for 40% off",DEAL_UNTIL.bulk)+'<div class="dealrow">'+
     d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+'</div></div>';
   $("#deals").innerHTML=html;
   $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
@@ -2313,13 +2367,17 @@ function renderConfirm(){
 }
 
 function drawDrawer(){
-  var d=$("#dbody"),szList=S.type?SIZES[S.type]:null;
+  /* drinks IA: "Do not filter by size" - a drink's size is a volume and its
+     dose is on the tile, so the facet is locked off rather than offering the
+     mg list, which no drink's own szs contains anyway. */
+  var d=$("#dbody"),noSize=(S.type==="drink"),szList=(S.type&&!noSize)?SIZES[S.type]:null;
   d.innerHTML='<div class="dsec"><div class="dt">On sale <button class="sw tap '+(S.sale?'on':'')+'" id="swsale"></button></div></div>'+
    '<div class="dsec"><div class="dt">Feeling</div><div class="opts">'+Object.keys(FEEL).map(function(k){return '<button class="opt tap '+(S.mood===k?'sel':'')+'" data-fm="'+k+'">'+FEEL[k]+'</button>';}).join("")+'</div></div>'+
    '<div class="dsec"><div class="dt">Product type</div><div class="opts">'+Object.keys(TYPES).map(function(k){return '<button class="opt tap '+(S.type===k?'sel':'')+'" data-ft="'+k+'">'+TYPES[k]+'</button>';}).join("")+'</div></div>'+
-   '<div class="dsec"><div class="dt">Size '+(S.type?'<span class="hint">'+TYPES[S.type]+' sizes</span>':'')+'</div>'+
+   '<div class="dsec"><div class="dt">Size '+(S.type&&!noSize?'<span class="hint">'+TYPES[S.type]+' sizes</span>':'')+'</div>'+
      (szList?'<div class="opts">'+szList.map(function(s){return '<button class="opt tap '+(S.size===s?'sel':'')+'" data-fs="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>'
-       :'<div class="lock"><b>Choose a product type first</b><br>Sizes adapt to the product — grams for flower, mg for edibles, mL for topicals. No impossible combos, no wrong results.</div>')+'</div>'+
+       :(noSize?'<div class="lock"><b>Drinks aren\'t filtered by size</b><br>Every drink states its volume in the name and its dose on the tile, so size stays off the filter path.</div>'
+         :'<div class="lock"><b>Choose a product type first</b><br>Sizes adapt to the product — grams for flower, mg for edibles, mL for topicals. No impossible combos, no wrong results.</div>'))+'</div>'+
    '<div class="dsec"><div class="dt">THC %</div><div class="opts">'+[["low","Low (<10%)"],["mod","Moderate (10–20%)"],["high","High (20%+)"],["cbd","Only CBD"]].map(function(o){return '<button class="opt tap '+(S.thc===o[0]?'sel':'')+'" data-fh="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>'+
    (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands</div><div class="opts">'+BRANDS.map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div></div>';
   d.querySelector("#swsale").addEventListener("click",function(){S.sale=!S.sale;drawDrawer();});
