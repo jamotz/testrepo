@@ -235,10 +235,16 @@ Blend ┘
 ```
 
 `DRINK` holds the three branches, `DRTYPES` the five product types. The IA is as
-explicit about what is *not* a layer as about what is: **size is never a filter**
-(the fl oz rides on the tile and in the name — the Filter drawer locks the size
-facet off for drinks), **dose is never a layer** (mg on the tile), and a
-**ratio is metadata**. So there is no third level to build.
+explicit about what is *not* a layer as about what is: size, dose and ratio are
+all tile metadata, never navigation. So there is no third level to build.
+
+Size is still a **drawer facet** (Jack, 2026-08-17, overruling the IA's "do not
+filter by size" — the list is short and every volume is in the product's own
+name anyway). `SIZES.drink` is derived from the catalog at load — the distinct
+`szs` across drinks, sorted numerically: 2 / 4 / 6.7 / 12 / 16 oz. It used to
+borrow the edible mg list, which matched no drink at all. Nothing prices off
+that list: every drink carries an explicit `pz` for each of its sizes, so
+`sizeMult` is never consulted.
 
 One deviation from the other shelves, and it is the IA's: *"only show product
 types that exist for the selected cannabinoid category"* — an empty type is

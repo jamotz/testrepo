@@ -102,6 +102,15 @@ reads first and the date answers the question it raises. `DEAL_UNTIL` holds one
 string per deal, so the three banners can expire on different days; an empty
 string drops the line rather than printing a bare "Until".
 
+**The copy holds one line and the block centres in the space beside the label.**
+It used to wrap to two ragged right-aligned lines, which put each banner's text
+in a different place. `.bs` is now a `flex:1` column, centred on both axes, with
+`white-space:nowrap`; the label is `flex:none` so it never gives ground. The
+longest of the three strings sets the ceiling — at the copy's original 11px it
+measures 219px in the 233px the "2 For $50" label leaves, about 14px of slack.
+**A longer line will overflow rather than wrap**; shorten the copy or drop the
+type a step.
+
 **The dates are authored placeholders** (`Until 12/25` on all three) until Jack
 supplies the real ones.
 
@@ -679,10 +688,16 @@ all three rings).
 
 **Two levels, because the IA rules out the obvious third ones.** It names each
 exclusion outright: size is never a filter, dose is never a navigation layer,
-ratios are metadata. So the shelf ends at the type, and the Filter drawer's size
-facet is locked off for drinks with a note saying why — before this it offered
-the edible mg list, which no drink's own `szs` contains, so every choice
-returned nothing.
+ratios are metadata. So the shelf ends at the type.
+
+**Size stays in the drawer, though** — Jack overruled that one line the same day:
+"it ain't hurting no one. All available sizes are in the names of the drinks."
+The facet had been offering the edible mg list, which no drink's own `szs`
+contains, so every pick returned nothing. `SIZES.drink` is now derived from the
+catalog at load — the distinct volumes, sorted numerically (2 / 4 / 6.7 / 12 /
+16 oz) — so it can't drift from the products the way a typed list would. Prices
+are untouched by this: every drink carries an explicit `pz` per size, so the
+`sizeMult` fallback (which indexes into `SIZES`) is never reached.
 
 **One deviation from the other shelves, and the IA asked for it.** Concentrates,
 edibles and pre-rolls *dim* an option with no products; the drinks IA says
