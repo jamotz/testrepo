@@ -153,9 +153,23 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .fcard .fpr .was{color:#8C8478;text-decoration:line-through;font-weight:400;font-size:13px;margin-right:7px}
 .fcard .fpr .now{color:#C0392B}
 .brandrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 12px}
-.btile{flex:none;width:160px;height:176px;background:#0b0b0b;border-radius:12px;display:flex;flex-direction:column;align-items:center;padding:16px 12px 15px;zoom:.9}
+/* Brand tiles match the product tiles exactly (Jack, 2026-08-18): same width,
+   same zoom, and `sizeDealRows()` copies the rendered height off a deal card
+   after render so the two rows can't drift when a card's contents change. The
+   height here is only the fallback for a page with no deal cards on it. */
+.btile{flex:none;width:218px;height:300px;background:#0b0b0b;border-radius:12px;display:flex;flex-direction:column;align-items:center;padding:16px 12px 15px;zoom:.9}
 .btile .btl{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
-.btile .btl img{max-width:88%;max-height:98px;object-fit:contain}
+.btile .btl img{max-width:88%;max-height:150px;object-fit:contain}
+/* the last card in a deal row: same footprint as a product tile, obviously not
+   a product - dashed orange, and it opens the whole deal in the shop list */
+.dseeall{flex:none;width:218px;height:300px;zoom:.9;background:#fff;border:1.6px dashed var(--or);border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--or);padding:16px}
+.dseeall svg{width:30px;height:30px}
+.dseeall b{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:15px;letter-spacing:.06em}
+.dseeall i{font-family:var(--head);font-style:normal;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}
+/* the deal's own banner, repeated at the top of the list it opened */
+.dealhead{padding:0 0 2px}
+.dealhead .deal-banner{margin:4px 16px 10px}
 .btile .bname{font-family:var(--head);font-weight:700;text-transform:uppercase;color:#fff;font-size:16px;letter-spacing:.05em;text-align:center;margin-top:8px;text-shadow:0 1px 3px rgba(0,0,0,.55)}
 /* --- Deals Calendar --- */
 /* A date-led list: the day is the section title and each deal keeps the same
@@ -801,6 +815,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
         <div class="chipbar shopchips" id="moodbar2"></div>
         <div class="lhead2"><h2 id="ltitle">All Products</h2><button class="llearn" id="learnbtn" type="button" style="display:none">Learn about the Differences &rsaquo;</button></div>
         <div class="catcircles subcircles" id="subcats"></div>
+        <div class="dealhead" id="dealhead"></div>
         <div class="frow shopfrow"><button class="fbtn" id="openfilter">Filter <span class="n" id="fcount">0</span></button>
           <label class="sort"><span class="lab">Sort by</span><select id="sortsel"><option value="best">Best Match</option><option value="plow">Price &#8595;</option><option value="phigh">Price &#8593;</option><option value="thc">THC %</option></select></label></div>
         <div class="pgrid" id="grid"></div>
@@ -1483,7 +1498,7 @@ document.addEventListener("click",function(e){
 addEventListener("keydown",function(e){if(e.key==="Escape")setFull(false);});
 function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}
 
-const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],size:null,thc:null,sale:false,sort:"best",cart:[],screen:"home"};
+const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],size:null,thc:null,sale:false,deal:null,sort:"best",cart:[],screen:"home"};
 const G={feels:[],method:null,subs:[],tastes:[]};
 const $=function(q){return document.querySelector(q);};
 const view=$("#view");
@@ -1807,7 +1822,7 @@ function renderFinish(){
   $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
-    S.type=G.method;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;S.sub2=null;
+    S.type=G.method;S.deal=null;S.sub=(SUBS[G.method]&&SUBS[G.method].indexOf(b.dataset.sub)>-1)?b.dataset.sub:null;S.sub2=null;
     S.mood=lifes[0]||null;S.strain=null;S.size=null;
     if(!results().length)S.mood=null; /* keep the feeling pre-selected, but never hand off an empty shop */
     moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));nav("list");
@@ -1815,8 +1830,18 @@ function renderFinish(){
   $("#tobackshop").addEventListener("click",function(){S.mood=lifes[0]||null;S.type=null;S.sub=null;S.sub2=null;S.sub3=null;moodChips($("#moodbar"));nav("shop");});
 }
 
-function activeCount(){var n=0;["type","strain","sub","sub2","sub3","eform","mood","size","thc"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;n+=S.brands.length;return n;}
+function activeCount(){var n=0;["type","strain","sub","sub2","sub3","eform","mood","size","thc","deal"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;n+=S.brands.length;return n;}
+/* S.deal names a deal from DEALDEF and narrows the list to that deal's own
+   products - the only facet that isn't a property of the product itself, so it
+   resolves through the deal and memoises the answer (P never changes at
+   runtime). This is what the home page's "See All" opens. */
+var DEALSETS={};
+function dealSet(k){
+  if(!DEALSETS[k]){var m={};DEALDEF[k].items().forEach(function(p){m[p.id]=1;});DEALSETS[k]=m;}
+  return DEALSETS[k];
+}
 function match(p){
+  if(S.deal&&!dealSet(S.deal)[p.id])return false;
   if(S.type&&p.t!==S.type)return false;
   if(S.strain&&p.st!==S.strain)return false;
   if(S.sub&&p.sub!==S.sub)return false;
@@ -1933,18 +1958,30 @@ function renderShop(){
   var circles=["flower","concentrate","edible","preroll","vape","drink","topical"];
   var iconScale={preroll:1.5,vape:1.5}; /* these cutouts sit small in the ring — enlarge to match the others */
   $("#catcircles").innerHTML=circles.map(function(k){var sc=iconScale[k];return '<button class="cc tap" data-cc="'+k+'"><span class="ring'+(IMG[icons[k]]?'':' noimg')+'">'+(IMG[icons[k]]?'<img src="'+IMG[icons[k]]+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'>':'')+'</span><b>'+labels[k]+'</b></button>';}).join("");
-  $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.size=null;nav("list");});});
+  $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.size=null;S.deal=null;nav("list");});});
   var feedcats=["flower","concentrate","edible","preroll","drink","topical"];
   $("#feed").innerHTML=feedcats.map(function(k){
     var prods=P.filter(function(p){return p.t===k;}).slice(0,10); /* browse row previews 10; 'See All' opens the full catalog */
     if(!prods.length)return "";
     return '<div class="feed-sec"><div class="feed-h"><div class="ft">'+labels[k]+'</div><button class="fsee tap" data-see="'+k+'">See All ›</button></div><div class="feedrow">'+prods.map(feedCard).join("")+'</div></div>';
   }).join("");
-  $("#feed").querySelectorAll("[data-see]").forEach(function(b){b.addEventListener("click",function(){S.type=b.dataset.see;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.size=null;nav("list");});});
+  $("#feed").querySelectorAll("[data-see]").forEach(function(b){b.addEventListener("click",function(){S.type=b.dataset.see;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.size=null;S.deal=null;nav("list");});});
   $("#feed").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#feed").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(){addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
 }
 function renderList(){
+  /* deal mode: the list is one deal's products, so the shelf bubbles have
+     nothing to filter and the deal's own banner heads the list instead. */
+  var dh=$("#dealhead");
+  if(S.deal){
+    var def=DEALDEF[S.deal];
+    $("#ltitle").textContent=def.label+" \u00b7 "+TYPES[def.t];
+    dh.innerHTML=dealBannerFor(S.deal)+(def.note?'<div class="dcnote" style="padding:0 16px 6px">'+def.note()+'</div>':'');
+    $("#learnbtn").style.display="none";$("#subcats").style.display="none";$("#subcats").innerHTML="";
+    drawResults();
+    return;
+  }
+  dh.innerHTML="";
   $("#ltitle").textContent=S.type?TYPES[S.type]:"All Products";
   var learn=$("#learnbtn"),subs=SUBS[S.type],sc=$("#subcats");
   if(S.type==="concentrate"){
@@ -2094,6 +2131,9 @@ function renderList(){
     }).join("");
     sc.querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){S.sub=S.sub===b.dataset.sub?null:b.dataset.sub;renderList();});});
   }else{learn.style.display="none";sc.style.display="none";sc.innerHTML="";}
+  drawResults();
+}
+function drawResults(){
   var r=results();
   $("#fcount").textContent=activeCount();
   $("#grid").innerHTML=r.length?r.map(feedCard).join("")
@@ -2262,9 +2302,9 @@ const DEALDEF={
   brand:{t:"flower",dow:3,label:"30% Off",copy:"Try some top-shelf flower for the low",size:"3.5 g",
          /* the same four labels the home brand row shows. Matched as a prefix,
             because the tile says "Royal Tree" and the catalog says "Royal Tree
-            Gardens"; Freddy's has no flower in the catalog, so it contributes
-            nothing and the note still names it. */
-         brands:["Royal Tree","Saints","Freddy's","Skord"],
+            Gardens". Freddy's used to sit here with no flower behind it at
+            all; Torus has eight (Jack, 2026-08-18). */
+         brands:["Royal Tree","Saints","Torus","Skord"],
          note:function(){return DEALDEF.brand.brands.join(" &middot; ")+" &mdash; "+dcNote("30%");},
          items:function(){var b=DEALDEF.brand.brands;
            return P.filter(function(p){return p.t==="flower"&&b.some(function(x){return p.b.indexOf(x)===0;});});}},
@@ -2348,7 +2388,9 @@ function renderHome(){
   $("#herologo").src=IMG.logo_origins||"";
   var dealFlowers=P.filter(function(p){return p.t==="flower"&&p.sale;});
   var d1=dealFlowers,d3=dealFlowers;
-  var brands=[["brand_royaltree","Royal Tree"],["brand_saints","Saints"],["brand_freddys","Freddy's"],["brand_skord","Skord"]];
+  /* Freddy's out, Torus in (Jack, 2026-08-18) - Freddy's had no flower in the
+     catalog, so the 30% row advertised a brand with nothing behind it. */
+  var brands=[["brand_royaltree","Royal Tree"],["brand_saints","Saints"],["brand_torus","Torus"],["brand_skord","Skord"]];
   var html='';
   /* A deal banner with an empty row underneath advertises a discount that
      doesn't exist, so the whole section is skipped when no flower carries
@@ -2356,15 +2398,39 @@ function renderHome(){
      nominated in gen_catalog_products.py - and both sections render. */
   if(d1.length)
   html+='<div class="deal-sec">'+dealBannerFor("pair")+'<div class="dealrow">'+
-    d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+'</div></div>';
+    d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+seeAllCard("pair")+'</div></div>';
   html+='<div class="deal-sec">'+dealBannerFor("brand")+'<div class="brandrow">'+
-    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+'</div></div>';
+    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+seeAllCard("brand")+'</div></div>';
   if(d3.length)
   html+='<div class="deal-sec">'+dealBannerFor("bulk")+'<div class="dealrow">'+
-    d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+'</div></div>';
+    d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+seeAllCard("bulk")+'</div></div>';
   $("#deals").innerHTML=html;
   $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#deals").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz);});});
+  $("#deals").querySelectorAll("[data-seeall]").forEach(function(b){b.addEventListener("click",function(){openDeal(b.dataset.seeall);});});
+  sizeDealRows();
+}
+/* the last card in every deal row */
+function seeAllCard(k){
+  var n=DEALDEF[k].items().length;
+  return '<button class="dseeall tap" data-seeall="'+k+'">'+
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'+
+    '<b>See All</b><i>'+n+' product'+(n===1?'':'s')+'</i></button>';
+}
+/* Brand tiles and See All cards take their height from a real product tile in
+   the same row, measured after render - matching by eye in CSS would drift the
+   first time a card gains a line. */
+function sizeDealRows(){
+  var card=$("#deals .dealrow .fcard");
+  if(!card)return;
+  var h=card.offsetHeight;
+  if(!h)return;
+  $("#deals").querySelectorAll(".btile,.dseeall").forEach(function(e){e.style.height=h+"px";});
+}
+/* "See All" -> the shop list, narrowed to that one deal */
+function openDeal(k){
+  S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.size=null;S.thc=null;S.sale=false;
+  S.deal=k;nav("list");
 }
 
 var curP=null,curSize=null;
@@ -2553,7 +2619,7 @@ function drawDrawer(){
    (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands</div><div class="opts">'+BRANDS.map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div></div>';
   d.querySelector("#swsale").addEventListener("click",function(){S.sale=!S.sale;drawDrawer();});
   d.querySelectorAll("[data-fm]").forEach(function(b){b.addEventListener("click",function(){S.mood=S.mood===b.dataset.fm?null:b.dataset.fm;drawDrawer();});});
-  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;drawDrawer();});});
+  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.deal=null;drawDrawer();});});
   d.querySelectorAll("[data-fs]").forEach(function(b){b.addEventListener("click",function(){S.size=S.size===b.dataset.fs?null:b.dataset.fs;drawDrawer();});});
   d.querySelectorAll("[data-fh]").forEach(function(b){b.addEventListener("click",function(){S.thc=S.thc===b.dataset.fh?null:b.dataset.fh;drawDrawer();});});
   d.querySelectorAll("[data-fe]").forEach(function(b){b.addEventListener("click",function(){S.eform=S.eform===b.dataset.fe?null:b.dataset.fe;drawDrawer();});});
@@ -2565,7 +2631,7 @@ $("#shopfilter").addEventListener("click",function(){nav("list");drawDrawer();$(
 $("#closefilter").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#dim").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#applyf").addEventListener("click",function(){$("#drawer").classList.remove("on");moodChips($("#moodbar2"));renderList();});
-$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.size=null;S.thc=null;S.sale=false;drawDrawer();});
+$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.size=null;S.thc=null;S.sale=false;S.deal=null;drawDrawer();});
 $("#sortsel").addEventListener("change",function(e){S.sort=e.target.value;renderList();});
 
 var tmr=null;function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tmr);tmr=setTimeout(function(){t.classList.remove("on");},1600);}

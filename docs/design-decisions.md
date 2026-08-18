@@ -192,6 +192,46 @@ for a deal (they're the priciest things on the shelf), but the rows use the
 tiles' own `servTotal` slot so a 20-pack reads `0.5G EACH` rather than a bare
 `0.5G` beside $79.99.
 
+### Brand tiles are product tiles, measured not guessed
+Jack, 2026-08-18: the brand row should be exactly the size of the product row.
+They were 160×176 against the cards' 218-wide; both rows now use the same width
+and the same `zoom:.9`, and **`sizeDealRows()` copies the height off a rendered
+deal card** after `renderHome()` rather than pinning a number in CSS. A card's
+height moves whenever its contents do — the tinted weight pill, a second line of
+name — and a hard-coded 262px would silently stop matching the first time that
+happened. The CSS height is only the fallback for a page with no deal cards.
+
+The brand logos were capped at 98px tall inside the old short tile; in the taller
+tile that left them stranded, so the cap is 150px.
+
+### Freddy's out, Torus in
+Jack supplied a Torus logo (2026-08-18) — uploaded to the superseded
+`4b84p7` branch, so it was cherry-picked across. Freddy's was the one brand in
+that row with **no flower in the catalog at all**, so the 30%-off deal resolved
+26 products across three brands while advertising four. Torus has eight, and the
+row now matches what the deal actually contains. `Freddy's Main Logo.png` stays
+in the repo; only the `M` entry in `asm_app.py` moved.
+
+### "See All" opens a deal, which needed a filter that isn't a product property
+Jack, 2026-08-18. Every deal row ends with a tile-sized card that opens the
+whole deal in the shop list. The two flower rows already showed all four of
+their products, so this earns its place mainly on the brand row, which shows
+four logos over 26 products — but it's on all three, because a row that
+sometimes ends in a card and sometimes doesn't reads as a bug.
+
+`S.deal` holds a `DEALDEF` key and `match()` tests membership of that deal's
+resolved product set. Every other facet is a property of the product itself
+(`p.sub`, `p.st`), so this one resolves through the deal and memoises the answer
+in `DEALSETS` — `P` never changes at runtime, and without the memo `match()`
+would rebuild an 18–26 item list once per product per render.
+
+In deal mode the shelf bubbles are hidden (they have nothing to filter inside one
+deal) and the deal's own banner heads the list, so the promise that got you there
+is still on screen next to the prices. `S.deal` clears on every path that re-aims
+the list — the shop circles, the drawer's type buttons, Guide Me's finish, and
+Clear — because a stale deal filter would silently subtract products from an
+unrelated shelf.
+
 ### The "2 for $50" label is permanent
 It stays visible on eligible eighths at every quantity, as the deal's label
 rather than a temporary prompt. The 40%-off items carry an equivalent line.

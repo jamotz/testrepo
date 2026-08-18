@@ -252,7 +252,9 @@ M = {
  "hero_mtn": "origins logos/Origin background.jpeg",
  "brand_royaltree": "Various Brand Logos/Royal Tree Main Logo.png",
  "brand_saints": "Various Brand Logos/Saints Main Logo.png",
- "brand_freddys": "Various Brand Logos/Freddy's Main Logo.png",
+ # Freddy's has no flower in the catalog; Jack swapped it for Torus, which has
+ # eight (2026-08-18). The Freddy's logo stays in the repo for a comeback.
+ "brand_torus": "Various Brand Logos/large_Torus_Logo.png",
  "brand_skord": "Various Brand Logos/Skord Main Logo.png",
  "logo_origins": "origins logos/logo_header_origins.svg",
  "life_discovery":   "Lifestyle logos/Discovery Logo.png",

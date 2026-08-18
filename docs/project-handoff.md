@@ -193,7 +193,8 @@ open questions below.
    **Kief (6) and RSO (4) included** — an earlier note claiming those two were
    empty was wrong (Jack, 2026-08-17; see `design-decisions.md`).
 
-7. **The drawer's Brands facet matches almost nothing.** `BRANDS` lists
+7. **The drawer's Brands facet matches almost nothing.** (Freddy's is now out
+   of the home row — see below — but the drawer still lists it.) `BRANDS` lists
    `Artizen · Freddy's · Royal Tree · Saints · Skörd · St. Ideal` and `match()`
    compares it to `p.b` exactly, but the catalog says `Royal Tree Gardens` and
    `Skord` (no umlaut), and carries no `Freddy's` or `St. Ideal` at all — so

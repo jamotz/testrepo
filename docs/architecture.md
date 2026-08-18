@@ -265,10 +265,17 @@ excepted, above).
 
 ```js
 S = {type, strain, sub, sub2, sub3, eform, mood, brands[], size, thc, terp,
-     sale, sort, cart[], screen}
+     sale, deal, sort, cart[], screen}
 ```
 
 `match(p)` ANDs every active facet; `results()` applies sorting.
+
+**`deal` is the one facet that isn't a product property.** It holds a `DEALDEF`
+key — set by the "See All" card at the end of each home deal row — and `match()`
+tests membership of that deal's resolved product set, memoised in `DEALSETS`. In
+deal mode `renderList` hides the shelf bubbles and heads the list with the deal's
+own banner. It clears on every path that re-aims the list (shop circles, the
+drawer's type buttons, Guide Me's finish, Clear).
 `activeCount()` feeds the Filter pill badge. Clearing a level always clears the
 deeper ones (`S.sub = null` also clears `sub2`/`sub3`).
 
@@ -328,6 +335,11 @@ a date when a fixed one is wanted.
 | `.dctog` | the dropdown control: the shelf's name, "See the N products", chevron flips on open |
 | `.dcpanel` | the products, shown by a `dcopen` class on the wrapper |
 | `.dcp` | one product row — photo, name, brand · size, price, lifestyle border. Tapping opens the product page |
+
+On the **home page**, each deal row ends with a `.dseeall` card that opens the
+same deal in the shop list (`S.deal`). Brand tiles and See All cards take their
+height from a rendered product tile via `sizeDealRows()`, so all three cards in
+a row are the same size.
 
 Prices come from `priceFor` like everywhere else, and the size slot from the
 tiles' own `servTotal` (so a 20-pack reads `0.5G EACH`, an edible `10MG /
