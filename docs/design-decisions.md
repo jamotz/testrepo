@@ -309,6 +309,43 @@ unrelated shelf.
 It stays visible on eligible eighths at every quantity, as the deal's label
 rather than a temporary prompt. The 40%-off items carry an equivalent line.
 
+### Every screen wears the same brown title bar
+Jack, 2026-08-18: Shop and Cart were the only screens without one. Shop and the
+product list had their own white `.shophead`; the cart had no header at all.
+Both now use `.sbar`, the component Account and Origins U already use — one
+title bar in the app rather than three treatments — and the dead `.shophead`
+rules are gone. The cart's bar reads **Your Cart** (was "Your bag" / "Shopping
+Cart" in the body), and the body headings came out with it: with the bar
+carrying the title, an in-page `<h2>` said it twice.
+
+### The trolley belongs over Cart
+The tab bar had a shopping trolley over *Shop* and a tote over *Cart*. Swapped
+(Jack, 2026-08-18: "one is literally a cart"). The badge wrapper stays on the
+Cart button, so the count still sits on the trolley.
+
+### Filter and Sort are a pair: olive and orange
+`.fbtn` is olive everywhere in the app, but `.shopfrow .fbtn` overrode it to
+white-on-orange, which made the filter the loudest thing on the shop page. The
+override is gone. Sort was a small bordered white box beside it — it now mirrors
+the filter pill exactly (same radius, padding, type, 47 px tall) in the brand
+orange, so the two read as one control pair. The `<select>` keeps its native
+behaviour; only its own chrome is replaced, with a white chevron and dark
+options for the OS menu.
+
+### Origins U had no photos because its image keys were never wired
+The hub and topic banners have always read `IMG[c.img]`, but six of the eight
+keys — `flower`, `rosin`, `gummy`, `topical`, `badder`, `thca` — were never in
+`asm_app.py`'s asset map, so those cards rendered `<img src="">`. Only
+`growbud` resolved.
+
+Rather than add six new asset entries, the `EDU` table now points at **images
+the app already embeds**: `growbud` (the "Full Bud – educational" shot),
+`cro_live`, `ed_gum_purple`, `top_balm`, `fl_universal` for Forms of CBD (the
+image the CBD flowers themselves use) and `clr_diamonds` for Types of
+Cannabinoids (diamonds being THCA). No new files, nothing to go missing, and
+the hub matches the shop's own category circles. Lifestyles keeps its strip of
+six logos and never used `img`.
+
 ### Small category icons scale 50%
 Flower, Pre-Rolls, Vapes and Topicals sit small inside the category ring, so
 they're scaled 1.5× to match the others visually.

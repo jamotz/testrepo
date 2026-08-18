@@ -300,10 +300,6 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .cat b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12.5px;letter-spacing:.08em;color:var(--ink)}
 .cat span{display:block;font-family:var(--head);font-size:10px;color:var(--ink-2);margin-top:2px}
 /* --- Shop feed (SHOP.png) --- */
-.shophead{display:flex;align-items:center;gap:12px;background:#fff;color:var(--ink);padding:16px 16px 8px}
-.shophead .shopback{background:none;border:0;color:var(--ink);width:26px;height:26px;padding:0;display:flex;align-items:center;justify-content:center}
-.shophead .shopback svg{width:24px;height:24px}
-.shophead h2{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.55rem;letter-spacing:.03em}
 .chipbar.shopchips{background:#fff;padding:6px 14px 10px}
 .chip .chiplg{width:16px;height:16px;object-fit:contain;flex:none}
 .catcircles{display:flex;gap:15px;overflow-x:auto;padding:6px 16px 14px;background:#fff}
@@ -312,8 +308,9 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .cc .ring img{width:62px;height:62px;object-fit:contain}
 .cc b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.03em;color:var(--ink);display:block;line-height:1.1}
 .shopfrow{margin:0 0 2px}
-.shopfrow .fbtn{background:#fff;border:2px solid var(--or);color:var(--or)}
-.shopfrow .fbtn .n{background:#fff;color:var(--or);border:1.5px solid var(--or);width:24px;height:24px}
+/* the filter pill keeps the olive it has everywhere else (Jack, 2026-08-18) -
+   the white-on-orange override made it the loudest thing on the shop page */
+.shopfrow .fbtn .n{width:24px;height:24px}
 .feed{padding:8px 0 12px}
 .feed-sec{margin-bottom:18px}
 .feed-h{display:flex;flex-direction:column;padding:0 16px;margin-bottom:10px}
@@ -414,9 +411,16 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .frow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-top:1px solid #E2DCD0;border-bottom:1px solid #E2DCD0}
 .fbtn{display:inline-flex;align-items:center;gap:10px;background:var(--olive);color:#fff;border:0;border-radius:100px;padding:12px 22px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
 .fbtn .n{background:#fff;color:var(--olive);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
-.sort{border:1px solid #C9C2B4;background:#fff;border-radius:4px;padding:7px 10px}
-.sort .lab{display:block;font-size:11px;color:var(--ink-2)}
-.sort select{border:0;background:none;font-family:var(--body);font-size:15px;color:var(--ink);max-width:120px}
+/* Sort is the Filter pill's twin: same shape, same type, the orange half of the
+   pair (Jack, 2026-08-18). The select keeps native behaviour - only its own
+   chrome is removed - so the option list is still the OS one. */
+.sort{display:inline-flex;align-items:center;gap:8px;background:var(--or);color:#fff;border:0;border-radius:100px;padding:12px 18px}
+.sort .lab{display:inline;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em;color:#fff}
+.sort select{border:0;background:transparent;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.88rem;letter-spacing:.05em;color:#fff;max-width:118px;
+  -webkit-appearance:none;appearance:none;padding-right:15px;
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right center;background-size:11px}
+.sort select option{color:var(--ink);background:#fff}
 .count{font-family:var(--head);font-weight:600;font-size:1.05rem;letter-spacing:.05em;padding:8px 16px 4px;text-transform:uppercase;color:var(--ink)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#E2DCD0;border-top:1px solid #E2DCD0}
 .pc{background:#fff;padding:12px 12px 14px;display:flex;flex-direction:column;position:relative}
@@ -502,8 +506,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .icard b{display:block;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;color:var(--ink)}
 .icard .flavimg{display:block;width:36px;height:36px;object-fit:contain;margin:0 auto 8px}
 
-.cwrap{padding:6px 16px 20px}
-.cwrap h2{font-size:1.5rem;margin-bottom:10px;color:var(--ink);text-transform:uppercase;letter-spacing:.02em}
+.cwrap{padding:14px 16px 20px}   /* the brown bar carries the title now */
 .ci{display:flex;gap:12px;background:#fff;border:1.5px solid #E5E0D6;border-radius:10px;padding:10px;margin-bottom:10px;align-items:center}
 .ci.disc{border-color:var(--disc)}.ci.adv{border-color:var(--adv)}.ci.soc{border-color:var(--soc)}.ci.unw{border-color:var(--unw)}.ci.night{border-color:var(--night)}.ci.hol{border-color:var(--hol)}
 .ci img{width:54px;height:54px;object-fit:contain;flex:none}
@@ -811,7 +814,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="shop">
-        <div class="shophead"><button class="shopback tap" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
         <div class="chipbar shopchips" id="moodbar"></div>
         <div class="catcircles" id="catcircles"></div>
         <div class="frow shopfrow"><button class="fbtn" id="shopfilter">Filter <span class="n">0</span></button>
@@ -820,7 +823,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="list">
-        <div class="shophead"><button class="shopback tap" data-nav="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="sbar"><button class="bk" data-nav="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
         <div class="chipbar shopchips" id="moodbar2"></div>
         <div class="lhead2"><h2 id="ltitle">All Products</h2><button class="llearn" id="learnbtn" type="button" style="display:none">Learn about the Differences &rsaquo;</button></div>
         <div class="catcircles subcircles" id="subcats"></div>
@@ -841,7 +844,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="product"><div class="pwrap" id="pwrap"></div></section>
-      <section class="s" data-s="cart"><div class="cwrap" id="cwrap"></div></section>
+      <section class="s" data-s="cart"><div class="sbar"><button class="bk" data-nav="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Your Cart</h2></div><div class="cwrap" id="cwrap"></div></section>
       <section class="s" data-s="confirm"><div class="conf" id="confwrap"></div></section>
 
       <section class="s" data-s="dealcal">
@@ -967,8 +970,8 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 
     <div class="tabs">
       <button data-nav="home" class="on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button>
-      <button data-nav="shop" data-tab="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.5 12H19l2-8H6"/></svg>Shop</button>
-      <button data-nav="cart" data-tab="cart"><span class="tabic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 13H6z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg><span class="tabn" id="bagn"></span></span>Cart</button>
+      <button data-nav="shop" data-tab="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 13H6z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>Shop</button>
+      <button data-nav="cart" data-tab="cart"><span class="tabic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.5 12H19l2-8H6"/></svg><span class="tabn" id="bagn"></span></span>Cart</button>
       <button data-nav="edu" data-tab="edu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M7 9v5c0 1.5 5 3 5 3s5-1.5 5-3V9"/></svg>Origins U</button>
       <button data-nav="account" data-tab="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3-6.5 7-6.5s7 2.9 7 6.5"/></svg>Account</button>
     </div>
@@ -2595,24 +2598,24 @@ const EDU_ORDER=["flower","concentrate","edibles","topicals","lifestyles","cbd",
 /* which Origins U category a Shop/Guide "Learn the differences" link jumps to */
 const EDUMAP={flower:"flower",preroll:"flower",concentrate:"concentrate",edible:"edibles",drink:"edibles",topical:"topicals",tincture:"cbd",vape:"concentrate"};
 const EDU={
- flower:{name:"Flower",img:"flower",imgscale:1.3,lead:"Learn all about flower from the growing process to your jar — we cover the anatomy of the plant to help you explore the world of FLOWER.",topics:[
+ flower:{name:"Flower",img:"growbud",imgscale:1.3,lead:"Learn all about flower from the growing process to your jar — we cover the anatomy of the plant to help you explore the world of FLOWER.",topics:[
    {t:"Outdoor vs Indoor",d:"Learn the differences between flower grown outdoors vs indoors. Explore the benefits and disadvantages of each growing style."},
    {t:"Growing Flower",d:"Follow a plant from seedling to harvest — the lighting, feeding, and the vegetative and flowering stages that shape the final bud."},
    {t:"Harvesting Flower",d:"Learn how growers cure their flower before bottling it up for you to smoke. Explore the process of curation and why it's important."},
    {t:"Parts of the Plant",d:"Colas, calyxes, trichomes and pistils — get to know the anatomy of the flower and where the good stuff lives."},
    {t:"THC in Flower",d:"How potency is measured, what the percentage on the jar really means, and why terpenes matter as much as the THC number."}]},
- concentrate:{name:"Concentrate",img:"rosin",imgscale:1.3,lead:"From the melty to the marble, concentrates come in many forms. Learn how they're made and how to tell them apart.",topics:[
+ concentrate:{name:"Concentrate",img:"cro_live",imgscale:1.3,lead:"From the melty to the marble, concentrates come in many forms. Learn how they're made and how to tell them apart.",topics:[
    {t:"Types of Concentrate",d:"Distillate, live resin, rosin, kief and hash — a quick tour of the most common concentrate textures and what sets each apart."},
    {t:"Extraction Methods",d:"Solvent vs solventless: how butane, CO2 and heat-and-pressure extraction change the final product."},
    {t:"Live Resin vs Rosin",d:"Both are prized for flavor, but they're made very differently. Learn which one fits your taste and budget."},
    {t:"Distillate Explained",d:"Why distillate is the most potent and most neutral concentrate, and where you'll usually find it."},
    {t:"THC in Concentrate",d:"Concentrates can test far higher than flower — learn how to read the numbers and dose accordingly."}]},
- edibles:{name:"Edibles",img:"gummy",lead:"Chocolates, gummies, mints and drinks — learn how edibles work and how to enjoy them responsibly.",topics:[
+ edibles:{name:"Edibles",img:"ed_gum_purple",lead:"Chocolates, gummies, mints and drinks — learn how edibles work and how to enjoy them responsibly.",topics:[
    {t:"How Edibles Work",d:"Why eating cannabis feels different from smoking it, and how your liver turns THC into something stronger."},
    {t:"Dosing & Onset Time",d:"Edibles can take up to two hours to kick in. Start low, go slow — learn how to find your dose."},
    {t:"Chocolate, Gummy, Mint & Drinks",d:"Each format hits a little differently. Explore the options and which suits your moment."},
    {t:"THC vs CBD Edibles",d:"Balanced ratios, CBD-only and high-THC — learn how the blend changes the experience."}]},
- topicals:{name:"Topicals",img:"topical",lead:"Balms, lotions and oils you apply to your skin. Learn what topicals do and when to reach for one.",topics:[
+ topicals:{name:"Topicals",img:"top_balm",lead:"Balms, lotions and oils you apply to your skin. Learn what topicals do and when to reach for one.",topics:[
    {t:"What Are Topicals",d:"Cannabis-infused products for the skin — salves, balms and roll-ons designed for targeted comfort."},
    {t:"How Topicals Work",d:"Most topicals act locally and won't get you high. Learn how they interact with receptors in your skin."},
    {t:"When to Use Topicals",d:"Sore spots, dry skin and post-workout recovery — common moments people reach for a topical."},
@@ -2623,7 +2626,7 @@ const EDU={
    {t:"Social & Nightlife",d:"Easy conversation and good company, or a bigger night out — the lifestyles built for people."},
    {t:"Unwind",d:"Calm, quiet and restful — the lifestyle for winding down at the end of the day."},
    {t:"Finding Your Lifestyle",d:"Not sure where you fit? Our Guide Me wizard matches you to a lifestyle in a few taps."}]},
- cbd:{name:"Forms of CBD",img:"badder",lead:"CBD comes in many forms and does many things. Learn the basics and how it differs from THC.",topics:[
+ cbd:{name:"Forms of CBD",img:"fl_universal",lead:"CBD comes in many forms and does many things. Learn the basics and how it differs from THC.",topics:[
    {t:"What Is CBD",d:"A non-intoxicating cannabinoid known for a calmer, clearer kind of relief. Here's the primer."},
    {t:"CBD vs THC",d:"They come from the same plant but feel worlds apart. Learn what sets them apart."},
    {t:"Forms of CBD",d:"Oils, edibles, topicals, flower and concentrate — the many ways to take CBD."},
@@ -2634,7 +2637,7 @@ const EDU={
    {t:"Soil vs Hydroponic",d:"Two very different ways to feed a plant, and what each brings to the table."},
    {t:"Curing & Drying",d:"The slow, careful finish that locks in aroma, smoothness and potency after harvest."},
    {t:"Sustainable Growing",d:"Water, energy and packaging — how growers are shrinking cannabis's footprint."}]},
- thc:{name:"Types of Cannabinoids",img:"thca",lead:"THC is just the start — cannabis makes many cannabinoids, each with its own effect. Learn what sets them apart.",topics:[
+ thc:{name:"Types of Cannabinoids",img:"clr_diamonds",lead:"THC is just the start — cannabis makes many cannabinoids, each with its own effect. Learn what sets them apart.",topics:[
    {t:"What Is THC",d:"The primary intoxicating compound in cannabis — how it works with your body's endocannabinoid system."},
    {t:"Delta-9 THC",d:"The classic, most abundant form of THC and the one most products are measured by."},
    {t:"THCA & THCV",d:"The raw acid form that converts to THC with heat, plus the rare cannabinoid people call 'diet weed.'"},
@@ -2676,9 +2679,9 @@ function renderEduTopic(catKey,openIdx){
 function openEduFor(type,idx){renderEduTopic(EDUMAP[type]||"flower",idx==null?0:idx);}
 function renderCart(){
   var w=$("#cwrap");
-  if(!S.cart.length){w.innerHTML='<h2>Your bag</h2><div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
+  if(!S.cart.length){w.innerHTML='<div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
   var lines=cartLines(),unpaired=lines.reduce(function(a,l){return a+(inPairDeal(l.p,l.c.size)?l.c.q-l.dq:0);},0);
-  w.innerHTML='<h2>Shopping Cart</h2>'+lines.map(function(l){var c=l.c,i=l.i,p=l.p,lp=l.lp,lc=LIFECLASS[p.f[0]]||"soc";
+  w.innerHTML=lines.map(function(l){var c=l.c,i=l.i,p=l.p,lp=l.lp,lc=LIFECLASS[p.f[0]]||"soc";
     return '<div class="ci '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt=""><div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' · '+c.size.replace(" each","")+'</div><div class="pr">'+(lp.total<lp.regTotal-0.001?'<span class="was">'+money(lp.regTotal)+'</span><span class="now">'+money(lp.total)+'</span>':money(lp.total))+'</div></div>'+
       '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
    /* the pool is mix & match, so the nudge belongs to the bag, not to a line */
