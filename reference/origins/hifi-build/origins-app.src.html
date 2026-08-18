@@ -147,12 +147,8 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* shop feed tiles match the home tile size. Remove .tiles-compact from #view for
    the larger tiles (the current shop size) — reserved for a future a11y toggle. */
 .tiles-compact .feedrow .fcard{zoom:.9}
-.fcard.dcard .fsz{background:var(--brown);opacity:.65}
-/* the deal card's selected size keeps the solid olive fill, so it needs the
-   cream text back: the tinted `.fcard .fsz.sel` rule below sets olive text for
-   the tinted ground, and on this fill that reads olive-on-olive (invisible).
-   Only visible once a flower carried sale:1 again. */
-.fcard.dcard .fsz.sel{background:var(--olive);opacity:1;color:#F0EAD8}
+
+
 .fcard .fpr .was{color:#8C8478;text-decoration:line-through;font-weight:400;font-size:13px;margin-right:7px}
 .fcard .fpr .now{color:#C0392B}
 .brandrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 12px}
@@ -367,25 +363,17 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .fcard .fprow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0 10px}
 .fcard .fpr{font-family:var(--head);font-weight:700;font-size:15px;color:var(--ink);margin:0}
 .fcard .fszs{display:flex;gap:7px;flex-wrap:wrap}
-.fcard .fsz{background:var(--brown);opacity:.6;color:#F0EAD8;border-radius:100px;font-family:var(--head);font-weight:600;font-size:10px;padding:4px 11px;letter-spacing:.03em}
-/* Every weight on a product tile uses the tinted treatment — green ground, dark
-   olive text — matching the multi-pack "0.5G EACH" pill (Jack, 2026-08-14).
-
-   The ground is #D2DBBC, deliberately a few steps darker than the CBD bubble's
-   #ECF1E6. At the original #EDEFE1 the two were 1.01:1 apart and the weight and
-   the cannabinoid read as the same kind of chip a few pixels from each other;
-   this separates them while staying recessive enough that the price still leads
-   the row. Text holds 5.32:1 on it, so it clears AA.
-
-   Deal cards keep the solid fill: they show a row of sizes where one is
-   selected, and the fill is what marks the selection. `.fcard.dcard .fsz.sel`
-   outranks this on specificity, so that override still wins. The product-info
-   page is untouched for now. */
-.fcard .fsz.sel{background:#D2DBBC;color:var(--olive);opacity:1}
+/* One weight pill everywhere (Jack, 2026-08-18): outlined olive for a size you
+   could pick, solid olive for the one you are on, a step up in type. The tile,
+   the deal card and the product page all draw the same thing now. */
+.fcard .fsz{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;font-size:11px;padding:4px 11px;letter-spacing:.03em}
+.fcard .fsz.sel{background:var(--olive);color:#F0EAD8;border-color:var(--olive)}
 /* serving/total reads as a fact about the product, not a chosen size — so it
    takes the cannabinoid bubbles' tinted treatment in the olive it already had,
    rather than the solid fill that marks the selected size. */
-.fcard .fsz.serv{background:#EDEFE1;color:var(--olive);opacity:1;padding:4px 9px}
+/* serving/total is a fact about the product, not a size you can choose, so it
+   keeps the tinted chip rather than joining the outlined/solid pair */
+.fcard .fsz.serv{background:#EDEFE1;color:var(--olive);border-color:#D2DBBC;padding:4px 9px}
 .fcard .fadd{margin-top:auto;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:11.5px;padding:9px 0;width:100%}
 
 .lhead2{padding:14px 16px 2px;background:#fff}
@@ -415,11 +403,11 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* Filter and Sort are outlined, not filled: white interior, coloured border,
    coloured text (Jack, 2026-08-18). Filter olive, Sort orange - they read as a
    pair without either shouting, and they don't have to match sizes. */
-.fbtn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;padding:11px 20px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
-.fbtn .n{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
+.fbtn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--hol);border:2px solid var(--hol);border-radius:100px;padding:11px 20px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
+.fbtn .n{background:#fff;color:var(--hol);border:1.5px solid var(--hol);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
 .sort{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--or);border:2px solid var(--or);border-radius:100px;padding:11px 16px}
 .sort .lab{display:inline;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.95rem;letter-spacing:.08em;color:var(--or)}
-.sort select{border:0;background:transparent;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.85rem;letter-spacing:.04em;color:var(--or);max-width:112px;
+.sort select{border:0;background:transparent;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.95rem;letter-spacing:.08em;color:var(--or);max-width:132px;
   -webkit-appearance:none;appearance:none;padding-right:15px;
   background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F1601C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right center;background-size:11px}
@@ -481,7 +469,9 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .pprice{font-family:var(--head);font-weight:700;font-size:1.5rem;color:var(--ink)}
 .pprice .was{color:#A19A8D;text-decoration:line-through;font-weight:400;font-size:1rem;margin-left:7px}
 .szpick{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.szo{border:0;background:var(--brown);color:var(--cream);border-radius:100px;padding:10px 17px;font-family:var(--head);font-weight:600;font-size:12.5px;letter-spacing:.04em}
+/* option B (Jack, 2026-08-18): the size pills join the outlined family, Add to
+   Cart stays the one filled thing on the screen */
+.szo{background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;padding:10px 17px;font-family:var(--head);font-weight:600;font-size:13.5px;letter-spacing:.04em}
 .szo.sel{background:var(--olive);color:#fff}
 .addbig{width:100%;margin-top:13px;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:15px;padding:13px}
 .addbig:active{background:var(--or-d)}
@@ -695,18 +685,13 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .advrow .advt i{display:block;font-family:var(--body);font-style:normal;font-size:12.5px;line-height:1.45;color:var(--ink-2);margin-top:3px}
 .advrow .sw{flex:none;margin-top:3px}
 .advnote{font-family:var(--body);font-size:12.5px;line-height:1.5;color:var(--ink-2);margin:16px 0 0}
+/* a switch that is deliberately inert until the scaling work lands */
+.advsoon{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:9px;letter-spacing:.09em;color:var(--or);border:1px solid var(--or);border-radius:100px;padding:2px 7px;margin-left:8px;vertical-align:2px}
 /* the wizard's lifestyle wordmarks are images, so the strain names ride in a
    text twin that swaps in with the toggle */
 .oc.life .lifewordt{display:none;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.02rem;letter-spacing:.03em;color:#2E261E}
 #scr.strainnames .oc.life .lifeword{display:none}
 #scr.strainnames .oc.life .lifewordt{display:block}
-/* accessibility: a step up in the sizes a shopper actually reads */
-#scr.bigtype .fcard .fnm,#scr.bigtype .ci .nm,#scr.bigtype .dcp .nm{font-size:14px}
-#scr.bigtype .fcard .fpr,#scr.bigtype .ci .pr{font-size:17px}
-#scr.bigtype .fcard .fbc,#scr.bigtype .ci .sub,#scr.bigtype .dcp .sub{font-size:12px}
-#scr.bigtype .pdesc,#scr.bigtype .acnote{font-size:15px}
-#scr.bigtype .acrow{font-size:1.28rem}
-#scr.bigtype .tabs button{font-size:11px}
 /* accessibility: everything that moves, stops */
 #scr.nomotion *,#scr.nomotion *::before,#scr.nomotion *::after{transition:none!important;animation:none!important}
 .acchecks{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding-left:14px}
@@ -944,8 +929,10 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
             <button class="accheck tap" data-acchk><span class="acbox"></span>App</button>
           </div>
           <button class="acbtn acsec tap" data-acnav="acadv">Advanced Settings</button>
-          <button class="acbtn acdark tap" data-actoast="Privacy Policy">Privacy Policy</button>
-          <button class="acbtn acdark tap" data-actoast="Terms and Conditions">Terms and Conditions</button>
+          <div class="acmini">
+            <button class="acbtn acdark tap" data-actoast="Privacy Policy">Privacy Policy</button>
+            <button class="acbtn acdark tap" data-actoast="Terms &amp; Conditions">Terms &amp; Conditions</button>
+          </div>
         </div>
       </section>
 
@@ -953,10 +940,9 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
         <div class="sbar"><button class="bk" data-back="acsettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Advanced Settings</h2></div>
         <div class="acwrap">
           <h3 class="ach3">How products are named</h3>
-          <div class="advrow"><div class="advt"><b>Use strain names</b><i>Show Sativa, Hybrid and Indica in place of Discovery, Social and the rest. Same six groups, the grower's vocabulary.</i></div><button class="sw tap" data-adv="strain" aria-label="Use strain names"></button></div>
+          <div class="advrow"><div class="advt"><b>Use product type</b><i>Show Sativa, Hybrid and Indica in place of Discovery, Social and the rest. Same six groups, the grower's vocabulary.</i></div><button class="sw tap" data-adv="strain" aria-label="Use product type"></button></div>
           <h3 class="ach3">Accessibility</h3>
-          <div class="advrow"><div class="advt"><b>Larger product tiles</b><i>Drops the compact layout, so photos, names and prices all come up a step.</i></div><button class="sw tap" data-adv="bigtiles" aria-label="Larger product tiles"></button></div>
-          <div class="advrow"><div class="advt"><b>Bigger text</b><i>Raises the type on product names, prices and the account list.</i></div><button class="sw tap" data-adv="bigtype" aria-label="Bigger text"></button></div>
+          <div class="advrow"><div class="advt"><b>Enlarged view <span class="advsoon">Coming soon</span></b><i>Scales the whole app up together &mdash; photos, type, buttons and spacing &mdash; for easier reading at arm's length.</i></div><button class="sw tap" data-adv="enlarged" aria-label="Enlarged view"></button></div>
           <div class="advrow"><div class="advt"><b>Reduce motion</b><i>Stops sheets sliding and chevrons turning, for anyone who finds movement uncomfortable.</i></div><button class="sw tap" data-adv="nomotion" aria-label="Reduce motion"></button></div>
           <p class="advnote">These stay on until you turn them off. Nothing here changes prices or what is in stock.</p>
         </div>
@@ -1035,16 +1021,18 @@ const FEEL={discovery:"Discovery",adventurous:"Adventurous",social:"Social",unwi
    carries a text twin that CSS swaps in (`#scr.strainnames`). */
 const STRAINNAME={discovery:"Sativa",adventurous:"Sativa Hybrid",social:"Hybrid",
   unwind:"Indica Hybrid",nightlife:"Indica",holistic:"CBD"};
-const ADV={strain:false,bigtiles:false,bigtype:false,nomotion:false};
+/* `enlarged` is a placeholder Jack asked for (2026-08-18): the switch moves and
+   the app doesn't, until the proportional scaling is designed. It scales the
+   whole frame, not a list of font sizes, so it is worth doing once properly. */
+const ADV={strain:false,enlarged:false,nomotion:false};
 function lifeLabel(k){return (ADV.strain?STRAINNAME[k]:FEEL[k])||FEEL[k];}
 function setAdv(k,on){
   ADV[k]=!!on;
-  var scr=document.getElementById("scr"),view=document.getElementById("view");
-  view.classList.toggle("tiles-compact",!ADV.bigtiles);
-  scr.classList.toggle("bigtype",ADV.bigtype);
+  var scr=document.getElementById("scr");
   scr.classList.toggle("nomotion",ADV.nomotion);
   scr.classList.toggle("strainnames",ADV.strain);
   document.querySelectorAll("[data-adv]").forEach(function(b){b.classList.toggle("on",!!ADV[b.dataset.adv]);});
+  if(k==="enlarged"){toast(ADV.enlarged?"Enlarged view — coming soon":"Enlarged view off");return;}
   /* labels are baked in at render time, so anything showing one is redrawn */
   moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
   renderFeel();renderHome();renderShop();

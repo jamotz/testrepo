@@ -347,10 +347,17 @@ the hub matches the shop's own category circles. Lifestyles keeps its strip of
 six logos and never used `img`.
 
 ### The button family is outlined: coloured border, white interior, coloured text
-Jack, 2026-08-18. Filter (olive) and Sort (orange) set the pattern, and Origins
-U's Search and Continue, and Account's Logout, follow it. The two shop controls
-**don't have to match sizes** — Jack said so explicitly; they read as a pair
-through colour and shape, not by being twins. Sort's label is just `Sort:`.
+Jack, 2026-08-18. Filter and Sort set the pattern, and Origins U's Search and
+Continue, and Account's Logout, follow it. The two shop controls **don't have to
+match sizes** — Jack said so explicitly; they read as a pair through colour and
+shape, not by being twins. Sort's label is just `Sort:`, and its value sits at
+the same size as the label rather than a step down.
+
+Filter is the **lighter green** (`--hol`, the Holistic `#7E9A5B`), not the dark
+olive. Worth knowing before anyone "fixes" it: `#7E9A5B` on white measures
+**3.16:1**, which clears AA for large text but not for a 16px label. Jack chose
+it with that on the table; the darker Holistic green `#5C7540` is the drop-in if
+it ever needs to clear 4.5:1.
 
 The knock-on: solid fills now mean something. Add to Cart on a tile, Checkout
 and the hero's three buttons are the only filled orange left, so the app has one
@@ -365,23 +372,47 @@ buttons — so the hero stops under-setting itself (Jack, 2026-08-18).
 It was solid orange at 1.32rem while every button on Account Settings is an
 outlined .95rem pill. Both screens now draw the same button (Jack, 2026-08-18).
 
+### One weight pill, everywhere
+Jack picked **option B** for the product page (2026-08-18): size pills join the
+outlined family, Add to Cart stays the one filled thing on the screen. The same
+pill then went app-wide — tiles, deal cards and the product page had three
+different treatments between them:
+
+- **outlined olive** = a size you could pick
+- **solid olive, cream text** = the size you are on
+- **tinted `#EDEFE1`** = serving/total, which is a *fact* about the product, not
+  a size you can choose, so it deliberately stays out of the pair
+
+Type went up a step with it (tiles 10 → 11px, product page 12.5 → 13.5px). This
+retires two earlier rules: the tinted `#D2DBBC` tile pill from 2026-08-14, and
+the brown/cream deal-card override that had to exist because the tinted rule
+made its selected pill olive-on-olive. One language now, so neither special case
+is needed.
+
 ### Advanced Settings sits inside Account Settings
 Jack asked for somewhere to put a toggle that swaps lifestyle names for strain
-names, plus accessibility options, and was open on placement. It is a row at the
-bottom of **Account Settings**, above Privacy Policy — settings belong with
-settings, the gear on Account already leads there, and it stays out of a
-shopper's way without being hidden.
+names, plus accessibility options, and was open on placement. It leads the **lower button group on Account Settings**, with Privacy Policy and
+Terms paired beneath it in the same two-up `.acmini` format the Account page
+uses (Jack, 2026-08-18) — settings belong with settings, the gear on Account
+already leads there, and it stays out of a shopper's way without being hidden.
 
 Four switches, all of them real rather than decorative:
 
 | Switch | What it does |
 |---|---|
-| Use strain names | Swaps the six lifestyle words for Sativa / Sativa Hybrid / Hybrid / Indica Hybrid / Indica / CBD, everywhere |
-| Larger product tiles | Drops `tiles-compact` from `#view` — the toggle the CSS was reserved for |
-| Bigger text | Raises product names, prices, breadcrumbs, the account list and the tab labels |
+| Use product type | Swaps the six lifestyle words for Sativa / Sativa Hybrid / Hybrid / Indica Hybrid / Indica / CBD, everywhere |
+| Enlarged view | **Placeholder.** The switch moves, the app doesn't |
 | Reduce motion | Kills every transition and animation |
 
-**The naming toggle is a label lookup, not a data migration** — exactly as
+**Enlarged view is deliberately inert** (Jack, 2026-08-18): "don't add that
+functionality yet, just a placeholder". It replaced two narrower switches —
+larger tiles and bigger text — because what he wants is the *whole app* scaled
+proportionately, which is a frame-scale job rather than a list of font sizes,
+and worth doing once. The row carries a **Coming soon** tag and the switch
+toasts, so nobody demos it expecting a result. `tiles-compact` stays on `#view`
+untouched, ready for that work.
+
+**The product-type toggle is a label lookup, not a data migration** — exactly as
 planned when lifestyle became "the strain, renamed". Every printed label goes
 through `lifeLabel(key)`, which returns `FEEL[key]` or `STRAINNAME[key]`; `P` is
 untouched. `setAdv()` re-renders whatever is on screen, because labels are baked

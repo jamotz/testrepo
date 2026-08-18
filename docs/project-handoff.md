@@ -101,6 +101,10 @@ icon reads as a different tab.
      date
    - topical and edible feelings/taste, until those sheets catch up
 
+   **Not built, and flagged in the UI as such:** Advanced Settings' *Enlarged
+   view* switch is a placeholder (Jack, 2026-08-18) — it carries a "Coming soon"
+   tag and toasts rather than scaling anything.
+
    **Before writing a table that assigns something per strain, check the source
    for a column that already says it.** That mistake has been made twice — once
    with lifestyle, once with terpenes.
