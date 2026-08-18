@@ -48,11 +48,10 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`023226a`** (published 2026-08-14) — the Final/pt2 catalogs, terpene-driven
-feelings and scents rendered with Jack's icon set, drinks, and the tinted
-weight pill. **It is now behind the branch** — the four deal flowers, the mix &
-match pairing, the banner run-out dates, the drinks bubble path and the Deals
-Calendar are built and unpublished. Bump this line whenever you
+`6fe50fc`** (published 2026-08-18) — the Final/pt2 catalogs, terpene-driven
+feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
+the four deal flowers with bag-wide mix & match, generated run-out dates, and the
+Deals Calendar with all seven deals. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
@@ -61,6 +60,11 @@ session republished since. `WebFetch` the artifact URL first — it **is**
 fetchable despite the claude.ai login, and it saves the full HTML locally so
 you can diff the live body against your build before deciding. Only use
 `force:true` if Jack says to discard the other version.
+
+The build carries **no `<title>` tag** (it is a fragment), so the artifact takes
+its name from the `title` parameter — pass `Origins — App Prototype` on every
+republish or the gallery entry renames itself. Favicon 🌿; keep it, a changed
+icon reads as a different tab.
 
 
 
