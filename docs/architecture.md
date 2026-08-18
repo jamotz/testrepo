@@ -147,8 +147,12 @@ $174 while the home deal showed $58 for the same product.
 | 2 for $50 | the 4 `sale:1` flowers, 3.5 g | $25/eighth, **only in pairs, mixed & matched across the whole bag** |
 | 40% off | same 4 flowers, 14 g / 28 g | 60% of the regular price, no quantity requirement |
 
-Each banner carries its own run-out date under its copy (`DEAL_UNTIL`, one
-string per deal; an empty string drops the line).
+Each banner carries a run-out date under its copy, from `dealUntil(key)` — see
+*The deals calendar*, which generates it.
+
+Five further deals exist on the calendar only (concentrates, edibles,
+pre-rolls). They are **not** in `priceFor`: they run on future dates, so
+discounting the shop today would be wrong.
 
 The four are two Passion Flower (Northern Lights, Pineapple Express) and two
 Lifestyles (Gelato Cake, Jack Herer) — one per lifestyle colour except Social.
@@ -294,25 +298,44 @@ global handler. Everything is namespaced `ac*` — `.s` is a global
 ### The deals calendar
 
 `renderDealCal()` builds a date-led list from a **weekly pattern**, not a list
-of dates. `DEALDEF` holds the three deals — each with the weekday it runs
-(`dow`), the label and copy its banner carries, the size its prices quote, and
-an `items()` that resolves its products out of `P`. The renderer walks the next
-`DEALCAL_DAYS` (30) days from *today*, emits a section for each day that has at
-least one deal, and orders same-day deals by `DEALCAL_ORDER`.
+of dates. `DEALDEF` holds the seven deals — each with the shelf it runs on
+(`t`), the weekday it runs (`dow`), the label and copy its banner carries, the
+size its prices quote, and an `items()` that resolves its products out of `P`.
+The renderer walks the next `DEALCAL_DAYS` (30) days from *today*, emits a
+section for each day that has at least one deal, and orders same-day deals by
+`DEALCAL_ORDER`.
+
+| Day | Deal | Shelf | `items()` |
+|---|---|---|---|
+| Mon | 30% Off | Concentrates | `dcRank("concentrate", -1, 4)` — dearest 4 |
+| Tue | 30% Off | Edibles | one brand, `edbrand.brand` |
+| Wed | 30% Off | Flower | four brand labels, prefix-matched |
+| Thu | BOGO $40 | Concentrates | `dcRank("concentrate", 1, 4)` — cheapest 4 |
+| Fri | 2 For $50 | Flower | the `sale:1` flowers |
+| Sat | 25% Off | Pre-Rolls | `dcRank("preroll", -1, 5)` — dearest 5 |
+| Sun | 40% Off | Flower | the `sale:1` flowers |
+
+**End dates are generated.** `dealEnd(key, date)` puts a run's end 3–7 days
+after its start, from a hash of the key and the date — stable across renders,
+unlike `Math.random()`. `dealUntil(key)` is what the **home** banners print: the
+end of that deal's current run, so the two screens agree. `DEAL_UNTIL[key]` pins
+a date when a fixed one is wanted.
 
 | Piece | What it is |
 |---|---|
 | `.dcdate` | the day — the section title. Today/Tomorrow prefix in orange |
 | `.deal-banner` | the deal's title, the same component the home page uses (`dealBanner`), minus the "Until" line the date makes redundant |
-| `.dctog` | the dropdown control: "See the N products", chevron flips on open |
+| `.dctog` | the dropdown control: the shelf's name, "See the N products", chevron flips on open |
 | `.dcpanel` | the products, shown by a `dcopen` class on the wrapper |
 | `.dcp` | one product row — photo, name, brand · size, price, lifestyle border. Tapping opens the product page |
 
-Prices come from `priceFor` like everywhere else. The two flower deals are live
-in pricing, so their rows show the struck regular price beside the deal price;
-the 30%-off brand deal isn't modelled in `priceFor`, so its rows show today's
-price and its panel says so in a note rather than inventing a second discount
-path.
+Prices come from `priceFor` like everywhere else, and the size slot from the
+tiles' own `servTotal` (so a 20-pack reads `0.5G EACH`, an edible `10MG /
+100MG`). The two flower deals are live in pricing, so their rows show the struck
+regular price beside the deal price. **The other five aren't modelled in
+`priceFor` on purpose** — they run on future dates, and making them live would
+discount the shop today — so their rows show today's price and each panel
+carries a note saying the discount comes off on the day.
 
 ### Account data is derived, not restated
 

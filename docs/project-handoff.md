@@ -87,11 +87,13 @@ you can diff the live body against your build before deciding. Only use
      and Seattle's opening hours
    - which four flowers carry the deal (`DEALS` in `gen_catalog_products.py`) —
      Jack named the two brands, the strains within them are a first pass
-   - the deal banners' run-out dates (`DEAL_UNTIL`) — `Until 12/25` on all
-     three until Jack sets the real ones
-   - the deals calendar's schedule (`DEALDEF`) — each deal's weekday, authored
-     as a weekly pattern; the products on each are resolved from the catalog,
-     not typed
+   - the deals calendar's schedule (`DEALDEF`) — seven deals, one per weekday,
+     and the edible deal's brand (Wyld). The **line-ups aren't authored**: each
+     deal resolves its products from the catalog, by price rank where Jack
+     described one ("the 4 cheapest", "the 5 most expensive")
+   - run-out dates are generated (3–7 days after a run starts, hashed so they
+     don't move between renders). `DEAL_UNTIL` pins one if Jack wants a fixed
+     date
    - topical and edible feelings/taste, until those sheets catch up
 
    **Before writing a table that assigns something per strain, check the source
@@ -131,7 +133,7 @@ Topicals are uniformly Holistic (nothing there is psychoactive).
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
 with filters · product info · cart · order confirmation · Origins U (education
-hub + 8 topic pages) · vape dead-end · Deals Calendar · Account · Loyalty
+hub + 8 topic pages) · vape dead-end · Deals Calendar (7 deals, every shelf) · Account · Loyalty
 Points · Account Settings · Order History · Recommended Products · Past
 Reviews · About Us.
 

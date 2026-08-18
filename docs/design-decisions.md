@@ -98,9 +98,9 @@ shifts. An earlier version used floating circles and was rejected.
 ### The deal banner keeps its copy on top and dates itself underneath
 Jack, 2026-08-17. The offer line stays where it was — top line, right side — and
 the run-out date sits under it a step smaller and lighter, so the deal still
-reads first and the date answers the question it raises. `DEAL_UNTIL` holds one
-string per deal, so the three banners can expire on different days; an empty
-string drops the line rather than printing a bare "Until".
+reads first and the date answers the question it raises. The date comes from
+`dealUntil(key)`; `DEAL_UNTIL` can pin one, and an empty string there means
+"work it out" (see *Every banner carries its run's end date*).
 
 **The copy holds one line and the block centres in the space beside the label.**
 It used to wrap to two ragged right-aligned lines, which put each banner's text
@@ -110,9 +110,6 @@ longest of the three strings sets the ceiling — at the copy's original 11px it
 measures 219px in the 233px the "2 For $50" label leaves, about 14px of slack.
 **A longer line will overflow rather than wrap**; shorten the copy or drop the
 type a step.
-
-**The dates are authored placeholders** (`Until 12/25` on all three) until Jack
-supplies the real ones.
 
 ### The deals calendar runs on a weekly pattern, not typed dates
 Jack, 2026-08-18: a date-oriented page a month out, the date as the section
@@ -124,7 +121,8 @@ opened*. Typed dates would have made the case study open on a page of expired
 deals a fortnight after it was built — the one thing a "what's coming up" screen
 must never do. The cost is that the calendar can't express a one-off; add a
 day-offset field the same way if a one-off is ever needed. Either way the
-line-up is **authored** and Jack's to set: three keys in one table.
+schedule is **authored** and Jack's to set: seven keys in one table, one per
+weekday.
 
 **The banner is the deal's title and its toggle.** Reusing `dealBanner()` means
 a deal looks identical on the home page and in the calendar, which is the whole
@@ -133,8 +131,19 @@ control sits *under* the banner rather than inside it, as a chevron row, because
 putting it inside would have pushed the copy off the centre Jack had just asked
 for.
 
-**The "Until" line is dropped in the calendar.** On home it answers "how long do
-I have"; under a date heading it would be a second date arguing with the first.
+**Every banner carries its run's end date** (Jack, 2026-08-18). The date heading
+says when a deal starts, the banner's "Until" says when that run ends, so the
+two dates answer different questions rather than arguing. The dates are
+**generated, not typed**: a run ends 3–7 days after it starts, chosen by hashing
+the deal key and the date. Hashing rather than `Math.random()` is the point —
+the same occurrence must show the same date every render, or the calendar
+reshuffles itself under the reader.
+
+**Home takes its date from the same generator.** `dealUntil(key)` returns the
+end of that deal's current run, so home and the calendar can't disagree about
+when one deal ends. `DEAL_UNTIL` survives as a **pin**: a non-empty string wins,
+for when Jack wants a fixed date on a specific deal. The old `Until 12/25`
+placeholders are gone — they contradicted "typically ends within a week".
 
 **Nothing in the calendar restates the catalog.** Each deal resolves its own
 products through `items()`, so a re-flagged or renamed product follows
@@ -151,6 +160,37 @@ Brands are matched as a **prefix**, because the tiles say "Royal Tree" and the
 catalog says "Royal Tree Gardens". Freddy's has no flower in the catalog at all,
 so it contributes nothing to the 18 rows — the note still names it, which is why
 the note lists the brands rather than leaving the row list to imply them.
+
+### Every shelf gets a deal, and the line-ups are ranked, not typed
+Jack, 2026-08-18, once the calendar existed. Seven deals, one per weekday:
+
+| Day | Deal | Shelf | Line-up |
+|---|---|---|---|
+| Mon | 30% Off | Concentrates | the 4 most expensive |
+| Tue | 30% Off | Edibles | one whole brand (Wyld) |
+| Wed | 30% Off | Flower | four brands' top shelf |
+| Thu | BOGO $40 | Concentrates | the 4 cheapest, two grams for $40 |
+| Fri | 2 For $50 | Flower | the four `sale:1` flowers |
+| Sat | 25% Off | Pre-Rolls | the 5 most expensive |
+| Sun | 40% Off | Flower | the same four flowers, 14 g / 28 g |
+
+**Where Jack described a rank, the code ranks** — `dcRank(type, dir, n)` sorts
+the shelf by price and takes the top or bottom N. Typing out "the 4 cheapest
+concentrates" would have been four names that quietly stop being the four
+cheapest the next time a sheet is re-exported. The edible deal is the exception
+by design: "an entire brand, just one" is a name, so it is one — `edbrand.brand`.
+
+**None of the five new deals is modelled in `priceFor`, deliberately.** They run
+on future dates; making them live in pricing would discount the shop today. So
+their rows quote today's price and each panel carries one line saying the
+discount comes off on the day. Only the two flower deals — which *are* live —
+show a struck price.
+
+Ranking by `pr` has one wrinkle worth knowing: on pre-rolls `pr` is the pack
+price, so "most expensive" is topped by the 20-packs. That is the right answer
+for a deal (they're the priciest things on the shelf), but the rows use the
+tiles' own `servTotal` slot so a 20-pack reads `0.5G EACH` rather than a bare
+`0.5G` beside $79.99.
 
 ### The "2 for $50" label is permanent
 It stays visible on eligible eighths at every quantity, as the deal's label
