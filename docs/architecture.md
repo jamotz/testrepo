@@ -276,8 +276,11 @@ deeper ones (`S.sub = null` also clears `sub2`/`sub3`).
 applies `.immersive` (hides nav) for the landing screen and the Guide Me wizard.
 
 `landing · home · guide · method · subtype · taste · finish · shop · list ·
-vape · product · cart · confirm · edu · edutopic · account · acloyalty ·
-acsettings · acorders · acrecs · acreviews · acabout`
+vape · product · cart · confirm · dealcal · edu · edutopic · account ·
+acloyalty · acsettings · acorders · acrecs · acreviews · acabout`
+
+`dealcal` maps to the `home` tab — both "See Deals Calendar" buttons live on
+home, and the calendar is that page's deals seen forward in time.
 
 The seven Account screens all map to the `account` tab via `TABMAP`, so the tab
 stays lit while drilling into Loyalty Points or Settings. Their markup is static
@@ -287,6 +290,29 @@ data by `renderAccount()` and `renderStores()`. Clicks are delegated from the
 seven sections rather than the document, so the dynamic rows work without a
 global handler. Everything is namespaced `ac*` — `.s` is a global
 `display:none`.
+
+### The deals calendar
+
+`renderDealCal()` builds a date-led list from a **weekly pattern**, not a list
+of dates. `DEALDEF` holds the three deals — each with the weekday it runs
+(`dow`), the label and copy its banner carries, the size its prices quote, and
+an `items()` that resolves its products out of `P`. The renderer walks the next
+`DEALCAL_DAYS` (30) days from *today*, emits a section for each day that has at
+least one deal, and orders same-day deals by `DEALCAL_ORDER`.
+
+| Piece | What it is |
+|---|---|
+| `.dcdate` | the day — the section title. Today/Tomorrow prefix in orange |
+| `.deal-banner` | the deal's title, the same component the home page uses (`dealBanner`), minus the "Until" line the date makes redundant |
+| `.dctog` | the dropdown control: "See the N products", chevron flips on open |
+| `.dcpanel` | the products, shown by a `dcopen` class on the wrapper |
+| `.dcp` | one product row — photo, name, brand · size, price, lifestyle border. Tapping opens the product page |
+
+Prices come from `priceFor` like everywhere else. The two flower deals are live
+in pricing, so their rows show the struck regular price beside the deal price;
+the 30%-off brand deal isn't modelled in `priceFor`, so its rows show today's
+price and its panel says so in a note rather than inventing a second discount
+path.
 
 ### Account data is derived, not restated
 

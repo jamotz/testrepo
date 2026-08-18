@@ -157,6 +157,36 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .btile .btl{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
 .btile .btl img{max-width:88%;max-height:98px;object-fit:contain}
 .btile .bname{font-family:var(--head);font-weight:700;text-transform:uppercase;color:#fff;font-size:16px;letter-spacing:.05em;text-align:center;margin-top:8px;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+/* --- Deals Calendar --- */
+/* A date-led list: the day is the section title and each deal keeps the same
+   orange banner it wears on the home page, so a deal is recognisable in both
+   places. The banner is the row's title *and* its toggle; the products sit in
+   a panel underneath, collapsed until asked for. */
+.dcwrap{padding:14px 16px 26px}
+.dclead{font-family:var(--body);font-size:13px;line-height:1.5;color:var(--ink-2);margin-bottom:16px}
+.dcday{margin-bottom:20px}
+.dcdate{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.15rem;letter-spacing:.04em;color:var(--ink);border-bottom:1.5px solid #E5E0D6;padding-bottom:6px;margin-bottom:10px}
+.dcdate .dcrel{color:var(--or);margin-right:7px}
+.dcdeal{margin-bottom:10px}
+/* the banner is a button here; it keeps the home layout exactly */
+.dcdeal .deal-banner{margin:0}
+.dctog{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:none;border:0;padding:7px 0 2px;
+  font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.06em;color:var(--or)}
+.dctog svg{width:13px;height:13px;transition:transform .18s ease}
+.dcdeal.dcopen .dctog svg{transform:rotate(180deg)}
+.dcpanel{display:none;padding:4px 0 2px}
+.dcdeal.dcopen .dcpanel{display:block}
+.dcnote{font-family:var(--body);font-size:11.5px;line-height:1.45;color:var(--ink-2);margin:2px 0 8px}
+.dcp{display:flex;align-items:center;gap:11px;width:100%;background:#fff;border:1.5px solid #E5E0D6;border-radius:10px;padding:8px 10px;margin-bottom:8px;text-align:left}
+.dcp.disc{border-color:var(--disc)}.dcp.adv{border-color:var(--adv)}.dcp.soc{border-color:var(--soc)}
+.dcp.unw{border-color:var(--unw)}.dcp.night{border-color:var(--night)}.dcp.hol{border-color:var(--hol)}
+.dcp img{width:42px;height:42px;object-fit:contain;flex:none}
+.dcp .m{flex:1;min-width:0}
+.dcp .nm{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11.5px;line-height:1.2;color:var(--ink)}
+.dcp .sub{font-family:var(--head);font-size:10px;color:#8C8478;text-transform:uppercase;margin-top:2px}
+.dcp .pr{font-family:var(--head);font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap}
+.dcp .pr .was{color:#8C8478;text-decoration:line-through;font-weight:400;font-size:11.5px;margin-right:6px}
+.dcp .pr .now{color:#C0392B}
 .deals-foot{text-align:center;padding:6px 16px 22px}
 .deals-foot h3{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--ink);margin-bottom:12px}
 .deals-foot .hero-btn.wide{width:82%;box-shadow:none}
@@ -786,6 +816,11 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       <section class="s" data-s="product"><div class="pwrap" id="pwrap"></div></section>
       <section class="s" data-s="cart"><div class="cwrap" id="cwrap"></div></section>
       <section class="s" data-s="confirm"><div class="conf" id="confwrap"></div></section>
+
+      <section class="s" data-s="dealcal">
+        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Deals Calendar</h2></div>
+        <div class="dcwrap" id="dcwrap"></div>
+      </section>
 
       <section class="s" data-s="edu">
         <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Origins University</h2></div>
@@ -1498,7 +1533,7 @@ function pIcon(name){var n=(name||"").toLowerCase();
  else if(/hung/.test(n))k="hungry";
  return svgIco(ICONS[k]||ICONS.spark);}
 
-const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account",acloyalty:"account",acsettings:"account",acorders:"account",acrecs:"account",acreviews:"account",acabout:"account"};
+const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account",acloyalty:"account",acsettings:"account",acorders:"account",acrecs:"account",acreviews:"account",acabout:"account",dealcal:"home"};
 var WIZ=["guide","method","subtype","taste","finish"];
 var IMMERSIVE=["landing"].concat(WIZ);
 function nav(k){
@@ -1508,6 +1543,7 @@ function nav(k){
   S.screen=k;view.scrollTop=0;
   if(k==="list")renderList();
   if(k==="cart")renderCart();
+  if(k==="dealcal")renderDealCal();
 }
 document.querySelectorAll("[data-nav]").forEach(function(b){b.addEventListener("click",function(){
   var k=b.dataset.nav;
@@ -2182,6 +2218,78 @@ function dealBanner(label,copy,until){
   return '<div class="deal-banner"><span class="bl">'+label+'</span><span class="bs">'+copy+
     (until?'<span class="bu">Until '+until+'</span>':'')+'</span></div>';
 }
+/* ===== Deals Calendar =====
+   Reached from either "See Deals Calendar" button. A date-led month: one
+   section per day that has a deal, each deal wearing the same orange banner it
+   wears on the home page, with its products in a panel underneath.
+
+   AUTHORED — the schedule is Jack's to set. It is a **weekly pattern**, not a
+   list of dates: `dow` is the weekday a deal runs, and the calendar walks the
+   next 30 days from whenever the app is opened. A prototype with typed dates
+   opens on a page of past deals a fortnight later; this one is always a real
+   month ahead. Swap in fixed dates if the case study needs a frozen screen.
+
+   Nothing here restates the catalog: each deal resolves its own products out
+   of P, so a renamed or re-flagged product follows automatically. */
+const DEALCAL_DAYS=30;
+const DEALDEF={
+  pair:{dow:5,label:"2 For $50",copy:"Mix &amp; match any two of these eighths for $50",size:"3.5 g",
+        items:function(){return P.filter(function(p){return p.t==="flower"&&p.sale;});}},
+  bulk:{dow:0,label:"40% Off",copy:"Get any 14g or 28g of flower for 40% off",size:"28 g",
+        items:function(){return P.filter(function(p){return p.t==="flower"&&p.sale;});}},
+  /* the brand deal is defined on brands, not on flagged products, and priceFor
+     doesn't model it - so its rows show today's price and the panel says so
+     rather than inventing a second discount path. */
+  brand:{dow:3,label:"30% Off",copy:"Try some top-shelf flower for the low",size:"3.5 g",
+         /* the same four labels the home brand row shows. Matched as a prefix,
+            because the tile says "Royal Tree" and the catalog says "Royal Tree
+            Gardens"; Freddy's has no flower in the catalog, so it contributes
+            nothing and the note still names it. */
+         brands:["Royal Tree","Saints","Freddy's","Skord"],
+         note:function(){return DEALDEF.brand.brands.join(" &middot; ")+
+           " &mdash; 30% comes off in store on the day, so the prices below are today's.";},
+         items:function(){var b=DEALDEF.brand.brands;
+           return P.filter(function(p){return p.t==="flower"&&b.some(function(x){return p.b.indexOf(x)===0;});});}}
+};
+const DEALCAL_ORDER=["pair","brand","bulk"];   /* order within a single day */
+const DCMON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DCDOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function dcRow(p,size){
+  var szs=sizesFor(p),sz=(szs.indexOf(size)>-1)?size:(szs[0]||size);
+  var pp=priceFor(p,sz),lc=LIFECLASS[p.f[0]]||"soc";
+  return '<button class="dcp tap '+lc+'" data-p="'+p.id+'"><img src="'+(IMG[p.img]||'')+'" alt="">'+
+    '<div class="m"><div class="nm">'+p.n+'</div><div class="sub">'+p.b+' &middot; '+feedPill(sz)+'</div></div>'+
+    '<div class="pr">'+(pp.was?'<span class="was">'+money(pp.was)+'</span><span class="now">'+money(pp.now)+'</span>':money(pp.now))+'</div></button>';
+}
+function renderDealCal(){
+  var chev='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  var now=new Date(),html='',n=0;
+  for(var i=0;i<DEALCAL_DAYS;i++){
+    var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
+    var todays=DEALCAL_ORDER.filter(function(k){return DEALDEF[k].dow===d.getDay();});
+    if(!todays.length)continue;
+    var rel=(i===0?"Today":(i===1?"Tomorrow":""));
+    html+='<div class="dcday"><div class="dcdate">'+(rel?'<span class="dcrel">'+rel+'</span>':'')+
+      DCDOW[d.getDay()]+", "+DCMON[d.getMonth()]+" "+d.getDate()+'</div>'+
+      todays.map(function(k){
+        var def=DEALDEF[k],items=def.items(),id="dc"+(n++);
+        /* the banner is the deal's title and the toggle both; the date is the
+           section heading here, so the banner's own "Until" line is dropped */
+        return '<div class="dcdeal" id="'+id+'"><div class="tap" data-dc="'+id+'" role="button" tabindex="0">'+
+          dealBanner(def.label,def.copy,"")+'</div>'+
+          '<button class="dctog tap" data-dc="'+id+'">'+
+            (items.length?"See the "+items.length+" product"+(items.length===1?"":"s"):"Nothing flagged yet")+chev+'</button>'+
+          '<div class="dcpanel">'+(def.note?'<div class="dcnote">'+def.note()+'</div>':'')+
+            items.map(function(p){return dcRow(p,def.size);}).join("")+'</div></div>';
+      }).join("")+'</div>';
+  }
+  $("#dcwrap").innerHTML='<div class="dclead">Every deal running in the next '+DEALCAL_DAYS+
+    ' days. Tap a deal to see what is on it.</div>'+html;
+  $("#dcwrap").querySelectorAll("[data-dc]").forEach(function(b){b.addEventListener("click",function(){
+    document.getElementById(b.dataset.dc).classList.toggle("dcopen");});});
+  $("#dcwrap").querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(e){
+    e.stopPropagation();openProduct(+b.dataset.p);});});
+}
 function renderHome(){
   $("#hero").style.backgroundImage="url("+(IMG.hero_mtn||"")+")";
   $("#herologo").src=IMG.logo_origins||"";
@@ -2413,7 +2521,7 @@ $("#taptoggle").addEventListener("click",function(){this.classList.toggle("on");
 $("#landlogo").src=IMG["logo_origins"];$("#landmap").src=IMG["map_redmond"];
 $("#seattlebtn").addEventListener("click",function(){toast("Seattle store — coming soon");});
 renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderHome();
-$("#dealscal1").addEventListener("click",function(){toast("Deals calendar — coming soon");});
-$("#dealscal2").addEventListener("click",function(){toast("Deals calendar — coming soon");});
+$("#dealscal1").addEventListener("click",function(){nav("dealcal");});
+$("#dealscal2").addEventListener("click",function(){nav("dealcal");});
 setBag();nav("landing");fitFrame();
 </script>

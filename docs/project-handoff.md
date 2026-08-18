@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-08-17 · branch `claude/project-docs-review-todos-os7hx4`
+**Last updated:** 2026-08-18 · branch `claude/project-docs-review-todos-os7hx4`
 **Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
@@ -51,8 +51,8 @@ without it mints a separate artifact. **The live link is current as of
 `023226a`** (published 2026-08-14) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks, and the tinted
 weight pill. **It is now behind the branch** — the four deal flowers, the mix &
-match pairing, the banner run-out dates and the drinks bubble path are built and
-unpublished. Bump this line whenever you
+match pairing, the banner run-out dates, the drinks bubble path and the Deals
+Calendar are built and unpublished. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
@@ -89,6 +89,9 @@ you can diff the live body against your build before deciding. Only use
      Jack named the two brands, the strains within them are a first pass
    - the deal banners' run-out dates (`DEAL_UNTIL`) — `Until 12/25` on all
      three until Jack sets the real ones
+   - the deals calendar's schedule (`DEALDEF`) — each deal's weekday, authored
+     as a weekly pattern; the products on each are resolved from the catalog,
+     not typed
    - topical and edible feelings/taste, until those sheets catch up
 
    **Before writing a table that assigns something per strain, check the source
@@ -128,11 +131,14 @@ Topicals are uniformly Holistic (nothing there is psychoactive).
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
 with filters · product info · cart · order confirmation · Origins U (education
-hub + 8 topic pages) · vape dead-end · Account · Loyalty Points · Account
-Settings · Order History · Recommended Products · Past Reviews · About Us.
+hub + 8 topic pages) · vape dead-end · Deals Calendar · Account · Loyalty
+Points · Account Settings · Order History · Recommended Products · Past
+Reviews · About Us.
 
-**Every frame in Jack's `hifi-final/` set is now built.** What's left is polish
-and the open questions below, not new screens.
+**Every frame in Jack's `hifi-final/` set is now built.** The Deals Calendar
+(2026-08-18) has no frame behind it either — Jack specified it in chat, the way
+the four unframed Account pages were specified. What's left is polish and the
+open questions below.
 
 ---
 
@@ -180,6 +186,16 @@ and the open questions below, not new screens.
    inside Rosin, Hash and Distillate. Every category itself is stocked,
    **Kief (6) and RSO (4) included** — an earlier note claiming those two were
    empty was wrong (Jack, 2026-08-17; see `design-decisions.md`).
+
+7. **The drawer's Brands facet matches almost nothing.** `BRANDS` lists
+   `Artizen · Freddy's · Royal Tree · Saints · Skörd · St. Ideal` and `match()`
+   compares it to `p.b` exactly, but the catalog says `Royal Tree Gardens` and
+   `Skord` (no umlaut), and carries no `Freddy's` or `St. Ideal` at all — so
+   four of the six return zero products. Found 2026-08-18 while wiring the
+   calendar, which matches the same labels as a **prefix** and resolves 18
+   flowers from three brands. Fix is either a prefix match in `match()` or a
+   `BRANDS` list taken from the catalog; needs Jack's call on which brands
+   should be offered.
 
 *Size as a navigation step was considered and rejected* (Jack, 2026-08-12):
 size lives in the product tile, not the filter path. Don't re-propose it.

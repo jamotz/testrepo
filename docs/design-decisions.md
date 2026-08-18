@@ -114,6 +114,44 @@ type a step.
 **The dates are authored placeholders** (`Until 12/25` on all three) until Jack
 supplies the real ones.
 
+### The deals calendar runs on a weekly pattern, not typed dates
+Jack, 2026-08-18: a date-oriented page a month out, the date as the section
+title, the orange banner as the deal's title, and a dropdown for the products.
+
+**The schedule is a weekly pattern.** `DEALDEF` gives each deal the weekday it
+runs on and the renderer walks the next 30 days from *whenever the app is
+opened*. Typed dates would have made the case study open on a page of expired
+deals a fortnight after it was built — the one thing a "what's coming up" screen
+must never do. The cost is that the calendar can't express a one-off; add a
+day-offset field the same way if a one-off is ever needed. Either way the
+line-up is **authored** and Jack's to set: three keys in one table.
+
+**The banner is the deal's title and its toggle.** Reusing `dealBanner()` means
+a deal looks identical on the home page and in the calendar, which is the whole
+point of a calendar — you recognise what you're being promised. The expand
+control sits *under* the banner rather than inside it, as a chevron row, because
+putting it inside would have pushed the copy off the centre Jack had just asked
+for.
+
+**The "Until" line is dropped in the calendar.** On home it answers "how long do
+I have"; under a date heading it would be a second date arguing with the first.
+
+**Nothing in the calendar restates the catalog.** Each deal resolves its own
+products through `items()`, so a re-flagged or renamed product follows
+automatically — the same rule the Account screens follow.
+
+**The 30%-off rows show today's price, and say so.** That deal is defined on
+brands, and `priceFor` doesn't model it — the home page only ever showed brand
+tiles. Rather than open a second discount path (the exact divergence that once
+had the shop showing $174 and the home deal $58 for one product), the panel
+carries one line: the four brands, then "30% comes off in store on the day, so
+the prices below are today's."
+
+Brands are matched as a **prefix**, because the tiles say "Royal Tree" and the
+catalog says "Royal Tree Gardens". Freddy's has no flower in the catalog at all,
+so it contributes nothing to the 18 rows — the note still names it, which is why
+the note lists the brands rather than leaving the row list to imply them.
+
 ### The "2 for $50" label is permanent
 It stays visible on eligible eighths at every quantity, as the deal's label
 rather than a temporary prompt. The 40%-off items carry an equivalent line.
