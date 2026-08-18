@@ -121,11 +121,14 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* --- Home / Deals (DEALS.png) --- */
 .hero{background-color:#8fb4d6;background-size:cover;background-repeat:no-repeat;background-position:center;padding:16px 16px 16px;min-height:404px;display:flex;flex-direction:column;align-items:center;gap:11px}
 .hero-logo{width:172px;height:auto;margin:6px auto 0;display:block}
-.hero-btn{background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:12.5px;padding:12px 18px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
+/* 12.5px in an 80%-wide pill read as a caption in a button (Jack, 2026-08-18).
+   1rem/.06em is the app's own button type - the same as Filter and the account
+   buttons - so the hero now matches the rest rather than under-setting itself. */
+.hero-btn{background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:1rem;padding:14px 20px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
 .hero-btn:active{background:var(--or-d)}
 .hero-btn.wide{width:80%;margin-top:auto}
 .hero-row{display:flex;gap:12px;width:88%}
-.hero-row .hero-btn{flex:1;padding:12px 0}
+.hero-row .hero-btn{flex:1;padding:14px 0}
 .deals{padding:6px 0 4px}
 .deal-sec{margin-bottom:16px}
 .deal-banner{background:var(--or);color:#fff;border-radius:12px;margin:10px 16px 12px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
@@ -409,16 +412,16 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .subc{flex:none;border:1px solid #C9C2B4;background:#fff;border-radius:100px;padding:8px 14px;font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:10.5px;letter-spacing:.07em;color:var(--ink)}
 .subc.sel{background:var(--brown);color:#fff;border-color:var(--brown)}
 .frow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-top:1px solid #E2DCD0;border-bottom:1px solid #E2DCD0}
-.fbtn{display:inline-flex;align-items:center;gap:10px;background:var(--olive);color:#fff;border:0;border-radius:100px;padding:12px 22px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
-.fbtn .n{background:#fff;color:var(--olive);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
-/* Sort is the Filter pill's twin: same shape, same type, the orange half of the
-   pair (Jack, 2026-08-18). The select keeps native behaviour - only its own
-   chrome is removed - so the option list is still the OS one. */
-.sort{display:inline-flex;align-items:center;gap:8px;background:var(--or);color:#fff;border:0;border-radius:100px;padding:12px 18px}
-.sort .lab{display:inline;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em;color:#fff}
-.sort select{border:0;background:transparent;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.88rem;letter-spacing:.05em;color:#fff;max-width:118px;
+/* Filter and Sort are outlined, not filled: white interior, coloured border,
+   coloured text (Jack, 2026-08-18). Filter olive, Sort orange - they read as a
+   pair without either shouting, and they don't have to match sizes. */
+.fbtn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;padding:11px 20px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
+.fbtn .n{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
+.sort{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--or);border:2px solid var(--or);border-radius:100px;padding:11px 16px}
+.sort .lab{display:inline;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.95rem;letter-spacing:.08em;color:var(--or)}
+.sort select{border:0;background:transparent;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.85rem;letter-spacing:.04em;color:var(--or);max-width:112px;
   -webkit-appearance:none;appearance:none;padding-right:15px;
-  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F1601C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right center;background-size:11px}
 .sort select option{color:var(--ink);background:#fff}
 .count{font-family:var(--head);font-weight:600;font-size:1.05rem;letter-spacing:.05em;padding:8px 16px 4px;text-transform:uppercase;color:var(--ink)}
@@ -521,7 +524,8 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .eduhub{padding:20px 16px 26px;text-align:center}
 .eduhub h2{font-family:var(--head);font-weight:700;font-size:1.55rem;color:var(--ink);margin-bottom:8px}
 .eduhub .eduintro{font-family:var(--body);font-size:13px;line-height:1.5;color:var(--ink-2);max-width:300px;margin:0 auto 18px}
-.edusearch{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--olive);color:#F0EAD8;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:14px;padding:12px 30px}
+/* Origins U joins the outlined family (Jack, 2026-08-18) */
+.edusearch{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:1rem;padding:11px 28px}
 .edusearch svg{width:18px;height:18px}
 .educards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
 .educard{border-radius:12px;overflow:hidden;background:#D9A87C;box-shadow:0 5px 13px rgba(0,0,0,.09);display:flex;flex-direction:column;height:152px;border:0;padding:0;text-align:left;cursor:pointer}
@@ -546,7 +550,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .eduitem.open .educontent{display:block}
 .educontent p{font-family:var(--body);font-size:13.5px;line-height:1.5;color:var(--ink);margin-bottom:14px}
 .educ-cta{display:flex;justify-content:flex-end}
-.educ-btn{display:inline-flex;align-items:center;gap:10px;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:13px;padding:11px 24px;cursor:pointer}
+.educ-btn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--or);border:2px solid var(--or);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:.95rem;padding:10px 22px;cursor:pointer}
 .educ-btn svg{width:16px;height:16px}
 .q{display:flex;align-items:center;gap:8px}
 .q button{width:26px;height:26px;border-radius:50%;border:1px solid #C9C2B4;background:#fff;font-family:var(--head);font-size:14px;color:var(--ink)}
@@ -636,7 +640,10 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* pills, matching .continue / .st-btn everywhere else in the app — the frames
    draw these square, but the app's button shape wins for consistency */
 .acbtn{display:block;width:100%;text-align:center;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:12px 14px;border-radius:100px;margin-bottom:11px;background:none}
-.acbtn.acout{background:var(--or);color:#fff;border:1.5px solid var(--or);font-size:1.32rem;letter-spacing:.06em;padding:10px 14px}
+/* Logout was solid orange at 1.32rem while every button on Account Settings is
+   an outlined .95rem pill; the two screens now share one button (Jack,
+   2026-08-18). */
+.acbtn.acout{border:1.5px solid var(--or);color:var(--or)}
 .acbtn.acsec{border:1.5px solid var(--olive);color:var(--olive)}
 .acbtn.acsec.acdanger{border-color:var(--or);color:var(--or)}
 /* the frames draw these pure black; brown is the palette's near-black, so the
@@ -678,6 +685,30 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .acinfo .aclab{font-family:var(--head);font-weight:600;font-size:.86rem;color:var(--olive);align-self:center}
 .acinfo .acval{font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
 .acnote{font-family:var(--head);font-weight:600;font-size:.88rem;color:var(--ink);margin:0 0 12px;padding-left:6px;line-height:1.35}
+/* --- Advanced Settings --- */
+/* One row per switch: what it does on the left, the switch on the right. The
+   switch is the same `.sw` the filter drawer uses. */
+.advrow{display:flex;align-items:flex-start;gap:14px;padding:14px 2px;border-bottom:1.5px solid #CFC8B8}
+.advrow:last-of-type{border-bottom:0}
+.advrow .advt{flex:1;min-width:0}
+.advrow .advt b{display:block;font-family:var(--head);font-weight:600;font-size:1.05rem;color:var(--brown)}
+.advrow .advt i{display:block;font-family:var(--body);font-style:normal;font-size:12.5px;line-height:1.45;color:var(--ink-2);margin-top:3px}
+.advrow .sw{flex:none;margin-top:3px}
+.advnote{font-family:var(--body);font-size:12.5px;line-height:1.5;color:var(--ink-2);margin:16px 0 0}
+/* the wizard's lifestyle wordmarks are images, so the strain names ride in a
+   text twin that swaps in with the toggle */
+.oc.life .lifewordt{display:none;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.02rem;letter-spacing:.03em;color:#2E261E}
+#scr.strainnames .oc.life .lifeword{display:none}
+#scr.strainnames .oc.life .lifewordt{display:block}
+/* accessibility: a step up in the sizes a shopper actually reads */
+#scr.bigtype .fcard .fnm,#scr.bigtype .ci .nm,#scr.bigtype .dcp .nm{font-size:14px}
+#scr.bigtype .fcard .fpr,#scr.bigtype .ci .pr{font-size:17px}
+#scr.bigtype .fcard .fbc,#scr.bigtype .ci .sub,#scr.bigtype .dcp .sub{font-size:12px}
+#scr.bigtype .pdesc,#scr.bigtype .acnote{font-size:15px}
+#scr.bigtype .acrow{font-size:1.28rem}
+#scr.bigtype .tabs button{font-size:11px}
+/* accessibility: everything that moves, stops */
+#scr.nomotion *,#scr.nomotion *::before,#scr.nomotion *::after{transition:none!important;animation:none!important}
 .acchecks{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding-left:14px}
 .accheck{display:flex;align-items:center;gap:11px;background:none;border:0;padding:0;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
 .accheck .acbox{width:19px;height:19px;border:1.5px solid var(--or);border-radius:2px;flex:none}
@@ -818,7 +849,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
         <div class="chipbar shopchips" id="moodbar"></div>
         <div class="catcircles" id="catcircles"></div>
         <div class="frow shopfrow"><button class="fbtn" id="shopfilter">Filter <span class="n">0</span></button>
-          <label class="sort"><span class="lab">Sort by</span><select id="shopsort"><option>Best Match</option><option>Price &#8595;</option><option>Price &#8593;</option><option>THC %</option></select></label></div>
+          <label class="sort"><span class="lab">Sort:</span><select id="shopsort"><option>Best Match</option><option>Price &#8595;</option><option>Price &#8593;</option><option>THC %</option></select></label></div>
         <div class="feed" id="feed"></div>
       </section>
 
@@ -829,7 +860,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
         <div class="catcircles subcircles" id="subcats"></div>
         <div class="dealhead" id="dealhead"></div>
         <div class="frow shopfrow"><button class="fbtn" id="openfilter">Filter <span class="n" id="fcount">0</span></button>
-          <label class="sort"><span class="lab">Sort by</span><select id="sortsel"><option value="best">Best Match</option><option value="plow">Price &#8595;</option><option value="phigh">Price &#8593;</option><option value="thc">THC %</option></select></label></div>
+          <label class="sort"><span class="lab">Sort:</span><select id="sortsel"><option value="best">Best Match</option><option value="plow">Price &#8595;</option><option value="phigh">Price &#8593;</option><option value="thc">THC %</option></select></label></div>
         <div class="pgrid" id="grid"></div>
       </section>
 
@@ -912,8 +943,22 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
             <button class="accheck tap" data-acchk><span class="acbox"></span>Phone</button>
             <button class="accheck tap" data-acchk><span class="acbox"></span>App</button>
           </div>
+          <button class="acbtn acsec tap" data-acnav="acadv">Advanced Settings</button>
           <button class="acbtn acdark tap" data-actoast="Privacy Policy">Privacy Policy</button>
           <button class="acbtn acdark tap" data-actoast="Terms and Conditions">Terms and Conditions</button>
+        </div>
+      </section>
+
+      <section class="s" data-s="acadv">
+        <div class="sbar"><button class="bk" data-back="acsettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Advanced Settings</h2></div>
+        <div class="acwrap">
+          <h3 class="ach3">How products are named</h3>
+          <div class="advrow"><div class="advt"><b>Use strain names</b><i>Show Sativa, Hybrid and Indica in place of Discovery, Social and the rest. Same six groups, the grower's vocabulary.</i></div><button class="sw tap" data-adv="strain" aria-label="Use strain names"></button></div>
+          <h3 class="ach3">Accessibility</h3>
+          <div class="advrow"><div class="advt"><b>Larger product tiles</b><i>Drops the compact layout, so photos, names and prices all come up a step.</i></div><button class="sw tap" data-adv="bigtiles" aria-label="Larger product tiles"></button></div>
+          <div class="advrow"><div class="advt"><b>Bigger text</b><i>Raises the type on product names, prices and the account list.</i></div><button class="sw tap" data-adv="bigtype" aria-label="Bigger text"></button></div>
+          <div class="advrow"><div class="advt"><b>Reduce motion</b><i>Stops sheets sliding and chevrons turning, for anyone who finds movement uncomfortable.</i></div><button class="sw tap" data-adv="nomotion" aria-label="Reduce motion"></button></div>
+          <p class="advnote">These stay on until you turn them off. Nothing here changes prices or what is in stock.</p>
         </div>
       </section>
 
@@ -983,6 +1028,30 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 <script>
 const IMG=/*IMGMAP*/;
 const FEEL={discovery:"Discovery",adventurous:"Adventurous",social:"Social",unwind:"Unwind",nightlife:"Nightlife",holistic:"Holistic"};
+/* The six lifestyles are the six strains renamed, one to one, so Advanced
+   Settings can swap the vocabulary without touching a single product: the app
+   asks lifeLabel() for the word and gets whichever set is switched on. The
+   Guide Me wizard is the one place the word is a *wordmark image*, so it also
+   carries a text twin that CSS swaps in (`#scr.strainnames`). */
+const STRAINNAME={discovery:"Sativa",adventurous:"Sativa Hybrid",social:"Hybrid",
+  unwind:"Indica Hybrid",nightlife:"Indica",holistic:"CBD"};
+const ADV={strain:false,bigtiles:false,bigtype:false,nomotion:false};
+function lifeLabel(k){return (ADV.strain?STRAINNAME[k]:FEEL[k])||FEEL[k];}
+function setAdv(k,on){
+  ADV[k]=!!on;
+  var scr=document.getElementById("scr"),view=document.getElementById("view");
+  view.classList.toggle("tiles-compact",!ADV.bigtiles);
+  scr.classList.toggle("bigtype",ADV.bigtype);
+  scr.classList.toggle("nomotion",ADV.nomotion);
+  scr.classList.toggle("strainnames",ADV.strain);
+  document.querySelectorAll("[data-adv]").forEach(function(b){b.classList.toggle("on",!!ADV[b.dataset.adv]);});
+  /* labels are baked in at render time, so anything showing one is redrawn */
+  moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
+  renderFeel();renderHome();renderShop();
+  if(S.screen==="list")renderList();
+  if(curP&&S.screen==="product")drawProduct();
+  if(S.screen==="cart")renderCart();
+}
 const LIFECLASS={discovery:"disc",adventurous:"adv",social:"soc",unwind:"unw",nightlife:"night",holistic:"hol"};
 const TYPES={flower:"Flower",preroll:"Pre-Rolls",concentrate:"Concentrates",edible:"Edibles",drink:"Drinks",topical:"Topicals"};
 const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:["0.5 g","0.75 g","1 g"],concentrate:["1 g"],edible:["2.5 mg","10 mg","30 mg","100 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"],topical:["50 mL","100 mL","200 mL","250 mL"]};
@@ -1563,7 +1632,7 @@ function pIcon(name){var n=(name||"").toLowerCase();
  else if(/hung/.test(n))k="hungry";
  return svgIco(ICONS[k]||ICONS.spark);}
 
-const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account",acloyalty:"account",acsettings:"account",acorders:"account",acrecs:"account",acreviews:"account",acabout:"account",dealcal:"home"};
+const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home",finish:"home",shop:"shop",list:"shop",vape:"shop",product:"shop",cart:"cart",confirm:"cart",edu:"edu",account:"account",acloyalty:"account",acsettings:"account",acorders:"account",acrecs:"account",acreviews:"account",acabout:"account",acadv:"account",dealcal:"home"};
 var WIZ=["guide","method","subtype","taste","finish"];
 var IMMERSIVE=["landing"].concat(WIZ);
 function nav(k){
@@ -1732,7 +1801,7 @@ function renderAccount(){
   var recs=P.filter(function(p){return !bought[p.n]&&(p.f||[]).some(function(l){return lifes[l];});})
             .sort(function(a,b){return (b.r||0)-(a.r||0);}).slice(0,6);
   $("#acrecintro").innerHTML="Based on what you've bought before &mdash; "+
-    Object.keys(lifes).map(function(l){return FEEL[l];}).join(", ")+".";
+    Object.keys(lifes).map(function(l){return lifeLabel(l);}).join(", ")+".";
   $("#acrecs").innerHTML=recs.map(feedCard).join("");
   $("#acrecs").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){
     if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
@@ -1747,9 +1816,10 @@ function renderAccount(){
       '</div><div class="acrs">'+stars(v.r)+'</div><p>'+v.d+'</p></div>';}).join("");
 }
 /* scoped delegation so the dynamic rows work without a document-wide handler */
-document.querySelectorAll('.s[data-s="account"],.s[data-s="acloyalty"],.s[data-s="acsettings"],.s[data-s="acorders"],.s[data-s="acrecs"],.s[data-s="acreviews"],.s[data-s="acabout"]').forEach(function(sec){
+document.querySelectorAll('.s[data-s="account"],.s[data-s="acloyalty"],.s[data-s="acsettings"],.s[data-s="acorders"],.s[data-s="acrecs"],.s[data-s="acreviews"],.s[data-s="acabout"],.s[data-s="acadv"]').forEach(function(sec){
   sec.addEventListener("click",function(e){
     var n=e.target.closest("[data-acnav]");   if(n){nav(n.dataset.acnav);return;}
+    var ad=e.target.closest("[data-adv]");    if(ad){setAdv(ad.dataset.adv,!ADV[ad.dataset.adv]);return;}
     var c=e.target.closest("[data-acchk]");   if(c){c.classList.toggle("on");return;}
     var st=e.target.closest("[data-acstore]");if(st){acStore=+st.dataset.acstore;renderStores();return;}
     var cp=e.target.closest("[data-accopy]"); if(cp){acCopyAddr();return;}
@@ -1769,7 +1839,7 @@ document.querySelectorAll(".landing .store").forEach(function(el,i){
 
 function renderFeel(){
   /* feel = the Lifestyle Overview: real brand logos, per Jack's request */
-  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifeglyph" src="'+(IMG["sm_"+k]||'')+'" alt=""><img class="lifeword" src="'+(IMG["word_"+k]||IMG["life_"+k]||'')+'" alt="'+FEEL[k]+'"></button>';}).join("");
+  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifeglyph" src="'+(IMG["sm_"+k]||'')+'" alt=""><img class="lifeword" src="'+(IMG["word_"+k]||IMG["life_"+k]||'')+'" alt="'+lifeLabel(k)+'"><b class="lifewordt">'+lifeLabel(k)+'</b></button>';}).join("");
   $("#feelopts").querySelectorAll("[data-fk]").forEach(function(b){b.addEventListener("click",function(){
     var k=b.dataset.fk,i=G.feels.indexOf(k);i>-1?G.feels.splice(i,1):G.feels.push(k);
     b.classList.toggle("sel");$("#feelnext").disabled=!G.feels.length;
@@ -1824,7 +1894,7 @@ function guideLifestyles(){return G.feels.length?G.feels.slice():["social"];}
 function renderFinish(){
   var lifes=guideLifestyles();
   var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||"picks"];
-  var chips=lifes.map(function(l){var lg=IMG["sm_"+l];return '<div class="feelchip '+LIFECLASS[l]+'">'+(lg?'<img class="chiplogo" src="'+lg+'" alt="">':feelIcon())+FEEL[l]+'</div>';}).join("");
+  var chips=lifes.map(function(l){var lg=IMG["sm_"+l];return '<div class="feelchip '+LIFECLASS[l]+'">'+(lg?'<img class="chiplogo" src="'+lg+'" alt="">':feelIcon())+lifeLabel(l)+'</div>';}).join("");
   var groupHtml=groups.map(function(g){
     var prods=P.filter(function(p){return p.t===G.method&&(g===TYPES[G.method]||p.sub===g);}).slice(0,6);
     var pool=prods.length?prods:P.filter(function(p){return p.t===G.method;}).slice(0,6);
@@ -1883,7 +1953,7 @@ function results(){var r=P.filter(match);
 
 function moodChips(el){
   if(!el)return;
-  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'">'+(IMG["sm_"+k]?'<img class="chiplg" src="'+IMG["sm_"+k]+'" alt="">':feelIcon())+FEEL[k]+'</button>';}).join("");
+  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'">'+(IMG["sm_"+k]?'<img class="chiplg" src="'+IMG["sm_"+k]+'" alt="">':feelIcon())+lifeLabel(k)+'</button>';}).join("");
   el.querySelectorAll("[data-mood]").forEach(function(b){b.addEventListener("click",function(){
     S.mood=S.mood===b.dataset.mood?null:b.dataset.mood;moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
     if(S.screen!=="list")nav("list");else renderList();
@@ -2559,7 +2629,7 @@ function drawProduct(){
     :(pp.was?'<div class="dealhint">40% off &mdash; deal price on 14g &amp; 28g</div>':'');
   var lc=LIFECLASS[p.f[0]]||"soc";
   var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
-  var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+FEEL[p.f[0]]+'</span>':'';
+  var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+lifeLabel(p.f[0])+'</span>':'';
   var hasSizes=sizesFor(p).length>=1;
   var szpick=hasSizes?'<div class="szpick">'+sizesFor(p).map(function(s){return '<button class="szo tap '+(s===curSize?'sel':'')+'" data-sz="'+s+'">'+feedPill(s)+'</button>';}).join("")+'</div>':'';
   var feels='<div class="chipset feel"><div class="csh">Feelings</div><div class="iconrow">'+p.fe.map(function(f){return '<div class="icard">'+pIcon(f)+'<b>'+f+'</b></div>';}).join("")+'</div></div>';
@@ -2710,7 +2780,7 @@ function renderConfirm(){
 function drawDrawer(){
   var d=$("#dbody"),szList=S.type?SIZES[S.type]:null;
   d.innerHTML='<div class="dsec"><div class="dt">On sale <button class="sw tap '+(S.sale?'on':'')+'" id="swsale"></button></div></div>'+
-   '<div class="dsec"><div class="dt">Feeling</div><div class="opts">'+Object.keys(FEEL).map(function(k){return '<button class="opt tap '+(S.mood===k?'sel':'')+'" data-fm="'+k+'">'+FEEL[k]+'</button>';}).join("")+'</div></div>'+
+   '<div class="dsec"><div class="dt">Feeling</div><div class="opts">'+Object.keys(FEEL).map(function(k){return '<button class="opt tap '+(S.mood===k?'sel':'')+'" data-fm="'+k+'">'+lifeLabel(k)+'</button>';}).join("")+'</div></div>'+
    '<div class="dsec"><div class="dt">Product type</div><div class="opts">'+Object.keys(TYPES).map(function(k){return '<button class="opt tap '+(S.type===k?'sel':'')+'" data-ft="'+k+'">'+TYPES[k]+'</button>';}).join("")+'</div></div>'+
    '<div class="dsec"><div class="dt">Size '+(S.type?'<span class="hint">'+TYPES[S.type]+' sizes</span>':'')+'</div>'+
      (szList?'<div class="opts">'+szList.map(function(s){return '<button class="opt tap '+(S.size===s?'sel':'')+'" data-fs="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>'

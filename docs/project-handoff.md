@@ -140,7 +140,7 @@ Topicals are uniformly Holistic (nothing there is psychoactive).
 with filters · product info · cart · order confirmation · Origins U (education
 hub + 8 topic pages) · vape dead-end · Deals Calendar (7 deals, every shelf) · Account · Loyalty
 Points · Account Settings · Order History · Recommended Products · Past
-Reviews · About Us.
+Reviews · About Us · Advanced Settings.
 
 **Every frame in Jack's `hifi-final/` set is now built.** The Deals Calendar
 (2026-08-18) has no frame behind it either — Jack specified it in chat, the way
@@ -185,9 +185,10 @@ open questions below.
    Sorbet / Honey, two levels, reusing the pre-roll bubbles. The IA rules out a
    third level (size, dose and ratio are all tile metadata, never navigation),
    so the drawer's size facet is locked off for drinks.
-5. **The settings toggle** that swaps strain names for lifestyle names. Unblocked
-   — all 308 products satisfy strain ↔ lifestyle, so it's a label lookup, not a
-   data migration.
+5. ~~The settings toggle that swaps strain names for lifestyle names.~~
+   **Done 2026-08-18** — it lives in Account Settings › Advanced Settings,
+   alongside three accessibility switches (larger tiles, bigger text, reduce
+   motion). `lifeLabel()` is the one place a lifestyle word is printed.
 6. **Four sub-bubbles have photos but no products**: `Rosin Coins`,
    `Full Melt Hash`, `Distillate Syringe`, `Dab Applicator` — one level down
    inside Rosin, Hash and Distillate. Every category itself is stocked,

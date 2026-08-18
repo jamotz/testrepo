@@ -346,6 +346,51 @@ Cannabinoids (diamonds being THCA). No new files, nothing to go missing, and
 the hub matches the shop's own category circles. Lifestyles keeps its strip of
 six logos and never used `img`.
 
+### The button family is outlined: coloured border, white interior, coloured text
+Jack, 2026-08-18. Filter (olive) and Sort (orange) set the pattern, and Origins
+U's Search and Continue, and Account's Logout, follow it. The two shop controls
+**don't have to match sizes** — Jack said so explicitly; they read as a pair
+through colour and shape, not by being twins. Sort's label is just `Sort:`.
+
+The knock-on: solid fills now mean something. Add to Cart on a tile, Checkout
+and the hero's three buttons are the only filled orange left, so the app has one
+primary weight instead of six.
+
+### Hero buttons were set two sizes too small
+12.5px inside an 80%-wide pill read as a caption in a button. They now use the
+app's own button type — 1rem, `.06em`, the same as Filter and the account
+buttons — so the hero stops under-setting itself (Jack, 2026-08-18).
+
+### Logout is a settings button, not a shout
+It was solid orange at 1.32rem while every button on Account Settings is an
+outlined .95rem pill. Both screens now draw the same button (Jack, 2026-08-18).
+
+### Advanced Settings sits inside Account Settings
+Jack asked for somewhere to put a toggle that swaps lifestyle names for strain
+names, plus accessibility options, and was open on placement. It is a row at the
+bottom of **Account Settings**, above Privacy Policy — settings belong with
+settings, the gear on Account already leads there, and it stays out of a
+shopper's way without being hidden.
+
+Four switches, all of them real rather than decorative:
+
+| Switch | What it does |
+|---|---|
+| Use strain names | Swaps the six lifestyle words for Sativa / Sativa Hybrid / Hybrid / Indica Hybrid / Indica / CBD, everywhere |
+| Larger product tiles | Drops `tiles-compact` from `#view` — the toggle the CSS was reserved for |
+| Bigger text | Raises product names, prices, breadcrumbs, the account list and the tab labels |
+| Reduce motion | Kills every transition and animation |
+
+**The naming toggle is a label lookup, not a data migration** — exactly as
+planned when lifestyle became "the strain, renamed". Every printed label goes
+through `lifeLabel(key)`, which returns `FEEL[key]` or `STRAINNAME[key]`; `P` is
+untouched. `setAdv()` re-renders whatever is on screen, because labels are baked
+in at render time.
+
+**One place needed more than a lookup.** The Guide Me wizard shows each
+lifestyle as a *wordmark image*, which can't be re-lettered, so each option also
+carries a text twin that `#scr.strainnames` swaps in.
+
 ### Small category icons scale 50%
 Flower, Pre-Rolls, Vapes and Topicals sit small inside the category ring, so
 they're scaled 1.5× to match the others visually.
