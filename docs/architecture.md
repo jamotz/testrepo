@@ -304,23 +304,29 @@ global handler. Everything is namespaced `ac*` — `.s` is a global
 
 ### The deals calendar
 
-`renderDealCal()` builds a date-led list from a **weekly pattern**, not a list
+`renderDealCal()` builds a date-led list from a **four-week rota**, not a list
 of dates. `DEALDEF` holds the seven deals — each with the shelf it runs on
-(`t`), the weekday it runs (`dow`), the label and copy its banner carries, the
-size its prices quote, and an `items()` that resolves its products out of `P`.
-The renderer walks the next `DEALCAL_DAYS` (30) days from *today*, emits a
-section for each day that has at least one deal, and orders same-day deals by
-`DEALCAL_ORDER`.
+(`t`), the week of the cycle and the weekday it runs (`week`, `dow`), the label
+and copy its banner carries, the size its prices quote, and an `items()` that
+resolves its products out of `P`. The renderer walks the next `DEALCAL_DAYS`
+(30) days from *today*, emits a section for each day `dcRunsOn()` matches, and
+orders same-day deals by `DEALCAL_ORDER`.
 
-| Day | Deal | Shelf | `items()` |
+| Week · day | Deal | Shelf | `items()` |
 |---|---|---|---|
-| Mon | 30% Off | Concentrates | `dcRank("concentrate", -1, 4)` — dearest 4 |
-| Tue | 30% Off | Edibles | one brand, `edbrand.brand` |
-| Wed | 30% Off | Flower | four brand labels, prefix-matched |
-| Thu | BOGO $40 | Concentrates | `dcRank("concentrate", 1, 4)` — cheapest 4 |
-| Fri | 2 For $50 | Flower | the `sale:1` flowers |
-| Sat | 25% Off | Pre-Rolls | `dcRank("preroll", -1, 5)` — dearest 5 |
-| Sun | 40% Off | Flower | the `sale:1` flowers |
+| 0 · Tue | 30% Off | Edibles | one brand, `edbrand.brand` |
+| 0 · Fri | 2 For $50 | Flower | the `sale:1` flowers |
+| 1 · Thu | BOGO $40 | Concentrates | `dcRank("concentrate", 1, 4)` — cheapest 4 |
+| 1 · Sun | 40% Off | Flower | the `sale:1` flowers |
+| 2 · Tue | 25% Off | Pre-Rolls | `dcRank("preroll", -1, 5)` — dearest 5 |
+| 2 · Fri | 2 For $50 | Flower | the `sale:1` flowers |
+| 3 · Mon | 30% Off | Concentrates | `dcRank("concentrate", -1, 4)` — dearest 4 |
+| 3 · Sat | 30% Off | Flower | four brand labels, prefix-matched |
+
+Two deals a week, eight in a 30-day view. `dcWeek(date)` derives the cycle
+position from the date (whole weeks since the epoch, turning over on a Sunday),
+so it never drifts; `dcRunsOn(key, date)` is the single test both the calendar
+and `dealNextRun()` use.
 
 **End dates are generated.** `dealEnd(key, date)` puts a run's end 3–7 days
 after its start, from a hash of the key and the date — stable across renders,

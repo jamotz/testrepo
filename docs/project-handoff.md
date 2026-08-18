@@ -92,8 +92,8 @@ icon reads as a different tab.
      and Seattle's opening hours
    - which four flowers carry the deal (`DEALS` in `gen_catalog_products.py`) —
      Jack named the two brands, the strains within them are a first pass
-   - the deals calendar's schedule (`DEALDEF`) — seven deals, one per weekday,
-     and the edible deal's brand (Wyld). The **line-ups aren't authored**: each
+   - the deals calendar's schedule (`DEALDEF`) — seven deals on a four-week
+     rota, two a week, and the edible deal's brand (Wyld). The **line-ups aren't authored**: each
      deal resolves its products from the catalog, by price rank where Jack
      described one ("the 4 cheapest", "the 5 most expensive")
    - run-out dates are generated (3–7 days after a run starts, hashed so they

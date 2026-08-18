@@ -2285,26 +2285,42 @@ function dealBanner(label,copy,until){
    Nothing here restates the catalog: each deal resolves its own products out
    of P, so a renamed or re-flagged product follows automatically. */
 const DEALCAL_DAYS=30;
-/* One deal per weekday. `t` is the shelf it runs on (the toggle row names it),
-   `dow` the weekday, `items()` resolves the products out of P — by rank where
-   Jack described a rank ("the 4 cheapest", "the 5 most expensive"), so the
-   line-up follows the catalog instead of being typed out and going stale.
-   Only the two flower deals are modelled in priceFor; the rest quote today's
-   price and say so in `note`, rather than opening a second discount path. */
+const DEALCAL_CYCLE=4;                          /* weeks before the rota repeats */
+/* Deals rotate; they don't all run every week. Jack, 2026-08-18: "there is
+   rarely a deal a day going on at shops - maybe like two running over the
+   course of a week", keeping the variance. So each deal holds a slot in a
+   four-week rota: `week` is which week of the cycle it runs in (an array for a
+   deal that runs more than once), `dow` the day inside that week. Two a week,
+   eight in a 30-day view, and every shelf still comes round inside a month.
+
+   Each week pairs the flower anchor with one other shelf:
+     week 0  30% off Wyld, edibles (Tue)   + 2 For $50 (Fri)
+     week 1  40% Off flower (Sun)          + BOGO $40, concentrates (Thu)
+     week 2  25% off pre-rolls (Tue)       + 2 For $50 (Fri)
+     week 3  30% off concentrates (Mon)    + 30% Off flower brands (Sat)
+   The two days in a week sit apart on purpose, so the month reads as a steady
+   drip rather than a pair of deals and a fortnight of nothing.
+
+   `t` is the shelf it runs on (the toggle row names it), and `items()` resolves
+   the products out of P — by rank where Jack described a rank ("the 4
+   cheapest", "the 5 most expensive"), so the line-up follows the catalog
+   instead of being typed out and going stale. Only the two flower deals are
+   modelled in priceFor; the rest quote today's price and say so in `note`,
+   rather than opening a second discount path. */
 function dcNote(what){return what+" comes off in store on the day, so the prices below are today's.";}
 function dcRank(t,dir,n){                       /* cheapest / dearest N of a shelf */
   return P.filter(function(p){return p.t===t;})
           .slice().sort(function(a,b){return dir*(a.pr-b.pr);}).slice(0,n);
 }
 const DEALDEF={
-  pair:{t:"flower",dow:5,label:"2 For $50",copy:"Mix &amp; match any two of these eighths for $50",size:"3.5 g",
+  pair:{t:"flower",week:[0,2],dow:5,label:"2 For $50",copy:"Mix &amp; match any two of these eighths for $50",size:"3.5 g",
         items:function(){return P.filter(function(p){return p.t==="flower"&&p.sale;});}},
-  bulk:{t:"flower",dow:0,label:"40% Off",copy:"Get any 14g or 28g of flower for 40% off",size:"28 g",
+  bulk:{t:"flower",week:1,dow:0,label:"40% Off",copy:"Get any 14g or 28g of flower for 40% off",size:"28 g",
         items:function(){return P.filter(function(p){return p.t==="flower"&&p.sale;});}},
   /* the brand deal is defined on brands, not on flagged products, and priceFor
      doesn't model it - so its rows show today's price and the panel says so
      rather than inventing a second discount path. */
-  brand:{t:"flower",dow:3,label:"30% Off",copy:"Try some top-shelf flower for the low",size:"3.5 g",
+  brand:{t:"flower",week:3,dow:6,label:"30% Off",copy:"Try some top-shelf flower for the low",size:"3.5 g",
          /* the same four labels the home brand row shows. Matched as a prefix,
             because the tile says "Royal Tree" and the catalog says "Royal Tree
             Gardens". Freddy's used to sit here with no flower behind it at
@@ -2314,17 +2330,17 @@ const DEALDEF={
          items:function(){var b=DEALDEF.brand.brands;
            return P.filter(function(p){return p.t==="flower"&&b.some(function(x){return p.b.indexOf(x)===0;});});}},
   /* Jack, 2026-08-18 — the four other shelves. */
-  bogo:{t:"concentrate",dow:4,label:"BOGO $40",copy:"Any two of these grams for $40",
+  bogo:{t:"concentrate",week:1,dow:4,label:"BOGO $40",copy:"Any two of these grams for $40",
         note:function(){return "Two grams for $40 in store on the day, mixed or matched &mdash; the prices below are today's.";},
         items:function(){return dcRank("concentrate",1,4);}},
-  conc30:{t:"concentrate",dow:1,label:"30% Off",copy:"Top-shelf concentrate, 30% off",
+  conc30:{t:"concentrate",week:3,dow:1,label:"30% Off",copy:"Top-shelf concentrate, 30% off",
         note:function(){return dcNote("30%");},
         items:function(){return dcRank("concentrate",-1,4);}},
   /* one brand, exactly as asked - swap the name and the deal moves with it */
-  edbrand:{t:"edible",dow:2,label:"30% Off",brand:"Wyld",copy:"30% off everything from Wyld",
+  edbrand:{t:"edible",week:0,dow:2,label:"30% Off",brand:"Wyld",copy:"30% off everything from Wyld",
         note:function(){return dcNote("30%");},
         items:function(){return P.filter(function(p){return p.t==="edible"&&p.b===DEALDEF.edbrand.brand;});}},
-  pre25:{t:"preroll",dow:6,label:"25% Off",copy:"Our five priciest pre-rolls, 25% off",
+  pre25:{t:"preroll",week:2,dow:2,label:"25% Off",copy:"Our five priciest pre-rolls, 25% off",
         note:function(){return dcNote("25%");},
         items:function(){return dcRank("preroll",-1,5);}}
 };
@@ -2337,10 +2353,25 @@ function dcMD(d){return (d.getMonth()+1)+"/"+d.getDate();}
 function dealEnd(key,d){
   return new Date(d.getFullYear(),d.getMonth(),d.getDate()+3+dcHash(key+"|"+d.toDateString())%5);
 }
+/* which week of the rota a date falls in. Counted in whole weeks off the epoch
+   with a +4 shift so a cycle turns over on a Sunday, and taken from the date
+   itself rather than a counter, so it stays continuous across months, renders
+   and sessions. */
+function dcWeek(d){
+  return Math.floor((Math.floor(d.getTime()/864e5)+4)/7)%DEALCAL_CYCLE;
+}
+function dcRunsOn(key,d){
+  var def=DEALDEF[key],w=dcWeek(d);
+  return def.dow===d.getDay()&&(def.week===w||(def.week.indexOf&&def.week.indexOf(w)>-1));
+}
+/* the next day this deal runs. A deal can now be up to four weeks out, so the
+   scan covers the whole cycle rather than the next seven days. */
 function dealNextRun(key){
-  var dow=DEALDEF[key].dow,now=new Date();
-  for(var i=0;i<7;i++){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
-    if(d.getDay()===dow)return d;}
+  var now=new Date();
+  for(var i=0;i<7*DEALCAL_CYCLE;i++){
+    var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
+    if(dcRunsOn(key,d))return d;
+  }
   return now;
 }
 /* what the home banner prints: the end of this deal's current run, from the
@@ -2363,7 +2394,7 @@ function renderDealCal(){
   var now=new Date(),html='',n=0;
   for(var i=0;i<DEALCAL_DAYS;i++){
     var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
-    var todays=DEALCAL_ORDER.filter(function(k){return DEALDEF[k].dow===d.getDay();});
+    var todays=DEALCAL_ORDER.filter(function(k){return dcRunsOn(k,d);});
     if(!todays.length)continue;
     var rel=(i===0?"Today":(i===1?"Tomorrow":""));
     html+='<div class="dcday"><div class="dcdate">'+(rel?'<span class="dcrel">'+rel+'</span>':'')+

@@ -115,14 +115,40 @@ type a step.
 Jack, 2026-08-18: a date-oriented page a month out, the date as the section
 title, the orange banner as the deal's title, and a dropdown for the products.
 
-**The schedule is a weekly pattern.** `DEALDEF` gives each deal the weekday it
-runs on and the renderer walks the next 30 days from *whenever the app is
-opened*. Typed dates would have made the case study open on a page of expired
-deals a fortnight after it was built — the one thing a "what's coming up" screen
-must never do. The cost is that the calendar can't express a one-off; add a
-day-offset field the same way if a one-off is ever needed. Either way the
-schedule is **authored** and Jack's to set: seven keys in one table, one per
-weekday.
+**The schedule is a rota, not typed dates.** `DEALDEF` gives each deal the
+weekday it runs on and the renderer walks the next 30 days from *whenever the
+app is opened*. Typed dates would have made the case study open on a page of
+expired deals a fortnight after it was built — the one thing a "what's coming
+up" screen must never do. The cost is that the calendar can't express a one-off;
+add a day-offset field the same way if a one-off is ever needed. Either way the
+schedule is **authored** and Jack's to set: seven keys in one table.
+
+**Two deals a week, on a four-week cycle** (Jack, 2026-08-18: "there is rarely a
+deal a day going on at shops… please keep the variance"). The first cut ran all
+seven every week — a deal every single day, which no shop does. Each deal now
+holds a `week` slot in a four-week rota as well as its `dow`, so a 30-day view
+shows **eight deal days instead of thirty**, and every shelf still comes round
+inside the month:
+
+| Week | | |
+|---|---|---|
+| 0 | Tue — 30% off Wyld (edibles) | Fri — 2 For $50 (flower) |
+| 1 | Thu — BOGO $40 (concentrates) | Sun — 40% Off (flower) |
+| 2 | Tue — 25% off (pre-rolls) | Fri — 2 For $50 (flower) |
+| 3 | Mon — 30% off (concentrates) | Sat — 30% Off brands (flower) |
+
+Each week pairs the flower anchor with one other shelf, and the two days sit
+apart, so the month reads as a steady drip rather than two deals and a
+fortnight of nothing. **2 For $50 is the only deal with two slots** — it's the
+store's signature offer, so it runs fortnightly while the rest come round
+monthly.
+
+`dcWeek(date)` takes the cycle position from the **date itself** — whole weeks
+since the epoch, shifted so a cycle turns over on a Sunday — rather than from a
+counter, so it stays continuous across months, renders and sessions.
+`dealNextRun()` scans the whole cycle now, since a deal can be up to four weeks
+out; that is also what the home banners' "Until" dates read from, so a home
+banner can now name an end date a few weeks ahead.
 
 **The banner is the deal's title and its toggle.** Reusing `dealBanner()` means
 a deal looks identical on the home page and in the calendar, which is the whole
