@@ -22,9 +22,9 @@ lives on the `claude/*` branches.
 
 **Only the branch named at the top of this file is current.** Superseded
 `claude/project-docs-review-*` branches stay on origin and look plausible —
-`sz8jwv` is 18 commits behind and predates the pre-rolls and every Account
-screen. Check this line against `git log` before trusting a branch, and update
-it here when the work moves.
+`sz8jwv` predates the pre-rolls and every Account screen, and `4b84p7` stops
+before the deals, the calendar and everything after. Check this line against
+`git log` before trusting a branch, and update it here when the work moves.
 
 ---
 
@@ -101,13 +101,12 @@ icon reads as a different tab.
      date
    - topical and edible feelings/taste, until those sheets catch up
 
-   **Not built, and flagged in the UI as such:** Advanced Settings' *Enlarged
-   view* switch is a placeholder (Jack, 2026-08-18) — it carries a "Coming soon"
-   tag and toasts rather than scaling anything.
-
    **Before writing a table that assigns something per strain, check the source
    for a column that already says it.** That mistake has been made twice — once
    with lifestyle, once with terpenes.
+5. **Say what isn't built, in the UI as well as here.** Advanced Settings'
+   *Enlarged view* switch is a placeholder (Jack, 2026-08-18): it carries a
+   "Coming soon" tag and toasts rather than quietly doing nothing.
 
 ---
 
@@ -133,31 +132,55 @@ and drinks still carry the old placeholders and are the remaining work.
 
 **Lifestyle is the strain, renamed** (Jack, 2026-08-12) — Sativa/Sativa
 Hybrid/Hybrid/Indica Hybrid/Indica/CBD = Discovery/Adventurous/Social/Unwind/
-Nightlife/Holistic, one-to-one, with a settings toggle planned to swap the two
-vocabularies. Every catalog states the strain, so **no generator authors a
-lifestyle** — read the column, don't invent a rule. Four generators each had
-their own invented rule until this landed; all four disagreed with their sheets.
-Topicals are uniformly Holistic (nothing there is psychoactive).
+Nightlife/Holistic, one-to-one. Every catalog states the strain, so **no
+generator authors a lifestyle** — read the column, don't invent a rule. Four
+generators each had their own invented rule until this landed; all four
+disagreed with their sheets. Topicals are uniformly Holistic (nothing there is
+psychoactive).
+
+The **Use product type** switch in Advanced Settings swaps the two vocabularies
+app-wide (2026-08-18). It is a label lookup, not a data change: `lifeLabel(key)`
+is the only place a lifestyle word is printed — **use it, or your new screen
+won't follow the toggle**.
 
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
 with filters · product info · cart · order confirmation · Origins U (education
-hub + 8 topic pages) · vape dead-end · Deals Calendar (7 deals, every shelf) · Account · Loyalty
-Points · Account Settings · Order History · Recommended Products · Past
-Reviews · About Us · Advanced Settings.
+hub + 8 topic pages) · vape dead-end · Deals Calendar (running now, then a
+month of upcoming) · Account · Loyalty Points · Account Settings · Advanced
+Settings · Order History · Recommended Products · Past Reviews · About Us.
 
-**Every frame in Jack's `hifi-final/` set is now built.** The Deals Calendar
-(2026-08-18) has no frame behind it either — Jack specified it in chat, the way
-the four unframed Account pages were specified. What's left is polish and the
-open questions below.
+**Every frame in Jack's `hifi-final/` set is now built.** The Deals Calendar and
+Advanced Settings have no frames behind them either — Jack specified both in
+chat, the way the four unframed Account pages were specified. What's left is
+polish and the open questions below.
+
+**The visual language settled on 2026-08-18** and is worth reading in
+`design-decisions.md` before adding a control:
+
+- **Buttons are outlined** — coloured border, white interior, coloured text.
+  Filter is the lighter green, Sort/Continue/Search/Logout orange or olive. A
+  **solid fill now means the primary action** (Add to Cart, Checkout, the hero).
+- **One weight pill everywhere** — outlined olive for a size you could pick,
+  solid olive for the one you are on, tinted chip for serving/total, which is a
+  fact rather than a choice.
+- **Every screen wears the brown `.sbar` title bar.**
 
 ---
 
 ## Immediate next steps
 
-1. **General touch-ups** — Jack is doing a pass across the app. The Account
-   screens have been through one round already (see `design-decisions.md`).
-2. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
+1. **General touch-ups** — Jack is doing a pass across the app, screen by
+   screen. Home, shop, cart, Origins U and the account screens have each been
+   through a round (see `design-decisions.md` for what was decided and why).
+2. **Build *Enlarged view*.** The switch is in Advanced Settings with a "Coming
+   soon" tag and does nothing on purpose (Jack, 2026-08-18: "just a placeholder
+   for now. We'll go over it later"). What he asked for is the **whole app
+   scaled proportionately** — photos, type, buttons and spacing together — not a
+   list of font sizes. The frame already lays out in a fixed 452 px design width
+   and scales as a unit, so the honest implementation is a scale factor on that,
+   not per-rule overrides. `tiles-compact` on `#view` is still reserved for it.
+3. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
    2026-08-17: "ignore for now"). Don't pick this up without him. The other
    three shelves are done; these 138 products still carry the old vocabulary, so
    their chips fall back to generated SVGs while flower/concentrate/pre-roll
@@ -176,39 +199,39 @@ open questions below.
    Offered but not built: a remapping sheet listing all ~120 old values with a
    proposed new term and product counts, so Jack reviews 120 rows instead of 138
    products.
-3. ~~The home-page deals have no products.~~ **Done 2026-08-17.** Four flowers
-   are nominated in `DEALS` (`gen_catalog_products.py`) — Passion Flower's
-   Northern Lights and Pineapple Express, Lifestyles' Gelato Cake and Jack
-   Herer — so both deal sections render again. 2-for-$50 now mixes and matches
-   across the whole bag (any two deal eighths, same strain or not). **Jack still
-   owns the strain picks**: he named the two brands, the four strains were
-   chosen to spread the row across four lifestyles and are one line each to
-   swap.
-4. ~~Drinks — the bubble path.~~ **Done 2026-08-17**, from
-   `WA_Drinks_IA_Condensed.xlsx`: THC / CBD / Blend → Drink / Shot / Seltzer /
-   Sorbet / Honey, two levels, reusing the pre-roll bubbles. The IA rules out a
-   third level (size, dose and ratio are all tile metadata, never navigation),
-   so the drawer's size facet is locked off for drinks.
-5. ~~The settings toggle that swaps strain names for lifestyle names.~~
-   **Done 2026-08-18** — it lives in Account Settings › Advanced Settings,
-   alongside three accessibility switches (larger tiles, bigger text, reduce
-   motion). `lifeLabel()` is the one place a lifestyle word is printed.
-6. **Four sub-bubbles have photos but no products**: `Rosin Coins`,
+4. **The drawer's Brands facet matches almost nothing.** `BRANDS` lists
+   `Artizen · Freddy's · Royal Tree · Saints · Skörd · St. Ideal` and `match()`
+   compares it to `p.b` exactly, but the catalog says `Royal Tree Gardens` and
+   `Skord` (no umlaut), and carries no `Freddy's` or `St. Ideal` at all — so
+   four of the six return zero products. (Freddy's is out of the home brand row
+   as of 2026-08-18, but the drawer still offers it.) Found while wiring the
+   calendar, which matches the same labels as a **prefix** and resolves 26
+   flowers from three brands. Fix is either a prefix match in `match()` or a
+   `BRANDS` list taken from the catalog; needs Jack's call on which brands
+   should be offered.
+5. **Four sub-bubbles have photos but no products**: `Rosin Coins`,
    `Full Melt Hash`, `Distillate Syringe`, `Dab Applicator` — one level down
    inside Rosin, Hash and Distillate. Every category itself is stocked,
    **Kief (6) and RSO (4) included** — an earlier note claiming those two were
    empty was wrong (Jack, 2026-08-17; see `design-decisions.md`).
+6. **Two open questions for Jack**, both flagged where they live:
+   - the **four deal flowers** are his brands but my strain picks (`DEALS` in
+     `gen_catalog_products.py`, one line each to swap);
+   - the **lighter green** on the Filter pill measures 3.16:1 on white, which
+     clears AA for large text but not for a 16 px label. The darker Holistic
+     green `#5C7540` is the drop-in if he wants it to clear 4.5:1.
 
-7. **The drawer's Brands facet matches almost nothing.** (Freddy's is now out
-   of the home row — see below — but the drawer still lists it.) `BRANDS` lists
-   `Artizen · Freddy's · Royal Tree · Saints · Skörd · St. Ideal` and `match()`
-   compares it to `p.b` exactly, but the catalog says `Royal Tree Gardens` and
-   `Skord` (no umlaut), and carries no `Freddy's` or `St. Ideal` at all — so
-   four of the six return zero products. Found 2026-08-18 while wiring the
-   calendar, which matches the same labels as a **prefix** and resolves 18
-   flowers from three brands. Fix is either a prefix match in `match()` or a
-   `BRANDS` list taken from the catalog; needs Jack's call on which brands
-   should be offered.
+### Done in this pass (2026-08-17 → 18)
+
+| | |
+|---|---|
+| Home deals | Four flowers nominated in `DEALS`; 2-for-$50 mixes and matches across the whole bag; brand tiles matched to the product tiles; Torus replaced Freddy's; a See All card per row opens the whole deal |
+| Deals Calendar | New screen from both hero buttons — seven deals on a four-week rota, two a week, **running now** then a month of upcoming, each with a generated run-out date and a product dropdown |
+| Drinks | Bubble path built from `WA_Drinks_IA_Condensed.xlsx`; the size facet lists real volumes derived from the catalog |
+| Kief / RSO | The "no products" note was wrong — the sheet has all 60 concentrate rows |
+| Chrome | Brown title bar on every screen; trolley icon over Cart; "Your Cart"; Origins U photos wired to images the build actually embeds |
+| Buttons | The outlined family, one weight pill app-wide, hero type at the app's own size, Logout matched to Account Settings |
+| Advanced Settings | New screen: **Use product type** (working), **Enlarged view** (placeholder), **Reduce motion** (working) |
 
 *Size as a navigation step was considered and rejected* (Jack, 2026-08-12):
 size lives in the product tile, not the filter path. Don't re-propose it.
@@ -236,7 +259,7 @@ reference/origins/
 ├── assets/
 │   ├── product assets/           ← photos by category (Concentrate has sub-folders)
 │   ├── Lifestyle logos/          ← the six lifestyle logos
-│   ├── Various Brand Logos/      ← Royal Tree, Saints, Freddy's, Skörd
+│   ├── Various Brand Logos/      ← Royal Tree, Saints, Torus, Skord (+ Freddy's, unused)
 │   └── origins logos/, scents assets/, …
 ├── hifi-final/                   ← Jack's Figma frames (the source of truth)
 └── HANDOFF.md                    ← older handoff, still has useful frame notes
@@ -260,10 +283,17 @@ python3 reference/origins/hifi-build/gen_topicals.py > /tmp/topicals.txt
 python3 reference/origins/hifi-build/asm_app.py
 ```
 
-**Flower is the exception — don't regenerate it.** `gen_catalog_products.py`
-picks images from `IMG_POOL`, and the app's flower rows were hand-updated to the
-real `fl_*` keys afterwards. The pool now points at keys that exist, but the
-per-product assignment would still be reshuffled. Patch flower rows in place.
+**Flower regenerates like everything else now** — the old "don't regenerate
+flower" warning is retired. It existed because photos were drawn sequentially
+from a shuffled pool, so inserting one product reshuffled every photo after it.
+Photos are now chosen by hashing the strain name against a pool scoped to that
+strain's type, so a strain keeps its photo across rebuilds and row order doesn't
+matter.
+
+**Regenerating flower is in fact how you change the deal line-up**: `DEALS` in
+`gen_catalog_products.py` decides which four rows carry `sale:1`, and the
+generator refuses to emit if a nomination stops matching exactly one row, or if
+a nominated eighth is at or under the $25 deal price.
 
 ---
 
@@ -304,6 +334,18 @@ per-product assignment would still be reshuffled. Patch flower rows in place.
   blocked and the fallback is to render the address in a selectable `<input>`.
 - **Git drops empty directories.** Every asset folder has a `README.md` so the
   structure survives deleting its photos (learned the hard way with `Rosin/`).
+- **A lifestyle word is only ever printed by `lifeLabel(key)`.** Print `FEEL[k]`
+  directly and Advanced Settings' *Use product type* switch won't reach your
+  screen. The Guide Me wizard is the exception that proves it: its lifestyle
+  words are *wordmark images*, so each option carries a text twin that CSS swaps
+  in.
+- **A fixed height inside a `.dealrow` stretches every product tile in it.**
+  Flex rows default to `align-items:stretch`, so a brand or See All card with
+  its own height drags the tiles up to meet it — that shipped once, 40px too
+  tall. Let them stretch; only the brand row, which has no product tile to set
+  the height, is measured.
+- **A hidden screen measures zero.** Anything that sizes itself from a rendered
+  element has to run when its screen is actually on (`nav()`), not at load.
 - **`.s` and `.empty` are global CSS classes** — `.s{display:none}` in
   particular. Namespace anything new (the size sheet uses `fs*`), or it vanishes
   silently.
