@@ -173,7 +173,9 @@ polish and the open questions below.
 - **Every screen wears the brown `.sbar` title bar.**
 - **Cards are the shop's product tile** — white, 1.5px `#E1DBCD` border, 12px
   radius, one shadow. Origins U's tiles joined it on 2026-08-20, dropping a
-  `#D9A87C` peach that was in no other screen; their label bar went `--olive`.
+  `#D9A87C` peach that was in no other screen. They keep one departure: no
+  label bar (the name is olive text under the photo) and an `--olive` border,
+  since with the bar gone the border is what carries the colour.
 
 ---
 

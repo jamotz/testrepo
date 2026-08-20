@@ -385,26 +385,38 @@ Topic copy for both new categories is **authored**, flagged `AUTHORED` in the
 table — the same standing as the rest of Origins U's copy, none of which comes
 from a sheet.
 
-### The Origins U tile is the shop's product tile
-Jack picked **option C** of four (2026-08-20). The card was a flat `#D9A87C`
-peach — a colour that appears nowhere else in the palette, not `--cream`, not
-`--tan` — which is most of why Origins U read as a different app bolted on.
+### The Origins U tile is the shop's product tile, framed in olive
+Jack picked **option A3** (2026-08-20, after a first pass at option C). The card
+was a flat `#D9A87C` peach — a colour that appears nowhere else in the palette,
+not `--cream`, not `--tan` — which is most of why Origins U read as a different
+app bolted on.
 
-It now uses the `.fcard` shell: white, 1.5px `#E1DBCD` border, 12px radius, the
-same shadow. **The label bar stays** — these tiles are mostly photograph and the
-name needs anchoring — but in `--olive` with cream text rather than `--brown`,
-so it belongs to the Search pill and the weight pills instead of competing with
-the `.sbar` title bar sitting directly above it.
+It now uses the `.fcard` shell — white, 12px radius, the same shadow — with two
+deliberate departures from a product tile:
 
-Rejected alongside it: the bar in `--brown` on the new card (safe, but eight
-brown bars still argue with the header), the bar dropped for olive text under a
-divider (cleanest, loses the label as a signature), and the photo in an
-`#EDEFE1` tinted well (keeps the grouping the peach gave, adds a second surface
-colour per card).
+- **No label bar.** The category name is `--olive` text under the photo, the way
+  a product tile names itself, over a neutral `#E1DBCD` rule.
+- **The border is `--olive`, not the tile's neutral `#E1DBCD`.** With the bar
+  gone, the border is the only thing carrying brand colour on these cards, so it
+  takes that job rather than leaving them as white rectangles.
+
+**The two lines are deliberately different weights.** Olive frames the card;
+neutral grey divides photo from label. Running both in olive (variant A1) read
+as more enclosed than the shelf needs, and dropping the rule entirely (A2) left
+the label unanchored — the original argument for keeping a bar at all.
+
+The route here matters more than the endpoint: an earlier pass shipped **option
+C**, which kept the bar and put it in `--olive` with cream text. That was a fine
+card in isolation; eight of them stacked still read as a row of coloured slabs
+under a brown `.sbar`. Also rejected: the bar in `--brown` on the new card (B),
+and the photo in an `#EDEFE1` tinted well (D), which keeps the grouping the
+peach gave but adds a second surface colour per card.
 
 **The Lifestyles tile is the odd one out** and now visibly so: it is six black
 wordmark glyphs where its nine neighbours are product photography. The peach
-disguised that; white doesn't. Not addressed here — it needs its own look.
+disguised that; white doesn't, and A3 makes it plainer still — with no bar to
+balance the weight, the glyphs sit alone inside an olive frame. Not addressed
+here; it needs its own treatment rather than a tweak folded into a card change.
 
 ### The button family is outlined: coloured border, white interior, coloured text
 Jack, 2026-08-18. Filter and Sort set the pattern, and Origins U's Search and

@@ -522,19 +522,22 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .edusearch{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:1rem;padding:11px 28px}
 .edusearch svg{width:18px;height:18px}
 .educards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-/* The card is the shop's product tile: white, 1.5px neutral border, 12px
-   radius, the same shadow. It used to be a flat #D9A87C peach, a colour that
-   appears nowhere else in the palette, which is what made Origins U read as a
-   different app. The label bar stays — these tiles are mostly photo and need
-   the name anchored — but in --olive rather than --brown, so it belongs to the
-   Search pill and the weight pills instead of competing with the .sbar title
-   bar directly above it (Jack, 2026-08-20, option C of four). */
-.educard{border-radius:12px;overflow:hidden;background:#fff;border:1.5px solid #E1DBCD;box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column;height:152px;padding:0;text-align:left;cursor:pointer}
+/* The card is the shop's product tile: white, 12px radius, the same shadow. It
+   used to be a flat #D9A87C peach, a colour that appears nowhere else in the
+   palette, which is what made Origins U read as a different app.
+   The label bar is gone: the name is olive text under the photo, the way a
+   product tile names itself, and the card's border carries the olive instead
+   (Jack, 2026-08-20, option A3 of several). The border is --olive where a
+   product tile's is neutral #E1DBCD — with no bar left, the border is the only
+   thing carrying brand colour here, so it does that job deliberately. The rule
+   under the photo stays neutral: olive frames the card, grey does the internal
+   division, so the two lines aren't saying the same thing at the same weight. */
+.educard{border-radius:12px;overflow:hidden;background:#fff;border:1.5px solid var(--olive);box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column;height:152px;padding:0;text-align:left;cursor:pointer}
 .educard .eduimg{flex:1;display:flex;align-items:center;justify-content:center;padding:10px;min-height:0}
 .educard .eduimg img{max-width:100%;max-height:100%;object-fit:contain}
 .educard .edulife{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;place-items:center;gap:4px;padding:12px 10px}
 .educard .edulife img{width:34px;height:34px;object-fit:contain}
-.educard .edulabel{background:var(--olive);color:var(--cream);font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:.02em;padding:9px 12px;text-align:center}
+.educard .edulabel{background:transparent;color:var(--olive);border-top:1px solid #E1DBCD;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:13.5px;letter-spacing:.06em;padding:10px 12px;text-align:center}
 .edutopic{padding:0 0 28px}
 .edubanner{position:relative;background:#D9A87C;height:98px;display:flex;align-items:center;overflow:hidden}
 .edubanner .edubg{position:absolute;left:0;right:0;text-align:center;font-family:var(--head);font-weight:700;font-size:66px;color:rgba(46,38,30,.15);letter-spacing:.04em;white-space:nowrap;pointer-events:none;user-select:none}
