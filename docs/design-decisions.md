@@ -353,11 +353,18 @@ match sizes** — Jack said so explicitly; they read as a pair through colour an
 shape, not by being twins. Sort's label is just `Sort:`, and its value sits at
 the same size as the label rather than a step down.
 
-Filter is the **lighter green** (`--hol`, the Holistic `#7E9A5B`), not the dark
-olive. Worth knowing before anyone "fixes" it: `#7E9A5B` on white measures
-**3.16:1**, which clears AA for large text but not for a 16px label. Jack chose
-it with that on the table; the darker Holistic green `#5C7540` is the drop-in if
-it ever needs to clear 4.5:1.
+Filter is `--olive` `#555624` — **the same olive as Origins U's Search pill**
+(Jack, 2026-08-20). The app's two outlined non-orange controls are one colour,
+so the family reads as a family rather than as two greens that nearly match.
+
+*Superseded:* Filter was the lighter Holistic green `--hol` `#7E9A5B` from
+2026-08-18. That measured **3.15:1** on white — fine for large text, short of
+AA's 4.5:1 for its 16px label — and was carried as an open question with
+`#5C7540` (5.16:1) earmarked as the drop-in. Matching Search settles it
+instead: `#555624` is **7.66:1**, clearing AA and AAA, so the question is
+closed and `#5C7540` is not needed. **Don't "restore" the lighter green** — it
+was a colour choice that also happened to fail a contrast threshold, and both
+reasons for moving it still hold.
 
 The knock-on: solid fills now mean something. Add to Cart on a tile, Checkout
 and the hero's three buttons are the only filled orange left, so the app has one

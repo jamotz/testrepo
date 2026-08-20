@@ -402,9 +402,13 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .frow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-top:1px solid #E2DCD0;border-bottom:1px solid #E2DCD0}
 /* Filter and Sort are outlined, not filled: white interior, coloured border,
    coloured text (Jack, 2026-08-18). Filter olive, Sort orange - they read as a
-   pair without either shouting, and they don't have to match sizes. */
-.fbtn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--hol);border:2px solid var(--hol);border-radius:100px;padding:11px 20px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
-.fbtn .n{background:#fff;color:var(--hol);border:1.5px solid var(--hol);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
+   pair without either shouting, and they don't have to match sizes.
+   Filter's olive is Origins U's Search pill (.edusearch) exactly, so the two
+   outlined controls in the app are one colour (Jack, 2026-08-20). It was --hol,
+   the lighter Holistic green: 3.15:1 on white, which missed AA for a 16px
+   label. --olive is 7.66:1, so this also retires that open question. */
+.fbtn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;padding:11px 20px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
+.fbtn .n{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
 .sort{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--or);border:2px solid var(--or);border-radius:100px;padding:11px 16px}
 .sort .lab{display:inline;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.95rem;letter-spacing:.08em;color:var(--or)}
 .sort select{border:0;background:transparent;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.95rem;letter-spacing:.08em;color:var(--or);max-width:132px;

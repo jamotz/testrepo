@@ -164,7 +164,7 @@ polish and the open questions below.
 `design-decisions.md` before adding a control:
 
 - **Buttons are outlined** — coloured border, white interior, coloured text.
-  Filter is the lighter green, Sort/Continue/Search/Logout orange or olive. A
+  Filter and Origins U's Search share one olive; Sort/Continue/Logout orange. A
   **solid fill now means the primary action** (Add to Cart, Checkout, the hero).
 - **One weight pill everywhere** — outlined olive for a size you could pick,
   solid olive for the one you are on, tinted chip for serving/total, which is a
@@ -219,12 +219,13 @@ polish and the open questions below.
    inside Rosin, Hash and Distillate. Every category itself is stocked,
    **Kief (6) and RSO (4) included** — an earlier note claiming those two were
    empty was wrong (Jack, 2026-08-17; see `design-decisions.md`).
-6. **Two open questions for Jack**, both flagged where they live:
-   - the **four deal flowers** are his brands but my strain picks (`DEALS` in
-     `gen_catalog_products.py`, one line each to swap);
-   - the **lighter green** on the Filter pill measures 3.16:1 on white, which
-     clears AA for large text but not for a 16 px label. The darker Holistic
-     green `#5C7540` is the drop-in if he wants it to clear 4.5:1.
+6. **One open question for Jack**, flagged where it lives: the **four deal
+   flowers** are his brands but my strain picks (`DEALS` in
+   `gen_catalog_products.py`, one line each to swap).
+
+   *The Filter-pill contrast question is closed* (2026-08-20): Filter now uses
+   Origins U's Search olive `#555624` at 7.66:1, clearing AA and AAA. The
+   `#5C7540` drop-in that was earmarked for it is no longer needed.
 
 ### Done in this pass (2026-08-17 → 18)
 
