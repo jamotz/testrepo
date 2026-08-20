@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-08-18 · branch `claude/project-docs-review-todos-os7hx4`
+**Last updated:** 2026-08-20 · branch `claude/accessibility-handoff-review-dhabtz`
 **Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
@@ -23,16 +23,19 @@ lives on the `claude/*` branches.
 **Only the branch named at the top of this file is current.** Superseded
 `claude/project-docs-review-*` branches stay on origin and look plausible —
 `sz8jwv` predates the pre-rolls and every Account screen, and `4b84p7` stops
-before the deals, the calendar and everything after. Check this line against
-`git log` before trusting a branch, and update it here when the work moves.
+before the deals, the calendar and everything after. `os7hx4` is the most
+recent of these and the easiest to mistake for current: it holds every screen
+and reads as complete, and it is behind by exactly the phone-bezel fix. Check
+this line against `git log` before trusting a branch, and update it here when
+the work moves.
 
 ---
 
 ## Start here (new session)
 
 ```bash
-git fetch origin claude/project-docs-review-todos-os7hx4
-git checkout -B claude/project-docs-review-todos-os7hx4 origin/claude/project-docs-review-todos-os7hx4
+git fetch origin claude/accessibility-handoff-review-dhabtz
+git checkout -B claude/accessibility-handoff-review-dhabtz origin/claude/accessibility-handoff-review-dhabtz
 python3 -m pip install --quiet Pillow          # recycles remove it
 python3 reference/origins/hifi-build/asm_app.py
 ```
@@ -48,11 +51,13 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`01104b1`** (published 2026-08-18) — the Final/pt2 catalogs, terpene-driven
+`c8a69ee`** (published 2026-08-20) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
-button family with one weight pill, and Advanced Settings. Bump this line whenever you
+button family with one weight pill, Advanced Settings, and the phone bezel taking
+its own unscaled width so the black frame wraps the screen evenly at every window
+size. Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
