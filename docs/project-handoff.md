@@ -51,15 +51,16 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`c8a69ee`** (published 2026-08-20) — the Final/pt2 catalogs, terpene-driven
+`1bb4ce2`** (published 2026-08-20) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
-button family with one weight pill, Advanced Settings, and the phone bezel taking
-its own unscaled width so the black frame wraps the screen evenly at every window
-size. Bump this line whenever you
-republish; it's the only way a new session can tell whether the link is behind
-the branch.
+button family with one weight pill, and Advanced Settings. Since 2026-08-20 it
+also carries the phone bezel taking its own unscaled width (the black frame
+wraps the screen evenly at every window size), Filter in Origins U's Search
+olive, and Origins U on the shop's own card with Liquid Edibles and Vapes as
+their own categories. Bump this line whenever you republish; it's the only way
+a new session can tell whether the link is behind the branch.
 
 If the publish is refused with *"hasn't viewed the latest version"*, another
 session republished since. `WebFetch` the artifact URL first — it **is**
