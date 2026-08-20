@@ -1307,3 +1307,20 @@ Edibles, topicals and drinks still carry the old vocabulary and fall through to
 the generated SVGs. Across the catalog **1288 chips resolve to a supplied icon
 and 284 fall back** — the 284 are exactly those three shelves.
 
+
+### The Lifestyles tile wears the six colours
+Jack, 2026-08-20: *"you can add their main colors into the center of them."*
+
+Nine of the ten Origins U cards are product photography; this one is six black
+wordmark glyphs, so on the white card it was the only tile with no colour in it
+at all. Each glyph now sits on a disc of its own lifestyle colour.
+
+**The disc is `.fbadge`, the treatment already on every product card** — the
+monogram on a lifestyle-coloured circle — rather than something invented for
+this tile, so the six colours read the same in Origins U as they do in the shop.
+Glyphs went 34px to 24px inside a 38px disc to keep the six inside the card.
+
+The `alt` text goes through `lifeLabel()`, so it says *Sativa / Hybrid / Indica*
+when Advanced Settings' **Use product type** is on. That needed `setAdv()` to
+redraw the hub — it re-renders everything showing a lifestyle word, and Origins
+U had never been in that list because nothing on it printed one until now.

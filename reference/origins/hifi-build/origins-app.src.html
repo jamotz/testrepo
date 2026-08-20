@@ -535,8 +535,16 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .educard{border-radius:12px;overflow:hidden;background:#fff;border:1.5px solid var(--olive);box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column;height:152px;padding:0;text-align:left;cursor:pointer}
 .educard .eduimg{flex:1;display:flex;align-items:center;justify-content:center;padding:10px;min-height:0}
 .educard .eduimg img{max-width:100%;max-height:100%;object-fit:contain}
+/* Each glyph sits in its lifestyle's colour, the same disc the product tile
+   puts its monogram on (.fbadge). Nine of the ten cards are product
+   photography; this one is six black wordmark glyphs, and on the white card it
+   was the only tile with no colour in it at all. Reusing .fbadge's treatment
+   rather than inventing one means the six colours read the same here as they
+   do on every product card (Jack, 2026-08-20). */
 .educard .edulife{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;place-items:center;gap:4px;padding:12px 10px}
-.educard .edulife img{width:34px;height:34px;object-fit:contain}
+.educard .edulife span{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.educard .edulife span.disc{background:var(--disc)}.educard .edulife span.adv{background:var(--adv)}.educard .edulife span.soc{background:var(--soc)}.educard .edulife span.unw{background:var(--unw)}.educard .edulife span.night{background:var(--night)}.educard .edulife span.hol{background:var(--hol)}
+.educard .edulife img{width:24px;height:24px;object-fit:contain}
 .educard .edulabel{background:transparent;color:var(--olive);border-top:1px solid #E1DBCD;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:13.5px;letter-spacing:.06em;padding:10px 12px;text-align:center}
 .edutopic{padding:0 0 28px}
 .edubanner{position:relative;background:#D9A87C;height:98px;display:flex;align-items:center;overflow:hidden}
@@ -1049,7 +1057,7 @@ function setAdv(k,on){
   if(k==="enlarged"){toast(ADV.enlarged?"Enlarged view — coming soon":"Enlarged view off");return;}
   /* labels are baked in at render time, so anything showing one is redrawn */
   moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
-  renderFeel();renderHome();renderShop();
+  renderFeel();renderHome();renderShop();renderEduHub(); /* its lifestyle discs carry lifeLabel alt text */
   if(S.screen==="list")renderList();
   if(curP&&S.screen==="product")drawProduct();
   if(S.screen==="cart")renderCart();
@@ -2747,7 +2755,7 @@ function wireEduSearch(root){root.querySelectorAll("[data-edusearch]").forEach(f
 function renderEduHub(){
   var cards=EDU_ORDER.map(function(k){var c=EDU[k];
     var media=c.life
-      ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="">';}).join("")+'</div>'
+      ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<span class="'+LIFECLASS[l]+'"><img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="'+lifeLabel(l)+'"></span>';}).join("")+'</div>'
       : '<div class="eduimg"><img src="'+(IMG[c.img]||"")+'" alt="'+c.name+'"'+(c.imgscale?' style="transform:scale('+c.imgscale+')"':'')+'></div>';
     return '<button class="educard tap" data-ec="'+k+'">'+media+'<div class="edulabel">'+c.name+'</div></button>';
   }).join("");
