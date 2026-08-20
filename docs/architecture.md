@@ -627,3 +627,47 @@ bottom that becomes the product page's quantity stepper.
 Products with a single size (edibles, concentrates, topicals) keep Add to Cart —
 there's nothing to open. Sheet classes live in the `fs*` namespace because `.s`
 is a global `display:none` rule.
+
+---
+
+## The accessibility display system
+
+`displayMode` is `ADV.enlarged`, and everything it changes flows from **semantic
+tokens in `:root`**, overridden once in `#scr.enlarged`. No component names a
+mode; a new screen inherits Enlarged view by using the tokens.
+
+| Token | Standard | Enlarged | |
+|---|---:|---:|---|
+| `--text-micro` | 9.5px | 13px | brand line, tab labels |
+| `--text-secondary` | 11.5px | 15px | chips, breadcrumbs |
+| `--text-body` | 13px | 16.5px | description, body |
+| `--text-product-title` | 14px | 18px | product name |
+| `--text-heading` | 1.4rem | 1.66rem | `.sbar` titles |
+| `--text-button` | 1rem | 1.15rem | Filter, Sort, Continue |
+| `--text-nav` / `--text-pill` | 9px / 11px | 12px / 14px | tab label, weight pill |
+| `--icon-size` / `--icon-size-sm` | 21px / 15px | 27px / 19px | |
+| `--control-height` | 47px | 54px | Filter / Sort pill |
+| `--target-size` | 44px | 52px | minimum hit area |
+| `--card-padding` / `--grid-gap` / `--section-gap` | 12 / 13 / 10px | 16 / 16 / 14px | |
+
+**Type is compressed upward, not scaled uniformly** — the 9.5px floor gains 37%
+while a heading gains 19%, because the small labels are what fail at arm's
+length. Targets grow faster than the text inside them, and decoration doesn't
+grow at all.
+
+This replaced a `zoom:1.25` on the whole frame. Uniform zoom magnified
+decoration with content, grew every gap equally whether it needed it, and shrank
+the layout's coordinate space exactly when the content got bigger.
+
+Reflow lives beside the tokens: `.pgrid` drops to one column, every card row
+gives its card the full width, product names wrap instead of truncating, card
+metadata stacks, and the deal banner's `nowrap` is released.
+
+**Standard is provably untouched.** A computed-style snapshot of ~400 elements
+across 11 screens is identical before and after the token refactor — 0 diffs.
+Re-run it (`snapshot.js`) before landing any change to this system.
+
+**Persistence** is `localStorage["origins.display.v1"]`, every access wrapped —
+a private window or a blocked accessor can throw on *read*, and the app must
+still boot. **OS Reduce Motion** is honoured through `motionOff()`: the in-app
+switch can turn motion off, never back on against the system preference.

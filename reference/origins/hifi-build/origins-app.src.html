@@ -5,6 +5,56 @@
   --cream:#E6C7A7; --tan:#C09A64; --paper:#FFFFFF; --bg:#FFFFFF; --ink:#221C14; --ink-2:#6B6357;
   --disc:#A0463C; --adv:#C09A64; --soc:#F3D390; --unw:#78A6C5; --night:#5D8A85; --hol:#7E9A5B;
   --head:"Oswald",system-ui,sans-serif; --body:Georgia,"Times New Roman",serif;
+
+  /* ── Accessibility display system ────────────────────────────────────────
+     Semantic tokens, not raw px, so a new screen inherits Enlarged view for
+     free instead of needing its own override. Standard values here are the
+     app's existing measured values — Enlarged view is an accessibility layer
+     over this design, not a redesign of it, so switching to tokens must not
+     move a single pixel in Standard. The Enlarged block is the only place
+     sizes change; components never name a mode.
+
+     Type is compressed upward rather than scaled uniformly: the smallest text
+     gains the most (+37%) and headings the least (+19), because 9.5px labels
+     are what actually fails at arm's length while a 22px heading already
+     works. Targets grow more than type; decoration doesn't grow at all. */
+  --text-micro:9.5px;        /* brand line, tab labels — the app's floor */
+  --text-secondary:11.5px;   /* chips, breadcrumbs, metadata */
+  --text-body:13px;          /* description and body copy */
+  --text-product-title:14px; /* product name on a card */
+  --text-heading:1.4rem;     /* .sbar screen titles */
+  --text-button:1rem;        /* Filter, Sort, Continue, Logout */
+  --icon-size:21px;          /* tab bar and primary icons */
+  --icon-size-sm:15px;       /* inline chip icons */
+  --control-height:47px;     /* Filter / Sort pill height */
+  --target-size:44px;        /* minimum interactive hit area */
+  --card-padding:12px;
+  --grid-gap:13px;
+  --section-gap:10px;
+  --nav-pad:8px 2px 14px;
+  --text-nav:9px;            /* tab bar label */
+  --text-pill:11px;          /* weight/size pill on a card */
+}
+/* Enlarged — the whole accessibility layer is these values. WCAG 2.2 AA is the
+   baseline: 2.5.8 Target Size wants 24px minimum and we go to 52, 1.4.4 Resize
+   Text wants 200% to survive, 1.4.10 Reflow wants no horizontal scrolling. */
+#scr.enlarged{
+  --text-micro:13px;         /* +37% — the floor gains the most */
+  --text-secondary:15px;     /* +30% */
+  --text-body:16.5px;        /* +27% */
+  --text-product-title:18px; /* +29% */
+  --text-heading:1.66rem;    /* +19% — already legible, grows least */
+  --text-button:1.15rem;
+  --icon-size:27px;
+  --icon-size-sm:19px;
+  --control-height:54px;
+  --target-size:52px;
+  --card-padding:16px;
+  --grid-gap:16px;
+  --section-gap:14px;
+  --nav-pad:10px 2px 16px;
+  --text-nav:12px;
+  --text-pill:14px;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
@@ -77,9 +127,9 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .bagbtn{position:relative;width:34px;height:34px;border:0;background:transparent;color:#F2EADF;flex:none}
 .bagbtn svg{width:24px;height:24px}
 .bagbtn .n{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;border-radius:100px;background:var(--or);color:#fff;font-family:var(--head);font-size:10px;font-weight:600;display:grid;place-items:center;padding:0 4px}
-.tabs{display:flex;background:#fff;border-top:1px solid #E5E0D6;padding:8px 2px 14px}
-.tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:9px;letter-spacing:.06em;color:#8C8478}
-.tabs button svg{width:21px;height:21px}
+.tabs{display:flex;background:#fff;border-top:1px solid #E5E0D6;padding:var(--nav-pad)}
+.tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:var(--text-nav);letter-spacing:.06em;color:#8C8478}
+.tabs button svg{width:var(--icon-size);height:var(--icon-size)}
 .tabs button .tabic{position:relative;display:inline-flex}
 .tabs button .tabn{position:absolute;top:-5px;right:-9px;min-width:16px;height:16px;border-radius:100px;background:var(--or);color:#fff;font-family:var(--head);font-size:10px;font-weight:600;line-height:16px;text-align:center;padding:0 4px;display:none}
 .tabs button .tabn.show{display:block}
@@ -229,7 +279,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .sbar{display:flex;align-items:center;gap:12px;background:var(--brown);color:#F3EADB;padding:15px 16px}
 .sbar .bk{border:0;background:none;color:#F3EADB;width:24px;height:24px;flex:none}
 .sbar .bk svg{width:22px;height:22px}
-.sbar h2{font-size:1.4rem;letter-spacing:.06em}
+.sbar h2{font-size:var(--text-heading);letter-spacing:.06em}
 .sbar .sic{margin-left:auto;width:22px;height:22px;color:#F3EADB}
 
 .gw{padding:20px 18px 26px}
@@ -288,8 +338,8 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .backshop{display:flex;justify-content:flex-end;margin-top:8px}
 
 .chipbar{background:var(--brown);padding:10px 12px;display:flex;gap:8px;overflow-x:auto}
-.chip{flex:none;border:0;border-radius:100px;padding:9px 16px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.09em;color:var(--brown);opacity:.92;display:inline-flex;align-items:center;gap:7px}
-.chip svg{width:15px;height:15px}
+.chip{flex:none;border:0;border-radius:100px;padding:9px 16px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--text-secondary);letter-spacing:.09em;color:var(--brown);opacity:.92;display:inline-flex;align-items:center;gap:7px}
+.chip svg{width:var(--icon-size-sm);height:var(--icon-size-sm)}
 .chip.disc{background:var(--disc);color:#F6E9E2}.chip.adv{background:var(--adv)}.chip.soc{background:var(--soc)}
 .chip.unw{background:var(--unw);color:#122B3C}.chip.night{background:var(--night);color:#EAF4F0}.chip.hol{background:var(--hol);color:#20260F}
 .chip.sel{outline:3px solid #fff;outline-offset:-3px}
@@ -305,7 +355,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .cc{flex:none;width:82px;text-align:center;background:none;border:0;padding:0}
 .cc .ring{width:78px;height:78px;border-radius:50%;border:2px solid var(--or);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 8px;background:#fff}
 .cc .ring img{width:62px;height:62px;object-fit:contain}
-.cc b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.03em;color:var(--ink);display:block;line-height:1.1}
+.cc b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--text-secondary);letter-spacing:.03em;color:var(--ink);display:block;line-height:1.1}
 .shopfrow{margin:0 0 2px}
 /* the filter pill keeps the olive it has everywhere else (Jack, 2026-08-18) -
    the white-on-orange override made it the loudest thing on the shop page */
@@ -316,7 +366,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .feed-h .ft{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:1.4rem;color:var(--ink);letter-spacing:.02em}
 .feed-h .fsee{align-self:flex-start;background:none;border:0;color:var(--or);font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.04em;padding:1px 0}
 .feedrow{display:flex;gap:14px;overflow-x:auto;padding:4px 16px 10px}
-.fcard{flex:none;width:218px;background:#fff;border:1.5px solid #E1DBCD;border-radius:12px;padding:12px 12px 13px;box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.fcard{flex:none;width:218px;background:#fff;border:1.5px solid #E1DBCD;border-radius:12px;padding:var(--card-padding) var(--card-padding) calc(var(--card-padding) + 1px);box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column;position:relative;overflow:hidden}
 .fcard.disc{border-color:var(--disc)}.fcard.adv{border-color:var(--adv)}.fcard.soc{border-color:var(--soc)}.fcard.unw{border-color:var(--unw)}.fcard.night{border-color:var(--night)}.fcard.hol{border-color:var(--hol)}
 .fcard .fim{height:84px;display:flex;align-items:center;justify-content:center;position:relative}
 /* ratio pill top-left, one bubble per cannabinoid top-right, both flush to the
@@ -338,9 +388,9 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .fcard .fbadge.disc{background:var(--disc)}.fcard .fbadge.adv{background:var(--adv)}.fcard .fbadge.soc{background:var(--soc)}.fcard .fbadge.unw{background:var(--unw)}.fcard .fbadge.night{background:var(--night)}.fcard .fbadge.hol{background:var(--hol)}
 .fcard .fbadge img{width:19px;height:19px;object-fit:contain}
 .fcard .fbc{font-family:var(--head);font-size:10px;letter-spacing:.01em;color:#9A9284}
-.fcard .fnm{font-family:var(--head);font-weight:700;font-size:14px;color:var(--ink);margin:2px 0 3px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fcard .fnm{font-family:var(--head);font-weight:700;font-size:var(--text-product-title);color:var(--ink);margin:2px 0 3px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fcard .fmeta{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.fcard .fbr{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:9.5px;letter-spacing:.03em;color:var(--olive)}
+.fcard .fbr{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--text-micro);letter-spacing:.03em;color:var(--olive)}
 .fcard .fthc{font-family:var(--head);font-weight:600;font-size:12px;color:#C0392B;white-space:nowrap}
 .fcard .fmeta{flex-wrap:wrap}
 .fcard .fmore{margin-top:auto;background:none;color:var(--or);border:1.5px solid var(--or);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;padding:8px 0;width:100%}
@@ -366,7 +416,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* One weight pill everywhere (Jack, 2026-08-18): outlined olive for a size you
    could pick, solid olive for the one you are on, a step up in type. The tile,
    the deal card and the product page all draw the same thing now. */
-.fcard .fsz{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;font-size:11px;padding:4px 11px;letter-spacing:.03em}
+.fcard .fsz{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;font-size:var(--text-pill);padding:4px 11px;letter-spacing:.03em}
 .fcard .fsz.sel{background:var(--olive);color:#F0EAD8;border-color:var(--olive)}
 /* serving/total reads as a fact about the product, not a chosen size — so it
    takes the cannabinoid bubbles' tinted treatment in the olive it already had,
@@ -389,7 +439,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .subcircles .cc{width:auto;min-width:82px;padding:0 4px}
 .subcircles .cc b{white-space:nowrap}
 .cc.sel .ring{border-width:3px;box-shadow:0 0 0 2px rgba(241,96,28,.22)}
-.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:10px 16px 16px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--grid-gap);padding:10px 16px 16px}
 .pgrid .fcard{width:auto}
 .pgrid .fcard .fnm{font-size:14px}
 .pgrid .fcard .fim{height:76px}.pgrid .fcard .fim img{max-height:76px}
@@ -407,7 +457,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    outlined controls in the app are one colour (Jack, 2026-08-20). It was --hol,
    the lighter Holistic green: 3.15:1 on white, which missed AA for a 16px
    label. --olive is 7.66:1, so this also retires that open question. */
-.fbtn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;padding:11px 20px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:1rem;letter-spacing:.1em}
+.fbtn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;padding:11px 20px;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--text-button);letter-spacing:.1em;min-height:var(--control-height)}
 .fbtn .n{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px}
 .sort{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--or);border:2px solid var(--or);border-radius:100px;padding:11px 16px}
 .sort .lab{display:inline;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:.95rem;letter-spacing:.08em;color:var(--or)}
@@ -519,7 +569,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .eduhub h2{font-family:var(--head);font-weight:700;font-size:1.55rem;color:var(--ink);margin-bottom:8px}
 .eduhub .eduintro{font-family:var(--body);font-size:13px;line-height:1.5;color:var(--ink-2);max-width:300px;margin:0 auto 18px}
 /* Origins U joins the outlined family (Jack, 2026-08-18) */
-.edusearch{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:1rem;padding:11px 28px}
+.edusearch{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:var(--text-button);padding:11px 28px;min-height:var(--control-height)}
 .edusearch svg{width:18px;height:18px}
 .educards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
 /* The card is the shop's product tile: white, 12px radius, the same shadow. It
@@ -716,35 +766,43 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 #scr.strainnames .oc.life .lifewordt{display:block}
 /* accessibility: everything that moves, stops */
 #scr.nomotion *,#scr.nomotion *::before,#scr.nomotion *::after{transition:none!important;animation:none!important}
-/* Enlarged view — ONE scale factor on the whole app, not a list of font sizes
-   (Jack, 2026-08-18: "the whole app scaled proportionately"). `zoom` on #view
-   scales type, photos, buttons, borders and spacing together and hands the
-   children a narrower coordinate space (452 / factor), so the app reflows the
-   way it would on a smaller phone instead of just magnifying.
-   1.25 puts the effective width at 362px — near an iPhone SE's 375 — and stays
-   clear of WCAG 1.4.10 Reflow's 320px floor, which 452 hits at 1.41. Change the
-   one number; nothing else here is a size. */
-:root{--enlarge:1.25}
-/* The tab bar scales with the content. It sits outside #view, so scaling only
-   #view left the .sbar title bar growing while the tabs under it stayed put —
-   half a scaled app. The status bar and the island deliberately do NOT scale:
-   those are the fake handset, not the app running on it. */
-#scr.enlarged .view,#scr.enlarged .tabs{zoom:var(--enlarge)}
-/* The only rule that has to give. .deal-banner .bs is white-space:nowrap so the
-   offer copy holds one line, and it had ~14px of slack at the design width — so
-   it is the single thing in the app that cannot reflow narrower, and it pinned
-   home and the calendar at 402px. Enlarged lets it wrap; the banner grows a
-   line rather than the screen growing a scrollbar. */
-#scr.enlarged .deal-banner .bs{white-space:normal}
-/* One product card across, not two squeezed ones (Jack, 2026-08-20). Scaling
-   alone left .pgrid a two-column grid in a 362px space — ~168px a card, tighter
-   than the 218px they are drawn for. The point of the mode is legibility, so
-   the grid drops to one column and the browse carousels give each card the full
-   width; the photo well grows with it so the card doesn't read as a wide
-   letterbox. The home deal rows come too — leaving them at 218px while the shop
-   went full width made home the only place still showing two squeezed cards.
-   Their brand and See All cards match, so sizeDealRows() still measures a
-   product tile and gets a row of one width. */
+/* ── Focus visible, in BOTH modes ─────────────────────────────────────────
+   This is the one accessibility rule here that is not scoped to Enlarged view,
+   and deliberately: the CSS carried no :focus rule at all, so a keyboard user
+   in Standard had no focus indicator — WCAG 2.4.7 Focus Visible, a AA failure.
+   A ring that only existed in Enlarged view would leave that failure in place
+   for everyone else. :focus-visible means pointer users never see it, so the
+   design at rest is unchanged. */
+:focus-visible{outline:3px solid var(--or);outline-offset:2px;border-radius:4px}
+/* ── State is never colour alone (WCAG 1.4.1) ─────────────────────────────
+   A selected chip already changes colour; colour is the thing a red/green
+   deficiency cannot read, so each selected control also carries a mark. The
+   mark is generated content, so it costs no markup and cannot get out of sync
+   with the class that colours it. */
+#scr.enlarged .chip.sel::after,#scr.enlarged .fcard .fsz.sel::after,
+#scr.enlarged .subc.sel::after{content:"\2713";
+  font-weight:700;margin-left:6px;font-size:.92em;line-height:1}
+#scr.enlarged .store.sel .st-name::after{content:"\2713 Selected";display:block;
+  font-family:var(--head);font-weight:600;text-transform:uppercase;
+  font-size:var(--text-micro);letter-spacing:.08em;color:var(--or);margin-top:3px}
+
+.sbar :focus-visible,.tabs :focus-visible{outline-color:#fff}
+/* the fake handset chrome is not interactive; never ring it */
+.island,.status{pointer-events:none}
+
+/* ── Enlarged view: layout and reflow ────────────────────────────────────
+   The sizes all live in the token block at the top of this file. What is left
+   here is the *reflow* — the things a size token cannot express.
+
+   This replaced a `zoom:1.25` on the whole frame. Uniform zoom was honest but
+   blunt: it magnified decoration along with content, grew every gap by the same
+   amount whether or not it needed it, and shrank the layout's coordinate space
+   so the app had less room exactly when its content had got bigger. Tokens let
+   the 9.5px labels grow 37% while a heading grows 19%, and let targets grow
+   faster than the text inside them — which is what actually helps. */
+
+/* WCAG 1.4.10 Reflow: prefer vertical growth over horizontal scrolling. The
+   grid drops to one column and every card row gives its card the full width. */
 #scr.enlarged .pgrid{grid-template-columns:1fr}
 #scr.enlarged .feedrow .fcard,#scr.enlarged .dealrow .fcard,
 #scr.enlarged .brandrow .btile,#scr.enlarged .dseeall{width:100%}
@@ -752,6 +810,59 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 #scr.enlarged .dealrow .fcard .fim{height:132px}
 #scr.enlarged .pgrid .fcard .fim img,#scr.enlarged .feedrow .fcard .fim img,
 #scr.enlarged .dealrow .fcard .fim img{max-height:132px}
+
+/* Content-driven height, and names wrap rather than truncate. Standard clamps a
+   product name to one line with an ellipsis to keep tiles even; at this size a
+   clipped name is a name you cannot read, and the row is one card wide anyway
+   so nothing is left ragged. */
+#scr.enlarged .fcard .fnm{white-space:normal;overflow:visible;text-overflow:clip}
+#scr.enlarged .fcard{height:auto}
+
+/* Metadata stacks instead of staying inline: size left / price right becomes
+   two lines, so neither has to shrink to share a row. */
+#scr.enlarged .fcard .fprow{flex-direction:column;align-items:flex-start;gap:6px}
+
+/* The deal banner is the one thing in the app that cannot reflow narrower —
+   .bs is white-space:nowrap with ~14px of slack at the design width. Let it
+   wrap: the banner grows a line rather than the screen growing a scrollbar. */
+#scr.enlarged .deal-banner .bs{white-space:normal}
+
+/* WCAG 2.5.8 Target Size. The visible icon stays its own size; the hit area is
+   what grows, so the chrome does not get heavier just to be reachable. Scoped
+   to Enlarged view — Standard's 24px icon buttons already clear AA's 24px. */
+#scr.enlarged .tabs button,#scr.enlarged .sbar .bk,#scr.enlarged .qty button,
+#scr.enlarged .fsclose,#scr.enlarged .sw,#scr.enlarged .acav,
+#scr.enlarged .fcard .fsz,#scr.enlarged .fszs button{min-height:var(--target-size)}
+#scr.enlarged .sbar .bk,#scr.enlarged .qty button,#scr.enlarged .fsclose,
+#scr.enlarged .acav{min-width:var(--target-size)}
+/* separate two adjacent small controls so a near-miss doesn't hit the other */
+#scr.enlarged .qty{gap:10px}
+/* The last controls under 24px in Enlarged view: the Sort <select>, the row
+   "See all" link, and the wizard's "Learn the differences" link. The visible
+   text stays as drawn; only the hit area grows, per the token. */
+#scr.enlarged .sort select{min-height:var(--target-size)}
+#scr.enlarged .sort{min-height:var(--control-height)}
+#scr.enlarged .fsee,#scr.enlarged .llearn,#scr.enlarged .learnlink{
+  min-height:var(--target-size);display:inline-flex;align-items:center}
+/* Account Settings' notification checkboxes — rows, so the whole row is the
+   target rather than the small box at its left. */
+#scr.enlarged .accheck{min-height:var(--target-size);display:flex;align-items:center}
+/* Product-page size picker: each option is its own target and its own row. */
+#scr.enlarged .szpick .tap,#scr.enlarged .szpick button{min-height:var(--target-size)}
+#scr.enlarged .szpick{gap:10px}
+#scr.enlarged .acchecks{gap:14px}
+
+/* Size sheet: large full-width rows rather than pills squeezed into a line, so
+   each option is its own target and reads as "0.5 g — $8". */
+#scr.enlarged .fszs{display:flex;flex-direction:column;gap:8px}
+#scr.enlarged .fszs button{width:100%;justify-content:space-between;
+  min-height:var(--target-size);font-size:var(--text-body);padding:10px 16px}
+
+/* Sections breathe; the drawer's options stack with room between them. */
+#scr.enlarged .pgrid{padding:var(--section-gap) 16px calc(var(--section-gap) + 6px)}
+#scr.enlarged .drawer .dsec{margin-bottom:var(--section-gap)}
+
+
 .acchecks{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding-left:14px}
 .accheck{display:flex;align-items:center;gap:11px;background:none;border:0;padding:0;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
 .accheck .acbox{width:19px;height:19px;border:1.5px solid var(--or);border-radius:2px;flex:none}
@@ -850,7 +961,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="guide">
-        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+        <div class="sbar"><button class="bk" data-nav="home" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
           <div class="wiz-prog"><i class="on"></i><i></i><i></i><i></i></div>
           <div class="gw"><div class="q">How are you trying to FEEL?</div><div class="pick">Pick One or More:</div>
           <div class="opt-list" id="feelopts"></div>
@@ -858,7 +969,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="method">
-        <div class="sbar"><button class="bk" data-back="guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+        <div class="sbar"><button class="bk" data-back="guide" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
           <div class="wiz-prog"><i class="on"></i><i class="on"></i><i></i><i></i></div>
           <div class="gw"><div class="q">What is your preferred method?</div><div class="pick">Pick One Method:</div>
           <div class="opt-list" id="methodopts"></div>
@@ -866,7 +977,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="subtype">
-        <div class="sbar"><button class="bk" data-back="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+        <div class="sbar"><button class="bk" data-back="method" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
           <div class="wiz-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
           <div class="gw"><div class="q" id="subq">Pick a type</div><div class="pick haslearn">Pick One or More:</div>
           <button class="learnlink" id="sublearn" type="button">Learn the differences ›</button>
@@ -875,7 +986,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="taste">
-        <div class="sbar"><button class="bk" data-back="subtype"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
+        <div class="sbar"><button class="bk" data-back="subtype" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
           <div class="wiz-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
           <div class="gw"><div class="q">How do you like it to TASTE?</div><div class="pick">Pick One or More:</div>
           <div class="opt-list" id="tasteopts"></div>
@@ -883,12 +994,12 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="finish">
-        <div class="sbar"><button class="bk" data-back="taste"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Our Recommendations</h2></div>
+        <div class="sbar"><button class="bk" data-back="taste" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Our Recommendations</h2></div>
         <div class="gf" id="finishwrap"></div>
       </section>
 
       <section class="s" data-s="shop">
-        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="sbar"><button class="bk" data-nav="home" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
         <div class="chipbar shopchips" id="moodbar"></div>
         <div class="catcircles" id="catcircles"></div>
         <div class="frow shopfrow"><button class="fbtn" id="shopfilter">Filter <span class="n">0</span></button>
@@ -897,7 +1008,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="list">
-        <div class="sbar"><button class="bk" data-nav="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="sbar"><button class="bk" data-nav="shop" aria-label="Back to shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
         <div class="chipbar shopchips" id="moodbar2"></div>
         <div class="lhead2"><h2 id="ltitle">All Products</h2><button class="llearn" id="learnbtn" type="button" style="display:none">Learn about the Differences &rsaquo;</button></div>
         <div class="catcircles subcircles" id="subcats"></div>
@@ -918,16 +1029,16 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="product"><div class="pwrap" id="pwrap"></div></section>
-      <section class="s" data-s="cart"><div class="sbar"><button class="bk" data-nav="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Your Cart</h2></div><div class="cwrap" id="cwrap"></div></section>
+      <section class="s" data-s="cart"><div class="sbar"><button class="bk" data-nav="shop" aria-label="Back to shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Your Cart</h2></div><div class="cwrap" id="cwrap"></div></section>
       <section class="s" data-s="confirm"><div class="conf" id="confwrap"></div></section>
 
       <section class="s" data-s="dealcal">
-        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Deals Calendar</h2></div>
+        <div class="sbar"><button class="bk" data-nav="home" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Deals Calendar</h2></div>
         <div class="dcwrap" id="dcwrap"></div>
       </section>
 
       <section class="s" data-s="edu">
-        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Origins University</h2></div>
+        <div class="sbar"><button class="bk" data-nav="home" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Origins University</h2></div>
         <div class="eduhub" id="eduhub"></div>
       </section>
       <section class="s" data-s="edutopic">
@@ -936,7 +1047,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="account">
-        <div class="sbar"><button class="bk" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Account</h2></div>
+        <div class="sbar"><button class="bk" data-nav="home" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Account</h2></div>
         <div class="acwrap">
           <div class="achead">
             <div><div class="acname">Noelle Smith</div><div class="acmail">Noellesmith@gmail.com</div></div>
@@ -954,7 +1065,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="acloyalty">
-        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Loyalty Points</h2></div>
+        <div class="sbar"><button class="bk" data-back="account" aria-label="Back to account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Loyalty Points</h2></div>
         <div class="acwrap">
           <div class="acbal">
             <div>
@@ -968,7 +1079,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="acsettings">
-        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Account Settings</h2></div>
+        <div class="sbar"><button class="bk" data-back="account" aria-label="Back to account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Account Settings</h2></div>
         <div class="acwrap">
           <h3 class="ach3">Account Info</h3>
           <div class="acinfo">
@@ -995,7 +1106,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="acadv">
-        <div class="sbar"><button class="bk" data-back="acsettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Advanced Settings</h2></div>
+        <div class="sbar"><button class="bk" data-back="acsettings" aria-label="Back to account settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Advanced Settings</h2></div>
         <div class="acwrap">
           <h3 class="ach3">How products are named</h3>
           <div class="advrow"><div class="advt"><b>Use product type</b><i>Show Sativa, Hybrid and Indica in place of Discovery, Social and the rest. Same six groups, the grower's vocabulary.</i></div><button class="sw tap" data-adv="strain" aria-label="Use product type"></button></div>
@@ -1007,23 +1118,23 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
       </section>
 
       <section class="s" data-s="acorders">
-        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Order History</h2></div>
+        <div class="sbar"><button class="bk" data-back="account" aria-label="Back to account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Order History</h2></div>
         <div class="acwrap" id="acorders"></div>
       </section>
 
       <section class="s" data-s="acrecs">
-        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Recommended</h2></div>
+        <div class="sbar"><button class="bk" data-back="account" aria-label="Back to account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Recommended</h2></div>
         <div class="acwrap acflush"><p class="acintro" id="acrecintro"></p></div>
         <div class="pgrid" id="acrecs"></div>
       </section>
 
       <section class="s" data-s="acreviews">
-        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Past Reviews</h2></div>
+        <div class="sbar"><button class="bk" data-back="account" aria-label="Back to account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Past Reviews</h2></div>
         <div class="acwrap" id="acreviews"></div>
       </section>
 
       <section class="s" data-s="acabout">
-        <div class="sbar"><button class="bk" data-back="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>About Us</h2></div>
+        <div class="sbar"><button class="bk" data-back="account" aria-label="Back to account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>About Us</h2></div>
         <div class="acwrap acabout">
           <img class="aclogo" id="aclogo" alt="Origins">
           <p>Origins is a Washington cannabis retailer built around a simple
@@ -1083,11 +1194,30 @@ const STRAINNAME={discovery:"Sativa",adventurous:"Sativa Hybrid",social:"Hybrid"
    the app doesn't, until the proportional scaling is designed. It scales the
    whole frame, not a list of font sizes, so it is worth doing once properly. */
 const ADV={strain:false,enlarged:false,nomotion:false};
+/* Display mode persists between sessions — an accessibility setting a user has
+   to re-enable every visit is not really a setting. localStorage is per-artifact
+   and per-browser; every access is wrapped because a private window, blocked
+   site data or a thumbnail capture can make even *reading* it throw, and the
+   app must still render with none of it. */
+var ADVKEY="origins.display.v1";
+function advLoad(){
+  try{
+    var raw=localStorage.getItem(ADVKEY); if(!raw)return;
+    var saved=JSON.parse(raw);
+    Object.keys(ADV).forEach(function(k){ if(typeof saved[k]==="boolean") ADV[k]=saved[k]; });
+  }catch(e){/* no stored preference is a normal state, not an error */}
+}
+function advSave(){ try{ localStorage.setItem(ADVKEY,JSON.stringify(ADV)); }catch(e){} }
+/* The OS Reduce Motion setting is honoured whether or not the in-app switch is
+   on. The switch can turn motion off; it can never turn the OS preference back
+   on, which would be overriding a system accessibility choice. */
+var MOTIONQ=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):null;
+function motionOff(){ return ADV.nomotion || !!(MOTIONQ&&MOTIONQ.matches); }
 function lifeLabel(k){return (ADV.strain?STRAINNAME[k]:FEEL[k])||FEEL[k];}
 function setAdv(k,on){
   ADV[k]=!!on;
   var scr=document.getElementById("scr");
-  scr.classList.toggle("nomotion",ADV.nomotion);
+  scr.classList.toggle("nomotion",motionOff());
   scr.classList.toggle("strainnames",ADV.strain);
   document.querySelectorAll("[data-adv]").forEach(function(b){b.classList.toggle("on",!!ADV[b.dataset.adv]);});
   /* Applied before the re-renders below: sizeDealRows() measures a rendered
@@ -1099,6 +1229,9 @@ function setAdv(k,on){
   if(S.screen==="list")renderList();
   if(curP&&S.screen==="product")drawProduct();
   if(S.screen==="cart")renderCart();
+  document.querySelectorAll("[data-adv]").forEach(function(b){
+    b.setAttribute("aria-pressed",ADV[b.dataset.adv]?"true":"false");});
+  advSave();
 }
 const LIFECLASS={discovery:"disc",adventurous:"adv",social:"soc",unwind:"unw",nightlife:"night",holistic:"hol"};
 const TYPES={flower:"Flower",preroll:"Pre-Rolls",concentrate:"Concentrates",edible:"Edibles",drink:"Drinks",topical:"Topicals"};
@@ -1638,6 +1771,11 @@ const G={feels:[],method:null,subs:[],tastes:[]};
 const $=function(q){return document.querySelector(q);};
 const view=$("#view");
 function money(v){return "$"+v.toFixed(2);}
+/* Attribute-safe text. Everything built here goes into innerHTML, so a name
+   carrying a quote or an ampersand would otherwise break out of the attribute
+   it is written into. */
+function esc(t){return String(t==null?"":t)
+  .replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function stars(r){var s="";for(var i=1;i<=5;i++)s+=i<=Math.round(r)?"★":"☆";return s;}
 function feelIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7.5" r="3.2"/><path d="M6 21c0-3.6 2.7-6.4 6-6.4s6 2.8 6 6.4"/></svg>';}
 function dotIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/></svg>';}
@@ -2007,7 +2145,7 @@ function results(){var r=P.filter(match);
 
 function moodChips(el){
   if(!el)return;
-  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'">'+(IMG["sm_"+k]?'<img class="chiplg" src="'+IMG["sm_"+k]+'" alt="">':feelIcon())+lifeLabel(k)+'</button>';}).join("");
+  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'" aria-pressed="'+(S.mood===k?'true':'false')+'">'+(IMG["sm_"+k]?'<img class="chiplg" src="'+IMG["sm_"+k]+'" alt="">':feelIcon())+lifeLabel(k)+'</button>';}).join("");
   el.querySelectorAll("[data-mood]").forEach(function(b){b.addEventListener("click",function(){
     S.mood=S.mood===b.dataset.mood?null:b.dataset.mood;moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
     if(S.screen!=="list")nav("list");else renderList();
@@ -2067,6 +2205,20 @@ function sizePill(p,size){
   var st=servTotal(p,size);
   return '<span class="fsz sel'+(st?' serv':'')+'">'+(st||feedPill(size))+'</span>';
 }
+/* What a screen reader should say for one product, instead of a run of
+   disconnected text nodes: "Blue Dream by Plaid Jacket. Sativa Hybrid. 24.8
+   percent THC. 1 g, $12." Built from the same values the card renders, so it
+   cannot drift from what is on screen. */
+function cardSummary(p,size,price){
+  var bits=[p.n];
+  if(p.b)bits.push("by "+p.b);
+  var life=lifeLabel(p.f[0]); if(life)bits.push(life);
+  if(p.pot)bits.push(p.pot);
+  else if(p.thc)bits.push(p.thc+" percent THC");
+  if(size)bits.push(size);
+  if(price!=null)bits.push(money(price));
+  return bits.join(". ").replace(/\.\./g,".");
+}
 function feedCard(p){
   var lc=LIFECLASS[p.f[0]]||"soc";
   var all=sizesFor(p);
@@ -2076,19 +2228,22 @@ function feedCard(p){
   var dispSize=(S.size&&all.indexOf(S.size)>-1)?S.size:def;
   var idx=Math.max(0,all.indexOf(dispSize));
   var start=Math.max(0,Math.min(idx-1,Math.max(0,all.length-3)));
-  var sizes=all.slice(start,start+3).map(function(s){return '<span class="fsz'+(s===dispSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
+  var sizes=all.slice(start,start+3).map(function(s){return '<span class="fsz'+(s===dispSize?' sel':'')+'"'+(s===dispSize?' aria-current="true"':'')+'>'+feedPill(s)+'</span>';}).join("");
   var pp=priceFor(p,dispSize),price=pp.now,was=pp.was;
   var bc=crumb(p);
   var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
-  return '<div class="fcard '+lc+' tap" data-p="'+p.id+'" data-sel="'+dispSize+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+tileOverlay(p)+'</div>'+
+  var summary=cardSummary(p,dispSize,price);
+  /* role=group + aria-label: the card is announced as one thing, and the photo
+     is marked decorative because the name is already in the label. */
+  return '<div class="fcard '+lc+' tap" data-p="'+p.id+'" data-sel="'+dispSize+'" role="group" aria-label="'+esc(summary)+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="">'+tileOverlay(p)+'</div>'+
     '<div class="fdiv">'+badge+'</div><div class="fbc">'+bc+'</div><div class="fnm">'+p.n+'</div>'+
     '<div class="fmeta"><span class="fbr">'+p.b+'</span></div>'+
     '<div class="fprow"><div class="fszs">'+sizePill(p,dispSize)+'</div>'+
     '<div class="fpr">'+(was?'<span class="was">'+money(was)+'</span><span class="now">'+money(price)+'</span>':money(price))+'</div></div>'+
     /* one size only (edibles, concentrates) — nothing to open, so keep Add to Cart */
     (all.length>1
-      ? '<button class="fmore">See more sizes</button>'+sizeSheet(p,dispSize,all)
-      : '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dispSize+'">Add to Cart</button>')+'</div>';
+      ? '<button class="fmore" aria-label="'+esc("See more sizes for "+p.n)+'">See more sizes</button>'+sizeSheet(p,dispSize,all)
+      : '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dispSize+'" aria-label="'+esc("Add "+p.n+", "+dispSize+", to cart")+'">Add to Cart</button>')+'</div>';
 }
 function renderShop(){
   moodChips($("#moodbar"));
@@ -2688,7 +2843,7 @@ function drawProduct(){
   var szpick=hasSizes?'<div class="szpick">'+sizesFor(p).map(function(s){return '<button class="szo tap '+(s===curSize?'sel':'')+'" data-sz="'+s+'">'+feedPill(s)+'</button>';}).join("")+'</div>':'';
   var feels='<div class="chipset feel"><div class="csh">Feelings</div><div class="iconrow">'+p.fe.map(function(f){return '<div class="icard">'+pIcon(f)+'<b>'+f+'</b></div>';}).join("")+'</div></div>';
   var taste='<div class="chipset taste"><div class="csh">Taste</div><div class="iconrow">'+p.ta.map(function(t){return '<div class="icard">'+pIcon(t)+'<b>'+t+'</b></div>';}).join("")+'</div></div>';
-  $("#pwrap").innerHTML='<div class="pihead"><button class="pihback tap" data-b="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Product Info</h2></div>'+
+  $("#pwrap").innerHTML='<div class="pihead"><button class="pihback tap" data-b="1" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Product Info</h2></div>'+
     '<div class="pimg '+lc+'"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+life+'</div>'+
     '<div class="pcatrow"><div class="pcat">'+crumb(p)+'</div>'+
       (p.ratio&&p.combo&&p.combo!=="THC Only"?'<span class="bub ratio">'+p.ratio+'</span>':"")+
@@ -2887,5 +3042,15 @@ window.addEventListener("load",sizeDealRows);   /* webfonts change the tile heig
 renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderHome();
 $("#dealscal1").addEventListener("click",function(){nav("dealcal");});
 $("#dealscal2").addEventListener("click",function(){nav("dealcal");});
+/* Restore the saved display mode before the first paint of a real screen, and
+   follow the OS Reduce Motion preference if the user changes it mid-session. */
+advLoad();
+["strain","enlarged","nomotion"].forEach(function(k){ if(ADV[k]) setAdv(k,true); });
+document.querySelectorAll("[data-adv]").forEach(function(b){
+  b.classList.toggle("on",!!ADV[b.dataset.adv]);
+  b.setAttribute("aria-pressed",ADV[b.dataset.adv]?"true":"false");});
+document.getElementById("scr").classList.toggle("nomotion",motionOff());
+if(MOTIONQ&&MOTIONQ.addEventListener)MOTIONQ.addEventListener("change",function(){
+  document.getElementById("scr").classList.toggle("nomotion",motionOff());});
 setBag();nav("landing");fitFrame();
 </script>
