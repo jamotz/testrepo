@@ -536,6 +536,12 @@ assuming a header height. Full screen is entered by tapping **Open full screen**
 — never automatically, so it can't hijack a tile tap — and exited by the `✕ Exit`
 chip or Escape.
 
+Three boxes, and each needs its width stated for a different reason: `#phonebox`
+is pinned to the **scaled** footprint (a transform doesn't shrink the page box),
+`.phone` to the **unscaled** `DESIGN_W + bez`, and `.scr` to the design width.
+Leave `.phone`'s off and it inherits `#phonebox`'s scaled width, drawing the
+bezel narrower than the 452px screen inside it — see `design-decisions.md`.
+
 The script injects a `viewport` meta if the host page has none, and appends
 `viewport-fit=cover` if it has one without it. Without that, `env(safe-area-inset-*)`
 reports 0 and the full-screen tab bar sits under the home indicator.

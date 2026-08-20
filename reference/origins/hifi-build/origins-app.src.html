@@ -1546,6 +1546,12 @@ function fitFrame(){
     h=DESIGN_H;
   }
   scr.style.height=h+"px";
+  /* The bezel carries its own unscaled width. #phonebox below is sized to the
+     *scaled* footprint, and .phone is a normal block child of it — so without
+     this the bezel inherits that smaller number while .scr stays a fixed 452,
+     and the screen overflows the black frame's right edge (94px at k=.8: no
+     right bezel, no rounded corners on that side). */
+  ph.style.width=(DESIGN_W+bez)+"px";
   ph.style.transform="scale("+k+")";
   var drawnW=(DESIGN_W+bez)*k;
   ph.style.marginLeft=full?Math.max(0,Math.round((vw-drawnW)/2))+"px":"";

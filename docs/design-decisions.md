@@ -918,6 +918,30 @@ Now the app always lays out at 452 and the frame is **scaled** to fit. Framed
 mode is capped at 440pt — an iPhone 16 Pro Max, the largest real screen — and
 shrinks further to keep the whole phone visible without zooming the browser.
 
+### The bezel needs its own width, or the page box strangles it
+`fitFrame()` sizes `#phonebox` to the **scaled** footprint so the page flow stays
+tight around a transformed element — `transform` doesn't change layout size, so
+without that the page reserves the full unscaled 474px. Correct, but `.phone` is
+an ordinary block child of `#phonebox`, so it inherited that smaller number as
+its own width while `.scr` stayed a hard `width:452px`.
+
+The result: the black bezel was drawn **94px narrower than the screen it wraps**
+at k=0.8 — 380px against 452 — so the screen overflowed its right edge and the
+right-hand bezel and both right rounded corners simply weren't there. Every
+screen had it; the Guide Me wizard showed it worst, because its options are
+full-width colour bars that get sliced, and `.immersive` hides the tab bar so
+there's no bottom edge left to make the frame read as a frame.
+
+`.phone` now carries `width: DESIGN_W + bez` explicitly, set in `fitFrame()`
+beside the transform. Verified symmetric at 1366×768, 1440×900, 1920×1080,
+1440×1200 and 393×852, framed and full screen — the left and right gaps match
+the 11px padding in framed mode and are 0 in full screen, where the padding is.
+
+**The general trap:** an element you scale with `transform` and an element whose
+layout box you pin to the scaled size cannot be the same element, and they
+cannot be parent and child either unless the child's width is stated. A fixed-
+width grandchild will quietly overflow instead of resizing.
+
 ### Full screen fills the height on desktop, the width on a phone
 Scaling to the viewport width is right on a phone and absurd on a 1440px
 monitor (3.2×). The width only binds when the viewport is phone-shaped.
