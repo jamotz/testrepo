@@ -509,6 +509,24 @@ the only thing in the app that cannot reflow narrower, and it pinned home and
 the calendar at 402px however much everything else shrank. Enlarged lets it
 wrap: the banner grows a line rather than the screen growing a scrollbar.
 
+**One card across, not two squeezed ones** (Jack, 2026-08-20). Scaling alone
+left `.pgrid` a two-column grid inside a 362px space — about 168px a card, where
+they are drawn for 218. The mode exists for legibility, so enlarged drops the
+grid to one column, gives the browse carousels' cards the full width, and grows
+the photo well 84 → 132px so a card doesn't read as a wide letterbox.
+
+**Every row came, including home's.** The first cut did `.pgrid` and `.feedrow`
+only, which left the home deal rows still showing two squeezed cards — home
+became the one place the setting hadn't reached. The deal cards, the brand tiles
+and the See All cards all take the full width together, so `sizeDealRows()`
+still measures a product tile and hands the row one height. Verified: all three
+rows report the same width and height in both modes.
+
+*Watch the container, not the component:* the brand tiles are in `.brandrow`,
+not `.dealrow`, so a rule written against `.dealrow .btile` matches nothing and
+leaves that row at 218px while everything near it changes. That shipped for one
+build before the measurement caught it.
+
 **`tiles-compact` stays on in both modes.** It was reserved for this work, but
 dropping it in enlarged mode would scale tiles 11% more than everything around
 them — the opposite of scaling as a unit.

@@ -736,6 +736,22 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    home and the calendar at 402px. Enlarged lets it wrap; the banner grows a
    line rather than the screen growing a scrollbar. */
 #scr.enlarged .deal-banner .bs{white-space:normal}
+/* One product card across, not two squeezed ones (Jack, 2026-08-20). Scaling
+   alone left .pgrid a two-column grid in a 362px space — ~168px a card, tighter
+   than the 218px they are drawn for. The point of the mode is legibility, so
+   the grid drops to one column and the browse carousels give each card the full
+   width; the photo well grows with it so the card doesn't read as a wide
+   letterbox. The home deal rows come too — leaving them at 218px while the shop
+   went full width made home the only place still showing two squeezed cards.
+   Their brand and See All cards match, so sizeDealRows() still measures a
+   product tile and gets a row of one width. */
+#scr.enlarged .pgrid{grid-template-columns:1fr}
+#scr.enlarged .feedrow .fcard,#scr.enlarged .dealrow .fcard,
+#scr.enlarged .brandrow .btile,#scr.enlarged .dseeall{width:100%}
+#scr.enlarged .pgrid .fcard .fim,#scr.enlarged .feedrow .fcard .fim,
+#scr.enlarged .dealrow .fcard .fim{height:132px}
+#scr.enlarged .pgrid .fcard .fim img,#scr.enlarged .feedrow .fcard .fim img,
+#scr.enlarged .dealrow .fcard .fim img{max-height:132px}
 .acchecks{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding-left:14px}
 .accheck{display:flex;align-items:center;gap:11px;background:none;border:0;padding:0;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
 .accheck .acbox{width:19px;height:19px;border:1.5px solid var(--or);border-radius:2px;flex:none}
