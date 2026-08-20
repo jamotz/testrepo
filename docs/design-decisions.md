@@ -480,16 +480,38 @@ Four switches, all of them real rather than decorative:
 | Switch | What it does |
 |---|---|
 | Use product type | Swaps the six lifestyle words for Sativa / Sativa Hybrid / Hybrid / Indica Hybrid / Indica / CBD, everywhere |
-| Enlarged view | **Placeholder.** The switch moves, the app doesn't |
+| Enlarged view | Scales the app 1.25x as a unit — type, photos, buttons, spacing |
 | Reduce motion | Kills every transition and animation |
 
-**Enlarged view is deliberately inert** (Jack, 2026-08-18): "don't add that
-functionality yet, just a placeholder". It replaced two narrower switches —
-larger tiles and bigger text — because what he wants is the *whole app* scaled
-proportionately, which is a frame-scale job rather than a list of font sizes,
-and worth doing once. The row carries a **Coming soon** tag and the switch
-toasts, so nobody demos it expecting a result. `tiles-compact` stays on `#view`
-untouched, ready for that work.
+**Enlarged view is one scale factor, not a list of font sizes.** Built
+2026-08-20; it had been an inert placeholder since 2026-08-18, when Jack asked
+for it to wait ("don't add that functionality yet"). What he wanted was the
+*whole app* scaled proportionately, so that is literally what it is: `--enlarge`
+(1.25) applied as `zoom` to `.view` and `.tabs`.
+
+`zoom` is the right tool because it scales rendered size *and* narrows the
+coordinate space the children lay out in — 452 / 1.25 = **362 px effective**. So
+the app reflows the way it would on a smaller phone instead of magnifying and
+scrolling sideways. Two lines of CSS do what a table of font sizes could not.
+
+**What does not scale:** the fake status bar and the dynamic island. Those are
+the handset, not the app running on it. An early cut scaled only `.view`, which
+left the `.sbar` title bar growing while the tab bar beneath it stayed put —
+visibly half a scaled app. `.tabs` is in the rule for that reason.
+
+**Measured, not guessed:** clean to **1.30**. At 1.35 the 218 px product cards
+can no longer sit two-up and shop/list overflow; WCAG 1.4.10 Reflow's 320 px
+floor arrives at 1.41. 1.25 leaves headroom on both.
+
+**One rule had to give.** `.deal-banner .bs` is `white-space:nowrap` so the offer
+copy holds one line, with ~14px of slack at the design width — which makes it
+the only thing in the app that cannot reflow narrower, and it pinned home and
+the calendar at 402px however much everything else shrank. Enlarged lets it
+wrap: the banner grows a line rather than the screen growing a scrollbar.
+
+**`tiles-compact` stays on in both modes.** It was reserved for this work, but
+dropping it in enlarged mode would scale tiles 11% more than everything around
+them — the opposite of scaling as a unit.
 
 **The product-type toggle is a label lookup, not a data migration** — exactly as
 planned when lifestyle became "the strain, renamed". Every printed label goes

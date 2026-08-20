@@ -450,7 +450,7 @@ the same component the filter drawer uses.
 | Switch | Key | Effect |
 |---|---|---|
 | Use product type | `strain` | `lifeLabel()` returns `STRAINNAME[k]` instead of `FEEL[k]` |
-| Enlarged view | `enlarged` | **Placeholder** — the switch moves and toasts; nothing scales yet |
+| Enlarged view | `enlarged` | `#scr.enlarged` puts `zoom: var(--enlarge)` (1.25) on `.view` **and** `.tabs` |
 | Reduce motion | `nomotion` | `#scr.nomotion` kills every transition and animation |
 
 **`lifeLabel(key)` is the only place a lifestyle word is printed.** Reach for
@@ -466,8 +466,21 @@ screen if that is where you are.
 lifestyle as a *wordmark image*, which can't be re-lettered. Each option carries
 a text twin that `#scr.strainnames` swaps in.
 
-`tiles-compact` stays on `#view` untouched, reserved for the Enlarged view work
-— which is a scale factor on the 452 px frame, not a list of font sizes.
+**Enlarged view is one number.** `--enlarge` (1.25) scales `.view` and `.tabs`
+together, so type, photos, buttons, borders and spacing all grow by the same
+factor and the children get a narrower coordinate space — 452 / 1.25 = **362 px
+effective** — so the app *reflows* like a smaller phone rather than magnifying.
+The fake status bar and island are excluded: they are the handset, not the app.
+
+Measured ceiling: clean to **1.30**; at 1.35 the 218 px product cards can no
+longer sit two-up and shop/list overflow. WCAG 1.4.10 Reflow's 320 px floor is
+reached at 1.41. One rule needs an exception — `.deal-banner .bs` is
+`white-space:nowrap`, the only thing in the app that cannot reflow narrower, so
+enlarged lets it wrap.
+
+`tiles-compact` stays on `#view` in both modes. It was reserved for this work,
+but removing it in enlarged mode would scale tiles 11% more than everything
+else — the opposite of scaling as a unit.
 
 ---
 

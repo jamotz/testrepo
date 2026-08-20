@@ -111,9 +111,11 @@ icon reads as a different tab.
    **Before writing a table that assigns something per strain, check the source
    for a column that already says it.** That mistake has been made twice — once
    with lifestyle, once with terpenes.
-5. **Say what isn't built, in the UI as well as here.** Advanced Settings'
-   *Enlarged view* switch is a placeholder (Jack, 2026-08-18): it carries a
-   "Coming soon" tag and toasts rather than quietly doing nothing.
+5. **Say what isn't built, in the UI as well as here.** When *Enlarged view*
+   was a placeholder it carried a "Coming soon" tag and toasted, rather than
+   quietly doing nothing. It is built now (2026-08-20) and the tag is gone —
+   the rule stands, the example is just retired. Origins U's *Search* pill is
+   the live one: it toasts "coming soon" because there is no search behind it.
 
 ---
 
@@ -185,13 +187,13 @@ polish and the open questions below.
 1. **General touch-ups** — Jack is doing a pass across the app, screen by
    screen. Home, shop, cart, Origins U and the account screens have each been
    through a round (see `design-decisions.md` for what was decided and why).
-2. **Build *Enlarged view*.** The switch is in Advanced Settings with a "Coming
-   soon" tag and does nothing on purpose (Jack, 2026-08-18: "just a placeholder
-   for now. We'll go over it later"). What he asked for is the **whole app
-   scaled proportionately** — photos, type, buttons and spacing together — not a
-   list of font sizes. The frame already lays out in a fixed 452 px design width
-   and scales as a unit, so the honest implementation is a scale factor on that,
-   not per-rule overrides. `tiles-compact` on `#view` is still reserved for it.
+2. **Enlarged view is built** (2026-08-20) — one scale factor, `--enlarge`
+   1.25, applied as `zoom` to `.view` and `.tabs`, so type, photos, buttons and
+   spacing all grow together and the app reflows into an effective 362px. Clean
+   to 1.30; 1.35 breaks the two-up product grid. If Jack wants it stronger,
+   change the one number and re-run the overflow check — don't start adding
+   per-rule font sizes.
+
 3. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
    2026-08-17: "ignore for now"). Don't pick this up without him. The other
    three shelves are done; these 138 products still carry the old vocabulary, so
@@ -244,7 +246,7 @@ polish and the open questions below.
 | Kief / RSO | The "no products" note was wrong — the sheet has all 60 concentrate rows |
 | Chrome | Brown title bar on every screen; trolley icon over Cart; "Your Cart"; Origins U photos wired to images the build actually embeds |
 | Buttons | The outlined family, one weight pill app-wide, hero type at the app's own size, Logout matched to Account Settings |
-| Advanced Settings | New screen: **Use product type** (working), **Enlarged view** (placeholder), **Reduce motion** (working) |
+| Advanced Settings | New screen: **Use product type**, **Enlarged view** and **Reduce motion** — all three working (Enlarged view landed 2026-08-20) |
 
 *Size as a navigation step was considered and rejected* (Jack, 2026-08-12):
 size lives in the product tile, not the filter path. Don't re-propose it.

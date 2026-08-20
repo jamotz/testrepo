@@ -716,6 +716,26 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 #scr.strainnames .oc.life .lifewordt{display:block}
 /* accessibility: everything that moves, stops */
 #scr.nomotion *,#scr.nomotion *::before,#scr.nomotion *::after{transition:none!important;animation:none!important}
+/* Enlarged view — ONE scale factor on the whole app, not a list of font sizes
+   (Jack, 2026-08-18: "the whole app scaled proportionately"). `zoom` on #view
+   scales type, photos, buttons, borders and spacing together and hands the
+   children a narrower coordinate space (452 / factor), so the app reflows the
+   way it would on a smaller phone instead of just magnifying.
+   1.25 puts the effective width at 362px — near an iPhone SE's 375 — and stays
+   clear of WCAG 1.4.10 Reflow's 320px floor, which 452 hits at 1.41. Change the
+   one number; nothing else here is a size. */
+:root{--enlarge:1.25}
+/* The tab bar scales with the content. It sits outside #view, so scaling only
+   #view left the .sbar title bar growing while the tabs under it stayed put —
+   half a scaled app. The status bar and the island deliberately do NOT scale:
+   those are the fake handset, not the app running on it. */
+#scr.enlarged .view,#scr.enlarged .tabs{zoom:var(--enlarge)}
+/* The only rule that has to give. .deal-banner .bs is white-space:nowrap so the
+   offer copy holds one line, and it had ~14px of slack at the design width — so
+   it is the single thing in the app that cannot reflow narrower, and it pinned
+   home and the calendar at 402px. Enlarged lets it wrap; the banner grows a
+   line rather than the screen growing a scrollbar. */
+#scr.enlarged .deal-banner .bs{white-space:normal}
 .acchecks{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding-left:14px}
 .accheck{display:flex;align-items:center;gap:11px;background:none;border:0;padding:0;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink)}
 .accheck .acbox{width:19px;height:19px;border:1.5px solid var(--or);border-radius:2px;flex:none}
@@ -964,7 +984,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
           <h3 class="ach3">How products are named</h3>
           <div class="advrow"><div class="advt"><b>Use product type</b><i>Show Sativa, Hybrid and Indica in place of Discovery, Social and the rest. Same six groups, the grower's vocabulary.</i></div><button class="sw tap" data-adv="strain" aria-label="Use product type"></button></div>
           <h3 class="ach3">Accessibility</h3>
-          <div class="advrow"><div class="advt"><b>Enlarged view <span class="advsoon">Coming soon</span></b><i>Scales the whole app up together &mdash; photos, type, buttons and spacing &mdash; for easier reading at arm's length.</i></div><button class="sw tap" data-adv="enlarged" aria-label="Enlarged view"></button></div>
+          <div class="advrow"><div class="advt"><b>Enlarged view</b><i>Scales the whole app up together &mdash; photos, type, buttons and spacing &mdash; for easier reading at arm's length.</i></div><button class="sw tap" data-adv="enlarged" aria-label="Enlarged view"></button></div>
           <div class="advrow"><div class="advt"><b>Reduce motion</b><i>Stops sheets sliding and chevrons turning, for anyone who finds movement uncomfortable.</i></div><button class="sw tap" data-adv="nomotion" aria-label="Reduce motion"></button></div>
           <p class="advnote">These stay on until you turn them off. Nothing here changes prices or what is in stock.</p>
         </div>
@@ -1054,7 +1074,9 @@ function setAdv(k,on){
   scr.classList.toggle("nomotion",ADV.nomotion);
   scr.classList.toggle("strainnames",ADV.strain);
   document.querySelectorAll("[data-adv]").forEach(function(b){b.classList.toggle("on",!!ADV[b.dataset.adv]);});
-  if(k==="enlarged"){toast(ADV.enlarged?"Enlarged view — coming soon":"Enlarged view off");return;}
+  /* Applied before the re-renders below: sizeDealRows() measures a rendered
+     tile, so it has to measure in the zoom it is going to be seen at. */
+  scr.classList.toggle("enlarged",ADV.enlarged);
   /* labels are baked in at render time, so anything showing one is redrawn */
   moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
   renderFeel();renderHome();renderShop();renderEduHub(); /* its lifestyle discs carry lifeLabel alt text */
