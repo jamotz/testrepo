@@ -296,6 +296,27 @@ applies `.immersive` (hides nav) for the landing screen and the Guide Me wizard.
 vape · product · cart · confirm · dealcal · edu · edutopic · account ·
 acloyalty · acsettings · acadv · acorders · acrecs · acreviews · acabout`
 
+### Origins U
+
+`EDU` holds ten categories, `EDU_ORDER` lays them out (shelves first, then the
+concept pages), and **`EDUMAP` is the single table routing a shop type to one of
+them** — `openEduFor(type, idx)` is the only way in, from the shop list, the
+recommendations screen and the vape dead-end alike.
+
+| Route | Lands on | Why |
+|---|---|---|
+| flower · preroll | Flower | a pre-roll is flower, or infused flower |
+| concentrate | Concentrate | |
+| edible | Edibles | |
+| drink | Liquid Edibles | own page since 2026-08-20; was Edibles |
+| topical | Topicals | |
+| vape | Vapes | own page since 2026-08-20; was Concentrate |
+| tincture | Forms of CBD | that page covers tinctures; none in the catalog |
+
+Adding a category means an `EDU` entry, an `EDU_ORDER` slot, and an `img` key
+**checked against the built `IMG`** — a missing key renders an empty `<img>` in
+silence, which is how six of the original eight sat broken for weeks.
+
 Every screen except the landing page and the wizard wears the same brown title
 bar, `.sbar` (2026-08-18). Shop and the product list had their own white
 `.shophead` and the cart had no header at all; all three now use the shared

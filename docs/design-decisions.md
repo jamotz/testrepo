@@ -346,6 +346,66 @@ Cannabinoids (diamonds being THCA). No new files, nothing to go missing, and
 the hub matches the shop's own category circles. Lifestyles keeps its strip of
 six logos and never used `img`.
 
+The two categories added on 2026-08-20 follow the same rule: Liquid Edibles
+takes `drink` (the orange bottle, the shop's own Drinks circle) and Vapes takes
+`clr_badder` — a cartridge is full of concentrate, so a concentrate shot is the
+honest picture. Both were checked against the built `IMG` before being written
+in, which is the check this section exists to demand.
+
+**`vape` is not an image key.** The shop's Vapes category circle asks for
+`IMG["vape"]`, which `asm_app.py` has never carried — the circle has been
+rendering in its `noimg` fallback state the whole time. It degrades quietly
+(that's what `noimg` is for), so it looks deliberate. Supply a `vape.png` and
+it wires itself up; until then don't reference the key from anywhere new.
+
+### Origins U covers the shelves, and every link lands on its own page
+Jack, 2026-08-20. Drinks used to open the **Edibles** page and vapes the
+**Concentrate** page, so two shelves were being taught under another shelf's
+name. Both now have their own category — **Liquid Edibles** and **Vapes** —
+taking the hub from eight cards to ten, five clean rows of two.
+
+The order is product shelves first (Flower, Concentrate, Edibles, Liquid
+Edibles, Topicals, Vapes), then the concept pages (Lifestyles, Forms of CBD,
+Growing Process, Types of Cannabinoids).
+
+**Two routes stay pointed at another category on purpose:**
+
+- **Pre-rolls → Flower.** A pre-roll is flower, or flower infused with a
+  concentrate; it has no education of its own to give (Jack's call). Don't add
+  a Pre-Rolls card.
+- **Tinctures → Forms of CBD.** That page already covers tinctures, and nothing
+  in the catalog is one.
+
+The vape dead-end's *Learn about the Differences* link used to call
+`renderEduTopic("concentrate", 0)` directly, bypassing `EDUMAP`. It goes through
+`openEduFor("vape", 0)` now, so **`EDUMAP` is the single routing table** and a
+future re-pointing happens in one place.
+
+Topic copy for both new categories is **authored**, flagged `AUTHORED` in the
+table — the same standing as the rest of Origins U's copy, none of which comes
+from a sheet.
+
+### The Origins U tile is the shop's product tile
+Jack picked **option C** of four (2026-08-20). The card was a flat `#D9A87C`
+peach — a colour that appears nowhere else in the palette, not `--cream`, not
+`--tan` — which is most of why Origins U read as a different app bolted on.
+
+It now uses the `.fcard` shell: white, 1.5px `#E1DBCD` border, 12px radius, the
+same shadow. **The label bar stays** — these tiles are mostly photograph and the
+name needs anchoring — but in `--olive` with cream text rather than `--brown`,
+so it belongs to the Search pill and the weight pills instead of competing with
+the `.sbar` title bar sitting directly above it.
+
+Rejected alongside it: the bar in `--brown` on the new card (safe, but eight
+brown bars still argue with the header), the bar dropped for olive text under a
+divider (cleanest, loses the label as a signature), and the photo in an
+`#EDEFE1` tinted well (keeps the grouping the peach gave, adds a second surface
+colour per card).
+
+**The Lifestyles tile is the odd one out** and now visibly so: it is six black
+wordmark glyphs where its nine neighbours are product photography. The peach
+disguised that; white doesn't. Not addressed here — it needs its own look.
+
 ### The button family is outlined: coloured border, white interior, coloured text
 Jack, 2026-08-18. Filter and Sort set the pattern, and Origins U's Search and
 Continue, and Account's Logout, follow it. The two shop controls **don't have to

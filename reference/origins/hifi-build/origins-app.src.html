@@ -522,12 +522,19 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .edusearch{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:1rem;padding:11px 28px}
 .edusearch svg{width:18px;height:18px}
 .educards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-.educard{border-radius:12px;overflow:hidden;background:#D9A87C;box-shadow:0 5px 13px rgba(0,0,0,.09);display:flex;flex-direction:column;height:152px;border:0;padding:0;text-align:left;cursor:pointer}
+/* The card is the shop's product tile: white, 1.5px neutral border, 12px
+   radius, the same shadow. It used to be a flat #D9A87C peach, a colour that
+   appears nowhere else in the palette, which is what made Origins U read as a
+   different app. The label bar stays — these tiles are mostly photo and need
+   the name anchored — but in --olive rather than --brown, so it belongs to the
+   Search pill and the weight pills instead of competing with the .sbar title
+   bar directly above it (Jack, 2026-08-20, option C of four). */
+.educard{border-radius:12px;overflow:hidden;background:#fff;border:1.5px solid #E1DBCD;box-shadow:0 5px 13px rgba(0,0,0,.07);display:flex;flex-direction:column;height:152px;padding:0;text-align:left;cursor:pointer}
 .educard .eduimg{flex:1;display:flex;align-items:center;justify-content:center;padding:10px;min-height:0}
 .educard .eduimg img{max-width:100%;max-height:100%;object-fit:contain}
 .educard .edulife{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;place-items:center;gap:4px;padding:12px 10px}
 .educard .edulife img{width:34px;height:34px;object-fit:contain}
-.educard .edulabel{background:var(--brown);color:#fff;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:.02em;padding:9px 12px;text-align:center}
+.educard .edulabel{background:var(--olive);color:var(--cream);font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:.02em;padding:9px 12px;text-align:center}
 .edutopic{padding:0 0 28px}
 .edubanner{position:relative;background:#D9A87C;height:98px;display:flex;align-items:center;overflow:hidden}
 .edubanner .edubg{position:absolute;left:0;right:0;text-align:center;font-family:var(--head);font-weight:700;font-size:66px;color:rgba(46,38,30,.15);letter-spacing:.04em;white-space:nowrap;pointer-events:none;user-select:none}
@@ -1886,7 +1893,7 @@ $("#subnext").addEventListener("click",function(){
 $("#tastenext").addEventListener("click",function(){renderFinish();setBack("finish","taste");nav("finish");});
 $("#sublearn").addEventListener("click",function(){renderEduTopic("concentrate",0);}); /* Guide Me: concentrate differences -> Origins U */
 $("#learnbtn").addEventListener("click",function(){openEduFor(S.type,0);});             /* Shop list: "Learn about the Differences" -> matching Origins U page */
-(function(){var v=document.querySelector('.vape .learn');if(v){v.classList.add("tap");v.style.cursor="pointer";v.addEventListener("click",function(){renderEduTopic("concentrate",0);});}})(); /* Vape differences -> Concentrate page */
+(function(){var v=document.querySelector('.vape .learn');if(v){v.classList.add("tap");v.style.cursor="pointer";v.addEventListener("click",function(){openEduFor("vape",0);});}})(); /* Vape differences -> Origins U, via EDUMAP so there is one routing table */
 
 function guideLifestyles(){return G.feels.length?G.feels.slice():["social"];}
 function renderFinish(){
@@ -2662,9 +2669,14 @@ function cartSub(){return cartLines().reduce(function(a,l){return a+l.lp.total;}
 function cartDiscount(){return cartLines().reduce(function(a,l){return a+(l.lp.regTotal-l.lp.total);},0);}
 
 /* ===== Origins U (education) ===== */
-const EDU_ORDER=["flower","concentrate","edibles","topicals","lifestyles","cbd","growing","thc"];
+/* Product shelves first, then the concept pages. Ten cards = five clean rows. */
+const EDU_ORDER=["flower","concentrate","edibles","drinks","topicals","vapes","lifestyles","cbd","growing","thc"];
 /* which Origins U category a Shop/Guide "Learn the differences" link jumps to */
-const EDUMAP={flower:"flower",preroll:"flower",concentrate:"concentrate",edible:"edibles",drink:"edibles",topical:"topicals",tincture:"cbd",vape:"concentrate"};
+/* preroll -> flower on purpose: a pre-roll is flower, or flower infused with a
+   concentrate, so it has no education of its own to give (Jack, 2026-08-20).
+   tincture -> cbd is likewise deliberate: Forms of CBD already covers tinctures,
+   and nothing in the catalog is a tincture. */
+const EDUMAP={flower:"flower",preroll:"flower",concentrate:"concentrate",edible:"edibles",drink:"drinks",topical:"topicals",tincture:"cbd",vape:"vapes"};
 const EDU={
  flower:{name:"Flower",img:"growbud",imgscale:1.3,lead:"Learn all about flower from the growing process to your jar — we cover the anatomy of the plant to help you explore the world of FLOWER.",topics:[
    {t:"Outdoor vs Indoor",d:"Learn the differences between flower grown outdoors vs indoors. Explore the benefits and disadvantages of each growing style."},
@@ -2678,11 +2690,26 @@ const EDU={
    {t:"Live Resin vs Rosin",d:"Both are prized for flavor, but they're made very differently. Learn which one fits your taste and budget."},
    {t:"Distillate Explained",d:"Why distillate is the most potent and most neutral concentrate, and where you'll usually find it."},
    {t:"THC in Concentrate",d:"Concentrates can test far higher than flower — learn how to read the numbers and dose accordingly."}]},
- edibles:{name:"Edibles",img:"ed_gum_purple",lead:"Chocolates, gummies, mints and drinks — learn how edibles work and how to enjoy them responsibly.",topics:[
+ edibles:{name:"Edibles",img:"ed_gum_purple",lead:"Chocolates, gummies, mints and baked goods — learn how edibles work and how to enjoy them responsibly.",topics:[
    {t:"How Edibles Work",d:"Why eating cannabis feels different from smoking it, and how your liver turns THC into something stronger."},
    {t:"Dosing & Onset Time",d:"Edibles can take up to two hours to kick in. Start low, go slow — learn how to find your dose."},
-   {t:"Chocolate, Gummy, Mint & Drinks",d:"Each format hits a little differently. Explore the options and which suits your moment."},
+   {t:"Chocolate, Gummy & Mint",d:"Each format hits a little differently. Explore the options and which suits your moment."},
    {t:"THC vs CBD Edibles",d:"Balanced ratios, CBD-only and high-THC — learn how the blend changes the experience."}]},
+ /* AUTHORED (2026-08-20): drinks and vapes topic copy is written here, like the
+    rest of this table. Drinks had been sending shoppers to the Edibles page and
+    vapes to Concentrate; both now have their own. */
+ drinks:{name:"Liquid Edibles",img:"drink",lead:"Seltzers, shots, sorbets and honey — cannabis you drink rather than chew, and it behaves differently from a gummy.",topics:[
+   {t:"Why Drinks Hit Faster",d:"Most drinks are nano-emulsified, so the THC absorbs sooner than a chewed edible. Minutes rather than up to two hours."},
+   {t:"Serving vs Whole Bottle",d:"A bottle often holds several servings. Learn to read the serving line rather than the total on the label."},
+   {t:"Seltzers, Shots & Sorbets",d:"A 12 oz seltzer, a 2 oz shot and a frozen sorbet are three very different experiences at the same dose."},
+   {t:"Drinks vs Edibles",d:"Same cannabinoid, different delivery — how onset, duration and intensity compare between the two shelves."},
+   {t:"Reading Drink Potency",d:"Drinks are dosed in milligrams, never a percentage. Learn what the mg on the front actually promises."}]},
+ vapes:{name:"Vapes",img:"clr_badder",lead:"Cartridges are filled with concentrate, and which concentrate decides how yours tastes. Learn the differences.",topics:[
+   {t:"What's In a Cartridge",d:"Distillate, live resin, full spectrum or rosin — the four fills Origins carries and what separates them."},
+   {t:"Distillate vs Live Resin",d:"Distillate is potent and neutral; live resin keeps the terpenes and the flavour of the living plant."},
+   {t:"Full Spectrum Explained",d:"Why keeping the whole cannabinoid and terpene profile changes the effect, not just the taste."},
+   {t:"Cartridge Hardware",d:"Ceramic and wick, airflow and voltage — how the hardware shapes the draw as much as the oil does."},
+   {t:"Why Vapes Are Web-Only",d:"App Store rules keep cartridges out of the app. Learn how to order online and collect them in store."}]},
  topicals:{name:"Topicals",img:"top_balm",lead:"Balms, lotions and oils you apply to your skin. Learn what topicals do and when to reach for one.",topics:[
    {t:"What Are Topicals",d:"Cannabis-infused products for the skin — salves, balms and roll-ons designed for targeted comfort."},
    {t:"How Topicals Work",d:"Most topicals act locally and won't get you high. Learn how they interact with receptors in your skin."},

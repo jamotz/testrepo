@@ -151,7 +151,7 @@ won't follow the toggle**.
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
 with filters · product info · cart · order confirmation · Origins U (education
-hub + 8 topic pages) · vape dead-end · Deals Calendar (running now, then a
+hub + 10 topic pages) · vape dead-end · Deals Calendar (running now, then a
 month of upcoming) · Account · Loyalty Points · Account Settings · Advanced
 Settings · Order History · Recommended Products · Past Reviews · About Us.
 
@@ -170,6 +170,9 @@ polish and the open questions below.
   solid olive for the one you are on, tinted chip for serving/total, which is a
   fact rather than a choice.
 - **Every screen wears the brown `.sbar` title bar.**
+- **Cards are the shop's product tile** — white, 1.5px `#E1DBCD` border, 12px
+  radius, one shadow. Origins U's tiles joined it on 2026-08-20, dropping a
+  `#D9A87C` peach that was in no other screen; their label bar went `--olive`.
 
 ---
 
