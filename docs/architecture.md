@@ -663,6 +663,27 @@ Reflow lives beside the tokens: `.pgrid` drops to one column, every card row
 gives its card the full width, product names wrap instead of truncating, card
 metadata stacks, and the deal banner's `nowrap` is released.
 
+**The type scale is generated, not hand-picked.** Every `font-size` in the
+stylesheet — 49 distinct values, 204 declarations — is a `--fs-*` token whose
+Standard value is the original literal. The first attempt tokenised ~14 rules by
+hand and reached **15.6% coverage**: a few things grew, most didn't, and controls
+that had been given a `min-height` ended up as tall boxes around small labels.
+Generating the mapping took it to **100%**.
+
+The Enlarged curve is compressed upward, after iOS Dynamic Type: ≤9px +40%,
+11px +34%, 13px +28%, 16px +24%, 20px +20%, and **anything over 40px only +4%** —
+that size is display or decoration, which the spec says not to enlarge
+proportionally. **rem values stay rem**, so the browser's own text-size setting
+still multiplies on top of the mode.
+
+**Alignment is a floor, not a fixed height.** `--target-size` is a `min-height`
+on a flex box that centres its content, so a control grows from its type rather
+than wrapping around it. That single rule covers every CTA, pill and chip; the
+earlier bug was `min-height` without the centring.
+
+Guard both with `coverage.js` (fails under ~95%) and the round-trip check:
+substituting every token back to its literal must reproduce the original CSS.
+
 **Standard is provably untouched.** A computed-style snapshot of ~400 elements
 across 11 screens is identical before and after the token refactor — 0 diffs.
 Re-run it (`snapshot.js`) before landing any change to this system.
