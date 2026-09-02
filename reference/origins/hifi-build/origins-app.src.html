@@ -1166,6 +1166,14 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 #scr.enlarged .sort select{min-width:0}
 #scr.enlarged .fbtn .n,#scr.enlarged .shopfrow .fbtn .n{width:32px;height:32px;font-size:18px}
 
+/* Cart badge — option B, the soft pill (Jack, 2026-08-20). A rounded rect with
+   a white keyline, lifted clear of the trolley rather than sitting on top of it.
+   It had been swept into the icon-scaling pass and grown to 34px, covering the
+   icon it belongs to; the badge is not an icon and is sized on its own here. */
+#scr.enlarged .tabs button .tabn{top:-10px;right:-18px;min-width:36px;height:26px;
+  border-radius:9px;font-size:19px;font-weight:700;padding:0 8px;line-height:26px;
+  box-shadow:0 0 0 3px #fff}
+
 /* Strain name up 8px on Jack's call — it is the thing you scan for. */
 #scr.enlarged .fcard .fnm,#scr.enlarged .pgrid .fcard .fnm{font-size:32px;line-height:1.12}
 </style>

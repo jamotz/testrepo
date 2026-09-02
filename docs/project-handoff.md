@@ -51,7 +51,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`8be0ad6`** (published 2026-08-20) — the Final/pt2 catalogs, terpene-driven
+`4b1e0c9`** (published 2026-08-20) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -63,7 +63,9 @@ Liquid Edibles and Vapes as their own categories and the Lifestyles tile on its
 six colours, and Enlarged view as a token-driven accessibility layer with the full type
 scale — every font-size in the app is a token, and the curve is anchored to the
 one-card-across layout rather than tuned on its own, then flattened to a
-near-uniform ~22px on Jack's call that legibility beats hierarchy in this mode
+near-uniform ~22px on Jack's call that legibility beats hierarchy in this mode.
+**Standard is untouched by all of it** — `standard-guard.py` proves that against a
+baseline from before the work began, and must be run after every Enlarged change
 (see architecture.md). Bump this line whenever you republish; it's the only way a new
 session can tell whether the link is behind the branch.
 
