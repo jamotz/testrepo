@@ -18,10 +18,10 @@
      gains the most (+37%) and headings the least (+19), because 9.5px labels
      are what actually fails at arm's length while a 22px heading already
      works. Targets grow more than type; decoration doesn't grow at all. */
-  --text-micro:9.5px;        /* brand line, tab labels — the app's floor */
-  --text-secondary:11.5px;   /* chips, breadcrumbs, metadata */
-  --text-body:13px;          /* description and body copy */
-  --text-product-title:14px; /* product name on a card */
+  --text-micro:22px;        /* brand line, tab labels — the app's floor */
+  --text-secondary:22px;   /* chips, breadcrumbs, metadata */
+  --text-body:22px;          /* description and body copy */
+  --text-product-title:24px; /* product name on a card */
   --text-heading:1.4rem;     /* .sbar screen titles */
   --text-button:1rem;        /* Filter, Sort, Continue, Logout */
   --icon-size:21px;          /* tab bar and primary icons */
@@ -32,8 +32,8 @@
   --grid-gap:13px;
   --section-gap:10px;
   --nav-pad:8px 2px 14px;
-  --text-nav:9px;            /* tab bar label */
-  --text-pill:11px;          /* weight/size pill on a card */
+  --text-nav:22px;            /* tab bar label */
+  --text-pill:22px;          /* weight/size pill on a card */
 }
 /* Enlarged — the whole accessibility layer is these values. WCAG 2.2 AA is the
    baseline: 2.5.8 Target Size wants 24px minimum and we go to 52, 1.4.4 Resize
@@ -47,8 +47,8 @@
   --text-secondary:19.55px;
   --text-body:21.32px;
   --text-product-title:22.4px;
-  --text-heading:1.876rem;
-  --text-button:1.52rem;
+  --text-heading:1.8rem;
+  --text-button:1.5rem;
   --icon-size:27px;
   --icon-size-sm:19px;
   --control-height:54px;
@@ -120,54 +120,54 @@
   --fs-66_0:66px;
 }
 #scr.enlarged{
-  --fs-r0_68:1.211rem;
-  --fs-r0_72:1.224rem;
-  --fs-r0_78:1.279rem;
-  --fs-r0_8:1.312rem;
-  --fs-r0_82:1.312rem;
-  --fs-r0_84:1.344rem;
-  --fs-r0_86:1.376rem;
-  --fs-r0_88:1.337rem;
-  --fs-r0_92:1.398rem;
-  --fs-r0_95:1.444rem;
-  --fs-r1_0:1.52rem;
-  --fs-r1_02:1.448rem;
-  --fs-r1_05:1.491rem;
-  --fs-r1_06:1.505rem;
-  --fs-r1_1:1.562rem;
-  --fs-r1_12:1.591rem;
-  --fs-r1_15:1.633rem;
-  --fs-r1_2:1.704rem;
-  --fs-r1_25:1.775rem;
-  --fs-r1_3:1.742rem;
-  --fs-r1_35:1.809rem;
-  --fs-r1_4:1.876rem;
-  --fs-r1_5:2.01rem;
-  --fs-r1_55:2.077rem;
-  --fs-r1_6:2.144rem;
-  --fs-r1_7:2.142rem;
-  --fs-r1_72:2.167rem;
-  --fs-r1_8:2.268rem;
-  --fs-r1_9:2.394rem;
-  --fs-r2_0:2.52rem;
-  --fs-8_0:15.2px;
-  --fs-9_0:17.1px;
-  --fs-9_5:17.57px;
-  --fs-10_0:18.5px;
-  --fs-10_5:18.69px;
-  --fs-11_0:19.58px;
-  --fs-11_5:19.55px;
-  --fs-12_0:20.4px;
-  --fs-12_5:20.5px;
-  --fs-13_0:21.32px;
-  --fs-13_5:21.6px;
-  --fs-14_0:22.4px;
-  --fs-15_0:22.8px;
-  --fs-16_0:24.32px;
-  --fs-17_0:24.14px;
-  --fs-18_0:25.56px;
-  --fs-20_0:28.4px;
-  --fs-24_0:32.16px;
+  --fs-r0_68:1.375rem;
+  --fs-r0_72:1.375rem;
+  --fs-r0_78:1.375rem;
+  --fs-r0_8:1.375rem;
+  --fs-r0_82:1.375rem;
+  --fs-r0_84:1.375rem;
+  --fs-r0_86:1.5rem;
+  --fs-r0_88:1.5rem;
+  --fs-r0_92:1.5rem;
+  --fs-r0_95:1.5rem;
+  --fs-r1_0:1.5rem;
+  --fs-r1_02:1.625rem;
+  --fs-r1_05:1.625rem;
+  --fs-r1_06:1.625rem;
+  --fs-r1_1:1.625rem;
+  --fs-r1_12:1.625rem;
+  --fs-r1_15:1.625rem;
+  --fs-r1_2:1.625rem;
+  --fs-r1_25:1.625rem;
+  --fs-r1_3:1.812rem;
+  --fs-r1_35:1.812rem;
+  --fs-r1_4:1.812rem;
+  --fs-r1_5:1.812rem;
+  --fs-r1_55:1.812rem;
+  --fs-r1_6:1.812rem;
+  --fs-r1_7:2.062rem;
+  --fs-r1_72:2.062rem;
+  --fs-r1_8:2.062rem;
+  --fs-r1_9:2.062rem;
+  --fs-r2_0:2.062rem;
+  --fs-8_0:22.0px;
+  --fs-9_0:22.0px;
+  --fs-9_5:22.0px;
+  --fs-10_0:22.0px;
+  --fs-10_5:22.0px;
+  --fs-11_0:22.0px;
+  --fs-11_5:22.0px;
+  --fs-12_0:22.0px;
+  --fs-12_5:22.0px;
+  --fs-13_0:22.0px;
+  --fs-13_5:22.0px;
+  --fs-14_0:24.0px;
+  --fs-15_0:24.0px;
+  --fs-16_0:24.0px;
+  --fs-17_0:26.0px;
+  --fs-18_0:26.0px;
+  --fs-20_0:26.0px;
+  --fs-24_0:29.0px;
   --fs-66_0:71.28px;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -893,8 +893,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    deficiency cannot read, so each selected control also carries a mark. The
    mark is generated content, so it costs no markup and cannot get out of sync
    with the class that colours it. */
-#scr.enlarged .chip.sel::after,#scr.enlarged .fcard .fsz.sel::after,
-#scr.enlarged .subc.sel::after{content:"\2713";
+#scr.enlarged .chip.sel::after,#scr.enlarged .subc.sel::after{content:"¹3";
   font-weight:700;margin-left:6px;font-size:.92em;line-height:1}
 #scr.enlarged .store.sel .st-name::after{content:"\2713 Selected";display:block;
   font-family:var(--head);font-weight:600;text-transform:uppercase;
@@ -1050,7 +1049,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    what was in it, so labels sat off-centre in a tall pill. A box with a floor
    must centre its content; padding must come from the type, not a fixed number.
    These are the only rules needed to fix every control at once. */
-#scr.enlarged .fbtn,#scr.enlarged .sort,#scr.enlarged .edusearch,
+#scr.enlarged .fbtn,#scr.enlarged .sort,
 #scr.enlarged .fcard .fadd,#scr.enlarged .fcard .fmore,#scr.enlarged .acbtn,
 #scr.enlarged .checkout,#scr.enlarged .addbig,#scr.enlarged .st-btn,
 #scr.enlarged .hero-btn,#scr.enlarged .continue,#scr.enlarged .web{
@@ -1069,6 +1068,77 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* wizard lifestyle wordmarks are images, so scale the box they sit in */
 #scr.enlarged .oc.life .lifeglyph{height:36px;width:41px}
 #scr.enlarged .oc{min-height:var(--target-size)}
+
+/* ══ Jack's Enlarged punch list, 2026-08-20 ══════════════════════════════ */
+
+/* Landing: opening hours on one line each, not two */
+#scr.enlarged .st-hours{width:100%;margin:0 0 15px}
+#scr.enlarged .st-hours div{justify-content:space-between;gap:10px;white-space:nowrap}
+#scr.enlarged .st-hours div span{white-space:nowrap}
+
+/* Product tile: the lifestyle badge was still at its Standard 30px */
+#scr.enlarged .fcard .fbadge{width:48px;height:48px}
+#scr.enlarged .fcard .fbadge img{width:31px;height:31px}
+
+/* Size pill: bigger, centred, no tick */
+#scr.enlarged .fcard .fsz{min-height:42px;padding:8px 18px;
+  display:inline-flex;align-items:center;justify-content:center}
+
+/* Product page: feelings + taste tiles and their icons */
+#scr.enlarged .iconrow{gap:12px}
+#scr.enlarged .icard{padding:18px 8px}
+#scr.enlarged .icard img,#scr.enlarged .icard svg{width:60px;height:60px}
+
+/* Home: deal copy centred in the space right of the label; footer CTA centred */
+#scr.enlarged .deal-banner .bs{text-align:center;align-items:center}
+#scr.enlarged .deals-foot .hero-btn{margin-left:auto;margin-right:auto}
+
+/* Shop: category bubbles bigger with room for their labels */
+#scr.enlarged .catcircles{gap:22px;padding:8px 16px 18px}
+#scr.enlarged .cc{width:118px}
+#scr.enlarged .cc .ring{width:104px;height:104px}
+#scr.enlarged .cc b{line-height:1.2;white-space:normal}
+/* the Filter count sits centred in its circle at any size */
+#scr.enlarged .fbtn .n,#scr.enlarged .shopfrow .fbtn .n{
+  width:38px;height:38px;line-height:1;display:grid;place-items:center;
+  font-size:var(--text-button);padding:0}
+/* Filter and Sort: one border weight, one text size */
+#scr.enlarged .fbtn,#scr.enlarged .sort{border-width:2.5px}
+#scr.enlarged .sort .lab,#scr.enlarged .sort select{font-size:var(--text-button)}
+
+/* Cart: the +/- controls were still Standard-sized and off-centre */
+#scr.enlarged .ci .q{gap:8px}
+#scr.enlarged .ci .q button{width:52px;height:52px;min-width:52px;
+  display:flex;align-items:center;justify-content:center;font-size:26px;line-height:1;padding:0}
+#scr.enlarged .ci .q b{font-size:var(--text-body);min-width:28px;text-align:center}
+/* the line's text needs the width more than the stepper does — let the stepper
+   drop to its own row rather than breaking "3.5 G" across two lines */
+#scr.enlarged .ci{flex-wrap:wrap;row-gap:10px}
+#scr.enlarged .ci .m{min-width:0}
+#scr.enlarged .ci .q{margin-left:auto}
+
+/* Loyalty / Account: the notification bell and the gear were still at their
+   Standard 42px ring with a 22px glyph */
+#scr.enlarged .acbell,#scr.enlarged .acav{width:60px;height:60px}
+#scr.enlarged .acbell svg,#scr.enlarged .acav svg{width:32px;height:32px}
+
+/* Advanced Settings: the switch itself has to grow, not just its hit box. The
+   target-size rule gave .sw a 52px min-height while the drawn switch stayed
+   46x26, so the knob sat at the top of an empty box. Extend the control. */
+#scr.enlarged .sw{width:72px;height:44px;min-height:44px}
+#scr.enlarged .sw::after{top:4px;left:4px;width:36px;height:36px}
+#scr.enlarged .sw.on::after{left:32px}
+#scr.enlarged .advrow{align-items:center;gap:16px}
+#scr.enlarged .advrow .sw{margin-top:0}
+
+/* Origins U: title on one line, Search centred, label centred, taller tiles */
+#scr.enlarged .s[data-s="edu"] .sbar h2,
+#scr.enlarged .s[data-s="edutopic"] .sbar h2{white-space:nowrap;font-size:1.45rem}
+#scr.enlarged .edusearch{display:inline-flex;margin-left:auto;margin-right:auto}
+#scr.enlarged .edusearchwrap{text-align:center}
+#scr.enlarged .educard{height:208px}
+#scr.enlarged .educard .edulabel{display:flex;align-items:center;justify-content:center;
+  min-height:58px;padding:8px 10px}
 </style>
 
 <div class="stage">
@@ -2406,7 +2476,15 @@ function feedCard(p){
     /* one size only (edibles, concentrates) — nothing to open, so keep Add to Cart */
     (all.length>1
       ? '<button class="fmore" aria-label="'+esc("See more sizes for "+p.n)+'">See more sizes</button>'+sizeSheet(p,dispSize,all)
-      : '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dispSize+'" aria-label="'+esc("Add "+p.n+", "+dispSize+", to cart")+'">Add to Cart</button>')+'</div>';
+      /* Single-size products (edibles, concentrates, topicals) had no way to
+         change quantity from the feed — Add to Cart just toasted, so a second
+         tap silently added another. In Enlarged view they use cardCart(), the
+         same control the size sheet uses, so the button becomes a −/+ stepper
+         in place once there is one in the bag (Jack, 2026-08-20). Standard
+         keeps the plain button. */
+      : (ADV.enlarged
+          ? cardCart(p.id,dispSize)
+          : '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dispSize+'" aria-label="'+esc("Add "+p.n+", "+dispSize+", to cart")+'">Add to Cart</button>'))+'</div>';
 }
 function renderShop(){
   moodChips($("#moodbar"));
