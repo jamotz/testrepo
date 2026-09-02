@@ -1032,7 +1032,6 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 #scr.enlarged .bagbtn{width:43.5px;height:43.5px}
 #scr.enlarged .bagbtn svg{width:30.7px;height:30.7px}
 #scr.enlarged .bagbtn .n{width:20.5px;height:20.5px}
-#scr.enlarged .tabs button .tabn{width:20.5px;height:20.5px;height:20.5px}
 #scr.enlarged .dseeall svg{width:38.4px;height:38.4px}
 #scr.enlarged .dctog svg{width:16.6px;height:16.6px}
 #scr.enlarged .dcp img{width:53.8px;height:53.8px}
@@ -1072,9 +1071,18 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* ══ Jack's Enlarged punch list, 2026-08-20 ══════════════════════════════ */
 
 /* Landing: opening hours on one line each, not two */
-#scr.enlarged .st-hours{width:100%;margin:0 0 15px}
-#scr.enlarged .st-hours div{justify-content:space-between;gap:10px;white-space:nowrap}
-#scr.enlarged .st-hours div span{white-space:nowrap}
+/* Hours: the spans carry fixed widths (72/120 on landing, 78/130 on the
+   confirmation) sized for 13px text. At 22px the text simply runs past them and
+   hangs off the card. Let each span size to its own content and tighten the gap
+   — that keeps a row on one line without pushing the two halves to the edges,
+   which is what space-between did and why it overflowed. */
+#scr.enlarged .st-hours,#scr.enlarged .cf-hours{width:auto;max-width:100%}
+#scr.enlarged .st-hours div,#scr.enlarged .cf-hours div{
+  justify-content:center;gap:10px;flex-wrap:nowrap}
+#scr.enlarged .st-hours div span,#scr.enlarged .cf-hours div span{
+  width:auto!important;white-space:nowrap;text-align:left}
+#scr.enlarged .st-hours div span:first-child,
+#scr.enlarged .cf-hours div span:first-child{text-align:right}
 
 /* Product tile: the lifestyle badge was still at its Standard 30px */
 #scr.enlarged .fcard .fbadge{width:48px;height:48px}
@@ -1139,6 +1147,27 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 #scr.enlarged .educard{height:208px}
 #scr.enlarged .educard .edulabel{display:flex;align-items:center;justify-content:center;
   min-height:58px;padding:8px 10px}
+
+/* ── Round 2 of Jack's Enlarged punch list ──────────────────────────────── */
+
+/* Tab bar: "ORIGINS U" wrapped to two lines at 22px in a 90px tab. Icons up,
+   label down and held to one line — the icon is doing the identifying work. */
+#scr.enlarged .tabs button{font-size:15px;white-space:nowrap;letter-spacing:.03em}
+#scr.enlarged .tabs button svg{width:34px;height:34px}
+
+/* Filter and Sort share a row again. At 24px the pair needed ~454px in a 420px
+   space, so they wrapped. Both drop to 20px — still well over Standard's 16 —
+   and the row is held to one line. */
+#scr.enlarged .frow.shopfrow{flex-wrap:nowrap;gap:10px;align-items:stretch}
+#scr.enlarged .fbtn,#scr.enlarged .sort,
+#scr.enlarged .sort .lab,#scr.enlarged .sort select{font-size:20px}
+#scr.enlarged .fbtn{flex:none;padding:10px 16px}
+#scr.enlarged .sort{flex:1 1 auto;min-width:0;padding:10px 14px}
+#scr.enlarged .sort select{min-width:0}
+#scr.enlarged .fbtn .n,#scr.enlarged .shopfrow .fbtn .n{width:32px;height:32px;font-size:18px}
+
+/* Strain name up 8px on Jack's call — it is the thing you scan for. */
+#scr.enlarged .fcard .fnm,#scr.enlarged .pgrid .fcard .fnm{font-size:32px;line-height:1.12}
 </style>
 
 <div class="stage">
