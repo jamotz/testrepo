@@ -670,11 +670,35 @@ hand and reached **15.6% coverage**: a few things grew, most didn't, and control
 that had been given a `min-height` ended up as tall boxes around small labels.
 Generating the mapping took it to **100%**.
 
-The Enlarged curve is compressed upward, after iOS Dynamic Type: ≤9px +40%,
-11px +34%, 13px +28%, 16px +24%, 20px +20%, and **anything over 40px only +4%** —
-that size is display or decoration, which the spec says not to enlarge
-proportionally. **rem values stay rem**, so the browser's own text-size setting
-still multiplies on top of the mode.
+**The curve is set by the container, not chosen in isolation.** This is the one
+thing to understand before touching it. Enlarged view puts one card across, so a
+product card goes **198px → 409px (×2.07)**. A type curve tuned on its own — the
+first one grew text ~1.3× — leaves every element *smaller relative to its card
+than in Standard*: it grows in pixels while shrinking on screen. Measured:
+
+| as % of card width | Standard | 1.3× curve | current |
+|---|---:|---:|---:|
+| product name | 7.07% | 4.31% | 5.48% |
+| price | 7.58% | 4.55% | 5.57% |
+| THC/CBD bubble | 5.05% | 3.35% | 4.52% |
+
+Factors are therefore ≤9px ×1.90, 11px ×1.78, 13px ×1.64, 16px ×1.52, 20px
+×1.42, 26px ×1.34, and **over 40px only ×1.08** — display type the spec says not
+to enlarge proportionally. Still compressed upward, but anchored to the layout.
+Landing values: brand 9.5→17.6, bubbles 10→18.5, body 13→21.3, product name
+14→22.4, headings →30 — the spec's stated targets.
+
+**`ratio.js` is the guard.** It prints each element as a percentage of its card
+in both modes. Absolute-pixel coverage is not enough: the first pass measured
+100% coverage and was still visibly too small.
+
+**rem values stay rem**, so the browser's own text-size setting still multiplies
+on top of the mode.
+
+**One curve, or neither works.** The semantic tokens (`--text-micro`,
+`--text-pill`, …) and the generated `--fs-*` scale must carry the same factors.
+They didn't, briefly, and the brand line and size pill stayed small while
+everything around them grew — because those two read the semantic tokens.
 
 **Alignment is a floor, not a fixed height.** `--target-size` is a `min-height`
 on a flex box that centres its content, so a control grows from its type rather

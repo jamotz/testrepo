@@ -39,12 +39,16 @@
    baseline: 2.5.8 Target Size wants 24px minimum and we go to 52, 1.4.4 Resize
    Text wants 200% to survive, 1.4.10 Reflow wants no horizontal scrolling. */
 #scr.enlarged{
-  --text-micro:13px;         /* +37% — the floor gains the most */
-  --text-secondary:15px;     /* +30% */
-  --text-body:16.5px;        /* +27% */
-  --text-product-title:18px; /* +29% */
-  --text-heading:1.66rem;    /* +19% — already legible, grows least */
-  --text-button:1.15rem;
+  /* On the same curve as the --fs-* scale below. These were set first, on a
+     gentler curve, and were then quietly undercutting it — the brand line and
+     the size pill stayed small while everything around them grew, because they
+     read these and not the generated scale. One curve, or neither works. */
+  --text-micro:17.57px;
+  --text-secondary:19.55px;
+  --text-body:21.32px;
+  --text-product-title:22.4px;
+  --text-heading:1.876rem;
+  --text-button:1.52rem;
   --icon-size:27px;
   --icon-size-sm:19px;
   --control-height:54px;
@@ -53,8 +57,8 @@
   --grid-gap:16px;
   --section-gap:14px;
   --nav-pad:10px 2px 16px;
-  --text-nav:12px;
-  --text-pill:14px;
+  --text-nav:17.1px;
+  --text-pill:19.58px;
 }
 
 /* ── Type scale ───────────────────────────────────────────────────────────
@@ -116,55 +120,55 @@
   --fs-66_0:66px;
 }
 #scr.enlarged{
-  --fs-r0_68:0.911rem;
-  --fs-r0_72:0.943rem;
-  --fs-r0_78:0.998rem;
-  --fs-r0_8:1.024rem;
-  --fs-r0_82:1.033rem;
-  --fs-r0_84:1.058rem;
-  --fs-r0_86:1.084rem;
-  --fs-r0_88:1.091rem;
-  --fs-r0_92:1.141rem;
-  --fs-r0_95:1.178rem;
-  --fs-r1_0:1.24rem;
-  --fs-r1_02:1.224rem;
-  --fs-r1_05:1.26rem;
-  --fs-r1_06:1.272rem;
-  --fs-r1_1:1.32rem;
-  --fs-r1_12:1.344rem;
-  --fs-r1_15:1.38rem;
-  --fs-r1_2:1.44rem;
-  --fs-r1_25:1.5rem;
-  --fs-r1_3:1.521rem;
-  --fs-r1_35:1.579rem;
-  --fs-r1_4:1.638rem;
-  --fs-r1_5:1.755rem;
-  --fs-r1_55:1.814rem;
-  --fs-r1_6:1.872rem;
-  --fs-r1_7:1.938rem;
-  --fs-r1_72:1.961rem;
-  --fs-r1_8:2.052rem;
-  --fs-r1_9:2.166rem;
-  --fs-r2_0:2.28rem;
-  --fs-8_0:11.2px;
-  --fs-9_0:12.6px;
-  --fs-9_5:13.02px;
-  --fs-10_0:13.7px;
-  --fs-10_5:14.07px;
-  --fs-11_0:14.74px;
-  --fs-11_5:15.07px;
-  --fs-12_0:15.72px;
-  --fs-12_5:16.0px;
-  --fs-13_0:16.64px;
-  --fs-13_5:17.01px;
-  --fs-14_0:17.64px;
-  --fs-15_0:18.6px;
-  --fs-16_0:19.84px;
-  --fs-17_0:20.4px;
-  --fs-18_0:21.6px;
-  --fs-20_0:24.0px;
-  --fs-24_0:28.08px;
-  --fs-66_0:68.64px;
+  --fs-r0_68:1.211rem;
+  --fs-r0_72:1.224rem;
+  --fs-r0_78:1.279rem;
+  --fs-r0_8:1.312rem;
+  --fs-r0_82:1.312rem;
+  --fs-r0_84:1.344rem;
+  --fs-r0_86:1.376rem;
+  --fs-r0_88:1.337rem;
+  --fs-r0_92:1.398rem;
+  --fs-r0_95:1.444rem;
+  --fs-r1_0:1.52rem;
+  --fs-r1_02:1.448rem;
+  --fs-r1_05:1.491rem;
+  --fs-r1_06:1.505rem;
+  --fs-r1_1:1.562rem;
+  --fs-r1_12:1.591rem;
+  --fs-r1_15:1.633rem;
+  --fs-r1_2:1.704rem;
+  --fs-r1_25:1.775rem;
+  --fs-r1_3:1.742rem;
+  --fs-r1_35:1.809rem;
+  --fs-r1_4:1.876rem;
+  --fs-r1_5:2.01rem;
+  --fs-r1_55:2.077rem;
+  --fs-r1_6:2.144rem;
+  --fs-r1_7:2.142rem;
+  --fs-r1_72:2.167rem;
+  --fs-r1_8:2.268rem;
+  --fs-r1_9:2.394rem;
+  --fs-r2_0:2.52rem;
+  --fs-8_0:15.2px;
+  --fs-9_0:17.1px;
+  --fs-9_5:17.57px;
+  --fs-10_0:18.5px;
+  --fs-10_5:18.69px;
+  --fs-11_0:19.58px;
+  --fs-11_5:19.55px;
+  --fs-12_0:20.4px;
+  --fs-12_5:20.5px;
+  --fs-13_0:21.32px;
+  --fs-13_5:21.6px;
+  --fs-14_0:22.4px;
+  --fs-15_0:22.8px;
+  --fs-16_0:24.32px;
+  --fs-17_0:24.14px;
+  --fs-18_0:25.56px;
+  --fs-20_0:28.4px;
+  --fs-24_0:32.16px;
+  --fs-66_0:71.28px;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
@@ -952,8 +956,14 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    text stays as drawn; only the hit area grows, per the token. */
 #scr.enlarged .sort select{min-height:var(--target-size)}
 #scr.enlarged .sort{min-height:var(--control-height)}
+/* the Sort <select> caps at 132px, which the larger label overruns — "SORT:
+   BEST MATCH" clipped to "BEST MATC". Let it size to its text in Enlarged. */
+#scr.enlarged .sort select{max-width:none}
+#scr.enlarged .frow.shopfrow{gap:10px;flex-wrap:wrap}
 #scr.enlarged .fsee,#scr.enlarged .llearn,#scr.enlarged .learnlink{
-  min-height:var(--target-size);display:inline-flex;align-items:center}
+  min-height:44px;display:inline-flex;align-items:center;padding:6px 0}
+#scr.enlarged .feed-h{margin-bottom:4px}
+#scr.enlarged .feed-h .fsee{margin-top:-2px}
 /* Account Settings' notification checkboxes — rows, so the whole row is the
    target rather than the small box at its left. */
 #scr.enlarged .accheck{min-height:var(--target-size);display:flex;align-items:center}
