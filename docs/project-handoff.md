@@ -41,7 +41,11 @@ python3 reference/origins/hifi-build/asm_app.py
 ```
 
 The build prints `wrote <path> (NNNN KB); imgs=142; markers left=0` and a `WARN`
-line for any asset it can't resolve. **Containers are ephemeral — commit and
+line for any asset it can't resolve. If you are touching Enlarged view, add:
+
+```bash
+python3 reference/origins/hifi-build/standard-guard.py        # must print PASS
+``` **Containers are ephemeral — commit and
 push often.**
 
 Rendering/screenshots use the preinstalled Chromium via Playwright:
@@ -210,18 +214,36 @@ polish and the open questions below.
    add per-rule font sizes, and don't reach for `zoom` again (why it lost is in
    `design-decisions.md`).
 
-   **The guard scripts are not in the repo.** `standard-guard.py`,
-   `std_before.json`, `snapshot.js` and `coverage.js` are all named as required
-   steps in `architecture.md` and were written in an earlier container — none of
-   them was ever committed, and the container has since been reclaimed, so they
-   are gone. `ratio.js` is the one that survives, at
-   `reference/origins/hifi-build/ratio.js`. **Rebuild the Standard guard before
-   touching the Enlarged layer again**: it is the check that catches the class
-   of bug described in the next item, and re-creating it is a ~30-line
-   Playwright script — snapshot the computed styles of the elements on each
-   screen in Standard, store the baseline as JSON, and diff a fresh snapshot
-   against it as a multiset per screen (a multiset, so the two date-generated
-   screens don't read as false diffs). Commit it this time, baseline included.
+   **Run the Standard guard after every change to this layer:**
+
+   ```bash
+   python3 reference/origins/hifi-build/standard-guard.py     # PASS / FAIL, exit 0 / 1
+   ```
+
+   It resolves every token back to its literal, drops every rule scoped to
+   `#scr.enlarged`, and compares what's left against the stylesheet as it was
+   *before any Enlarged work existed* — 214 Standard font-size declarations,
+   which must match exactly. It takes about a second, needs no build, no
+   browser and no assets, so there is no excuse for skipping it.
+
+   **The baseline is a commit, not a captured file.** `cc6edad` is the last
+   commit before the Enlarged work began (verified: zero `--fs-*` tokens, zero
+   `#scr.enlarged` rules), and the guard reads its source straight out of git.
+   This matters more than it looks: a baseline captured from the *current* file
+   would certify whatever regression is already sitting in it. If you ever
+   rewrite this guard, keep that property.
+
+   **Still missing, and worth building.** The guard reads stylesheet text only,
+   so it cannot see a size applied by JS at runtime or a cascade/specificity
+   effect that changes which rule wins. The heavier check — a computed-style
+   snapshot driven through Playwright over all 24 screens, diffed as a multiset
+   per screen (a multiset, so the two date-generated screens don't read as false
+   diffs) — is the `snapshot.js` / `coverage.js` that were named here, written in
+   an earlier container and never committed. `ratio.js` is the other survivor,
+   at `reference/origins/hifi-build/ratio.js`, and it is the working template
+   for the Playwright half. That check needs a build of the baseline commit, so
+   it costs ~2 min a side; the cheap guard above covers the bug that actually
+   shipped.
 
    **The regression it exists to catch has already happened once.** Flattening
    the Enlarged type scale used `re.sub(..., count=1)` on six semantic tokens.
@@ -321,6 +343,7 @@ reference/origins/
 │   ├── gen_drinks.py             ← drinks from the .xlsx + drinks IA
 │   ├── terpmap.py                ← terpenes -> feelings + scents
 │   ├── ratio.js                  ← Enlarged guard: each element as a % of its card
+│   ├── standard-guard.py         ← Enlarged guard: Standard must not move (run it)
 │   ├── xlsxread.py               ← the one xlsx reader they all share
 │   ├── gen_concentrates.py       ← concentrates from the .xlsx
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA
@@ -430,9 +453,11 @@ a nominated eighth is at or under the $25 deal price.
   Standard font sizes silently took enlarged values.
 - **A tooling script that isn't committed is gone.** Containers are reclaimed,
   and `standard-guard.py`, `std_before.json`, `snapshot.js` and `coverage.js`
-  were written, used, documented as required — and never added to git. The docs
-  still tell you to run them because the checks are still the right ones; the
-  files have to be rebuilt. Commit any guard you write, with its baseline.
+  were written, used, documented as required — and never added to git.
+  `standard-guard.py` has since been rewritten and committed (deriving its
+  baseline from `cc6edad` rather than from a captured file, so it can't be lost
+  that way again); `snapshot.js` and `coverage.js` are still missing. Commit any
+  guard you write, and prefer a baseline git can regenerate over one you store.
 - **A verification claim in these docs is only as good as the script behind
   it.** "Standard is provably untouched" was written from a snapshot run whose
   script no longer exists, and the regression above landed after it. Re-run the

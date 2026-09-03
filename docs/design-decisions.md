@@ -1460,9 +1460,14 @@ overwritten with Enlarged values" until you look at the app in Standard, which
 is the one mode you stop looking at while doing accessibility work.
 
 That is why the Standard guard exists, and why **it stopped being run right when
-the edits got big** — which is precisely when it was needed. The guard is a
-computed-style snapshot of Standard from before any Enlarged work began, diffed
-as a multiset per screen. It is **not currently in the repo** (see
-`project-handoff.md`); rebuild and commit it before the next change to this
-layer. An accessibility mode that silently degrades the default mode is worse
-than no accessibility mode.
+the edits got big** — which is precisely when it was needed. An accessibility
+mode that silently degrades the default mode is worse than no accessibility
+mode.
+
+`standard-guard.py` is now in the repo and is a second to run, so the reason it
+lapsed — the original was a Playwright snapshot needing a build of both sides —
+is gone. It takes its baseline from `cc6edad` in git rather than from a stored
+file, which is the part worth keeping: **a guard whose baseline is captured from
+the current state can only ever confirm the present.** The bug above would have
+been invisible to one, because the baseline would have been taken after it
+landed.

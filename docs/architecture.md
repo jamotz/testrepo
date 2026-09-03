@@ -732,15 +732,37 @@ earlier bug was `min-height` without the centring.
 Guard both with a coverage check (fail under ~95%) and the round-trip check:
 substituting every token back to its literal must reproduce the original CSS.
 
-**Standard must be guarded, and the guard is not in the repo.** The scripts this
-section used to name as ready to run — `standard-guard.py` with its
-`std_before.json` baseline, `snapshot.js`, `coverage.js` — were written in an
-earlier container and never committed; the container has been reclaimed. The
-checks are still the right ones, so **rebuild the Standard guard before making
-the next Enlarged change, and commit it with its baseline this time.** It is a
-short Playwright script: snapshot the computed styles of the elements on each
-screen in Standard, store that as JSON, and diff a fresh snapshot against it as
-a **multiset per screen** — a multiset, so the two date-generated screens don't
+**Standard is guarded by `standard-guard.py`.** Run it after every change to
+this layer and before publishing:
+
+```bash
+python3 reference/origins/hifi-build/standard-guard.py    # PASS/FAIL, exit 0/1
+```
+
+It resolves every `--fs-*` and `--text-*` token back to its literal, drops every
+rule scoped to `#scr.enlarged`, and compares the remaining **214 Standard
+font-size declarations** against the same stylesheet before any Enlarged work
+existed. A second, no build, no browser, no assets.
+
+**Its baseline is a commit, not a stored file.** `cc6edad` — the last commit
+before the Enlarged work, verified to contain zero `--fs-*` tokens and zero
+`#scr.enlarged` rules — is read straight out of git. A baseline captured from
+the current file would certify whatever regression is already in it, and a
+stored baseline is exactly what got lost the first time. Keep that property if
+you rewrite the guard.
+
+It is validated against the regression itself, not just against green: run it
+over the history and it passes through `e817dae`, **fails at `8be0ad6` and
+`e67f341`** naming all six tokens, and passes again from `25c88fe`. A guard
+nobody has seen fail is not a guard.
+
+**What it does not cover:** stylesheet text only — not a size applied by JS at
+runtime, nor a cascade/specificity effect that changes which rule wins. The
+computed-style snapshot across every screen (`snapshot.js` / `coverage.js`,
+written in an earlier container and never committed) is still the missing
+heavier check; `ratio.js` is the working Playwright template for it, and it
+needs a build of the baseline commit, so it costs ~2 min a side. Diff it as a
+**multiset per screen** — a multiset, so the two date-generated screens don't
 read as false diffs.
 
 **"Standard is untouched" is a claim that has already been wrong once.** The
@@ -749,14 +771,17 @@ show 0 diffs. The regression came later: flattening the scale used
 `re.sub(…, count=1)` on six semantic tokens, and `count=1` matches the *first*
 occurrence in the file — which is `:root`, the **Standard** block, not the
 `#scr.enlarged` one below it. Standard silently took the enlarged values for the
-nav bar, product card text, weights and filter labels. The fix (`25c88fe`)
-anchors each rewrite on the actual `:root{…}` and `#scr.enlarged{…}` spans
-rather than on match order.
+nav bar, product card text, weights and filter labels, and was published that
+way for two commits. The fix (`25c88fe`) anchors each rewrite on the actual
+`:root{…}` and `#scr.enlarged{…}` spans rather than on match order.
 
-**Any script that rewrites one of the two blocks must anchor on the block.**
-Ordinal position is not an anchor: the two blocks hold the same token names by
-design, which is exactly what makes a first-match rewrite land silently on the
-wrong one.
+**Any script that rewrites or *reads* one of the two blocks must anchor on the
+block.** Ordinal position is not an anchor, and neither is a character offset:
+the two blocks hold the same token names by design, which is exactly what makes
+a first-match access land silently on the wrong one. This is easy to do twice —
+the first draft of `standard-guard.py` read the semantic tokens with a
+`css[:3000]` slice that spanned both blocks, picked up the enlarged values, and
+reported all nine tokens as regressed on a clean tree.
 
 **Persistence** is `localStorage["origins.display.v1"]`, every access wrapped —
 a private window or a blocked accessor can throw on *read*, and the app must
