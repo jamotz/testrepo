@@ -77,7 +77,6 @@
   --fs-r0_84:.84rem;
   --fs-r0_86:.86rem;
   --fs-r0_88:.88rem;
-  --fs-r0_9:.9rem;
   --fs-r0_92:.92rem;
   --fs-r0_95:.95rem;
   --fs-r1_0:1rem;
@@ -129,7 +128,6 @@
   --fs-r0_84:1.375rem;
   --fs-r0_86:1.5rem;
   --fs-r0_88:1.5rem;
-  --fs-r0_9:1.5rem;
   --fs-r0_92:1.5rem;
   --fs-r0_95:1.5rem;
   --fs-r1_0:1.5rem;
@@ -605,12 +603,6 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 
 .vape{padding:22px 18px}
 .vape h2{font-size:var(--fs-r1_7);color:var(--ink)}
-/* The vape screen's own back button. It is a bare .bk outside .sbar, and it
-   carried these declarations as an INLINE style — which put it outside the type
-   system entirely, since an inline style is not in the stylesheet and no --fs-*
-   token could reach it. It was the one font-size in the app that never grew in
-   Enlarged. Same declarations, same rendered result in Standard, now tokenised. */
-.vape .bk{color:var(--or);background:none;border:0;font-family:var(--head);text-transform:uppercase;font-size:var(--fs-r0_9);letter-spacing:.06em;padding:0 0 8px}
 .vape .learn{font-family:var(--head);text-transform:uppercase;font-size:var(--fs-11_0);letter-spacing:.06em;color:var(--or)}
 .vape .chips{display:flex;gap:14px;overflow-x:auto;margin:14px 0 20px;opacity:.55}
 .vape .vc{flex:none;text-align:center;font-family:var(--head);text-transform:uppercase;font-size:var(--fs-10_0);color:#8C8478}
@@ -1052,9 +1044,6 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    rendered at 23px - under WCAG 2.5.8's 24px, the only control in the app that
    missed it. Same treatment as .sbar .bk, which it is the sibling of. */
 #scr.enlarged .pihead .pihback svg{width:28.2px;height:28.2px}
-/* Vape's back button: inline-flex so it takes the target height without
-   stretching across the screen the way the shared .fbtn alignment rule would. */
-#scr.enlarged .vape .bk{display:inline-flex;align-items:center;min-height:var(--target-size)}
 
 /* Full screen: the exit chip has its own strip so it never covers the app's
    header (body.fs .scr, 48px). The chip is type in a pill, so in Enlarged it
@@ -1316,9 +1305,9 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
       </section>
 
       <section class="s" data-s="vape">
-        <div class="chipbar" id="moodbar3"></div>
+        <div class="sbar"><button class="bk" data-nav="shop" aria-label="Back to shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="chipbar shopchips" id="moodbar3"></div>
         <div class="vape">
-          <button class="bk" data-nav="shop">&#8249; Back</button>
           <h2>Vapes</h2><span class="learn">Learn about the Differences &rsaquo;</span>
           <div class="chips"><div class="vc"><div class="d"></div>Distillate</div><div class="vc"><div class="d"></div>Live Resin</div><div class="vc"><div class="d"></div>Full Spec</div><div class="vc"><div class="d"></div>Rosin</div></div>
           <div class="notice"><b>Vapes are web-only</b><p>We&rsquo;re not able to display or sell vape cartridges or accessories in-app due to App Store regulations. Order them on our website and pick up in-store.</p><button class="web" type="button">Our Website &rarr;</button></div>

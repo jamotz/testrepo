@@ -78,18 +78,12 @@ BASELINE = "cc6edad"
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
 # snapshot-guard.js passing on the same build as its evidence.
-ACCEPTED = [
-    {
-        "selector": ".vape .bk",
-        "value": ".9rem",
-        "gained": True,
-        "why": "The vape screen's back button carried its font-size as an INLINE "
-               "style, so no --fs-* token could reach it and it never grew in "
-               "Enlarged. Moved into the stylesheet as .vape .bk with the same "
-               "value; nothing else targets the element, so Standard renders "
-               "identically. Verified by snapshot-guard.js on the same build.",
-    },
-]
+# Empty, and worth keeping that way. The one entry this list ever held was the
+# vape back button's font-size, moved out of an inline style; that button was
+# later replaced by the standard .sbar chevron, which took the declaration with
+# it, so the exception stopped being needed. An accepted delta that outlives the
+# thing it described is just a hole in the guard.
+ACCEPTED = []
 
 
 def is_accepted(sel, val, gained):
