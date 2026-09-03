@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`42f2956`**, the head of this branch — the Final/pt2 catalogs, terpene-driven
+`06d2673`** (republished 2026-09-03, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -76,9 +76,12 @@ build (see below, and `design-decisions.md`). Bump this line whenever you
 republish; it's the only way a new session can tell whether the link is behind
 the branch.
 
-**The previous value of this line, `4b1e0c9`, was not a commit on this branch** —
-`git cat-file -t` doesn't resolve it. Write the hash *after* the commit exists,
-not the one you expect to get, or this line points at nothing.
+Since 42f2956 it also carries the product page's back button joining the
+Enlarged target-size layer (52px, up from a hard-coded 26px).
+
+**Write the hash *after* the commit exists, not the one you expect to get.** An
+earlier value of this line, `4b1e0c9`, was never a commit on this branch —
+`git cat-file -t` doesn't resolve it — so the line pointed at nothing.
 
 If the publish is refused with *"hasn't viewed the latest version"*, another
 session republished since. `WebFetch` the artifact URL first — it **is**
