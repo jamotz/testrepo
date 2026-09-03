@@ -31,6 +31,19 @@ keep that property. Note that the expected sizes are re-derived from BASELINE on
 every run rather than stored here -- freezing them in would assert one author's
 reading of the file instead of the file itself.
 
+ACCEPTED DELTAS
+A declaration can change here without Standard changing on screen -- the case
+this was built for is a style moving from an inline style attribute into the
+stylesheet. The rendered result is identical, but the stylesheet gains a
+declaration the baseline does not have, so this guard fails and is right to.
+ACCEPTED below lists such changes, each with a reason, and every run PRINTS how
+many it applied so they stay visible.
+
+An entry is only legitimate when snapshot-guard.js -- which compares COMPUTED
+styles rather than stylesheet text -- passes on the same build. That is the
+evidence that Standard did not actually move; without it an entry is just a
+red run silenced. Never add one to get to green.
+
 WHEN THE FAILURE IS LEGITIMATE
 If Standard type is deliberately changed -- Jack asks for a different size in
 NORMAL view, not in Enlarged -- this guard fails, and it is right to. Standard
@@ -61,6 +74,27 @@ from collections import Counter
 
 # Last commit before Enlarged: "Lifestyles tile wears its six colours".
 BASELINE = "cc6edad"
+
+# Declarations that differ from the baseline without Standard rendering
+# differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
+# snapshot-guard.js passing on the same build as its evidence.
+ACCEPTED = [
+    {
+        "selector": ".vape .bk",
+        "value": ".9rem",
+        "gained": True,
+        "why": "The vape screen's back button carried its font-size as an INLINE "
+               "style, so no --fs-* token could reach it and it never grew in "
+               "Enlarged. Moved into the stylesheet as .vape .bk with the same "
+               "value; nothing else targets the element, so Standard renders "
+               "identically. Verified by snapshot-guard.js on the same build.",
+    },
+]
+
+
+def is_accepted(sel, val, gained):
+    return any(a["selector"] == sel and a["value"] == val and a.get("gained", False) == gained
+               for a in ACCEPTED)
 SRC = "reference/origins/hifi-build/origins-app.src.html"
 
 
@@ -140,12 +174,21 @@ def main():
         return 1
 
     lost, gained = base - cur, cur - base
+    accepted = 0
+    for bag, is_gain in ((lost, False), (gained, True)):
+        for (sel, val), n in list(bag.items()):
+            if is_accepted(sel, val, is_gain):
+                del bag[(sel, val)]
+                accepted += n
+    if accepted:
+        print(f"{accepted} accepted delta(s) applied (see ACCEPTED in this file)")
     if a.verbose:
         for (sel, val), n in sorted(cur.items()):
             print(f"  {val:<12} {sel}")
 
     if not lost and not gained:
-        print("\nPASS — Standard resolves identically to the pre-Enlarged baseline.")
+        print("\nPASS — Standard resolves identically to the pre-Enlarged baseline"
+              + (f", with {accepted} accepted delta(s)." if accepted else "."))
         return 0
 
     print(f"\nFAIL — Standard has moved ({sum(lost.values())} lost, "
