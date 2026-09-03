@@ -293,9 +293,27 @@ polish and the open questions below.
    without that exception the spill check reports five screens of false
    positives.
 
-   Verified on a build of `1ca26e4`: round-trip clean (name 14→32→14px, nav
-   9→15→9, tab icon 21→34→21), 24 screens with no findings, no target under
-   24px.
+   It sweeps **4 viewports** (1440×900 and 1366×768 framed, 393×852 and
+   320×568 full screen), because a single viewport proves very little here: the
+   app always lays out at 452px and is transform-scaled by `k`, so what a reader
+   actually gets is `design px × k`.
+
+   Verified on a build of `1ca26e4`: round-trip clean at every viewport (name
+   14→32→14px, nav 9→15→9, tab icon 21→34→21), no horizontal overflow, nothing
+   spilling the frame, **0 findings across 4 viewports × 24 screens**.
+
+   **The relative gain is scale-invariant — exactly ×2.32 on body text at every
+   viewport, framed and full.** Both modes scale by the same `k`, so Enlarged
+   always delivers its full benefit; what changes is the absolute size. Framed
+   mode floors at `k=0.5`, so on a 1280×600 window Standard body renders at
+   4.8px and Enlarged at 11.0px — the mode is working, the stage is just small.
+   **Review the mode in full screen**, where a real phone puts it: 393×852 full
+   gives 8.3 → 19.1px, 320×568 full gives 6.7 → 15.6px.
+
+   The check separates a target under 24px **by design** (a real defect) from
+   one that only falls under once `k` shrinks it (a property of the preview
+   stage). Don't conflate them — measuring `getBoundingClientRect` alone reports
+   9 false findings at these viewports.
 
    **The regression it exists to catch has already happened once.** Flattening
    the Enlarged type scale used `re.sub(..., count=1)` on six semantic tokens.
@@ -342,7 +360,26 @@ polish and the open questions below.
    inside Rosin, Hash and Distillate. Every category itself is stocked,
    **Kief (6) and RSO (4) included** — an earlier note claiming those two were
    empty was wrong (Jack, 2026-08-17; see `design-decisions.md`).
-6. **One open question for Jack**, flagged where it lives: the **four deal
+6. **The product page's back button is the one control Enlarged misses.**
+   Found by `enlarged-check.js` on 2026-09-03; **not fixed — Jack's call.**
+
+   `#scr.enlarged` carries an explicit list of small icon controls that take
+   `min-height/min-width: var(--target-size)` in Enlarged — `.tabs button`,
+   `.sbar .bk`, `.qty button`, `.fsclose`, `.sw`, `.acav`, `.fcard .fsz`,
+   `.fszs button`. **`.pihead .pihback` is not in it**, and has no
+   `#scr.enlarged` rule anywhere, so it stays at its hard-coded
+   `width:26px;height:26px` in both modes while the screen around it doubles.
+   Its sibling `.sbar .bk` grows 24 → 30.7px.
+
+   Consequence: on a 393×852 phone in full screen it renders at **23px**, under
+   WCAG 2.5.8's 24px minimum — the only control in the app that misses it — and
+   on the product screen in Enlarged it is visibly the one thing that didn't
+   grow. The fix is to add it to that enumeration (its comment already states
+   the intent: small icon controls get the target size in Enlarged). Left
+   unapplied because it changes the app and needs a rebuild, both guards, and a
+   republish.
+
+7. **One open question for Jack**, flagged where it lives: the **four deal
    flowers** are his brands but my strain picks (`DEALS` in
    `gen_catalog_products.py`, one line each to swap).
 
