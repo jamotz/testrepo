@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base cc6edad          # last pre-Enlarged commit
+ *   git worktree add -f $SP/base 470e2b5          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -138,16 +138,44 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
   return out;
 }
 
-/* ── Accepted deltas ──────────────────────────────────────────────────────
+/* ── THE BASELINE MOVED (2026-09-03) ──────────────────────────────────────
+ * It was cc6edad, the last pre-Enlarged commit, to prove the Enlarged work
+ * never disturbed Standard. It is now 470e2b5, and the reason is that Standard
+ * started changing for reasons that have nothing to do with Enlarged: the vape
+ * screen took the shop chrome (.sbar + white chipbar, orange in-body back
+ * button removed). That is a real, intended change to what Standard renders,
+ * so it is NOT an accepted delta -- those are for differences that do not move
+ * anything on screen. The documented response to a legitimate Standard change
+ * is to re-baseline deliberately, and this is that.
+ *
+ * What the move costs, stated plainly: this guard no longer measures against
+ * pre-Enlarged. It measures against the last verified state. Anyone trusting
+ * 470e2b5 as a baseline is trusting that the run which blessed it was read
+ * properly -- the cc6edad comparison at that commit showed the vape screen's
+ * intended diff and the five accepted deltas, and nothing else.
+ *
+ * What the move does NOT cost: standard-guard.py still runs against cc6edad
+ * with ZERO exceptions, 214 = 214. The pre-Enlarged anchor survives where it
+ * matters most -- every font-size in the app -- and that is the check that
+ * catches the count=1 class of bug.
+ *
+ * Re-baseline again the same way: only after a run whose every difference you
+ * have read and can name, and say here what moved and why.
+ *
+ * ── Accepted deltas ──────────────────────────────────────────────────────
  * Differences from the baseline that are known, reviewed and intended. Each
  * needs a reason, and the run PRINTS how many it applied, so this list stays
  * visible rather than quietly swallowing failures. Keep it short: if it starts
  * growing, the baseline is wrong, not the app.
  *
+ * Empty as of the re-baseline: the five entries it held (min-height on .fbtn
+ * and .edusearch, and the removed span.advsoon) are all part of 470e2b5, so
+ * they are in the baseline now rather than exceptions to it.
+ *
  * Do NOT add an entry to make a red run green. An entry means "this change to
  * Standard was deliberate and someone checked it"; anything else is the bug
  * this guard exists to find. */
-const ACCEPTED = [
+const ACCEPTED_RETIRED_AT_REBASELINE = [
   { key: 'button.fbtn', prop: 'minHeight', from: 'auto', to: '47px',
     why: 'Filter took min-height:var(--control-height) in the token refactor. ' +
          'Standard --control-height is 47px, under the 50px the button already ' +
@@ -158,6 +186,9 @@ const ACCEPTED = [
     why: 'The "Coming soon" tag on Enlarged view in Advanced Settings. Removed ' +
          'on purpose when the mode shipped (2026-08-20); see project-handoff.md.' },
 ];
+/* Kept above only as a record of what the old cc6edad baseline needed. The live
+   list is empty; nothing is excepted from the 470e2b5 baseline. */
+const ACCEPTED = [];
 
 function isAccepted(n) {
   return ACCEPTED.some(a =>
@@ -257,6 +288,6 @@ function isAccepted(n) {
     process.exit(1);
   }
   console.log(accepted
-    ? `\nPASS — Standard matches the pre-Enlarged baseline, with ${accepted} accepted delta(s).`
-    : '\nPASS — Standard computes identically to the pre-Enlarged baseline.');
+    ? `\nPASS — Standard matches the baseline, with ${accepted} accepted delta(s).`
+    : '\nPASS — Standard computes identically to the baseline.');
 })();

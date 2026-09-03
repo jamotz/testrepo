@@ -1575,3 +1575,46 @@ is dead code — measured y=14.0 in both modes, never 9 + inset. On a notched
 iPhone the chip may sit under the notch. Not fixed because `env(safe-area-inset-*)`
 is 0 in headless Chromium, so the fix can be written but not verified from here;
 it wants a real device, or Jack's eye.
+
+### Vape wears the shop chrome, and the guard was re-baselined for it
+The vape screen had no `.sbar`. It opened straight into the brown chipbar with
+an orange *‹ Back* text button inside the content — the older per-screen pattern
+that the 2026-08-18 "every screen wears the brown title bar" decision replaced
+everywhere else. It was missed. It now matches shop and list exactly: `.sbar`
+with the back chevron and **Shop** above the bar, `.chipbar shopchips` (white,
+not brown), and no in-body back button; **VAPES** stays as the page heading.
+
+Jack's `SHOP - VAPE.png` frame shows a *‹ SHOP* label at the top rather than a
+title bar, so this deviates from the frame — on instruction, because the app's
+chrome has moved past the frames and uniformity was what was wanted.
+
+**It deleted the button fixed two commits earlier, and that was the better
+outcome.** The standard `.sbar .bk` already has full Enlarged support, so
+`.vape .bk`, its `#scr.enlarged` rule and the `--fs-r0_9` token all went with
+it, and `standard-guard.py`'s ACCEPTED list emptied — back to a clean 214 = 214
+against `cc6edad` with no exceptions at all. The cheapest fix for an awkward
+exception is often deleting the thing that needed it.
+
+**`snapshot-guard.js` had to be re-baselined, and the distinction matters.** The
+change moved real pixels on the vape screen, so it is *not* an accepted delta —
+those are strictly for differences that render identically. The documented
+answer to a deliberate Standard change is to re-baseline, so the baseline went
+from `cc6edad` to `470e2b5` and the five old entries went into the baseline
+rather than staying as exceptions.
+
+What that costs: the snapshot no longer measures against pre-Enlarged, only
+against the last verified state, and trusting it means trusting that the run
+which blessed it was read properly — the `cc6edad` comparison at that commit
+showed the vape diff and the five known deltas and nothing else. What it does
+not cost: `standard-guard.py` still anchors to pre-Enlarged at the type level
+with zero exceptions, which is the check that catches the `count=1` class of
+bug. **Re-baselining is a normal part of a snapshot test's life; doing it
+without reading every difference first is not.**
+
+Validated after the move, because a guard that passes trivially proves nothing:
+the injected runtime `fontSize` fault still fails it and still names `div.fnm`.
+
+*One more prefix trap, same family as `count=1`:* `--fs-r0_9` is a **prefix of
+`--fs-r0_92` and `--fs-r0_95`**, so a bare substring check for it matches 20
+places, not 2. The removal script's own assertion caught it before anything was
+written. Anchor on the delimiter — the colon — not on the name.

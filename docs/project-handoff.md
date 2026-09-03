@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`6fb16ff`** (republished 2026-09-03, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`470e2b5`** (republished 2026-09-03, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -81,7 +81,8 @@ product page's back button (52px, up from a hard-coded 26px) and the vape
 screen's back button, whose inline `font-size` put it outside the token system
 altogether (24px/52px in Enlarged, up from 14.4px/29px in both modes) — plus the
 full-screen exit strip growing 48 → 68px in Enlarged so the EXIT chip stops
-sitting on the mood chip bar.
+sitting on the mood chip bar, and the vape screen finally wearing the shop
+chrome (`.sbar` + white chipbar) like every other shop page.
 
 **Write the hash *after* the commit exists, not the one you expect to get.** An
 earlier value of this line, `4b1e0c9`, was never a commit on this branch —
@@ -232,6 +233,18 @@ polish and the open questions below.
    *before any Enlarged work existed* — 214 Standard font-size declarations,
    which must match exactly. It takes about a second, needs no build, no
    browser and no assets, so there is no excuse for skipping it.
+
+   **`snapshot-guard.js` re-baselined to `470e2b5` on 2026-09-03.** It was
+   `cc6edad`; it moved when Standard started changing for reasons unrelated to
+   Enlarged (the vape screen taking the shop chrome). That is a real change to
+   what Standard renders, so it is not an accepted delta — those are for
+   differences that move nothing on screen — and the documented answer to a
+   legitimate Standard change is to re-baseline deliberately. The cost, stated
+   plainly: this guard now measures against the last verified state, not against
+   pre-Enlarged. **`standard-guard.py` still runs against `cc6edad` with zero
+   exceptions, 214 = 214**, so the pre-Enlarged anchor survives where it matters
+   most — every font-size in the app. Re-baseline again only after a run whose
+   every difference you have read and can name.
 
    **The baseline is a commit, not a captured file.** `cc6edad` is the last
    commit before the Enlarged work began (verified: zero `--fs-*` tokens, zero
