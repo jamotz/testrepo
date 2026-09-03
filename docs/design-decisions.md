@@ -480,28 +480,36 @@ Four switches, all of them real rather than decorative:
 | Switch | What it does |
 |---|---|
 | Use product type | Swaps the six lifestyle words for Sativa / Sativa Hybrid / Hybrid / Indica Hybrid / Indica / CBD, everywhere |
-| Enlarged view | Scales the app 1.25x as a unit — type, photos, buttons, spacing |
+| Enlarged view | A token-driven accessibility layer — type, targets, spacing and reflow, all from tokens |
 | Reduce motion | Kills every transition and animation |
 
-**Enlarged view is one scale factor, not a list of font sizes.** Built
+**Enlarged view started as one scale factor and is now a token layer.** Built
 2026-08-20; it had been an inert placeholder since 2026-08-18, when Jack asked
-for it to wait ("don't add that functionality yet"). What he wanted was the
-*whole app* scaled proportionately, so that is literally what it is: `--enlarge`
-(1.25) applied as `zoom` to `.view` and `.tabs`.
+for it to wait ("don't add that functionality yet"). What he asked for was the
+*whole app* scaled proportionately, so the first build was literally that:
+`--enlarge` (1.25) applied as `zoom` to `.view` and `.tabs`. Two lines of CSS,
+and it reflowed the app into an effective 362px like a smaller phone instead of
+magnifying and scrolling sideways.
 
-`zoom` is the right tool because it scales rendered size *and* narrows the
-coordinate space the children lay out in — 452 / 1.25 = **362 px effective**. So
-the app reflows the way it would on a smaller phone instead of magnifying and
-scrolling sideways. Two lines of CSS do what a table of font sizes could not.
+**`zoom` was replaced the same day, and the reason is worth keeping.** It is a
+*display* transform, so it could not tell content from chrome: it magnified
+decoration along with type, grew every gap equally whether that gap needed it,
+and — the part that matters — narrowed the coordinate space at exactly the
+moment the content got bigger. A shopper who turns this on wants more room for
+words, not less room to put them. An accessibility mode has to be able to say
+"this grows, this doesn't, this grows *faster*", and one number can't. The
+replacement is a token override block; `architecture.md` has the tokens and the
+curve. **Don't re-propose `zoom`** — it looks like a two-line win every time.
 
-**What does not scale:** the fake status bar and the dynamic island. Those are
-the handset, not the app running on it. An early cut scaled only `.view`, which
-left the `.sbar` title bar growing while the tab bar beneath it stayed put —
-visibly half a scaled app. `.tabs` is in the rule for that reason.
+**What does not scale, in either design:** the fake status bar and the dynamic
+island. Those are the handset, not the app running on it. An early cut scaled
+only `.view`, which left the `.sbar` title bar growing while the tab bar beneath
+it stayed put — visibly half a scaled app.
 
-**Measured, not guessed:** clean to **1.30**. At 1.35 the 218 px product cards
-can no longer sit two-up and shop/list overflow; WCAG 1.4.10 Reflow's 320 px
-floor arrives at 1.41. 1.25 leaves headroom on both.
+**Measured, not guessed** — the ceiling that killed the scale-factor design:
+clean to **1.30**, and at 1.35 the 218px product cards can no longer sit two-up.
+The token design doesn't have a ceiling in that sense, because the product grid
+drops to one column on purpose rather than as a casualty.
 
 **One rule had to give.** `.deal-banner .bs` is `white-space:nowrap` so the offer
 copy holds one line, with ~14px of slack at the design width — which makes it
@@ -1364,3 +1372,97 @@ The `alt` text goes through `lifeLabel()`, so it says *Sativa / Hybrid / Indica*
 when Advanced Settings' **Use product type** is on. That needed `setAdv()` to
 redraw the hub — it re-renders everything showing a lifestyle word, and Origins
 U had never been in that list because nothing on it printed one until now.
+
+---
+
+## Enlarged view, after the first build
+
+The mechanism is in `architecture.md`; these are the calls Jack made on top of
+it, in the order he made them.
+
+### The scale was flattened — legibility beats hierarchy here
+The generated curve compressed upward but still kept a spread: 9.5px rose to
+17.6, 13px to 21.3, 14px to 22.4. Jack's call after seeing it on screen was that
+the whole body run should sit together at **~22px**. So `--text-micro`,
+`--text-secondary` and `--text-body` are now all 22px, and the four sizes that
+told a breadcrumb from a chip from a description in Standard are one size here.
+
+That is a real loss of typographic hierarchy, taken deliberately. **In this mode
+hierarchy comes from weight, colour and the title bar** — the things that stay
+distinguishable when someone is holding a phone at arm's length — rather than
+from a 1.5px difference between two small sizes, which is exactly the signal
+this mode's user can't see. Two exceptions earn their size back: the product
+title at 24px, and the **strain name at 32px**, because that is the thing you
+scan a card for.
+
+Keep the curve in `architecture.md` even though the shipped values are flatter.
+The curve is what stops the next change from being tuned in isolation; the
+flattening is a judgement laid over it, not a replacement for it.
+
+### Two tokens go *down* against the curve, and that's the right answer
+Not everything can take 22px inside a fixed container:
+
+- **The tab bar.** "ORIGINS U" wrapped to two lines in a 90px tab. The label
+  drops to 15px and is held to one line, and the **icon goes up to 34px** to do
+  the identifying instead. A wrapped two-line label is less legible than a
+  smaller one-line label under a bigger icon.
+- **Filter and Sort.** At 24px the pair needed ~454px in a 420px row, so they
+  wrapped and Sort fell under Filter. Both drop to 20px — still well over
+  Standard's 16 — and the row is held to one line at equal height
+  (`align-items:stretch`). A previous attempt used `space-between`, which pushed
+  the two halves to the edges and made the overflow read worse, not better.
+
+The principle: **when type and container fight, fix the pair, not the token.**
+Growing a number that then overflows its box is a net loss of legibility.
+
+### Fixed widths are what actually break at 22px
+The opening hours on landing and on the order confirmation sat in spans with
+hard widths — 72/120 and 78/130 — sized for 13px text. At 22px the text simply
+ran past them and hung off the card. Each span now sizes to its own content with
+a 10px gap.
+
+This is the shape of most Enlarged bugs: not the font size, but **a length
+somewhere that was measured against the old font size**. When something looks
+wrong in Enlarged, look for the fixed px value near it before touching the
+scale.
+
+### The cart badge is option B, and it is not an icon
+Jack was shown four treatments and picked **B, the soft pill**: a rounded rect
+with a white keyline, lifted clear of the trolley rather than sitting on it.
+Enlarged only — Standard keeps its original 16px circle, which works fine at
+that size.
+
+How it got broken first is the more useful part. The badge was swept into the
+**generated icon-scaling pass** *and* written into the round-1 punch list, so
+two rules fought over it and it settled at 34px — covering the trolley it counts
+for. A count badge is not an icon: it is type in a container, it sits *on* an
+icon, and a bulk `svg{width:…}` style rule has no business reaching it. It is
+sized by its own rule now; keep it out of any sweeping icon selector.
+
+### Standard took six enlarged values for one build
+Flattening the scale was done with a script, and the script used
+`re.sub(…, count=1)` on six semantic tokens. `count=1` replaces the **first**
+match in the file — which is `:root`, the *Standard* block, not the
+`#scr.enlarged` one below it. So Standard silently took the enlarged values:
+`--text-body` 13→22px, `--text-nav` 9→22px, `--text-micro` 9.5→22,
+`--text-secondary` 11.5→22, `--text-product-title` 14→24, `--text-pill` 11→22.
+The nav bar, product card text, weights and filter labels all read as enlarged
+in normal view. Standard was never meant to move.
+
+Fixed by anchoring each rewrite on the actual `:root{…}` and `#scr.enlarged{…}`
+spans instead of on match order (`25c88fe`).
+
+**The design lesson, not just the bug:** the two blocks hold the *same token
+names* by design — that is what makes a component mode-agnostic, and it is also
+what makes any position-based edit land silently on the wrong one. There is no
+visual difference between "Standard is correct" and "Standard has been
+overwritten with Enlarged values" until you look at the app in Standard, which
+is the one mode you stop looking at while doing accessibility work.
+
+That is why the Standard guard exists, and why **it stopped being run right when
+the edits got big** — which is precisely when it was needed. The guard is a
+computed-style snapshot of Standard from before any Enlarged work began, diffed
+as a multiset per screen. It is **not currently in the repo** (see
+`project-handoff.md`); rebuild and commit it before the next change to this
+layer. An accessibility mode that silently degrades the default mode is worse
+than no accessibility mode.

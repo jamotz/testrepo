@@ -450,7 +450,7 @@ the same component the filter drawer uses.
 | Switch | Key | Effect |
 |---|---|---|
 | Use product type | `strain` | `lifeLabel()` returns `STRAINNAME[k]` instead of `FEEL[k]` |
-| Enlarged view | `enlarged` | `#scr.enlarged` puts `zoom: var(--enlarge)` (1.25) on `.view` **and** `.tabs` |
+| Enlarged view | `enlarged` | `#scr.enlarged` overrides the semantic and `--fs-*` tokens — see *The accessibility display system* |
 | Reduce motion | `nomotion` | `#scr.nomotion` kills every transition and animation |
 
 **`lifeLabel(key)` is the only place a lifestyle word is printed.** Reach for
@@ -466,21 +466,25 @@ screen if that is where you are.
 lifestyle as a *wordmark image*, which can't be re-lettered. Each option carries
 a text twin that `#scr.strainnames` swaps in.
 
-**Enlarged view is one number.** `--enlarge` (1.25) scales `.view` and `.tabs`
-together, so type, photos, buttons, borders and spacing all grow by the same
-factor and the children get a narrower coordinate space — 452 / 1.25 = **362 px
-effective** — so the app *reflows* like a smaller phone rather than magnifying.
-The fake status bar and island are excluded: they are the handset, not the app.
+**Enlarged view is a token layer, not a zoom.** `--enlarge` and the
+`zoom: 1.25` on `.view` / `.tabs` that this section used to describe were
+replaced on 2026-08-20; nothing named `--enlarge` remains in the stylesheet.
+The mode is now a single override block of semantic and `--fs-*` tokens — see
+**The accessibility display system** at the end of this file for the tokens,
+the curve, the reflow rules and the guards.
 
-Measured ceiling: clean to **1.30**; at 1.35 the 218 px product cards can no
-longer sit two-up and shop/list overflow. WCAG 1.4.10 Reflow's 320 px floor is
-reached at 1.41. One rule needs an exception — `.deal-banner .bs` is
-`white-space:nowrap`, the only thing in the app that cannot reflow narrower, so
-enlarged lets it wrap.
+Two things from the zoom era still hold, because they are properties of the
+content rather than of the mechanism:
 
-`tiles-compact` stays on `#view` in both modes. It was reserved for this work,
-but removing it in enlarged mode would scale tiles 11% more than everything
-else — the opposite of scaling as a unit.
+- `.deal-banner .bs` is `white-space:nowrap`, the only thing in the app that
+  cannot reflow narrower. Enlarged releases it: the banner grows a line rather
+  than the screen growing a scrollbar.
+- `tiles-compact` stays on `#view` in both modes. It was reserved for this
+  work, but dropping it in Enlarged would scale tiles ~11% more than everything
+  around them.
+
+The fake status bar and the dynamic island are excluded from the mode
+throughout: they are the handset, not the app running on it.
 
 ---
 
@@ -638,22 +642,35 @@ mode; a new screen inherits Enlarged view by using the tokens.
 
 | Token | Standard | Enlarged | |
 |---|---:|---:|---|
-| `--text-micro` | 9.5px | 13px | brand line, tab labels |
-| `--text-secondary` | 11.5px | 15px | chips, breadcrumbs |
-| `--text-body` | 13px | 16.5px | description, body |
-| `--text-product-title` | 14px | 18px | product name |
-| `--text-heading` | 1.4rem | 1.66rem | `.sbar` titles |
-| `--text-button` | 1rem | 1.15rem | Filter, Sort, Continue |
-| `--text-nav` / `--text-pill` | 9px / 11px | 12px / 14px | tab label, weight pill |
+| `--text-micro` | 9.5px | 22px | brand line, tab labels |
+| `--text-secondary` | 11.5px | 22px | chips, breadcrumbs |
+| `--text-body` | 13px | 22px | description, body |
+| `--text-product-title` | 14px | 24px | product name |
+| `--text-heading` | 1.4rem | 1.8rem | `.sbar` titles |
+| `--text-button` | 1rem | 1.5rem | Filter, Sort, Continue |
+| `--text-nav` / `--text-pill` | 9px / 11px | 15px / 22px | tab label, weight pill |
 | `--icon-size` / `--icon-size-sm` | 21px / 15px | 27px / 19px | |
 | `--control-height` | 47px | 54px | Filter / Sort pill |
 | `--target-size` | 44px | 52px | minimum hit area |
 | `--card-padding` / `--grid-gap` / `--section-gap` | 12 / 13 / 10px | 16 / 16 / 14px | |
 
-**Type is compressed upward, not scaled uniformly** — the 9.5px floor gains 37%
-while a heading gains 19%, because the small labels are what fail at arm's
-length. Targets grow faster than the text inside them, and decoration doesn't
-grow at all.
+These are the values in the file today. **The scale was flattened** on Jack's
+call that in this mode legibility beats hierarchy: the body run
+(micro / secondary / body) all sit at 22px, so the four sizes that separated a
+breadcrumb from a description in Standard are one size here. Hierarchy in
+Enlarged comes from **weight, colour and the title bar**, not from size. Two
+deliberate exceptions survive the flattening: the product title at 24px, and
+the strain name pushed to **32px** by its own rule (`.fcard .fnm`) — it is what
+you scan a card for.
+
+`--text-nav` is the one token that goes *down* against the curve: at 22px
+"ORIGINS U" wrapped to two lines in a 90px tab, so the label sits at 15px, held
+to one line, and the tab icon carries the identifying work at 34px instead.
+Filter and Sort are the same trade — at 24px the pair needed ~454px in a 420px
+row, so both drop to 20px to stay side by side.
+
+**Targets grow faster than the text inside them, and decoration doesn't grow at
+all.**
 
 This replaced a `zoom:1.25` on the whole frame. Uniform zoom magnified
 decoration with content, grew every gap equally whether it needed it, and shrank
@@ -685,12 +702,19 @@ than in Standard*: it grows in pixels while shrinking on screen. Measured:
 Factors are therefore ≤9px ×1.90, 11px ×1.78, 13px ×1.64, 16px ×1.52, 20px
 ×1.42, 26px ×1.34, and **over 40px only ×1.08** — display type the spec says not
 to enlarge proportionally. Still compressed upward, but anchored to the layout.
-Landing values: brand 9.5→17.6, bubbles 10→18.5, body 13→21.3, product name
-14→22.4, headings →30 — the spec's stated targets.
+That curve lands brand 9.5→17.6, bubbles 10→18.5, body 13→21.3, product name
+14→22.4, headings →30.
 
-**`ratio.js` is the guard.** It prints each element as a percentage of its card
-in both modes. Absolute-pixel coverage is not enough: the first pass measured
-100% coverage and was still visibly too small.
+**The curve is the derivation; the shipped values are flatter.** Jack's call
+after seeing it was that the small end should go further and the spread should
+close, so the body run was levelled to ~22px (see the token table above). Keep
+the curve — it is what stops a future change from being tuned in isolation
+again — but read the token block, not these factors, for what the app renders.
+
+**`ratio.js` is the guard**, and it is the one guard still in the repo:
+`reference/origins/hifi-build/ratio.js`. It prints each element as a percentage
+of its card in both modes. Absolute-pixel coverage is not enough: the first pass
+measured 100% coverage and was still visibly too small.
 
 **rem values stay rem**, so the browser's own text-size setting still multiplies
 on top of the mode.
@@ -705,12 +729,34 @@ on a flex box that centres its content, so a control grows from its type rather
 than wrapping around it. That single rule covers every CTA, pill and chip; the
 earlier bug was `min-height` without the centring.
 
-Guard both with `coverage.js` (fails under ~95%) and the round-trip check:
+Guard both with a coverage check (fail under ~95%) and the round-trip check:
 substituting every token back to its literal must reproduce the original CSS.
 
-**Standard is provably untouched.** A computed-style snapshot of ~400 elements
-across 11 screens is identical before and after the token refactor — 0 diffs.
-Re-run it (`snapshot.js`) before landing any change to this system.
+**Standard must be guarded, and the guard is not in the repo.** The scripts this
+section used to name as ready to run — `standard-guard.py` with its
+`std_before.json` baseline, `snapshot.js`, `coverage.js` — were written in an
+earlier container and never committed; the container has been reclaimed. The
+checks are still the right ones, so **rebuild the Standard guard before making
+the next Enlarged change, and commit it with its baseline this time.** It is a
+short Playwright script: snapshot the computed styles of the elements on each
+screen in Standard, store that as JSON, and diff a fresh snapshot against it as
+a **multiset per screen** — a multiset, so the two date-generated screens don't
+read as false diffs.
+
+**"Standard is untouched" is a claim that has already been wrong once.** The
+snapshot taken across ~400 elements on 11 screens after the token refactor did
+show 0 diffs. The regression came later: flattening the scale used
+`re.sub(…, count=1)` on six semantic tokens, and `count=1` matches the *first*
+occurrence in the file — which is `:root`, the **Standard** block, not the
+`#scr.enlarged` one below it. Standard silently took the enlarged values for the
+nav bar, product card text, weights and filter labels. The fix (`25c88fe`)
+anchors each rewrite on the actual `:root{…}` and `#scr.enlarged{…}` spans
+rather than on match order.
+
+**Any script that rewrites one of the two blocks must anchor on the block.**
+Ordinal position is not an anchor: the two blocks hold the same token names by
+design, which is exactly what makes a first-match rewrite land silently on the
+wrong one.
 
 **Persistence** is `localStorage["origins.display.v1"]`, every access wrapped —
 a private window or a blocked accessor can throw on *read*, and the app must

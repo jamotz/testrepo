@@ -1,5 +1,13 @@
 # RESUME HERE — Jack Motzkin portfolio (Origins in progress)
 
+> **⚠ Older handoff — kept for its frame notes.**
+> The branch and the resume instruction below are **superseded**: do not check
+> out `claude/portfolio-redesign-81crin`. Current branch is
+> **`claude/accessibility-handoff-review-dhabtz`** and the current handoff is
+> **[`docs/project-handoff.md`](../../docs/project-handoff.md)**.
+> Jack's working rules below still stand; the screen-by-screen status does not
+> (every frame in `hifi-final/` is built).
+
 **To resume in a fresh session:** "Read reference/origins/HANDOFF.md and continue the Origins Guide Me wizard."
 
 Everything below is committed. **Recycles wipe uncommitted work** — always start with:

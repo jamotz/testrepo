@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-08-20 · branch `claude/accessibility-handoff-review-dhabtz`
+**Last updated:** 2026-09-03 · branch `claude/accessibility-handoff-review-dhabtz`
 **Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
@@ -51,7 +51,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`4b1e0c9`** (published 2026-08-20) — the Final/pt2 catalogs, terpene-driven
+`42f2956`**, the head of this branch — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -63,11 +63,18 @@ Liquid Edibles and Vapes as their own categories and the Lifestyles tile on its
 six colours, and Enlarged view as a token-driven accessibility layer with the full type
 scale — every font-size in the app is a token, and the curve is anchored to the
 one-card-across layout rather than tuned on its own, then flattened to a
-near-uniform ~22px on Jack's call that legibility beats hierarchy in this mode.
-**Standard is untouched by all of it** — `standard-guard.py` proves that against a
-baseline from before the work began, and must be run after every Enlarged change
-(see architecture.md). Bump this line whenever you republish; it's the only way a new
-session can tell whether the link is behind the branch.
+near-uniform ~22px on Jack's call that legibility beats hierarchy in this mode,
+then both rounds of his punch list on top of it (hours, tab bar, Filter/Sort row,
+strain name at 32px, and the cart badge as option B's soft pill).
+**Standard is untouched by all of it** — but that had to be *fixed*, not just
+claimed: flattening the scale wrote six enlarged values into Standard for one
+build (see below, and `design-decisions.md`). Bump this line whenever you
+republish; it's the only way a new session can tell whether the link is behind
+the branch.
+
+**The previous value of this line, `4b1e0c9`, was not a commit on this branch** —
+`git cat-file -t` doesn't resolve it. Write the hash *after* the commit exists,
+not the one you expect to get, or this line points at nothing.
 
 If the publish is refused with *"hasn't viewed the latest version"*, another
 session republished since. `WebFetch` the artifact URL first — it **is**
@@ -193,12 +200,39 @@ polish and the open questions below.
 1. **General touch-ups** — Jack is doing a pass across the app, screen by
    screen. Home, shop, cart, Origins U and the account screens have each been
    through a round (see `design-decisions.md` for what was decided and why).
-2. **Enlarged view is built** (2026-08-20) — one scale factor, `--enlarge`
-   1.25, applied as `zoom` to `.view` and `.tabs`, so type, photos, buttons and
-   spacing all grow together and the app reflows into an effective 362px. Clean
-   to 1.30; 1.35 breaks the two-up product grid. If Jack wants it stronger,
-   change the one number and re-run the overflow check — don't start adding
-   per-rule font sizes.
+2. **Enlarged view is built and is now a token layer, not a zoom.** The
+   `--enlarge: 1.25` / `zoom` description that stood here is retired — it was
+   replaced on 2026-08-20 and the rest of this file, `architecture.md` and
+   `design-decisions.md` now describe the token system. In short: every
+   `font-size` in the app is a `--fs-*` token whose Standard value is the
+   original literal; `#scr.enlarged` overrides the tokens once. To make the mode
+   stronger or weaker, **move the token values, and re-run the guard** — don't
+   add per-rule font sizes, and don't reach for `zoom` again (why it lost is in
+   `design-decisions.md`).
+
+   **The guard scripts are not in the repo.** `standard-guard.py`,
+   `std_before.json`, `snapshot.js` and `coverage.js` are all named as required
+   steps in `architecture.md` and were written in an earlier container — none of
+   them was ever committed, and the container has since been reclaimed, so they
+   are gone. `ratio.js` is the one that survives, at
+   `reference/origins/hifi-build/ratio.js`. **Rebuild the Standard guard before
+   touching the Enlarged layer again**: it is the check that catches the class
+   of bug described in the next item, and re-creating it is a ~30-line
+   Playwright script — snapshot the computed styles of the elements on each
+   screen in Standard, store the baseline as JSON, and diff a fresh snapshot
+   against it as a multiset per screen (a multiset, so the two date-generated
+   screens don't read as false diffs). Commit it this time, baseline included.
+
+   **The regression it exists to catch has already happened once.** Flattening
+   the Enlarged type scale used `re.sub(..., count=1)` on six semantic tokens.
+   `count=1` replaces the *first* match in the file, which is `:root` — the
+   **Standard** block — not the `#scr.enlarged` one below it, so Standard
+   silently took the enlarged values (`--text-body` 13px → 22px, `--text-nav`
+   9px → 22px, and four more): the nav bar, product card text, weights and
+   filter labels all read as enlarged in normal view. Fixed in `25c88fe` by
+   anchoring each rewrite on the actual `:root{…}` and `#scr.enlarged{…}` spans
+   instead of on match order. **Any script that edits one of the two blocks must
+   anchor on the block, never on ordinal position.**
 
 3. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
    2026-08-17: "ignore for now"). Don't pick this up without him. The other
@@ -257,6 +291,23 @@ polish and the open questions below.
 *Size as a navigation step was considered and rejected* (Jack, 2026-08-12):
 size lives in the product tile, not the filter path. Don't re-propose it.
 
+### Done since (2026-08-20 → 09-02) — the accessibility pass
+
+| | |
+|---|---|
+| Enlarged view | Rebuilt from `zoom:1.25` into a **token layer**: 49 distinct font sizes, 204 declarations, all `--fs-*` tokens, overridden once in `#scr.enlarged`. Reflow rules sit beside them — one card across, names wrap, metadata stacks |
+| The curve | Anchored to the container, not chosen in isolation: a card goes 198→409px, so a type curve tuned on its own shrinks everything *relative to its card*. `ratio.js` measures each element as a % of its card in both modes |
+| Flattening | Then flattened to a near-uniform ~22px (Jack's call: in this mode legibility beats hierarchy). Hierarchy now comes from weight and colour, not size |
+| Punch list r1 | Lifestyle badge, bell/gear rings, the Advanced Settings switch itself (not just its hit box), Origins U title/Search/tiles |
+| Punch list r2 | Hours spans sized to their content, tab bar (icons 34px, label 15px, one line), Filter/Sort back on one row at 20px, strain name 32px |
+| Cart badge | Option B, the soft pill — rounded rect with a white keyline, lifted clear of the trolley. Enlarged only; Standard keeps its 16px circle |
+| Standard regression | Six enlarged values leaked into `:root` via `re.sub(count=1)`; fixed by anchoring on the blocks. See next steps §2 |
+
+*`zoom` was tried first and lost* (2026-08-20): it magnified decoration along
+with content, grew every gap equally whether it needed it, and shrank the
+layout's coordinate space exactly when the content got bigger. Don't re-propose
+it.
+
 ---
 
 ## Repo layout
@@ -269,6 +320,7 @@ reference/origins/
 │   ├── gen_catalog_products.py   ← flower products from the .xlsx
 │   ├── gen_drinks.py             ← drinks from the .xlsx + drinks IA
 │   ├── terpmap.py                ← terpenes -> feelings + scents
+│   ├── ratio.js                  ← Enlarged guard: each element as a % of its card
 │   ├── xlsxread.py               ← the one xlsx reader they all share
 │   ├── gen_concentrates.py       ← concentrates from the .xlsx
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA
@@ -371,3 +423,21 @@ a nominated eighth is at or under the $25 deal price.
   particular. Namespace anything new (the size sheet uses `fs*`), or it vanishes
   silently.
 - **Build takes ~2 min** since the WebP encode; run it in the background.
+- **`re.sub(pattern, repl, css, count=1)` edits the wrong block.** The Standard
+  tokens (`:root`) come *first* in the stylesheet and the Enlarged overrides
+  (`#scr.enlarged`) second, so a first-match rewrite aimed at Enlarged lands on
+  Standard. Anchor on the block's own `{…}` span. This shipped once; six
+  Standard font sizes silently took enlarged values.
+- **A tooling script that isn't committed is gone.** Containers are reclaimed,
+  and `standard-guard.py`, `std_before.json`, `snapshot.js` and `coverage.js`
+  were written, used, documented as required — and never added to git. The docs
+  still tell you to run them because the checks are still the right ones; the
+  files have to be rebuilt. Commit any guard you write, with its baseline.
+- **A verification claim in these docs is only as good as the script behind
+  it.** "Standard is provably untouched" was written from a snapshot run whose
+  script no longer exists, and the regression above landed after it. Re-run the
+  check yourself before repeating the claim.
+- **The cart badge is not an icon.** It was swept into the generated
+  icon-scaling pass *and* the round-1 punch list, so two rules fought over it
+  and it grew to 34px, sitting on top of the trolley it belongs to. It is sized
+  on its own rule now; keep it out of any bulk icon selector.

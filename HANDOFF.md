@@ -1,5 +1,17 @@
 # Portfolio Redesign — Handoff / Continuation Notes
 
+> **⚠ This file is the portfolio *site* handoff, and it is behind.**
+> The branch it names below, `claude/portfolio-redesign-81crin`, is **superseded** —
+> checking it out loses every later round of work. Current branch:
+> **`claude/accessibility-handoff-review-dhabtz`**.
+>
+> Active work is the **Origins app prototype**, and its handoff is
+> **[`docs/project-handoff.md`](docs/project-handoff.md)** — start there, with
+> [`docs/architecture.md`](docs/architecture.md) and
+> [`docs/design-decisions.md`](docs/design-decisions.md) beside it.
+> What follows is still accurate about the Astro site's design direction and the
+> case-study structure; treat its branch name and "Next steps" as history.
+
 Quick-start for a new session. Read this, then continue. Everything described as
 "built" is committed on branch `claude/portfolio-redesign-81crin` under `site/`.
 
