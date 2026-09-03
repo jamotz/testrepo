@@ -233,6 +233,18 @@ polish and the open questions below.
    would certify whatever regression is already sitting in it. If you ever
    rewrite this guard, keep that property.
 
+   **A legitimate change to Standard will fail this guard, and should.** If Jack
+   asks for a different size in *normal* view, Standard has moved and the guard
+   says so. Re-baseline deliberately: point `BASELINE` at the commit that made
+   the change, in a commit that says what moved and why. **Don't** widen the
+   guard, add per-selector exceptions, or drop declarations from the comparison
+   to get it green — that trades the whole check for the one change in front of
+   you. Telling the two cases apart from the FAIL output: a regression shows
+   Standard taking recognisably *enlarged* values (22px, 24px, 1.8rem) on
+   selectors you never meant to touch, usually several at once; a deliberate
+   change shows the value you intended, on the selector you intended, usually
+   alone. When it isn't obvious, assume regression.
+
    **Still missing, and worth building.** The guard reads stylesheet text only,
    so it cannot see a size applied by JS at runtime or a cascade/specificity
    effect that changes which rule wins. The heavier check — a computed-style

@@ -27,7 +27,27 @@ BASELINE below is the last commit before the Enlarged work began -- verified to
 contain zero --fs-* tokens and zero #scr.enlarged rules. Deriving the baseline
 from git is the whole point: a baseline captured from the *current* file would
 certify whatever regression is already in it. If this guard is ever rewritten,
-keep that property.
+keep that property. Note that the expected sizes are re-derived from BASELINE on
+every run rather than stored here -- freezing them in would assert one author's
+reading of the file instead of the file itself.
+
+WHEN THE FAILURE IS LEGITIMATE
+If Standard type is deliberately changed -- Jack asks for a different size in
+NORMAL view, not in Enlarged -- this guard fails, and it is right to. Standard
+did move. The response is to RE-BASELINE DELIBERATELY: set BASELINE to the
+commit that made the change, in a commit that says what moved and why. Do not
+widen the guard, add per-selector exceptions, or drop declarations from the
+comparison until it goes green; that trades the whole check for the one change
+in front of you.
+
+Reading the FAIL output to tell the two apart:
+  - a REGRESSION shows Standard taking recognisably *enlarged* values -- 22px,
+    24px, 1.8rem -- on selectors you did not mean to touch, usually several at
+    once, and usually while you were editing the Enlarged block
+  - a DELIBERATE change shows the value you intended, on the selector you
+    intended, and typically alone
+When it is not obvious which you are looking at, assume regression and check the
+Enlarged block for a rewrite that landed on :root.
 
 WHAT IT DOES NOT COVER
 Stylesheet text only. It will not see a size applied by JS at runtime, or a
