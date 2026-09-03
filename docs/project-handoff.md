@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`d6f85b6`** (republished 2026-09-03, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`6fb16ff`** (republished 2026-09-03, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -79,7 +79,9 @@ the branch.
 Since 42f2956 it also carries the two controls Enlarged used to miss: the
 product page's back button (52px, up from a hard-coded 26px) and the vape
 screen's back button, whose inline `font-size` put it outside the token system
-altogether (24px/52px in Enlarged, up from 14.4px/29px in both modes).
+altogether (24px/52px in Enlarged, up from 14.4px/29px in both modes) — plus the
+full-screen exit strip growing 48 → 68px in Enlarged so the EXIT chip stops
+sitting on the mood chip bar.
 
 **Write the hash *after* the commit exists, not the one you expect to get.** An
 earlier value of this line, `4b1e0c9`, was never a commit on this branch —
@@ -287,6 +289,13 @@ polish and the open questions below.
    node reference/origins/hifi-build/ratio.js         <built.html>   # the curve
    node reference/origins/hifi-build/enlarged-check.js <built.html>  # the mode
    ```
+
+   **Neither Enlarged check sees the full-screen chrome.** `enlarged-check.js`
+   walks elements inside `.s[data-s="<screen>"]`, and `#fsexit`, the status bar
+   and the island all live *outside* that root — so the exit chip covering the
+   mood chip bar in Enlarged went unnoticed by all four checks and was found by
+   looking at a screenshot. If you widen anything here, widen this: the chrome
+   layer has no coverage at all.
 
    `ratio.js` prints each element as a percentage of its card in both modes —
    the check for whether the curve is still anchored to its container.

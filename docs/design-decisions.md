@@ -1544,3 +1544,34 @@ Two near misses worth knowing about, both found in the same pass:
   Watch the list. One entry backed by a computed-style PASS is a considered
   exception; a handful added to reach green is the guard quietly switching
   itself off.
+
+### The full-screen exit strip has to grow with the chip it holds
+Full screen reserves a 48px strip at the top (`body.fs .scr` padding) so the
+EXIT chip "never covers the app's header" — its own comment. The chip is type in
+a pill, so Enlarged grows it 35 → 50px and its bottom lands at 64px, 16px into a
+strip that never moved. On the vape screen that put it over the DISCOVERY mood
+chip. The strip now takes **68px** in Enlarged, clearing the chip with a few px
+of slack; Standard's 48/49 actually touches by 1px, so Enlarged is now the
+tidier of the two.
+
+**Reserved space is a measurement of something else, so it has to move when that
+thing moves.** This is the same failure as the opening-hours spans and the 90px
+tab: a length sized for Standard type, left behind when the type grew. A padding
+that exists *for* a component is that component's dependency even though no rule
+says so.
+
+**All four checks missed it, and the reason is worth knowing.**
+`enlarged-check.js` walks `.s[data-s="<screen>"]`, the active screen's own
+subtree. `#fsexit` is not in it — nor is the status bar or the dynamic island.
+The whole full-screen chrome layer is outside every check's scope, so vape
+reported clean: true within the scope, wrong as a claim about the screen. It was
+found by looking at a screenshot. **A guard's silence is only as broad as its
+selector**, and this one's is narrower than the thing it appears to describe.
+
+*Left unfixed, flagged here:* `body.fs .fsexit` is declared twice (lines 211 and
+214) with identical specificity, and the later one hard-codes `top:14px`, which
+kills the earlier `calc(9px + env(safe-area-inset-top,0px))`. The notch handling
+is dead code — measured y=14.0 in both modes, never 9 + inset. On a notched
+iPhone the chip may sit under the notch. Not fixed because `env(safe-area-inset-*)`
+is 0 in headless Chromium, so the fix can be written but not verified from here;
+it wants a real device, or Jack's eye.
