@@ -1517,14 +1517,30 @@ Two near misses worth knowing about, both found in the same pass:
   24px — the first run reported 9 findings, 8 of them the stage. Only splitting
   "under 24px by design" from "under 24px after scaling" made the real one
   visible.
-- **The vape screen's back button is a second instance, left alone.** It is a
-  bare `.bk` outside `.sbar` carrying an *inline* `font-size:.9rem`, so it is
-  invisible to the token system entirely — an inline style is not in the
-  stylesheet, so the "every font-size is a token" claim quietly excludes it. It
-  measures 29px by design, so it clears 24px and is not a WCAG failure; it just
-  doesn't grow in Enlarged. Fixing it means either `!important` (inline styles
-  outrank stylesheet rules) or moving the style into the stylesheet, which adds
-  a Standard declaration and forces a re-baseline for a change that alters
-  nothing on screen. Both are worse than the gap. **Left as-is deliberately** —
-  but if another inline `font-size` ever appears, reconsider: the exception is
-  tolerable at one, not at several.
+- **The vape screen's back button was a second instance, since fixed.** It is a
+  bare `.bk` outside `.sbar` that carried an *inline* `font-size:.9rem`, so it
+  was invisible to the token system entirely — an inline style is not in the
+  stylesheet, so the "every font-size is a token" claim quietly excluded it. It
+  was the one font-size in the app that never grew in Enlarged: measured at
+  393×852, it read **14.4px in both modes**. It cleared 24px by design (29px),
+  so it was never a WCAG failure — just a hole in the mode.
+
+  It is now `.vape .bk` in the stylesheet with the same declarations, a new
+  `--fs-r0_9` token (`.9rem` → `1.5rem`, matching its neighbours `.88` and
+  `.92`), and the target size in Enlarged. Measured after: Standard unchanged at
+  14.4px / 29px, Enlarged **24px / 52px**.
+
+  **The interesting part is what it cost the guards.** Moving a style out of a
+  `style` attribute changes nothing on screen but does add a declaration the
+  baseline lacks, so `standard-guard.py` failed — correctly. The choice was
+  `!important` (keeping the inline style and overriding it), re-baselining
+  (discarding the pre-Enlarged anchor over a no-op change), or teaching the
+  guard about accepted deltas. The third won, with the rule that keeps it
+  honest: **an accepted entry is only legitimate when `snapshot-guard.js` passes
+  on the same build**, because computed styles are the evidence that Standard
+  did not actually move. Here it did pass — same 5 deltas, none new — so the
+  entry stands on evidence rather than on assertion.
+
+  Watch the list. One entry backed by a computed-style PASS is a considered
+  exception; a handful added to reach green is the guard quietly switching
+  itself off.
