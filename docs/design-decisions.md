@@ -1471,3 +1471,19 @@ file, which is the part worth keeping: **a guard whose baseline is captured from
 the current state can only ever confirm the present.** The bug above would have
 been invisible to one, because the baseline would have been taken after it
 landed.
+
+`snapshot-guard.js` is the heavier half, and it earns its keep by covering a
+different failure. The text guard can only tell you the CSS *says* the right
+thing; the snapshot tells you the browser *resolved* the right thing. Building
+it turned up two real differences the text guard was blind to, both from the
+token refactor rather than from any of the punch lists: `.fbtn` and
+`.edusearch` picked up a `min-height` from `--control-height` in Standard. Both
+already rendered at 50px against a 47px floor, so nothing moved on screen — but
+"nothing moved on screen" is a conclusion someone had to reach by looking, which
+is the point. They are recorded as accepted deltas with that reasoning attached,
+not quietly filtered out.
+
+**Two guards, because the cheap one is the one that gets run.** The original
+lapsed at exactly the moment it was needed, and it lapsed because running it
+meant two builds. Splitting the check means the constant case costs 0.06s and
+the thorough case is reserved for before a publish.

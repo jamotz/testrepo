@@ -757,13 +757,38 @@ over the history and it passes through `e817dae`, **fails at `8be0ad6` and
 nobody has seen fail is not a guard.
 
 **What it does not cover:** stylesheet text only — not a size applied by JS at
-runtime, nor a cascade/specificity effect that changes which rule wins. The
-computed-style snapshot across every screen (`snapshot.js` / `coverage.js`,
-written in an earlier container and never committed) is still the missing
-heavier check; `ratio.js` is the working Playwright template for it, and it
-needs a build of the baseline commit, so it costs ~2 min a side. Diff it as a
-**multiset per screen** — a multiset, so the two date-generated screens don't
-read as false diffs.
+runtime, nor a cascade/specificity effect that changes which rule wins.
+
+**`snapshot-guard.js` covers those.** It walks all 24 screens in Chromium and
+compares **computed** styles — 5,582 elements over 12 properties (type, the box
+a control makes around it, colour) — between a build of `cc6edad` and a build of
+the current source:
+
+```bash
+node reference/origins/hifi-build/snapshot-guard.js <base.html> <cur.html>
+```
+
+Its docstring carries the two-build recipe; budget ~2 min a side, which is why
+the text guard exists for the constant case. Elements are keyed by
+**screen + tag + class signature and counted as a multiset**, never by DOM
+order: the deals rota and the calendar generate against today's date, and a
+positional diff reports one insertion as every element after it. A key present
+on both sides with different values is reported as
+`div.fnm  fontSize: 14px -> 19px` rather than as two tuples to diff by eye.
+
+It carries a short **accepted-deltas** list — known, intended differences from
+the baseline, each with a reason — and prints how many it applied, so they stay
+visible instead of being silently swallowed. Currently 5: `.fbtn` and
+`.edusearch` picking up `min-height:47px` from `--control-height` during the
+token refactor (both already rendered at 50px, so nothing moved), and the
+`span.advsoon` "Coming soon" tag deliberately removed when Enlarged shipped.
+Adding an entry to turn a red run green defeats the guard.
+
+Both guards were validated against a fault, not just against green. Injecting a
+runtime `element.style.fontSize` into a built copy leaves `standard-guard.py`
+**passing** — the stylesheet is untouched — while `snapshot-guard.js` fails and
+names `div.fnm  fontSize: 14px -> 19px` on five screens. That is precisely the
+gap between them, and the reason both exist.
 
 **"Standard is untouched" is a claim that has already been wrong once.** The
 snapshot taken across ~400 elements on 11 screens after the token refactor did

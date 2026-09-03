@@ -245,17 +245,39 @@ polish and the open questions below.
    change shows the value you intended, on the selector you intended, usually
    alone. When it isn't obvious, assume regression.
 
-   **Still missing, and worth building.** The guard reads stylesheet text only,
-   so it cannot see a size applied by JS at runtime or a cascade/specificity
-   effect that changes which rule wins. The heavier check — a computed-style
-   snapshot driven through Playwright over all 24 screens, diffed as a multiset
-   per screen (a multiset, so the two date-generated screens don't read as false
-   diffs) — is the `snapshot.js` / `coverage.js` that were named here, written in
-   an earlier container and never committed. `ratio.js` is the other survivor,
-   at `reference/origins/hifi-build/ratio.js`, and it is the working template
-   for the Playwright half. That check needs a build of the baseline commit, so
-   it costs ~2 min a side; the cheap guard above covers the bug that actually
-   shipped.
+   **The heavier check is `snapshot-guard.js`** — run it before publishing, and
+   after any change that could move layout rather than just type. It walks all
+   24 screens in Chromium and compares **computed** styles (5,582 elements),
+   which catches what the text guard cannot: a rule that wins on specificity, an
+   `#scr.enlarged` rule that lost its class scope, a size set from JS, or a
+   token that moves a layout property. It needs a build of both sides, so budget
+   ~2 min each:
+
+   ```bash
+   SP=<scratchpad>
+   git worktree add -f $SP/base cc6edad
+   python3 -m pip install --quiet Pillow
+   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
+   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
+   node reference/origins/hifi-build/snapshot-guard.js $SP/base.html $SP/cur.html
+   ```
+
+   `asm_app.py` writes to the same scratchpad path both times — **move the first
+   output before building the second** or the second silently overwrites it.
+
+   It carries a short **accepted-deltas** list: differences from the baseline
+   that are known and intended, each with a reason, and the run prints how many
+   it applied so they stay visible. Today there are 5 — `.fbtn` and `.edusearch`
+   taking `min-height:47px` from `--control-height` in the token refactor
+   (visually inert: both already rendered at 50px), and the `span.advsoon`
+   "Coming soon" tag removed when Enlarged shipped. **Never add an entry to turn
+   a red run green** — an entry means someone checked that the change to
+   Standard was deliberate. If the list starts growing, the baseline is wrong,
+   not the app.
+
+   `ratio.js` is the third guard, at `reference/origins/hifi-build/ratio.js`: it
+   prints each element as a percentage of its card in both modes, which is the
+   check for whether the *Enlarged* curve is still anchored to its container.
 
    **The regression it exists to catch has already happened once.** Flattening
    the Enlarged type scale used `re.sub(..., count=1)` on six semantic tokens.
@@ -356,6 +378,7 @@ reference/origins/
 │   ├── terpmap.py                ← terpenes -> feelings + scents
 │   ├── ratio.js                  ← Enlarged guard: each element as a % of its card
 │   ├── standard-guard.py         ← Enlarged guard: Standard must not move (run it)
+│   ├── snapshot-guard.js         ← Enlarged guard: same, from computed styles
 │   ├── xlsxread.py               ← the one xlsx reader they all share
 │   ├── gen_concentrates.py       ← concentrates from the .xlsx
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA
@@ -466,10 +489,10 @@ a nominated eighth is at or under the $25 deal price.
 - **A tooling script that isn't committed is gone.** Containers are reclaimed,
   and `standard-guard.py`, `std_before.json`, `snapshot.js` and `coverage.js`
   were written, used, documented as required — and never added to git.
-  `standard-guard.py` has since been rewritten and committed (deriving its
-  baseline from `cc6edad` rather than from a captured file, so it can't be lost
-  that way again); `snapshot.js` and `coverage.js` are still missing. Commit any
-  guard you write, and prefer a baseline git can regenerate over one you store.
+  Both have since been rewritten and committed as `standard-guard.py` and
+  `snapshot-guard.js`, each deriving its baseline from `cc6edad` rather than
+  from a captured file, so neither can be lost that way again. Commit any guard
+  you write, and prefer a baseline git can regenerate over one you store.
 - **A verification claim in these docs is only as good as the script behind
   it.** "Standard is provably untouched" was written from a snapshot run whose
   script no longer exists, and the regression above landed after it. Re-run the
