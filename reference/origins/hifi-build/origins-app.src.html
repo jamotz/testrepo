@@ -1055,6 +1055,15 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 /* Vape's back button: inline-flex so it takes the target height without
    stretching across the screen the way the shared .fbtn alignment rule would. */
 #scr.enlarged .vape .bk{display:inline-flex;align-items:center;min-height:var(--target-size)}
+
+/* Full screen: the exit chip has its own strip so it never covers the app's
+   header (body.fs .scr, 48px). The chip is type in a pill, so in Enlarged it
+   grows 35 -> 50px and its bottom lands at 64px — 16px into a strip that never
+   moved, sitting on top of the mood chip bar. The strip has to grow with the
+   thing it was reserved for. 68px clears the 64px chip with the few px of slack
+   Standard has at 48/49. Found by screenshot, not by a guard: #fsexit lives
+   outside .s[data-s=...], so enlarged-check.js never looks at it. */
+body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 #scr.enlarged .sbar .sic{width:28.2px;height:28.2px}
 #scr.enlarged .oc .box{width:25.6px;height:25.6px}
 #scr.enlarged .feelchip svg{width:30.7px;height:30.7px}
