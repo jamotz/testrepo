@@ -275,9 +275,27 @@ polish and the open questions below.
    Standard was deliberate. If the list starts growing, the baseline is wrong,
    not the app.
 
-   `ratio.js` is the third guard, at `reference/origins/hifi-build/ratio.js`: it
-   prints each element as a percentage of its card in both modes, which is the
-   check for whether the *Enlarged* curve is still anchored to its container.
+   **Both of those guard Standard.** Neither says anything about whether
+   Enlarged itself works. Two more cover that side:
+
+   ```bash
+   node reference/origins/hifi-build/ratio.js         <built.html>   # the curve
+   node reference/origins/hifi-build/enlarged-check.js <built.html>  # the mode
+   ```
+
+   `ratio.js` prints each element as a percentage of its card in both modes —
+   the check for whether the curve is still anchored to its container.
+   `enlarged-check.js` turns the mode on and walks all 24 screens looking for
+   the toggle failing to round-trip, page-level horizontal scrolling
+   (WCAG 1.4.10), content spilling past the app frame, and tap targets under
+   24px (WCAG 2.5.8). Note its carousel exception: deal rows and chip rows
+   scroll horizontally, so their children sit outside the frame legitimately —
+   without that exception the spill check reports five screens of false
+   positives.
+
+   Verified on a build of `1ca26e4`: round-trip clean (name 14→32→14px, nav
+   9→15→9, tab icon 21→34→21), 24 screens with no findings, no target under
+   24px.
 
    **The regression it exists to catch has already happened once.** Flattening
    the Enlarged type scale used `re.sub(..., count=1)` on six semantic tokens.
@@ -379,6 +397,7 @@ reference/origins/
 │   ├── ratio.js                  ← Enlarged guard: each element as a % of its card
 │   ├── standard-guard.py         ← Enlarged guard: Standard must not move (run it)
 │   ├── snapshot-guard.js         ← Enlarged guard: same, from computed styles
+│   ├── enlarged-check.js         ← does Enlarged itself work (overflow/targets)
 │   ├── xlsxread.py               ← the one xlsx reader they all share
 │   ├── gen_concentrates.py       ← concentrates from the .xlsx
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA

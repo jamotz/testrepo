@@ -693,11 +693,19 @@ product card goes **198px → 409px (×2.07)**. A type curve tuned on its own �
 first one grew text ~1.3× — leaves every element *smaller relative to its card
 than in Standard*: it grows in pixels while shrinking on screen. Measured:
 
-| as % of card width | Standard | 1.3× curve | current |
+| as % of card width | Standard | 1.3× curve | as shipped |
 |---|---:|---:|---:|
-| product name | 7.07% | 4.31% | 5.48% |
-| price | 7.58% | 4.55% | 5.57% |
-| THC/CBD bubble | 5.05% | 3.35% | 4.52% |
+| product name | 7.07% | 4.31% | **7.82%** |
+| price | 7.58% | 4.55% | 5.87% |
+| THC/CBD bubble | 5.05% | 3.35% | 5.38% |
+
+The "as shipped" column is `ratio.js` run against the current build. It is not
+the curve's own output (5.48 / 5.57 / 4.52, which is what this column used to
+say): the flattening and the 32px strain name landed on top of the curve, and
+they moved these numbers. **The product name is now proportionally *larger* than
+in Standard** — 7.82% against 7.07% — which is what Jack asked for when he
+called it the thing you scan a card for. Price and the bubble are still below
+their Standard share, but comfortably above the curve that was rejected.
 
 Factors are therefore ≤9px ×1.90, 11px ×1.78, 13px ×1.64, 16px ×1.52, 20px
 ×1.42, 26px ×1.34, and **over 40px only ×1.08** — display type the spec says not
