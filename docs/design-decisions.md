@@ -1487,3 +1487,44 @@ not quietly filtered out.
 lapsed at exactly the moment it was needed, and it lapsed because running it
 meant two builds. Splitting the check means the constant case costs 0.06s and
 the thorough case is reserved for before a publish.
+
+### The product page's back button was the one control Enlarged missed
+Found 2026-09-03 by `enlarged-check.js`, sweeping viewports rather than testing
+one. `#scr.enlarged` carries an explicit enumeration of small icon controls that
+take `min-height`/`min-width: var(--target-size)` — `.tabs button`, `.sbar .bk`,
+`.qty button`, `.fsclose`, `.sw`, `.acav`, `.fcard .fsz`, `.fszs button`.
+`.pihead .pihback` was not in it, and had **no `#scr.enlarged` rule anywhere**,
+so it kept its hard-coded `width:26px;height:26px` in both modes while the
+screen around it doubled. Its sibling `.sbar .bk` grows 24 → 30.7px.
+
+On a 393×852 phone in full screen it rendered at **23px** — under WCAG 2.5.8's
+24px minimum, and the only control in the app that missed it. It now takes the
+same treatment as `.sbar .bk`: the target size, and a 28.2px glyph.
+
+**The lesson is about enumerations, not about this button.** Most of the
+Enlarged layer is a token every component inherits, and a new screen gets the
+mode for free by using the tokens. But target size is a *list*, because only
+small icon controls need it — and a list is a thing you can be left off. The
+generated icon-scaling pass didn't reach it either, since that keyed off the
+selectors it found rather than off what a control is. Anything that gets its
+size from a hard-coded `width`/`height` rather than from a token has to be named
+somewhere, and naming is where things get forgotten.
+
+Two near misses worth knowing about, both found in the same pass:
+
+- **Measuring rendered size hides this class of bug in noise.** The app is
+  transform-scaled by `k`, so on a shrunk preview *everything* measures under
+  24px — the first run reported 9 findings, 8 of them the stage. Only splitting
+  "under 24px by design" from "under 24px after scaling" made the real one
+  visible.
+- **The vape screen's back button is a second instance, left alone.** It is a
+  bare `.bk` outside `.sbar` carrying an *inline* `font-size:.9rem`, so it is
+  invisible to the token system entirely — an inline style is not in the
+  stylesheet, so the "every font-size is a token" claim quietly excludes it. It
+  measures 29px by design, so it clears 24px and is not a WCAG failure; it just
+  doesn't grow in Enlarged. Fixing it means either `!important` (inline styles
+  outrank stylesheet rules) or moving the style into the stylesheet, which adds
+  a Standard declaration and forces a re-baseline for a change that alters
+  nothing on screen. Both are worse than the gap. **Left as-is deliberately** —
+  but if another inline `font-size` ever appears, reconsider: the exception is
+  tolerable at one, not at several.

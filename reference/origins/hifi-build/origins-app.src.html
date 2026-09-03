@@ -945,9 +945,10 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    to Enlarged view — Standard's 24px icon buttons already clear AA's 24px. */
 #scr.enlarged .tabs button,#scr.enlarged .sbar .bk,#scr.enlarged .qty button,
 #scr.enlarged .fsclose,#scr.enlarged .sw,#scr.enlarged .acav,
+#scr.enlarged .pihead .pihback,
 #scr.enlarged .fcard .fsz,#scr.enlarged .fszs button{min-height:var(--target-size)}
 #scr.enlarged .sbar .bk,#scr.enlarged .qty button,#scr.enlarged .fsclose,
-#scr.enlarged .acav{min-width:var(--target-size)}
+#scr.enlarged .acav,#scr.enlarged .pihead .pihback{min-width:var(--target-size)}
 /* separate two adjacent small controls so a near-miss doesn't hit the other */
 #scr.enlarged .qty{gap:10px}
 /* The last controls under 24px in Enlarged view: the Sort <select>, the row
@@ -1037,6 +1038,12 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 #scr.enlarged .dcp img{width:53.8px;height:53.8px}
 #scr.enlarged .sbar .bk{width:30.7px;height:30.7px}
 #scr.enlarged .sbar .bk svg{width:28.2px;height:28.2px}
+/* The product page's own back button. It was the one control the target-size
+   pass missed: a hard-coded 26x26 with no #scr.enlarged rule at all, so it
+   stayed put while the screen around it doubled, and on a 393px phone it
+   rendered at 23px - under WCAG 2.5.8's 24px, the only control in the app that
+   missed it. Same treatment as .sbar .bk, which it is the sibling of. */
+#scr.enlarged .pihead .pihback svg{width:28.2px;height:28.2px}
 #scr.enlarged .sbar .sic{width:28.2px;height:28.2px}
 #scr.enlarged .oc .box{width:25.6px;height:25.6px}
 #scr.enlarged .feelchip svg{width:30.7px;height:30.7px}
