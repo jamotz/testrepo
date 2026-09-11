@@ -1689,3 +1689,43 @@ same checkmark correctly as `content:"\2713"`, so it now matches. **Prefer the
 CSS escape for any non-ASCII in the stylesheet**: the build passes `<style>`
 through untouched while escaping other segments, so a literal glyph there has a
 path to get mangled and an escape does not.
+
+### Strain mode gets letters, and Holistic keeps its logo
+*Use product type* already swapped the six lifestyle **words** for strain names.
+It now swaps the **glyph** too: `S` Sativa, `SH` Sativa Hybrid, `H` Hybrid,
+`IH` Indica Hybrid, `I` Indica. Jack's brief was "just a letter, no fancy
+designs needed", and that is exactly what it is.
+
+**Holistic keeps its logo.** It is a cannabinoid profile rather than a strain,
+so there is no letter for it — it is simply absent from `STRAINLETTER` and
+`lifeGlyph()` falls through to the image. The absence *is* the rule; do not add
+a `C` or a `CBD` to "complete the set".
+
+**Text, not generated art.** The letters render in the app's own Oswald, stay
+crisp at every size, follow the Enlarged scale with no second asset, and cost no
+build step. Generating PNG or SVG letters was the alternative and is worse here:
+only `.woff2` of Oswald is in the repo and `fontTools` is not installed, so
+matching the app's own face would have meant a font conversion, and the result
+would be raster art where text is sharper. They are black to match
+`embed_glyph()`, which flattens the lifestyle logos to black precisely so they
+can sit on a lifestyle-coloured ground.
+
+**`lifeGlyph()` is the one place a glyph is printed**, exactly as `lifeLabel()`
+is the one place a word is. That mattered more than expected: **seven** call
+sites were printing `IMG["sm_"+k]` directly — the Guide Me wizard, the finish
+chips, the mood chips, the product card badge *twice*, the product info pill and
+the Origins U tile. Miss one and it keeps showing a logo while everything around
+it shows a letter, which is the same failure the label rule already guards
+against. Reach for `IMG["sm_"+k]` on a new screen and the letter will not follow
+you there.
+
+CSS is one rule per context because each sizes its glyph differently, plus the
+three Enlarged overrides that already existed for the images.
+
+*Two notes for whoever edits these call sites next.* The `<img>` markup sits
+**inside** a larger JS string rather than being quote-delimited, so a
+replacement has to close and reopen the literal — a first attempt that assumed
+otherwise asserted and wrote nothing, which is the good outcome. And when
+testing this, `querySelectorAll('.edulife span')` matches both the outer
+lifestyle wrapper *and* the inner letter span, so the tile reads as eleven
+entries rather than six; that is the selector, not a bug.

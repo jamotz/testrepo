@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`9baa7ea`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`5f66ce8`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -177,6 +177,14 @@ The **Use product type** switch in Advanced Settings swaps the two vocabularies
 app-wide (2026-08-18). It is a label lookup, not a data change: `lifeLabel(key)`
 is the only place a lifestyle word is printed — **use it, or your new screen
 won't follow the toggle**.
+
+Since 2026-09-11 it swaps the **glyph** too: `lifeGlyph(key, cls, alt)` prints a
+plain letter — **S / SH / H / IH / I** — in place of the lifestyle logo, and is
+the only place a glyph is printed, for the same reason `lifeLabel()` is the only
+place a word is. **Holistic keeps its logo**: it is a cannabinoid profile, not a
+strain, so it has no letter and `lifeGlyph()` falls through to the image. Seven
+call sites were printing `IMG["sm_"+k]` directly before this; all now go through
+the helper.
 
 **Screens built:** landing (store picker) · home/deals · Guide Me wizard
 (feel → method → sub-type → taste → recommendations) · shop feed · product list
