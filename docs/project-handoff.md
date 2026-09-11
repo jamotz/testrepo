@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`8c18000`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`b307560`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -384,7 +384,30 @@ polish and the open questions below.
    Offered but not built: a remapping sheet listing all ~120 old values with a
    proposed new term and product counts, so Jack reviews 120 rows instead of 138
    products.
-4. **The drawer's Brands facet matches almost nothing — audited 2026-09-11.**
+4. ~~**The drawer's Brands facet matches almost nothing**~~ — **FIXED
+   2026-09-11.** `BRANDS` is gone; `brandList()` derives the options from `P`
+   and sorts them with `localeCompare`. **45 brands, alphabetical, 308 of 308
+   products reachable** (was 15, 5%) and **0 catalog brands unoffered** (was
+   43). It is a function rather than a `const` because the old list sat ten
+   lines *above* the `P` array it needs to read — a hoisted function only
+   touches `P` when the drawer renders. A derived list cannot drift:
+   regenerate the catalog and the facet follows.
+
+   Verify with `node reference/origins/hifi-build/filter-audit.js <build>`,
+   which drives the app's own `match()` over every option. **Two findings from
+   that audit are still open and are Jack's call:**
+
+   - **Edible form → "Capsules / Softgels" matches 0 products** (the other four
+     forms have 10 each). Needs products, or the option comes out.
+   - **Three brand-name collisions in the catalog**, now adjacent in the
+     alphabetical list and reading as duplicates: `Ceres` (edibles 6) /
+     `Dragon Balm (Ceres)` (topicals 8); `Constellation` (flower 2) /
+     `Constellation Cannabis` (concentrate 4 + edible 6); `Swift` (drinks 5) /
+     `Swifts` (edibles 4). Each splits cleanly across product types — one brand
+     spelled two ways in two source sheets. Merging means editing product data,
+     so it is not mine to do; it would take 45 to 42.
+
+   *The original diagnosis, for the record:*
    Ran the app's own `match()` over every option the drawer offers. Brands:
    Artizen 9, Saints 6, and **Freddy's / Royal Tree / Skörd / St. Ideal all 0**.
    **15 of 308 products (5%) are reachable through the facet.** The catalog holds
@@ -498,6 +521,7 @@ reference/origins/
 │   ├── standard-guard.py         ← Enlarged guard: Standard must not move (run it)
 │   ├── snapshot-guard.js         ← Enlarged guard: same, from computed styles
 │   ├── enlarged-check.js         ← does Enlarged itself work (overflow/targets)
+│   ├── filter-audit.js           ← counts products behind every filter option
 │   ├── xlsxread.py               ← the one xlsx reader they all share
 │   ├── gen_concentrates.py       ← concentrates from the .xlsx
 │   ├── gen_edibles.py            ← edibles from the .xlsx + filter IA
