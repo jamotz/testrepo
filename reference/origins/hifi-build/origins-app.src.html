@@ -604,9 +604,11 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .vape{padding:22px 18px}
 .vape h2{font-size:var(--fs-r1_7);color:var(--ink)}
 .vape .learn{font-family:var(--head);text-transform:uppercase;font-size:var(--fs-11_0);letter-spacing:.06em;color:var(--or)}
-.vape .chips{display:flex;gap:14px;overflow-x:auto;margin:14px 0 20px;opacity:.55}
-.vape .vc{flex:none;text-align:center;font-family:var(--head);text-transform:uppercase;font-size:var(--fs-10_0);color:#8C8478}
-.vape .vc .d{width:60px;height:60px;border-radius:50%;background:#E4DED2;margin:0 auto 6px}
+/* The vape consistencies use the shop's own .cc circle — orange ring, white
+   ground, 62px cutout — rather than the grey 55%-opacity discs that stood here
+   while the Vapes asset folder was empty. Same component as the shop, so it
+   inherits the Enlarged rules (#scr.enlarged .catcircles) for free. */
+.vape .catcircles{padding:14px 0 20px}
 .vape .notice{border:1px solid #E0A08C;background:#FBEDE7;border-radius:10px;padding:20px 18px;text-align:center}
 .vape .notice b{font-family:var(--head);text-transform:uppercase;color:#B23B2E;font-size:var(--fs-r0_95);letter-spacing:.05em}
 .vape .notice p{font-size:var(--fs-13_0);color:var(--ink-2);line-height:1.55;margin:10px 0 16px}
@@ -1309,7 +1311,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
         <div class="chipbar shopchips" id="moodbar3"></div>
         <div class="vape">
           <h2>Vapes</h2><span class="learn">Learn about the Differences &rsaquo;</span>
-          <div class="chips"><div class="vc"><div class="d"></div>Distillate</div><div class="vc"><div class="d"></div>Live Resin</div><div class="vc"><div class="d"></div>Full Spec</div><div class="vc"><div class="d"></div>Rosin</div></div>
+          <div class="catcircles" id="vapecircles"></div>
           <div class="notice"><b>Vapes are web-only</b><p>We&rsquo;re not able to display or sell vape cartridges or accessories in-app due to App Store regulations. Order them on our website and pick up in-store.</p><button class="web" type="button">Our Website &rarr;</button></div>
         </div>
       </section>
@@ -2123,6 +2125,7 @@ function nav(k){
   if(k==="dealcal")renderDealCal();
   /* a hidden screen measures 0, so the brand row can only be sized once home is
      actually on - renderHome() runs while the app is still on the landing screen */
+  if(k==="vape")renderVape();
   if(k==="home")sizeDealRows();
 }
 document.querySelectorAll("[data-nav]").forEach(function(b){b.addEventListener("click",function(){
@@ -2538,6 +2541,22 @@ function feedCard(p){
       : (ADV.enlarged
           ? cardCart(p.id,dispSize)
           : '<button class="fadd tap" data-add="'+p.id+'" data-sz="'+dispSize+'" aria-label="'+esc("Add "+p.n+", "+dispSize+", to cart")+'">Add to Cart</button>'))+'</div>';
+}
+/* Distillate / Live Resin / Rosin are the exact photos Jack's SHOP - VAPE.png
+   frame uses. Full Spec is the one pick that is mine: his frame repeats the
+   Live Resin shot there, and the app's rule is that no two bubbles share a
+   photo, so it takes the live-resin sauce — a sauce IS the full-spectrum
+   extract, and it reads as its own product at a glance. One line to swap. */
+var VAPECIRCLES=[["cd_oil","Distillate"],["clr_sugar","Live Resin"],
+                 ["clr_sauce","Full Spec"],["cro_live","Rosin"]];
+/* Not buttons: vapes are web-only, so these identify the consistencies rather
+   than navigating anywhere. A tap target that does nothing is worse than none. */
+function renderVape(){
+  var el=$("#vapecircles"); if(!el)return;
+  el.innerHTML=VAPECIRCLES.map(function(v){
+    var src=IMG[v[0]];
+    return '<div class="cc"><span class="ring'+(src?'':' noimg')+'">'+
+      (src?'<img src="'+src+'" alt="">':'')+'</span><b>'+v[1]+'</b></div>';}).join("");
 }
 function renderShop(){
   moodChips($("#moodbar"));
