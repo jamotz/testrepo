@@ -1583,7 +1583,19 @@ function prTypes(n){for(var i=0;i<PREROLL.length;i++)if(PREROLL[i].n===n)return 
 const DRINK=["THC","CBD","Blend"];
 const DRTYPES=["Drink","Shot","Seltzer","Sorbet","Honey"];
 const SUBS={concentrate:CONC.map(function(c){return c.n;}),edible:["Chocolates","Gummies","Mints","Drinks"],flower:["Indoor","Outdoor"],preroll:PREROLL.map(function(c){return c.n;}),topical:["Pain Relief","Recovery","Cooling","Warming","Massage","Skincare","Intimacy"]};
-const BRANDS=["Artizen","Freddy's","Royal Tree","Saints","Skörd","St. Ideal"];
+/* Brands are DERIVED from the catalog, never hand-listed. The hand-written list
+   that stood here — Artizen, Freddy's, Royal Tree, Saints, Skörd, St. Ideal —
+   had drifted until four of its six matched nothing: match() compares p.b
+   exactly, so "Royal Tree" missed "Royal Tree Gardens" (12 products) and
+   "Skörd" missed "Skord" (17), while Freddy's and St. Ideal were not in the
+   catalog at all. 15 of 308 products were reachable through the facet.
+   A derived list cannot drift: regenerate the catalog and the facet follows.
+   It reads P at call time, not at load — P is defined below this line. */
+function brandList(){
+  var seen={},out=[];
+  P.forEach(function(p){if(p.b&&!seen[p.b]){seen[p.b]=1;out.push(p.b);}});
+  return out.sort(function(a,b){return a.localeCompare(b);});
+}
 const FEELOPTS=[
  {k:"sleep",t:"Sedated Body High / Sleep Aid",life:"unwind"},
  {k:"relax",t:"Hazy Eyes / Relaxed",life:"unwind"},
@@ -3335,7 +3347,7 @@ function drawDrawer(){
      (szList?'<div class="opts">'+szList.map(function(s){return '<button class="opt tap '+(S.size===s?'sel':'')+'" data-fs="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>'
        :'<div class="lock"><b>Choose a product type first</b><br>Sizes adapt to the product — grams for flower, mg for edibles, mL for topicals. No impossible combos, no wrong results.</div>')+'</div>'+
    '<div class="dsec"><div class="dt">THC %</div><div class="opts">'+[["low","Low (<10%)"],["mod","Moderate (10–20%)"],["high","High (20%+)"],["cbd","Only CBD"]].map(function(o){return '<button class="opt tap '+(S.thc===o[0]?'sel':'')+'" data-fh="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>'+
-   (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands</div><div class="opts">'+BRANDS.map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div></div>';
+   (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands</div><div class="opts">'+brandList().map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div></div>';
   d.querySelector("#swsale").addEventListener("click",function(){S.sale=!S.sale;drawDrawer();});
   d.querySelectorAll("[data-fm]").forEach(function(b){b.addEventListener("click",function(){S.mood=S.mood===b.dataset.fm?null:b.dataset.fm;drawDrawer();});});
   d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.deal=null;drawDrawer();});});
