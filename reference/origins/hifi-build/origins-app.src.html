@@ -780,6 +780,12 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .opt{border:1px solid #C9C2B4;background:#fff;border-radius:100px;padding:8px 13px;font-family:var(--head);font-weight:500;font-size:var(--fs-11_0);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
 .opt.sel{background:var(--olive);border-color:var(--olive);color:#fff}
+/* Brands runs long — 42 options — so it clamps to three wrapped rows behind a
+   centred "See more". .bhide carries !important because .opt sets no display of
+   its own and a future display rule would otherwise beat the plain attribute. */
+.bhide{display:none!important}
+.brandmore{display:flex;justify-content:center;margin-top:11px}
+.bmore{background:none;border:0;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--fs-11_0);letter-spacing:.08em;color:var(--or);padding:7px 14px}
 .lock{margin-top:10px;background:#F3EFE6;border:1px dashed #C9C2B4;border-radius:8px;padding:12px;font-size:var(--fs-12_0);color:var(--ink-2);line-height:1.5}
 .lock b{font-family:var(--head);text-transform:uppercase;font-size:var(--fs-10_5);letter-spacing:.08em;color:var(--olive)}
 .sw{width:46px;height:26px;border-radius:100px;background:#D8D2C6;border:0;position:relative;transition:background .2s}
@@ -947,7 +953,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    to Enlarged view — Standard's 24px icon buttons already clear AA's 24px. */
 #scr.enlarged .tabs button,#scr.enlarged .sbar .bk,#scr.enlarged .qty button,
 #scr.enlarged .fsclose,#scr.enlarged .sw,#scr.enlarged .acav,
-#scr.enlarged .pihead .pihback,
+#scr.enlarged .pihead .pihback,#scr.enlarged .bmore,
 #scr.enlarged .fcard .fsz,#scr.enlarged .fszs button{min-height:var(--target-size)}
 #scr.enlarged .sbar .bk,#scr.enlarged .qty button,#scr.enlarged .fsclose,
 #scr.enlarged .acav,#scr.enlarged .pihead .pihback{min-width:var(--target-size)}
@@ -1593,8 +1599,39 @@ const SUBS={concentrate:CONC.map(function(c){return c.n;}),edible:["Chocolates",
    It reads P at call time, not at load — P is defined below this line. */
 function brandList(){
   var seen={},out=[];
-  P.forEach(function(p){if(p.b&&!seen[p.b]){seen[p.b]=1;out.push(p.b);}});
+  P.forEach(function(p){
+    if(S.type&&p.t!==S.type)return;   /* only brands stocked on the active shelf */
+    if(p.b&&!seen[p.b]){seen[p.b]=1;out.push(p.b);}
+  });
   return out.sort(function(a,b){return a.localeCompare(b);});
+}
+/* Narrowing the shelf can strand a selected brand that the new shelf does not
+   carry: it stops being rendered, so it cannot be unselected, and match() then
+   returns nothing with no visible cause. Drop those selections with the type. */
+function pruneBrands(){
+  var ok=brandList();
+  S.brands=S.brands.filter(function(b){return ok.indexOf(b)>-1;});
+}
+/* Three wrapped rows, then a centred "See more". Rows are measured rather than
+   assumed: pill widths differ per brand and the whole scale changes in Enlarged,
+   so a fixed count or max-height would be wrong in one mode or the other.
+   A hidden element measures zero, so the drawer must already be .on — the open
+   handlers add the class before calling drawDrawer() for exactly that reason. */
+var brandsOpen=false;
+function clampBrands(){
+  var wrap=$("#brandopts"),more=$("#brandmore");
+  if(!wrap||!more)return;
+  var btns=[].slice.call(wrap.children);
+  btns.forEach(function(b){b.classList.remove("bhide");});
+  more.classList.add("bhide");
+  if(brandsOpen||!btns.length)return;
+  var rows=[];
+  btns.forEach(function(b){var t=b.offsetTop;if(rows.indexOf(t)<0)rows.push(t);});
+  if(rows.length<=3)return;
+  rows.sort(function(a,b){return a-b;});
+  var cut=rows[3];
+  btns.forEach(function(b){if(b.offsetTop>=cut)b.classList.add("bhide");});
+  more.classList.remove("bhide");
 }
 const FEELOPTS=[
  {k:"sleep",t:"Sedated Body High / Sleep Aid",life:"unwind"},
@@ -3347,22 +3384,27 @@ function drawDrawer(){
      (szList?'<div class="opts">'+szList.map(function(s){return '<button class="opt tap '+(S.size===s?'sel':'')+'" data-fs="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>'
        :'<div class="lock"><b>Choose a product type first</b><br>Sizes adapt to the product — grams for flower, mg for edibles, mL for topicals. No impossible combos, no wrong results.</div>')+'</div>'+
    '<div class="dsec"><div class="dt">THC %</div><div class="opts">'+[["low","Low (<10%)"],["mod","Moderate (10–20%)"],["high","High (20%+)"],["cbd","Only CBD"]].map(function(o){return '<button class="opt tap '+(S.thc===o[0]?'sel':'')+'" data-fh="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>'+
-   (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands</div><div class="opts">'+brandList().map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div></div>';
+   (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands'+(S.type?' <span class="hint">'+TYPES[S.type]+' brands</span>':'')+'</div><div class="opts" id="brandopts">'+brandList().map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div><div class="brandmore bhide" id="brandmore"><button class="bmore tap" id="bmorebtn">See more</button></div></div>';
   d.querySelector("#swsale").addEventListener("click",function(){S.sale=!S.sale;drawDrawer();});
   d.querySelectorAll("[data-fm]").forEach(function(b){b.addEventListener("click",function(){S.mood=S.mood===b.dataset.fm?null:b.dataset.fm;drawDrawer();});});
-  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.deal=null;drawDrawer();});});
+  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.deal=null;pruneBrands();brandsOpen=false;drawDrawer();});});
   d.querySelectorAll("[data-fs]").forEach(function(b){b.addEventListener("click",function(){S.size=S.size===b.dataset.fs?null:b.dataset.fs;drawDrawer();});});
   d.querySelectorAll("[data-fh]").forEach(function(b){b.addEventListener("click",function(){S.thc=S.thc===b.dataset.fh?null:b.dataset.fh;drawDrawer();});});
   d.querySelectorAll("[data-fe]").forEach(function(b){b.addEventListener("click",function(){S.eform=S.eform===b.dataset.fe?null:b.dataset.fe;drawDrawer();});});
   d.querySelectorAll("[data-fb]").forEach(function(b){b.addEventListener("click",function(){var i=S.brands.indexOf(b.dataset.fb);i>-1?S.brands.splice(i,1):S.brands.push(b.dataset.fb);drawDrawer();});});
+  var bm=d.querySelector("#bmorebtn");
+  if(bm)bm.addEventListener("click",function(){brandsOpen=true;clampBrands();});
   $("#applyf").textContent="Show "+results().length+" results";
+  clampBrands();
 }
-$("#openfilter").addEventListener("click",function(){drawDrawer();$("#drawer").classList.add("on");});
-$("#shopfilter").addEventListener("click",function(){nav("list");drawDrawer();$("#drawer").classList.add("on");});
+/* .on first, then draw: clampBrands() measures wrapped rows and a display:none
+   drawer reports every offsetTop as 0, which would collapse Brands to one row. */
+$("#openfilter").addEventListener("click",function(){brandsOpen=false;$("#drawer").classList.add("on");drawDrawer();});
+$("#shopfilter").addEventListener("click",function(){nav("list");brandsOpen=false;$("#drawer").classList.add("on");drawDrawer();});
 $("#closefilter").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#dim").addEventListener("click",function(){$("#drawer").classList.remove("on");renderList();});
 $("#applyf").addEventListener("click",function(){$("#drawer").classList.remove("on");moodChips($("#moodbar2"));renderList();});
-$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.size=null;S.thc=null;S.sale=false;S.deal=null;drawDrawer();});
+$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.size=null;S.thc=null;S.sale=false;S.deal=null;brandsOpen=false;drawDrawer();});
 $("#sortsel").addEventListener("change",function(e){S.sort=e.target.value;renderList();});
 
 var tmr=null;function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tmr);tmr=setTimeout(function(){t.classList.remove("on");},1600);}
