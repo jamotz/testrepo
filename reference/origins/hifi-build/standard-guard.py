@@ -90,7 +90,11 @@ from collections import Counter
 # provided is not lost -- it is in the git history and in design-decisions.md --
 # but this guard now protects against drift from c77eff1 forward rather than
 # proving anything about the Enlarged refactor. That refactor is long verified.
-BASELINE = "c77eff1"
+# Moved again 2026-09-11: c77eff1 -> 623bcf8. The Brands facet gained a centred
+# "See more" control (.bmore, 11px), a new visible element and so a real Standard
+# change, not an accepted delta. Diff read first: one gained declaration, nothing
+# lost.
+BASELINE = "623bcf8"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
