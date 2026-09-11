@@ -1654,3 +1654,38 @@ the comment so they can be re-derived when a photo is swapped.**
 *The general point:* a guard tells you nothing moved that you told it to watch.
 It cannot tell you the result looks right. Both times this screen was touched,
 the thing worth fixing was found by looking at it.
+
+### The selected-lifestyle ring is black, and orange would have been the worst pick
+Jack asked for a selection border on the lifestyle chips in the title bar's
+brown. Two things came out of measuring it.
+
+First, **there already was one** — a white 3px inset ring — so this was a colour
+change, not a new state. Worth knowing before "add a selection state" turns into
+two competing ones.
+
+Second, the colour matters more than it looks, because the six lifestyle chips
+are themselves coloured. Against WCAG 1.4.11's 3:1 for a state indicator:
+
+| ring | Disc | Adv | Soc | Unw | Night | Hol | worst | pass |
+|---|---:|---:|---:|---:|---:|---:|---:|:--:|
+| **black** | 3.44 | 8.05 | 14.53 | 8.06 | 5.44 | 6.66 | **3.44** | **6/6** |
+| brown `--brown` | 2.43 | 5.70 | 10.29 | 5.71 | 3.85 | 4.72 | 2.43 | 5/6 |
+| white *(the original)* | 6.11 | 2.61 | 1.45 | 2.61 | 3.86 | 3.15 | 1.45 | 3/6 |
+| orange `--or` | 1.87 | 1.25 | 2.26 | 1.25 | 1.18 | 1.04 | 1.04 | **0/6** |
+
+**Orange fails against every chip**, worst 1.04 on Holistic — effectively
+invisible. It is mid-luminance and so are all six lifestyle colours, so there is
+nothing for it to contrast against. It stays right for CTAs and the wizard; it
+is simply the wrong tool for a ring on a coloured chip. The brown Jack asked for
+cleared 5 of 6 and only Discovery fell short, and since `--brown` is `#2E261E`,
+black reads as that brown at a glance while clearing all six. **A ring you
+cannot see is not a state**, so the table lives in the CSS beside the rule, with
+a note to re-measure if a lifestyle colour is ever retuned.
+
+*Found on the same selector:* in Enlarged, a selected chip appends a mark via
+`::after`, and its content was `"¹3"` — raw bytes `C2 B9 33`, mojibake, rendering
+literal garbage beside the label. The neighbouring `.store.sel` rule writes the
+same checkmark correctly as `content:"\2713"`, so it now matches. **Prefer the
+CSS escape for any non-ASCII in the stylesheet**: the build passes `<style>`
+through untouched while escaping other segments, so a literal glyph there has a
+path to get mangled and an escape does not.
