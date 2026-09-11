@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`b307560`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`07a1c0c`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -394,18 +394,27 @@ polish and the open questions below.
    regenerate the catalog and the facet follows.
 
    Verify with `node reference/origins/hifi-build/filter-audit.js <build>`,
-   which drives the app's own `match()` over every option. **Two findings from
-   that audit are still open and are Jack's call:**
+   which drives the app's own `match()` over every option. **Both remaining
+   findings were closed on 2026-09-11 (Jack's call), at the source:**
 
-   - **Edible form → "Capsules / Softgels" matches 0 products** (the other four
-     forms have 10 each). Needs products, or the option comes out.
-   - **Three brand-name collisions in the catalog**, now adjacent in the
-     alphabetical list and reading as duplicates: `Ceres` (edibles 6) /
-     `Dragon Balm (Ceres)` (topicals 8); `Constellation` (flower 2) /
-     `Constellation Cannabis` (concentrate 4 + edible 6); `Swift` (drinks 5) /
-     `Swifts` (edibles 4). Each splits cleanly across product types — one brand
-     spelled two ways in two source sheets. Merging means editing product data,
-     so it is not mine to do; it would take 45 to 42.
+   - **"Capsules / Softgels" → "Capsules".** Never a data problem: the catalog
+     already carried `etype:"Capsules"` on 10 products and only the facet label
+     disagreed. The option now matches its 10.
+   - **The three collisions are merged** — `Dragon Balm (Ceres)` → `Ceres`,
+     `Constellation Cannabis` → `Constellation`, `Swift` → `Swifts`. Done **in
+     the .xlsx sheets as well as the app**, so a regeneration cannot undo it;
+     the generators were re-run and emit the merged names. 45 brands → **42**:
+     Ceres 14, Constellation 12, Swifts 9. `Dragon Balm` survives as a *product*
+     name under Ceres, which is right — it is the product line, not the brand.
+
+   **Editing these sheets: they use TWO cell encodings.** Topicals writes
+   `<c t="inlineStr"><is><t>`, Concentrate writes namespaced
+   `<x:c t="str"><x:v>`. A replacement written for one silently matches nothing
+   in the other — the first pass changed 0 of 4 cells in Concentrate and
+   reported success. Same family as the self-closing-cell hazard below. **Dry-run
+   any sheet edit and check the counts against a `grep` done up front**, and
+   edit the worksheet XML inside the zip rather than round-tripping through a
+   library, which rewrites styles and docProps too.
 
    *The original diagnosis, for the record:*
    Ran the app's own `match()` over every option the drawer offers. Brands:
