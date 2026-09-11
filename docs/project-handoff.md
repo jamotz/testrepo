@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`470e2b5`** (republished 2026-09-03, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`c77eff1`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -82,7 +82,8 @@ screen's back button, whose inline `font-size` put it outside the token system
 altogether (24px/52px in Enlarged, up from 14.4px/29px in both modes) — plus the
 full-screen exit strip growing 48 → 68px in Enlarged so the EXIT chip stops
 sitting on the mood chip bar, and the vape screen finally wearing the shop
-chrome (`.sbar` + white chipbar) like every other shop page.
+chrome (`.sbar` + white chipbar) like every other shop page, with its four
+consistency circles carrying real photos on the shop's own `.cc` ring.
 
 **Write the hash *after* the commit exists, not the one you expect to get.** An
 earlier value of this line, `4b1e0c9`, was never a commit on this branch —
@@ -234,7 +235,18 @@ polish and the open questions below.
    which must match exactly. It takes about a second, needs no build, no
    browser and no assets, so there is no excuse for skipping it.
 
-   **`snapshot-guard.js` re-baselined to `470e2b5` on 2026-09-03.** It was
+   **Both guards re-baselined to `c77eff1` on 2026-09-11**, and the
+   pre-Enlarged anchor is now retired on both. `standard-guard.py` moved off
+   `cc6edad` because replacing the vape screen's grey placeholder discs with
+   real photo circles deleted the `.vape .vc` rule and with it one Standard
+   declaration (213 now, was 214). Deliberate visual changes are re-baselines,
+   not accepted deltas. The verification `cc6edad` provided is not lost — it is
+   in the git history and in `design-decisions.md` — but neither guard now
+   proves anything about the Enlarged refactor, which was verified long ago.
+   Both still exit 1 on `e67f341` and `8be0ad6`, the commits that carried the
+   real regression, which is the check that they still work.
+
+   **`snapshot-guard.js` was first re-baselined to `470e2b5` on 2026-09-03.** It was
    `cc6edad`; it moved when Standard started changing for reasons unrelated to
    Enlarged (the vape screen taking the shop chrome). That is a real change to
    what Standard renders, so it is not an accepted delta — those are for

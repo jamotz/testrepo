@@ -12,8 +12,8 @@ the enlarged values for the nav bar, product cards, weights and filter labels.
 Nothing looks wrong while you work, because you are looking at Enlarged.
 
 This resolves every token back to its literal, drops every rule scoped to
-#scr.enlarged, and compares what is left against the same stylesheet as it was
-before any Enlarged work existed. Standard should be byte-identical in effect.
+#scr.enlarged, and compares what is left against the same stylesheet at the
+BASELINE commit below. Standard should be byte-identical in effect.
 
     python3 standard-guard.py                 # working tree vs the baseline
     python3 standard-guard.py --rev HEAD      # a committed revision instead
@@ -72,8 +72,25 @@ That one needs a build of the baseline commit, so it costs ~2 min a side.
 import argparse, re, subprocess, sys
 from collections import Counter
 
-# Last commit before Enlarged: "Lifestyles tile wears its six colours".
-BASELINE = "cc6edad"
+# BASELINE MOVED 2026-09-11: cc6edad -> c77eff1.
+#
+# cc6edad was the last commit before any Enlarged work, and the point was to
+# prove the Enlarged token refactor never disturbed Standard. It did that job,
+# repeatedly and for weeks. It stopped being usable when Standard began changing
+# for reasons unrelated to Enlarged -- the vape screen taking the shop chrome,
+# then its grey placeholder discs being replaced by real photo circles, which
+# deleted the .vape .vc rule and with it one Standard declaration (10px).
+#
+# That is a real change to what Standard renders, so it is NOT an accepted delta
+# -- those are strictly for differences that move nothing on screen. The
+# documented answer to a deliberate Standard change is to re-baseline, and this
+# is that. Read every difference before moving it, and say here what moved.
+#
+# What this costs: the pre-Enlarged anchor is retired. The verification it
+# provided is not lost -- it is in the git history and in design-decisions.md --
+# but this guard now protects against drift from c77eff1 forward rather than
+# proving anything about the Enlarged refactor. That refactor is long verified.
+BASELINE = "c77eff1"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
@@ -181,7 +198,7 @@ def main():
             print(f"  {val:<12} {sel}")
 
     if not lost and not gained:
-        print("\nPASS — Standard resolves identically to the pre-Enlarged baseline"
+        print("\nPASS — Standard resolves identically to the baseline"
               + (f", with {accepted} accepted delta(s)." if accepted else "."))
         return 0
 

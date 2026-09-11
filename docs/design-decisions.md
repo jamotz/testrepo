@@ -1618,3 +1618,39 @@ the injected runtime `fontSize` fault still fails it and still names `div.fnm`.
 `--fs-r0_92` and `--fs-r0_95`**, so a bare substring check for it matches 20
 places, not 2. The removal script's own assertion caught it before anything was
 written. Anchor on the delimiter — the colon — not on the name.
+
+### The vape circles had photos all along, in the wrong folder
+`product assets/Vapes/` is empty — its README still reads *"Drop vape photos
+here"* — so the four consistency circles were grey 55%-opacity discs. But
+Distillate, Live Resin and Rosin are **concentrate** consistencies, and those
+photos have been in the repo and embedded in every build for weeks under keys
+the app already had. Nothing needed adding; the screen was looking in the wrong
+place.
+
+Cropping `SHOP - VAPE.png` settled which ones rather than guessing: `cd_oil`,
+`clr_sugar` and `cro_live` are literally the three photos in Jack's frame.
+**Full Spec is the one authored pick** — his frame repeats the Live Resin shot
+there, and the app's rule is that no two bubbles share a photo, so it takes
+`clr_sauce`; a sauce *is* the full-spectrum extract. One line in `VAPECIRCLES`.
+
+They use the shop's `.cc` circle rather than the grey discs, which existed only
+because the folder was empty. That also means they inherit
+`#scr.enlarged .catcircles` instead of becoming a fifth component with no
+Enlarged rules — the failure this branch has spent its time removing. They are
+non-interactive `div`s, not buttons: vapes are web-only, and a tap target that
+goes nowhere is worse than none.
+
+**The photos landed and the row still looked wrong, which the checks could not
+see.** Every check passed — images loaded, no overflow, no findings at four
+viewports — because they verify structure, not composition. The screenshot
+showed a ragged row: the cutouts carry different amounts of empty frame, so
+`object-fit:contain` renders them at very different sizes in identical rings.
+Measured content as a share of the image box: `cd_oil` 93%, `clr_sugar` 80%,
+`cro_live` 80%, **`clr_sauce` 59%** — 37px of content inside a 78px ring. Each
+entry now carries a scale normalising to 93%, the same mechanism `renderShop`
+already uses on preroll and vape. **Measured, not eyeballed, with the numbers in
+the comment so they can be re-derived when a photo is swapped.**
+
+*The general point:* a guard tells you nothing moved that you told it to watch.
+It cannot tell you the result looks right. Both times this screen was touched,
+the thing worth fixing was found by looking at it.
