@@ -456,7 +456,11 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
 .chip svg{width:var(--icon-size-sm);height:var(--icon-size-sm)}
 .chip.disc{background:var(--disc);color:#F6E9E2}.chip.adv{background:var(--adv)}.chip.soc{background:var(--soc)}
 .chip.unw{background:var(--unw);color:#122B3C}.chip.night{background:var(--night);color:#EAF4F0}.chip.hol{background:var(--hol);color:#20260F}
-.chip.sel{outline:3px solid #fff;outline-offset:-3px}
+/* Selected lifestyle: a ring in the title bar's brown (--brown #2E261E).
+   It replaces a white ring that only cleared 3:1 non-text contrast on 3 of
+   the 6 chip colours (Social 1.45, Adventurous 2.61, Unwind 2.61). Brown
+   clears 5 of 6; Discovery #A0463C sits at 2.43 and is the one exception. */
+.chip.sel{outline:3px solid var(--brown);outline-offset:-3px}
 .cats{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
 .cat{background:#fff;border:1px solid #E5E0D6;border-radius:12px;padding:14px;text-align:center}
 .cat img{height:74px;object-fit:contain;margin:0 auto 8px}
@@ -901,7 +905,7 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    deficiency cannot read, so each selected control also carries a mark. The
    mark is generated content, so it costs no markup and cannot get out of sync
    with the class that colours it. */
-#scr.enlarged .chip.sel::after,#scr.enlarged .subc.sel::after{content:"¹3";
+#scr.enlarged .chip.sel::after,#scr.enlarged .subc.sel::after{content:"\2713";
   font-weight:700;margin-left:6px;font-size:.92em;line-height:1}
 #scr.enlarged .store.sel .st-name::after{content:"\2713 Selected";display:block;
   font-family:var(--head);font-weight:600;text-transform:uppercase;
