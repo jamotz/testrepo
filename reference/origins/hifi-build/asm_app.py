@@ -149,6 +149,8 @@ M = {
  # pre-roll photos (Jack's uploads), one per type family + pack count.
  # "preroll" is the generic key the category circle and Guide Me method icon
  # use; it shares the single-joint shot.
+ "vape": "product assets/Vapes/vape Background Removed.png",   # shop category circle;
+          # vapes are web-only in WA, so this identifies the category and nothing more
  "preroll": "product assets/Prerolls/Pre-roll Flower Single Background Removed.png",
  "pr_flower": "product assets/Prerolls/Pre-roll Flower Single Background Removed.png",
  "pr_flower_2pk": "product assets/Prerolls/Pre-roll Flower 2-pack.webp",
@@ -440,6 +442,7 @@ NOBG = {
     "crso_applicator": "Concentrate/RSO/RSO Applicator .png",
     # pre-rolls — every shot Jack supplied is already background-free (the two
     # .webp files carry alpha too), so they all take the embed_rgba path.
+    "vape": "Vapes/vape Background Removed.png",
     "preroll": "Prerolls/Pre-roll Flower Single Background Removed.png",
     "pr_flower": "Prerolls/Pre-roll Flower Single Background Removed.png",
     "pr_flower_2pk": "Prerolls/Pre-roll Flower 2-pack.webp",
