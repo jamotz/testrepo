@@ -55,7 +55,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`c77eff1`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`8c18000`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -384,7 +384,31 @@ polish and the open questions below.
    Offered but not built: a remapping sheet listing all ~120 old values with a
    proposed new term and product counts, so Jack reviews 120 rows instead of 138
    products.
-4. **The drawer's Brands facet matches almost nothing.** `BRANDS` lists
+4. **The drawer's Brands facet matches almost nothing — audited 2026-09-11.**
+   Ran the app's own `match()` over every option the drawer offers. Brands:
+   Artizen 9, Saints 6, and **Freddy's / Royal Tree / Skörd / St. Ideal all 0**.
+   **15 of 308 products (5%) are reachable through the facet.** The catalog holds
+   **45 distinct brands and 43 are not offered**, including the six largest:
+   Green Revolution 22, Plaid Jacket 17, Skord 17, Passion Flower 17,
+   Lifestyles 12, Royal Tree Gardens 12.
+
+   The audit also turned up **a second dead option nobody had logged: Edible
+   form → "Capsules / Softgels" matches 0 products** (the other four forms have
+   10 each).
+
+   And **three brand-name collisions in the catalog itself**, each splitting
+   cleanly across product types, which is the signature of one brand spelled
+   differently in different source sheets: `Swift` (drinks 5) / `Swifts`
+   (edibles 4); `Ceres` (edibles 6) / `Dragon Balm (Ceres)` (topicals 8);
+   `Constellation` (flower 2) / `Constellation Cannabis` (concentrate 4 +
+   edible 6). These matter the moment the facet is rebuilt from the catalog —
+   six entries where there should be three.
+
+   Everything else in the drawer is healthy: Feeling 26–87 per option, Product
+   type 38–60, THC 21–187, Sale 4, and every Size option across all six types.
+   No other empty option anywhere.
+
+   *Original note:* `BRANDS` lists
    `Artizen · Freddy's · Royal Tree · Saints · Skörd · St. Ideal` and `match()`
    compares it to `p.b` exactly, but the catalog says `Royal Tree Gardens` and
    `Skord` (no umlaut), and carries no `Freddy's` or `St. Ideal` at all — so
