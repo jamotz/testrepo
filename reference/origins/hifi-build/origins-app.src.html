@@ -422,6 +422,22 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    just the lifestyle color as the button + a slightly bigger, centered logo, checkbox kept */
 .oc.life{position:relative;justify-content:flex-start;gap:10px;padding:12px 16px 12px 50px}
 .oc.life .box{display:block;position:absolute;left:16px;top:50%;transform:translateY(-50%)}
+/* Strain-name mode (Advanced Settings -> Use product type) swaps each lifestyle
+   logo for a plain letter: S, SH, H, IH, I. Holistic keeps its logo, because it
+   is a cannabinoid profile rather than a strain, so there is no letter for it.
+   Text rather than generated art: it renders in the app's own Oswald, stays
+   crisp at every size, follows the Enlarged scale with no second asset, and
+   costs no build step. Black to match embed_glyph(), which flattens the
+   lifestyle logos to black so they can sit on a lifestyle-coloured ground.
+   One rule per context because each sizes its glyph differently. */
+.lglyph{display:inline-flex;align-items:center;justify-content:center;flex:none;
+  font-family:var(--head);font-weight:700;line-height:1;color:#000;letter-spacing:.01em}
+.chip .lglyph{height:16px;font-size:12px}
+.fcard .fbadge .lglyph{height:19px;font-size:13px}
+.pimg .life .lglyph{height:16px;font-size:12px}
+.educard .edulife .lglyph{height:24px;font-size:15px}
+.feelchip .lglyph{height:32px;font-size:21px}
+.oc.life .lglyph{height:28px;width:32px;font-size:19px;justify-content:flex-start}
 .oc.life .lifeglyph{height:28px;width:32px;object-fit:contain;object-position:left center;flex:none}
 .oc.life .lifeword{height:25px;width:auto;object-fit:contain;display:block}
 .oc.life.discovery{background:var(--disc)}
@@ -1074,6 +1090,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 #scr.enlarged .oc .box{width:25.6px;height:25.6px}
 #scr.enlarged .feelchip svg{width:30.7px;height:30.7px}
 #scr.enlarged .chip .chiplg{width:20.5px;height:20.5px}
+#scr.enlarged .chip .lglyph{height:20.5px;font-size:15px}
 #scr.enlarged .taptoggle .d{width:11.5px;height:11.5px}
 
 /* ── Alignment ────────────────────────────────────────────────────────────
@@ -1099,6 +1116,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 #scr.enlarged .bub{padding:4px 9px;line-height:1.25}
 /* wizard lifestyle wordmarks are images, so scale the box they sit in */
 #scr.enlarged .oc.life .lifeglyph{height:36px;width:41px}
+#scr.enlarged .oc.life .lglyph{height:36px;width:41px;font-size:25px}
 #scr.enlarged .oc{min-height:var(--target-size)}
 
 /* ══ Jack's Enlarged punch list, 2026-08-20 ══════════════════════════════ */
@@ -1120,6 +1138,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 /* Product tile: the lifestyle badge was still at its Standard 30px */
 #scr.enlarged .fcard .fbadge{width:48px;height:48px}
 #scr.enlarged .fcard .fbadge img{width:31px;height:31px}
+#scr.enlarged .fcard .fbadge .lglyph{height:31px;font-size:21px}
 
 /* Size pill: bigger, centred, no tick */
 #scr.enlarged .fcard .fsz{min-height:42px;padding:8px 18px;
@@ -1517,6 +1536,19 @@ function advSave(){ try{ localStorage.setItem(ADVKEY,JSON.stringify(ADV)); }catc
 var MOTIONQ=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):null;
 function motionOff(){ return ADV.nomotion || !!(MOTIONQ&&MOTIONQ.matches); }
 function lifeLabel(k){return (ADV.strain?STRAINNAME[k]:FEEL[k])||FEEL[k];}
+/* Holistic is deliberately absent: it is a cannabinoid profile, not a strain, so
+   it keeps its logo in both modes and lifeGlyph() falls through to the image. */
+const STRAINLETTER={discovery:"S",adventurous:"SH",social:"H",unwind:"IH",nightlife:"I"};
+/* The ONE place a lifestyle glyph is printed, the way lifeLabel() is the one
+   place its word is printed. Reach for IMG["sm_"+k] directly on a new screen and
+   the letter will not follow you there. */
+function lifeGlyph(k,cls,alt){
+  var ltr=ADV.strain?STRAINLETTER[k]:null,c=(cls?cls+" ":"");
+  if(ltr)return '<span class="'+c+'lglyph"'+(alt?' role="img" aria-label="'+alt+'"':' aria-hidden="true"')+'>'+ltr+'</span>';
+  var src=IMG["sm_"+k];
+  if(src)return '<img'+(cls?' class="'+cls+'"':'')+' src="'+src+'" alt="'+(alt||"")+'">';
+  return feelIcon();
+}
 function setAdv(k,on){
   ADV[k]=!!on;
   var scr=document.getElementById("scr");
@@ -2378,7 +2410,7 @@ document.querySelectorAll(".landing .store").forEach(function(el,i){
 
 function renderFeel(){
   /* feel = the Lifestyle Overview: real brand logos, per Jack's request */
-  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span><img class="lifeglyph" src="'+(IMG["sm_"+k]||'')+'" alt=""><img class="lifeword" src="'+(IMG["word_"+k]||IMG["life_"+k]||'')+'" alt="'+lifeLabel(k)+'"><b class="lifewordt">'+lifeLabel(k)+'</b></button>';}).join("");
+  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span>'+lifeGlyph(k,'lifeglyph')+'<img class="lifeword" src="'+(IMG["word_"+k]||IMG["life_"+k]||'')+'" alt="'+lifeLabel(k)+'"><b class="lifewordt">'+lifeLabel(k)+'</b></button>';}).join("");
   $("#feelopts").querySelectorAll("[data-fk]").forEach(function(b){b.addEventListener("click",function(){
     var k=b.dataset.fk,i=G.feels.indexOf(k);i>-1?G.feels.splice(i,1):G.feels.push(k);
     b.classList.toggle("sel");$("#feelnext").disabled=!G.feels.length;
@@ -2433,7 +2465,7 @@ function guideLifestyles(){return G.feels.length?G.feels.slice():["social"];}
 function renderFinish(){
   var lifes=guideLifestyles();
   var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||"picks"];
-  var chips=lifes.map(function(l){var lg=IMG["sm_"+l];return '<div class="feelchip '+LIFECLASS[l]+'">'+(lg?'<img class="chiplogo" src="'+lg+'" alt="">':feelIcon())+lifeLabel(l)+'</div>';}).join("");
+  var chips=lifes.map(function(l){return '<div class="feelchip '+LIFECLASS[l]+'">'+lifeGlyph(l,'chiplogo')+lifeLabel(l)+'</div>';}).join("");
   var groupHtml=groups.map(function(g){
     var prods=P.filter(function(p){return p.t===G.method&&(g===TYPES[G.method]||p.sub===g);}).slice(0,6);
     var pool=prods.length?prods:P.filter(function(p){return p.t===G.method;}).slice(0,6);
@@ -2492,7 +2524,7 @@ function results(){var r=P.filter(match);
 
 function moodChips(el){
   if(!el)return;
-  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'" aria-pressed="'+(S.mood===k?'true':'false')+'">'+(IMG["sm_"+k]?'<img class="chiplg" src="'+IMG["sm_"+k]+'" alt="">':feelIcon())+lifeLabel(k)+'</button>';}).join("");
+  el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'" aria-pressed="'+(S.mood===k?'true':'false')+'">'+lifeGlyph(k,'chiplg')+lifeLabel(k)+'</button>';}).join("");
   el.querySelectorAll("[data-mood]").forEach(function(b){b.addEventListener("click",function(){
     S.mood=S.mood===b.dataset.mood?null:b.dataset.mood;moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
     if(S.screen!=="list")nav("list");else renderList();
@@ -2578,7 +2610,7 @@ function feedCard(p){
   var sizes=all.slice(start,start+3).map(function(s){return '<span class="fsz'+(s===dispSize?' sel':'')+'"'+(s===dispSize?' aria-current="true"':'')+'>'+feedPill(s)+'</span>';}).join("");
   var pp=priceFor(p,dispSize),price=pp.now,was=pp.was;
   var bc=crumb(p);
-  var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
+  var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'">'+lifeGlyph(p.f[0],'')+'</span>':"";
   var summary=cardSummary(p,dispSize,price);
   /* role=group + aria-label: the card is announced as one thing, and the photo
      is marked decorative because the name is already in the label. */
@@ -2915,7 +2947,7 @@ function dealCard(p,dealSize,struck,sale){
   var all=sizesFor(p),idx=all.indexOf(dealSize),start=Math.max(0,Math.min(idx-2,all.length-4));
   var szs=all.slice(start,start+4).map(function(s){return '<span class="fsz'+(s===dealSize?' sel':'')+'">'+feedPill(s)+'</span>';}).join("");
   var bc=crumb(p);
-  var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'"><img src="'+IMG["sm_"+p.f[0]]+'" alt=""></span>':"";
+  var badge=IMG["sm_"+p.f[0]]?'<span class="fbadge '+lc+'">'+lifeGlyph(p.f[0],'')+'</span>':"";
   return '<div class="fcard dcard '+lc+' tap" data-p="'+p.id+'" data-sel="'+dealSize+'"><div class="fim"><img src="'+(IMG[p.img]||'')+'" alt="'+p.n+'">'+tileOverlay(p)+'</div>'+
     '<div class="fdiv">'+badge+'</div><div class="fbc">'+bc+'</div><div class="fnm">'+p.n+'</div>'+
     '<div class="fmeta"><span class="fbr">'+p.b+'</span></div>'+
@@ -3215,7 +3247,7 @@ function drawProduct(){
   var hint=isPair?'<div class="dealhint">2 for $50 &mdash; '+(q>dq?'one more deal eighth pairs the last one':'mix &amp; match any two deal eighths')+'</div>'
     :(pp.was?'<div class="dealhint">40% off &mdash; deal price on 14g &amp; 28g</div>':'');
   var lc=LIFECLASS[p.f[0]]||"soc";
-  var lifeicon=IMG["sm_"+p.f[0]]?'<img src="'+IMG["sm_"+p.f[0]]+'" alt="">':feelIcon();
+  var lifeicon=lifeGlyph(p.f[0],'');
   var life=p.f[0]?'<span class="life '+lc+'">'+lifeicon+lifeLabel(p.f[0])+'</span>':'';
   var hasSizes=sizesFor(p).length>=1;
   var szpick=hasSizes?'<div class="szpick">'+sizesFor(p).map(function(s){return '<button class="szo tap '+(s===curSize?'sel':'')+'" data-sz="'+s+'">'+feedPill(s)+'</button>';}).join("")+'</div>':'';
@@ -3326,7 +3358,7 @@ function wireEduSearch(root){root.querySelectorAll("[data-edusearch]").forEach(f
 function renderEduHub(){
   var cards=EDU_ORDER.map(function(k){var c=EDU[k];
     var media=c.life
-      ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<span class="'+LIFECLASS[l]+'"><img src="'+(IMG["sm_"+l]||IMG["life_"+l]||"")+'" alt="'+lifeLabel(l)+'"></span>';}).join("")+'</div>'
+      ? '<div class="edulife">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<span class="'+LIFECLASS[l]+'">'+lifeGlyph(l,'',lifeLabel(l))+'</span>';}).join("")+'</div>'
       : '<div class="eduimg"><img src="'+(IMG[c.img]||"")+'" alt="'+c.name+'"'+(c.imgscale?' style="transform:scale('+c.imgscale+')"':'')+'></div>';
     return '<button class="educard tap" data-ec="'+k+'">'+media+'<div class="edulabel">'+c.name+'</div></button>';
   }).join("");
