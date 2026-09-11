@@ -752,12 +752,15 @@ rule scoped to `#scr.enlarged`, and compares the remaining **214 Standard
 font-size declarations** against the same stylesheet before any Enlarged work
 existed. A second, no build, no browser, no assets.
 
-**Its baseline is a commit, not a stored file.** `cc6edad` — the last commit
-before the Enlarged work, verified to contain zero `--fs-*` tokens and zero
-`#scr.enlarged` rules — is read straight out of git. A baseline captured from
-the current file would certify whatever regression is already in it, and a
-stored baseline is exactly what got lost the first time. Keep that property if
-you rewrite the guard.
+**Its baseline is a commit, not a stored file**, read straight out of git.
+`cc6edad` — the last commit before the Enlarged work, verified to contain zero
+`--fs-*` tokens and zero `#scr.enlarged` rules — held that role until
+2026-09-11. **Both guards now baseline at `623bcf8`**, so neither anchors to
+pre-Enlarged any more; the live value is the `BASELINE` constant in
+`standard-guard.py`, and it has drifted from the prose describing it once
+already, so read it there. A baseline captured from the current file would
+certify whatever regression is already in it, and a stored baseline is exactly
+what got lost the first time. Keep that property if you rewrite the guard.
 
 It is validated against the regression itself, not just against green: run it
 over the history and it passes through `e817dae`, **fails at `8be0ad6` and
@@ -769,8 +772,8 @@ runtime, nor a cascade/specificity effect that changes which rule wins.
 
 **`snapshot-guard.js` covers those.** It walks all 24 screens in Chromium and
 compares **computed** styles — 5,582 elements over 12 properties (type, the box
-a control makes around it, colour) — between a build of `cc6edad` and a build of
-the current source:
+a control makes around it, colour) — between a build of its baseline (`623bcf8`
+as of 2026-09-11, see above) and a build of the current source:
 
 ```bash
 node reference/origins/hifi-build/snapshot-guard.js <base.html> <cur.html>

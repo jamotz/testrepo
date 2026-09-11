@@ -21,13 +21,44 @@ browse that "can't find the files" is almost always looking at `main`. All work
 lives on the `claude/*` branches.
 
 **Only the branch named at the top of this file is current.** Superseded
-`claude/project-docs-review-*` branches stay on origin and look plausible —
-`sz8jwv` predates the pre-rolls and every Account screen, and `4b84p7` stops
-before the deals, the calendar and everything after. `os7hx4` is the most
-recent of these and the easiest to mistake for current: it holds every screen
-and reads as complete, and it is behind by exactly the phone-bezel fix. Check
-this line against `git log` before trusting a branch, and update it here when
-the work moves.
+branches stay on origin and look plausible — `sz8jwv` predates the pre-rolls and
+every Account screen, and `4b84p7` stops before the deals, the calendar and
+everything after. `os7hx4` is the most recent of these and the easiest to
+mistake for current: it holds every screen and reads as complete, and it is
+behind by exactly the phone-bezel fix. Check this line against `git log` before
+trusting a branch, and update it here when the work moves.
+
+**They have no common ancestor with this branch** (verified 2026-09-11:
+`git merge-base` returns nothing for every one of them). Git ancestry therefore
+proves nothing here — "is this commit contained in the current branch" has no
+answer, and `git log` alone cannot tell you whether a branch is behind or just
+different. **Compare trees, not history**, and compare *files*, not commits:
+
+```bash
+CUR=origin/claude/accessibility-handoff-review-dhabtz
+comm -13 <(git ls-tree -r --name-only $CUR | sort) \
+         <(git ls-tree -r --name-only origin/<branch> | sort)   # files only they have
+```
+
+**Do not delete these branches without running that first.** Four of them hold
+the only copy of files that are not on this branch, original source material
+among them:
+
+| Branch | Files not on this branch |
+|---|---|
+| `project-docs-review-todos-os7hx4` | **none** — strict subset, safe to delete |
+| `project-docs-review-4b84p7` | **none** — strict subset, safe to delete |
+| `project-docs-review-sz8jwv` | 6 — incl. **`Flower Product Catalog.docx`**, `WA_Mock_Concentrate_Inventory_50_with_Flavors.xlsx`, `WA_PreRolls_50_Product_List.xlsx`, three `Scent (…)` assets |
+| `cloud-container-access-p7024t` | 7 — the same source files, plus build cruft |
+| `portfolio-redesign-81crin` | 24 — the original `product assets/` photos |
+| `handoff-reference-continue-anuqh5` | 24 — the same photos |
+| `install-ui-ux-pro-max-sf4kkp` | 82 — skill fonts only, no project content |
+
+The superseded ones are superseded as **data** — `Flower Product Catalog.docx`
+was replaced by the Final pt2 catalog — but `design-decisions.md` still cites
+that .docx by name as the source that stated the flower types, and this branch
+does not contain it. Rescue anything worth keeping onto this branch **before**
+any cleanup, rather than trusting "superseded" to mean "duplicated".
 
 ---
 
@@ -55,7 +86,9 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`5f66ce8`** (republished 2026-09-11, all four guards green) — the Final/pt2 catalogs, terpene-driven
+`5f66ce8`** (republished 2026-09-11 — **`standard-guard.py` is RED at this
+commit; see next steps §1**, the claim of "all four guards green" made here was
+not re-run) — the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -218,10 +251,52 @@ polish and the open questions below.
 
 ## Immediate next steps
 
-1. **General touch-ups** — Jack is doing a pass across the app, screen by
+1. **`standard-guard.py` is FAILING on the current tip, and the docs said it
+   wasn't.** Verified 2026-09-11: PASS through `9448d20`, **FAIL from `5f66ce8`
+   onward** (`--rev` takes a commit, so this is one command per commit to
+   confirm). The live link was republished at `5f66ce8` and the line above
+   claimed all four guards green. It was not re-run.
+
+   ```
+   baseline 623bcf8: 214 Standard font-size declarations
+   working tree:     220   — FAIL (0 lost, 6 gained)
+   ```
+
+   **Read the output before acting: this is a legitimate change, not the
+   `count=1` regression.** Nothing was lost and no selector appears as both `-`
+   and `+`; all six gains are `.lglyph`, an element that did not exist before
+   `5f66ce8` added the strain letters. New elements need sizes, so Standard
+   genuinely moved. The documented response is therefore to **re-baseline
+   deliberately** — point `BASELINE` at `5f66ce8`, in a commit that says what
+   moved and why — *not* to widen the guard or add exceptions.
+
+   **Two things this exposed, both worth fixing first:**
+
+   - **Three of the six new `.lglyph` sizes have no Enlarged override.**
+     `#scr.enlarged` covers `.chip`, `.oc.life` and `.fcard .fbadge`; it does
+     **not** cover `.pimg .life` (12px), `.educard .edulife` (15px) or
+     `.feelchip` (21px). With *Use product type* on, those three letters stay at
+     their Standard size in Enlarged while the screen around them doubles.
+     **This is the product-page back button again** — a hand-written
+     enumeration that something got left off — one week later, in the newest
+     feature. See *Done since (2026-09-03 → 09-11)* for that lesson.
+   - **The six declarations are hard-coded literals, not `--fs-*` tokens**, so
+     they sit outside the token system that `architecture.md` says every
+     font-size in the app belongs to. That is *why* the guard counted them;
+     tokenising them is the fix that makes both problems go away at once.
+
+   Order: tokenise the six, give all six an Enlarged value, rebuild, re-run all
+   four guards, **then** re-baseline if anything legitimately remains, then
+   republish and update the live-link line above.
+
+   *The standing rule this broke is already written down twice in this file:*
+   **a verification claim is only as good as the script behind it — re-run the
+   check yourself before repeating the claim.**
+
+2. **General touch-ups** — Jack is doing a pass across the app, screen by
    screen. Home, shop, cart, Origins U and the account screens have each been
    through a round (see `design-decisions.md` for what was decided and why).
-2. **Enlarged view is built and is now a token layer, not a zoom.** The
+3. **Enlarged view is built and is now a token layer, not a zoom.** The
    `--enlarge: 1.25` / `zoom` description that stood here is retired — it was
    replaced on 2026-08-20 and the rest of this file, `architecture.md` and
    `design-decisions.md` now describe the token system. In short: every
@@ -243,8 +318,11 @@ polish and the open questions below.
    which must match exactly. It takes about a second, needs no build, no
    browser and no assets, so there is no excuse for skipping it.
 
-   **Both guards re-baselined to `c77eff1` on 2026-09-11**, and the
-   pre-Enlarged anchor is now retired on both. `standard-guard.py` moved off
+   **Both guards now baseline at `623bcf8`** (`standard-guard.py:97`, and the
+   worktree recipe in `snapshot-guard.js`) — re-baselined to `c77eff1` earlier
+   on 2026-09-11 and moved again to `623bcf8` the same day. **Read the constant
+   in the script, not this paragraph**, which has been wrong once already. The
+   pre-Enlarged anchor is retired on both. `standard-guard.py` moved off
    `cc6edad` because replacing the vape screen's grey placeholder discs with
    real photo circles deleted the `.vape .vc` rule and with it one Standard
    declaration (213 now, was 214). Deliberate visual changes are re-baselines,
@@ -261,14 +339,16 @@ polish and the open questions below.
    differences that move nothing on screen — and the documented answer to a
    legitimate Standard change is to re-baseline deliberately. The cost, stated
    plainly: this guard now measures against the last verified state, not against
-   pre-Enlarged. **`standard-guard.py` still runs against `cc6edad` with zero
-   exceptions, 214 = 214**, so the pre-Enlarged anchor survives where it matters
-   most — every font-size in the app. Re-baseline again only after a run whose
-   every difference you have read and can name.
+   pre-Enlarged. ~~`standard-guard.py` still runs against `cc6edad` with zero
+   exceptions, 214 = 214~~ — **no longer true, and it was contradicted by the
+   paragraph directly above it for a week.** Both guards moved off `cc6edad` on
+   2026-09-11; neither anchors to pre-Enlarged any more. Re-baseline again only
+   after a run whose every difference you have read and can name.
 
-   **The baseline is a commit, not a captured file.** `cc6edad` is the last
-   commit before the Enlarged work began (verified: zero `--fs-*` tokens, zero
-   `#scr.enlarged` rules), and the guard reads its source straight out of git.
+   **The baseline is a commit, not a captured file** — the guard reads its
+   source straight out of git. `cc6edad`, the last commit before the Enlarged
+   work began (verified: zero `--fs-*` tokens, zero `#scr.enlarged` rules), was
+   that commit until 2026-09-11; it is `623bcf8` now.
    This matters more than it looks: a baseline captured from the *current* file
    would certify whatever regression is already sitting in it. If you ever
    rewrite this guard, keep that property.
@@ -295,7 +375,7 @@ polish and the open questions below.
 
    ```bash
    SP=<scratchpad>
-   git worktree add -f $SP/base cc6edad
+   git worktree add -f $SP/base 623bcf8   # keep in step with snapshot-guard.js
    python3 -m pip install --quiet Pillow
    python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
    python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -373,7 +453,7 @@ polish and the open questions below.
    instead of on match order. **Any script that edits one of the two blocks must
    anchor on the block, never on ordinal position.**
 
-3. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
+4. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
    2026-08-17: "ignore for now"). Don't pick this up without him. The other
    three shelves are done; these 138 products still carry the old vocabulary, so
    their chips fall back to generated SVGs while flower/concentrate/pre-roll
@@ -392,95 +472,22 @@ polish and the open questions below.
    Offered but not built: a remapping sheet listing all ~120 old values with a
    proposed new term and product counts, so Jack reviews 120 rows instead of 138
    products.
-4. ~~**The drawer's Brands facet matches almost nothing**~~ — **FIXED
-   2026-09-11.** `BRANDS` is gone; `brandList()` derives the options from `P`
-   and sorts them with `localeCompare`. **45 brands, alphabetical, 308 of 308
-   products reachable** (was 15, 5%) and **0 catalog brands unoffered** (was
-   43). It is a function rather than a `const` because the old list sat ten
-   lines *above* the `P` array it needs to read — a hoisted function only
-   touches `P` when the drawer renders. A derived list cannot drift:
-   regenerate the catalog and the facet follows.
-
-   Verify with `node reference/origins/hifi-build/filter-audit.js <build>`,
-   which drives the app's own `match()` over every option. **Both remaining
-   findings were closed on 2026-09-11 (Jack's call), at the source:**
-
-   - **"Capsules / Softgels" → "Capsules".** Never a data problem: the catalog
-     already carried `etype:"Capsules"` on 10 products and only the facet label
-     disagreed. The option now matches its 10.
-   - **The three collisions are merged** — `Dragon Balm (Ceres)` → `Ceres`,
-     `Constellation Cannabis` → `Constellation`, `Swift` → `Swifts`. Done **in
-     the .xlsx sheets as well as the app**, so a regeneration cannot undo it;
-     the generators were re-run and emit the merged names. 45 brands → **42**:
-     Ceres 14, Constellation 12, Swifts 9. `Dragon Balm` survives as a *product*
-     name under Ceres, which is right — it is the product line, not the brand.
-
-   **Editing these sheets: they use TWO cell encodings.** Topicals writes
-   `<c t="inlineStr"><is><t>`, Concentrate writes namespaced
-   `<x:c t="str"><x:v>`. A replacement written for one silently matches nothing
-   in the other — the first pass changed 0 of 4 cells in Concentrate and
-   reported success. Same family as the self-closing-cell hazard below. **Dry-run
-   any sheet edit and check the counts against a `grep` done up front**, and
-   edit the worksheet XML inside the zip rather than round-tripping through a
-   library, which rewrites styles and docProps too.
-
-   *The original diagnosis, for the record:*
-   Ran the app's own `match()` over every option the drawer offers. Brands:
-   Artizen 9, Saints 6, and **Freddy's / Royal Tree / Skörd / St. Ideal all 0**.
-   **15 of 308 products (5%) are reachable through the facet.** The catalog holds
-   **45 distinct brands and 43 are not offered**, including the six largest:
-   Green Revolution 22, Plaid Jacket 17, Skord 17, Passion Flower 17,
-   Lifestyles 12, Royal Tree Gardens 12.
-
-   The audit also turned up **a second dead option nobody had logged: Edible
-   form → "Capsules / Softgels" matches 0 products** (the other four forms have
-   10 each).
-
-   And **three brand-name collisions in the catalog itself**, each splitting
-   cleanly across product types, which is the signature of one brand spelled
-   differently in different source sheets: `Swift` (drinks 5) / `Swifts`
-   (edibles 4); `Ceres` (edibles 6) / `Dragon Balm (Ceres)` (topicals 8);
-   `Constellation` (flower 2) / `Constellation Cannabis` (concentrate 4 +
-   edible 6). These matter the moment the facet is rebuilt from the catalog —
-   six entries where there should be three.
-
-   Everything else in the drawer is healthy: Feeling 26–87 per option, Product
-   type 38–60, THC 21–187, Sale 4, and every Size option across all six types.
-   No other empty option anywhere.
-
-   *Original note:* `BRANDS` lists
-   `Artizen · Freddy's · Royal Tree · Saints · Skörd · St. Ideal` and `match()`
-   compares it to `p.b` exactly, but the catalog says `Royal Tree Gardens` and
-   `Skord` (no umlaut), and carries no `Freddy's` or `St. Ideal` at all — so
-   four of the six return zero products. (Freddy's is out of the home brand row
-   as of 2026-08-18, but the drawer still offers it.) Found while wiring the
-   calendar, which matches the same labels as a **prefix** and resolves 26
-   flowers from three brands. Fix is either a prefix match in `match()` or a
-   `BRANDS` list taken from the catalog; needs Jack's call on which brands
-   should be offered.
 5. **Four sub-bubbles have photos but no products**: `Rosin Coins`,
    `Full Melt Hash`, `Distillate Syringe`, `Dab Applicator` — one level down
-   inside Rosin, Hash and Distillate. Every category itself is stocked,
-   **Kief (6) and RSO (4) included** — an earlier note claiming those two were
-   empty was wrong (Jack, 2026-08-17; see `design-decisions.md`).
-6. **The product page's back button is the one control Enlarged misses.**
-   Found by `enlarged-check.js` on 2026-09-03; **not fixed — Jack's call.**
+   inside Rosin, Hash and Distillate. Re-checked 2026-09-11: still 0 products
+   each. Every category itself is stocked, **Kief (6) and RSO (4) included** —
+   an earlier note claiming those two were empty was wrong (Jack, 2026-08-17;
+   see `design-decisions.md`).
 
-   `#scr.enlarged` carries an explicit list of small icon controls that take
-   `min-height/min-width: var(--target-size)` in Enlarged — `.tabs button`,
-   `.sbar .bk`, `.qty button`, `.fsclose`, `.sw`, `.acav`, `.fcard .fsz`,
-   `.fszs button`. **`.pihead .pihback` is not in it**, and has no
-   `#scr.enlarged` rule anywhere, so it stays at its hard-coded
-   `width:26px;height:26px` in both modes while the screen around it doubles.
-   Its sibling `.sbar .bk` grows 24 → 30.7px.
-
-   Consequence: on a 393×852 phone in full screen it renders at **23px**, under
-   WCAG 2.5.8's 24px minimum — the only control in the app that misses it — and
-   on the product screen in Enlarged it is visibly the one thing that didn't
-   grow. The fix is to add it to that enumeration (its comment already states
-   the intent: small icon controls get the target size in Enlarged). Left
-   unapplied because it changes the app and needs a rebuild, both guards, and a
-   republish.
+6. **`body.fs .fsexit` is declared twice and the notch handling is dead code.**
+   `origins-app.src.html:209` and `:212`, identical specificity, and the later
+   one hard-codes `top:14px` — which kills the earlier
+   `calc(9px + env(safe-area-inset-top,0px))`. Measured y=14.0 in both modes,
+   never 9 + inset, so on a notched iPhone the EXIT chip may sit under the
+   notch. **The duplicate can be cleaned up now**; whether the notch offset is
+   *right* can't be verified from here, because `env(safe-area-inset-*)` is 0 in
+   headless Chromium. It wants a real device, or Jack's eye. Full write-up in
+   `design-decisions.md` under *The full-screen exit strip*.
 
 7. **One open question for Jack**, flagged where it lives: the **four deal
    flowers** are his brands but my strain picks (`DEALS` in
@@ -521,6 +528,23 @@ size lives in the product tile, not the filter path. Don't re-propose it.
 with content, grew every gap equally whether it needed it, and shrank the
 layout's coordinate space exactly when the content got bigger. Don't re-propose
 it.
+
+### Done since (2026-09-03 → 09-11)
+
+| | |
+|---|---|
+| Brands facet | `BRANDS` is gone; `brandList()` derives the options from `P`. **308 of 308 products reachable** (was 15), **0 catalog brands unoffered** (was 43). Why it is a function and not a `const`, and the three name collisions merged at the source — 45 brands → **42** — are in `design-decisions.md` |
+| Capsules | Edible form → "Capsules / Softgels" matched 0 products; the catalog says `etype:"Capsules"` and only the label disagreed. Now matches its 10 |
+| Filter audit | `filter-audit.js` drives the app's own `match()` over every drawer option and reports the count behind each — the only way a dead facet surfaces, since it looks identical to an empty shelf. `drawer-test.js` beside it |
+| Product back button | `.pihead .pihback` joined the Enlarged target-size enumeration (`06d2673`). It was the one control under WCAG 2.5.8's 24px, at 23px on a 393×852 phone. **The open item that said "not fixed — Jack's call" was stale for a week** |
+| Vapes circle | `vape` registered as an image key (`8c18000`); the shop circle had been rendering its `noimg` fallback since the shelf existed. Vape consistency circles got real photos, normalised for how much of the ring each fills |
+| Lifestyle ring | The selection ring goes black — the only colour that clears all six lifestyle colours |
+
+*The lesson from the back button is about **enumerations**, not that button:*
+most of Enlarged is a token every component inherits, but `--target-size` is a
+**list**, and a list is a thing you can be left off. Anything sized by a
+hard-coded `width`/`height` rather than a token has to be named somewhere, and
+naming is where things get forgotten.
 
 ---
 
@@ -602,6 +626,14 @@ a nominated eighth is at or under the $25 deal price.
   value — the same shift, but silent even when you address by column letter.
   Address by letter **and** match the self-closing branch first. Copy the reader
   in `gen_prerolls.py`; the other three now match it.
+- **The sheets use TWO cell encodings, and a replacement written for one
+  silently matches nothing in the other.** Topicals writes
+  `<c t="inlineStr"><is><t>`; Concentrate writes namespaced `<x:c t="str"><x:v>`.
+  The first pass of the brand merge changed **0 of 4 cells** in Concentrate and
+  reported success. Same family as the self-closing-cell hazard above. **Dry-run
+  any sheet edit and check the counts against a `grep` done up front**, and edit
+  the worksheet XML inside the zip rather than round-tripping through a library,
+  which rewrites styles and docProps too.
 - **Sectioned sheets carry `=== SECTION ===` rows.** Filter them out or they
   parse as products.
 - **Don't trust a "this sheet is malformed" note without re-checking it.** The
@@ -651,9 +683,12 @@ a nominated eighth is at or under the $25 deal price.
   and `standard-guard.py`, `std_before.json`, `snapshot.js` and `coverage.js`
   were written, used, documented as required — and never added to git.
   Both have since been rewritten and committed as `standard-guard.py` and
-  `snapshot-guard.js`, each deriving its baseline from `cc6edad` rather than
+  `snapshot-guard.js`, each deriving its baseline from **a commit** rather than
   from a captured file, so neither can be lost that way again. Commit any guard
   you write, and prefer a baseline git can regenerate over one you store.
+  (Which commit has moved twice — `cc6edad` → `c77eff1` → `623bcf8`. The
+  property that matters is "a commit", not the particular hash; read it from
+  the script.)
 - **A verification claim in these docs is only as good as the script behind
   it.** "Standard is provably untouched" was written from a snapshot run whose
   script no longer exists, and the regression above landed after it. Re-run the

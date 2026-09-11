@@ -72,6 +72,46 @@ Straight from the IA notes. Tiles *display* the cannabinoid combo and ratio
 ("CBD:CBN 10:1"); effect filters decide which products appear. The one CBD-only
 product (Pain Relief) shows **total CBD mg** instead of a ratio.
 
+### The Brands facet is derived from the catalog, not hand-listed
+**2026-09-11.** `BRANDS` was six names typed by hand, and `match()` compared
+them to `p.b` exactly. It had drifted until **four of the six matched nothing**:
+`Royal Tree` missed "Royal Tree Gardens" (12 products), `Skörd` missed "Skord"
+(17), and `Freddy's` and `St. Ideal` were not in the catalog at all. **15 of 308
+products (5%) were reachable through the facet, and 43 of the catalog's brands
+were not offered.** Freddy's had already come out of the home brand row on
+2026-08-18; the drawer kept offering it.
+
+`brandList()` now derives the options from `P` and sorts them with
+`localeCompare`. **The point is not the list, it is that a derived list cannot
+drift** — regenerate the catalog and the facet follows it, the same rule
+`SIZES.drink` already follows.
+
+It is a **function, not a `const`**, because the old list sat ten lines *above*
+the `P` array it needs to read. A hoisted function only touches `P` when the
+drawer renders; a derived `const` in that position would have thrown at load.
+
+**Found by auditing, not by using the app.** `filter-audit.js` drives the app's
+own `match()` over every option the drawer offers and reports the count behind
+each. That is the only way this class of bug surfaces: a facet that returns
+nothing looks exactly like a shelf that happens to be empty. The same run found
+a second dead option nobody had logged — **Edible form → "Capsules / Softgels"
+matched 0 products**, because the catalog carries `etype:"Capsules"` on 10 of
+them and only the facet's label disagreed. The label now matches its 10.
+
+**Three brand-name collisions, merged at the source.** `Swift` (drinks) /
+`Swifts` (edibles), `Ceres` (edibles) / `Dragon Balm (Ceres)` (topicals), and
+`Constellation` (flower) / `Constellation Cannabis` (concentrates + edibles).
+Each split cleanly across product types, which is the signature of one brand
+spelled differently in two source sheets rather than two brands. Merged on
+Jack's call **in the .xlsx sheets as well as the app**, so a regeneration
+cannot undo it, and the generators were re-run to confirm they emit the merged
+names: 45 brands → **42** (Ceres 14, Constellation 12, Swifts 9). `Dragon Balm`
+survives as a *product* name under Ceres, which is right — it is the product
+line, not the brand.
+
+A derived facet makes collisions visible for the first time: hand-listed, the
+two spellings never appeared together, so nothing pointed at them.
+
 ### Breadcrumbs mirror the filter, not the product type
 Concentrate tiles read **"Rosin › Live Rosin"** (category › consistency), not
 "Concentrates › Rosin". Edibles read **"Gummies › Distillate"** (form ›
@@ -352,11 +392,16 @@ takes `drink` (the orange bottle, the shop's own Drinks circle) and Vapes takes
 honest picture. Both were checked against the built `IMG` before being written
 in, which is the check this section exists to demand.
 
-**`vape` is not an image key.** The shop's Vapes category circle asks for
-`IMG["vape"]`, which `asm_app.py` has never carried — the circle has been
-rendering in its `noimg` fallback state the whole time. It degrades quietly
-(that's what `noimg` is for), so it looks deliberate. Supply a `vape.png` and
-it wires itself up; until then don't reference the key from anywhere new.
+**`vape` is now an image key — it was not, for months.** The shop's Vapes
+category circle asks for `IMG["vape"]`, and `asm_app.py` carried no such key, so
+the circle rendered in its `noimg` fallback the whole time. It degrades quietly
+(that is what `noimg` is for), which is exactly why nobody caught it: a missing
+photo looks like a deliberate blank. Registered in `8c18000` against
+`product assets/Vapes/vape Background Removed.png`.
+
+The standing rule is unchanged and is the reason this sat so long: **a key that
+isn't in the map renders an empty `<img>`, silently.** Check any new `IMG[…]`
+reference against the built map.
 
 ### Origins U covers the shelves, and every link lands on its own page
 Jack, 2026-08-20. Drinks used to open the **Edibles** page and vapes the
@@ -1466,9 +1511,11 @@ mode.
 
 `standard-guard.py` is now in the repo and is a second to run, so the reason it
 lapsed — the original was a Playwright snapshot needing a build of both sides —
-is gone. It takes its baseline from `cc6edad` in git rather than from a stored
-file, which is the part worth keeping: **a guard whose baseline is captured from
-the current state can only ever confirm the present.** The bug above would have
+is gone. It takes its baseline from a **commit** in git rather than from a
+stored file (`cc6edad` at the time of writing; `623bcf8` since 2026-09-11 —
+read the constant, not this line), which is the part worth keeping: **a guard
+whose baseline is captured from the current state can only ever confirm the
+present.** The bug above would have
 been invisible to one, because the baseline would have been taken after it
 landed.
 
@@ -1568,8 +1615,10 @@ reported clean: true within the scope, wrong as a claim about the screen. It was
 found by looking at a screenshot. **A guard's silence is only as broad as its
 selector**, and this one's is narrower than the thing it appears to describe.
 
-*Left unfixed, flagged here:* `body.fs .fsexit` is declared twice (lines 211 and
-214) with identical specificity, and the later one hard-codes `top:14px`, which
+*Left unfixed, flagged here* (still open; `origins-app.src.html:209` and `:212`
+as of 2026-09-11 — the line numbers move, the defect doesn't): `body.fs .fsexit`
+is declared twice with identical specificity, and the later one hard-codes
+`top:14px`, which
 kills the earlier `calc(9px + env(safe-area-inset-top,0px))`. The notch handling
 is dead code — measured y=14.0 in both modes, never 9 + inset. On a notched
 iPhone the chip may sit under the notch. Not fixed because `env(safe-area-inset-*)`
