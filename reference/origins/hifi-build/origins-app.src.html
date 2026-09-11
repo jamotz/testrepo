@@ -2547,16 +2547,23 @@ function feedCard(p){
    Live Resin shot there, and the app's rule is that no two bubbles share a
    photo, so it takes the live-resin sauce — a sauce IS the full-spectrum
    extract, and it reads as its own product at a glance. One line to swap. */
-var VAPECIRCLES=[["cd_oil","Distillate"],["clr_sugar","Live Resin"],
-                 ["clr_sauce","Full Spec"],["cro_live","Rosin"]];
+/* Third value is a scale, the same trick renderShop uses on preroll/vape: these
+   cutouts carry different amounts of empty frame, so object-fit:contain renders
+   them at wildly different sizes in an identical ring. Measured content as a
+   share of the image box: cd_oil 93%, clr_sugar 80%, cro_live 80%, clr_sauce
+   59% -- the sauce came out 37px inside a 78px ring. Each scale normalises to
+   cd_oil's 93%, so all four read as one row. Re-measure if a photo changes. */
+var VAPECIRCLES=[["cd_oil","Distillate",0],["clr_sugar","Live Resin",1.15],
+                 ["clr_sauce","Full Spec",1.55],["cro_live","Rosin",1.15]];
 /* Not buttons: vapes are web-only, so these identify the consistencies rather
    than navigating anywhere. A tap target that does nothing is worse than none. */
 function renderVape(){
   var el=$("#vapecircles"); if(!el)return;
   el.innerHTML=VAPECIRCLES.map(function(v){
-    var src=IMG[v[0]];
+    var src=IMG[v[0]],sc=v[2];
     return '<div class="cc"><span class="ring'+(src?'':' noimg')+'">'+
-      (src?'<img src="'+src+'" alt="">':'')+'</span><b>'+v[1]+'</b></div>';}).join("");
+      (src?'<img src="'+src+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'>':'')+
+      '</span><b>'+v[1]+'</b></div>';}).join("");
 }
 function renderShop(){
   moodChips($("#moodbar"));
