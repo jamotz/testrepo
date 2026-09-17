@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 623bcf8          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 2cde1b0          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -138,26 +138,34 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
   return out;
 }
 
-/* ── THE BASELINE MOVED (2026-09-03) ──────────────────────────────────────
- * It was cc6edad, the last pre-Enlarged commit, to prove the Enlarged work
- * never disturbed Standard. It is now 470e2b5, and the reason is that Standard
- * started changing for reasons that have nothing to do with Enlarged: the vape
- * screen took the shop chrome (.sbar + white chipbar, orange in-body back
- * button removed). That is a real, intended change to what Standard renders,
- * so it is NOT an accepted delta -- those are for differences that do not move
- * anything on screen. The documented response to a legitimate Standard change
- * is to re-baseline deliberately, and this is that.
+/* ── THE BASELINE MOVED ───────────────────────────────────────────────────
+ * Current baseline: 2cde1b0. History, most recent first:
  *
- * What the move costs, stated plainly: this guard no longer measures against
- * pre-Enlarged. It measures against the last verified state. Anyone trusting
- * 470e2b5 as a baseline is trusting that the run which blessed it was read
- * properly -- the cc6edad comparison at that commit showed the vape screen's
- * intended diff and the five accepted deltas, and nothing else.
+ *   2cde1b0  2026-09-17  the home rows took scroll arrows. Two ADDED keys on
+ *            `home` and nothing else in 24 screens: div.can-next.hrow (the
+ *            wrapper) and button.next.rowarr.tap (the visible arrow). The prev
+ *            arrow is display:none at rest, and this guard skips those, which
+ *            is why only one of the pair shows up. New visible controls, so a
+ *            real Standard change, not an accepted delta.
+ *   623bcf8  2026-09-11  the Brands facet gained a centred "See more" (.bmore).
+ *   c77eff1  2026-09-11  vape circles took real photos; .vape .vc was deleted.
+ *   470e2b5  2026-09-03  the vape screen took the shop chrome.
+ *   cc6edad  the last pre-Enlarged commit, the original anchor.
  *
- * What the move does NOT cost: standard-guard.py still runs against cc6edad
- * with ZERO exceptions, 214 = 214. The pre-Enlarged anchor survives where it
- * matters most -- every font-size in the app -- and that is the check that
- * catches the count=1 class of bug.
+ * Each move was for the same reason: a real, intended change to what Standard
+ * renders is NOT an accepted delta -- those are strictly for differences that
+ * move nothing on screen -- and the documented response to a legitimate change
+ * is to re-baseline deliberately.
+ *
+ * What the moves cost, stated plainly: this guard no longer measures against
+ * pre-Enlarged. It measures against the last verified state, so trusting it
+ * means trusting that the run which blessed each step was read properly.
+ *
+ * What they do NOT cost: standard-guard.py still anchors every font-size in
+ * the app with ZERO exceptions, and that is the check that catches the count=1
+ * class of bug. (It now runs against 5f66ce8 at 220 = 220. An earlier version
+ * of this comment claimed it was still on cc6edad at 214 = 214 long after both
+ * had moved -- read the constant in that file, not this paragraph.)
  *
  * Re-baseline again the same way: only after a run whose every difference you
  * have read and can name, and say here what moved and why.
