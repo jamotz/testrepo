@@ -376,27 +376,36 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
    affordance in the mode that exists for legibility. */
 #scr.enlarged .rowbar{display:none}
 
-/* The arrows are absolutely positioned SIBLINGS of the row, never children of
-   it: a flex child with a height of its own is what once dragged every tile in
-   a .dealrow 40px taller, and .rowarr carries a fixed height by definition.
-   Out of flow, it cannot reach the tiles. It also sits outside the row's
-   overflow, so the scroller never clips it. */
+/* The arrows sit BELOW the row, not over the cards (Jack, 2026-09-17).
+   They were overlaid at top:50% of the row, which in Enlarged put a 52px
+   button straight through the product name. There is no height that works:
+   on a 420x410 Enlarged card the RIGHT edge is taken by the cannabinoid
+   bubbles (y 10→77) and the lifestyle badge (y 120→164), the LEFT edge by the
+   breadcrumb, name, brand, size pill and price (y 153→338), and "See more
+   sizes" spans both edges (y 347→393). The only clear band on the left is over
+   the photo (15→134) and the only one on the right is the brand/price band
+   (219→338), and they do not overlap. On a full-width card an overlaid arrow
+   always covers something, so the answer is not to overlay.
+
+   Below the row they also take the same slot as Standard's scrollbar, so the
+   two modes read as one design with one control each rather than two ideas. */
 .hrow{position:relative}
-.rowarr{position:absolute;top:50%;transform:translateY(-50%);z-index:5;
-  width:34px;height:34px;border-radius:50%;padding:0;
-  border:1.5px solid #E1DBCD;background:rgba(255,255,255,.95);color:var(--olive);
+.rowctl{display:none;gap:14px;justify-content:center;align-items:center;padding:0 16px 10px}
+#scr.enlarged .hrow.can-scroll>.rowctl{display:flex}
+/* display:none on the BUTTON, not just on the strip around it. A button inside
+   a display:none parent still reports its own display as inline-flex, so
+   snapshot-guard would count two invisible buttons as new elements on every
+   Standard screen and demand a re-baseline for something that renders nothing. */
+.rowarr{width:34px;height:34px;border-radius:50%;padding:0;flex:none;
+  border:1.5px solid #E1DBCD;background:#fff;color:var(--olive);
   display:none;align-items:center;justify-content:center;
   box-shadow:0 2px 8px rgba(0,0,0,.16)}
-/* Enlarged only — Standard has the scrollbar instead. The can-prev/can-next
-   classes are still maintained in both modes: they cost nothing, and scoping
-   the *display* rather than the bookkeeping means switching modes needs no
-   re-render, which matters because setAdv() re-renders home anyway and the
-   row's scroll position would otherwise be lost. */
-#scr.enlarged .hrow.can-prev>.rowarr.prev,#scr.enlarged .hrow.can-next>.rowarr.next{display:inline-flex}
-.rowarr.prev{left:5px}
-.rowarr.next{right:5px}
+#scr.enlarged .hrow.can-scroll>.rowctl>.rowarr{display:inline-flex}
+/* Disabled at the ends rather than hidden: removing one would re-centre the
+   other and the pair would jump sideways as you scroll. */
+.rowarr[disabled]{opacity:.3;box-shadow:none;cursor:default}
 .rowarr svg{width:18px;height:18px}
-.rowarr:active{background:#fff;border-color:var(--olive)}
+.rowarr:not([disabled]):active{background:#F6F4EF;border-color:var(--olive)}
 /* shop feed tiles match the home tile size. Remove .tiles-compact from #view for
    the larger tiles (the current shop size) — reserved for a future a11y toggle. */
 .tiles-compact .feedrow .fcard{zoom:.9}
@@ -3311,8 +3320,10 @@ var ARR_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 function hrow(cls,inner){
   return '<div class="hrow"><div class="'+cls+'">'+inner+'</div>'+
     '<div class="rowbar"><div class="rowbarT"></div></div>'+
-    '<button class="rowarr prev tap" type="button" aria-label="Scroll left">'+ARR_L+'</button>'+
-    '<button class="rowarr next tap" type="button" aria-label="Scroll right">'+ARR_R+'</button></div>';
+    '<div class="rowctl">'+
+      '<button class="rowarr prev tap" type="button" aria-label="Previous">'+ARR_L+'</button>'+
+      '<button class="rowarr next tap" type="button" aria-label="Next">'+ARR_R+'</button>'+
+    '</div></div>';
 }
 /* Which arrows a row should be showing right now. Everything here is in the
    scroller's own layout pixels - scrollLeft, scrollWidth and clientWidth all
@@ -3326,8 +3337,12 @@ function syncRow(h){
   var r=h.firstElementChild; if(!r)return;
   var max=r.scrollWidth-r.clientWidth;
   h.classList.toggle("can-scroll",max>2);
-  h.classList.toggle("can-prev",max>2&&r.scrollLeft>2);
-  h.classList.toggle("can-next",max>2&&r.scrollLeft<max-2);
+  var canPrev=max>2&&r.scrollLeft>2,canNext=max>2&&r.scrollLeft<max-2;
+  h.classList.toggle("can-prev",canPrev);
+  h.classList.toggle("can-next",canNext);
+  var pv=h.querySelector(".rowarr.prev"),nx=h.querySelector(".rowarr.next");
+  if(pv)pv.disabled=!canPrev;
+  if(nx)nx.disabled=!canNext;
   /* The thumb is the visible fraction of the row, placed at the scrolled
      fraction — percentages, so it never needs to know the frame's scale. */
   var t=h.querySelector(".rowbarT");
