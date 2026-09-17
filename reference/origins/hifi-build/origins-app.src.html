@@ -348,10 +348,35 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 /* A home row says it scrolls. Two cards fit the 452px design width almost
    exactly (16 + 196 + 14 + 196 = 422 of 452), so the third card was not peeking
    far enough to read as "there is more" — and in Enlarged, where a card takes
-   the full width, there was no hint at all. One arrow per end, each shown only
-   while there is something in that direction.
+   the full width, there was no hint at all.
 
-   The arrows are absolutely positioned SIBLINGS of the row, never children of
+   Two affordances, one per mode (Jack, 2026-09-17):
+     Standard — a grey scrollbar under the row, matching the browser's own.
+                It costs no horizontal room, which matters here: at 452px there
+                is none to give, so an arrow has to float over a card.
+     Enlarged — the arrows. A thin low-contrast bar is the wrong answer in the
+                mode that exists for legibility, and an arrow is a target you
+                can hit rather than a 8px bar you have to drag.
+   Each mode gets one, not both, so neither reads as decoration. */
+/* The Standard bar is DRAWN, not the browser's. Both native routes were tried
+   and neither is dependable here: `::-webkit-scrollbar` and the standard
+   `scrollbar-width`/`scrollbar-color` pair each reserved 0px and painted
+   nothing, because this engine uses overlay scrollbars — which fade out when
+   you stop scrolling, i.e. they are visible only once you already know there
+   is more, the opposite of the point. Worse, which behaviour you get depends on
+   the viewer's OS and browser, so it could not be verified from here at all.
+   A drawn bar renders the same everywhere and can be measured. */
+.rowbar{display:none;position:relative;height:6px;margin:0 16px 10px;
+  border-radius:100px;background:#EDEAE4;touch-action:none;cursor:pointer}
+.hrow.can-scroll>.rowbar{display:block}
+.rowbar .rowbarT{position:absolute;top:0;bottom:0;left:0;min-width:24px;
+  border-radius:100px;background:#C1C1C1}
+.rowbar:active .rowbarT{background:#A9A399}
+/* Enlarged takes the arrows instead: a 6px low-contrast bar is the wrong
+   affordance in the mode that exists for legibility. */
+#scr.enlarged .rowbar{display:none}
+
+/* The arrows are absolutely positioned SIBLINGS of the row, never children of
    it: a flex child with a height of its own is what once dragged every tile in
    a .dealrow 40px taller, and .rowarr carries a fixed height by definition.
    Out of flow, it cannot reach the tiles. It also sits outside the row's
@@ -362,7 +387,12 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
   border:1.5px solid #E1DBCD;background:rgba(255,255,255,.95);color:var(--olive);
   display:none;align-items:center;justify-content:center;
   box-shadow:0 2px 8px rgba(0,0,0,.16)}
-.hrow.can-prev>.rowarr.prev,.hrow.can-next>.rowarr.next{display:inline-flex}
+/* Enlarged only — Standard has the scrollbar instead. The can-prev/can-next
+   classes are still maintained in both modes: they cost nothing, and scoping
+   the *display* rather than the bookkeeping means switching modes needs no
+   re-render, which matters because setAdv() re-renders home anyway and the
+   row's scroll position would otherwise be lost. */
+#scr.enlarged .hrow.can-prev>.rowarr.prev,#scr.enlarged .hrow.can-next>.rowarr.next{display:inline-flex}
 .rowarr.prev{left:5px}
 .rowarr.next{right:5px}
 .rowarr svg{width:18px;height:18px}
@@ -3280,6 +3310,7 @@ var ARR_L='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 var ARR_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
 function hrow(cls,inner){
   return '<div class="hrow"><div class="'+cls+'">'+inner+'</div>'+
+    '<div class="rowbar"><div class="rowbarT"></div></div>'+
     '<button class="rowarr prev tap" type="button" aria-label="Scroll left">'+ARR_L+'</button>'+
     '<button class="rowarr next tap" type="button" aria-label="Scroll right">'+ARR_R+'</button></div>';
 }
@@ -3294,8 +3325,17 @@ function hrow(cls,inner){
 function syncRow(h){
   var r=h.firstElementChild; if(!r)return;
   var max=r.scrollWidth-r.clientWidth;
+  h.classList.toggle("can-scroll",max>2);
   h.classList.toggle("can-prev",max>2&&r.scrollLeft>2);
   h.classList.toggle("can-next",max>2&&r.scrollLeft<max-2);
+  /* The thumb is the visible fraction of the row, placed at the scrolled
+     fraction — percentages, so it never needs to know the frame's scale. */
+  var t=h.querySelector(".rowbarT");
+  if(t&&max>2){
+    var frac=Math.min(1,r.clientWidth/r.scrollWidth);
+    t.style.width=(frac*100)+"%";
+    t.style.left=((r.scrollLeft/max)*(1-frac)*100)+"%";
+  }
 }
 /* Takes a CONTAINER and syncs the rows inside it. querySelectorAll never
    matches its own root, so handing this an .hrow itself silently does nothing —
@@ -3311,6 +3351,31 @@ function wireRowArrows(root){
   (root||document).querySelectorAll(".hrow").forEach(function(h){
     var r=h.firstElementChild; if(!r)return;
     r.addEventListener("scroll",function(){syncRow(h);});
+    /* A drawn bar that doesn't drag is a picture of a control, so it drags.
+       Pointer events cover mouse and touch in one path; the capture keeps the
+       drag alive when the finger leaves the 6px bar, which it always does. */
+    var bar=h.querySelector(".rowbar");
+    if(bar){
+      var drag=function(e){
+        var box=bar.getBoundingClientRect();
+        if(!box.width)return;
+        var frac=Math.min(1,Math.max(0,(e.clientX-box.left)/box.width));
+        var max=r.scrollWidth-r.clientWidth;
+        /* centre the thumb on the pointer rather than putting its left edge
+           there, or the row lags the finger by half a thumb */
+        var vis=r.clientWidth/r.scrollWidth;
+        r.scrollLeft=Math.min(max,Math.max(0,(frac-vis/2)/(1-vis)*max));
+      };
+      bar.addEventListener("pointerdown",function(e){
+        e.preventDefault();bar.setPointerCapture(e.pointerId);drag(e);
+      });
+      bar.addEventListener("pointermove",function(e){
+        if(bar.hasPointerCapture(e.pointerId))drag(e);
+      });
+      bar.addEventListener("pointerup",function(e){
+        if(bar.hasPointerCapture(e.pointerId))bar.releasePointerCapture(e.pointerId);
+      });
+    }
     h.querySelectorAll(".rowarr").forEach(function(b){
       b.addEventListener("click",function(e){
         e.stopPropagation();                       /* the row sits inside tap handlers */
