@@ -390,8 +390,25 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
    Below the row they also take the same slot as Standard's scrollbar, so the
    two modes read as one design with one control each rather than two ideas. */
 .hrow{position:relative}
-.rowctl{display:none;gap:14px;justify-content:center;align-items:center;padding:0 16px 10px}
+/* arrows at the two ends, position dashes between them (Jack, 2026-09-17) */
+.rowctl{display:none;gap:12px;justify-content:space-between;align-items:center;padding:0 16px 10px}
 #scr.enlarged .hrow.can-scroll>.rowctl{display:flex}
+/* display:none on the dashes THEMSELVES, not just the strip — the same reason
+   the buttons carry it. An element inside a display:none parent still reports
+   its own computed display, so snapshot-guard counts it as a new element on
+   every Standard screen and asks to be re-baselined for something that renders
+   nothing. Caught exactly that way: one run, "added div.rowdots, added span". */
+.rowdots{display:none;flex:1;gap:8px;justify-content:center;align-items:center}
+.rowdots span{display:none;width:26px;height:6px;border-radius:100px;background:#D9D5CD}
+.rowdots span.on{background:var(--or)}
+#scr.enlarged .hrow.can-scroll>.rowctl>.rowdots{display:flex}
+#scr.enlarged .hrow.can-scroll>.rowctl>.rowdots span{display:block}
+/* The dashes grow with the mode like everything else, but they are an
+   INDICATOR, not a control: at 52px targets a tap-to-jump dash would need
+   5 x 52 + two arrows = 364px of a 420px row, and it would put five more
+   things to hit next to the two that already do the job. The arrows are the
+   control; these say where you are. */
+#scr.enlarged .rowdots span{width:34px;height:8px}
 /* display:none on the BUTTON, not just on the strip around it. A button inside
    a display:none parent still reports its own display as inline-flex, so
    snapshot-guard would count two invisible buttons as new elements on every
@@ -3322,6 +3339,9 @@ function hrow(cls,inner){
     '<div class="rowbar"><div class="rowbarT"></div></div>'+
     '<div class="rowctl">'+
       '<button class="rowarr prev tap" type="button" aria-label="Previous">'+ARR_L+'</button>'+
+      /* filled by wireRowArrows() — one dash per tile, and only the row knows
+         how many tiles it ended up with */
+      '<div class="rowdots" aria-hidden="true"></div>'+
       '<button class="rowarr next tap" type="button" aria-label="Next">'+ARR_R+'</button>'+
     '</div></div>';
 }
@@ -3343,6 +3363,17 @@ function syncRow(h){
   var pv=h.querySelector(".rowarr.prev"),nx=h.querySelector(".rowarr.next");
   if(pv)pv.disabled=!canPrev;
   if(nx)nx.disabled=!canNext;
+  /* which dash is lit. Rounding to the nearest tile rather than flooring means
+     a half-scrolled row lights the tile you are mostly looking at, and the last
+     dash still lights at the end of the row even though the final scroll
+     position is short of a whole pitch. */
+  var dots=h.querySelector(".rowdots"),n=dots?dots.children.length:0;
+  if(n){
+    var i=Math.round(r.scrollLeft/rowStep(r));
+    if(r.scrollLeft>=max-2)i=n-1;
+    i=Math.max(0,Math.min(n-1,i));
+    for(var j=0;j<n;j++)dots.children[j].classList.toggle("on",j===i);
+  }
   /* The thumb is the visible fraction of the row, placed at the scrolled
      fraction — percentages, so it never needs to know the frame's scale. */
   var t=h.querySelector(".rowbarT");
@@ -3383,6 +3414,15 @@ function rowStep(r){
 function wireRowArrows(root){
   (root||document).querySelectorAll(".hrow").forEach(function(h){
     var r=h.firstElementChild; if(!r)return;
+    /* One dash per tile. Home rows run to five (four products plus See All), so
+       the strip always fits; the cap is there so a longer row degrades to
+       arrows alone rather than to a line of slivers. */
+    var dots=h.querySelector(".rowdots");
+    if(dots){
+      var n=r.children.length,html="";
+      if(n>1&&n<=8)for(var i=0;i<n;i++)html+="<span></span>";
+      dots.innerHTML=html;
+    }
     r.addEventListener("scroll",function(){syncRow(h);});
     /* A drawn bar that doesn't drag is a picture of a control, so it drags.
        Pointer events cover mouse and touch in one path; the capture keeps the
