@@ -94,17 +94,24 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`bb66fe2`** (**Version 29**, republished 2026-09-17), and every check was
+`034833e`** (**Version 30**, republished 2026-09-17), and every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 220 = 220
 against its `5f66ce8` baseline, `snapshot-guard.js` PASS against its
 **`b88fcd5`** baseline, `enlarged-check.js` 0 findings across 4 viewports × 24
 screens, `ratio.js` unchanged, `lglyph-probe.js` 254 elements / 0 differences,
 `fsexit-probe.js` clearance +4 / +9, `mood-probe.js` 8/8 global.
 
-Version 29 carries, on top of 28: the full-screen EXIT chip clearing its own
+Versions 29–30 carry, on top of 28: the full-screen EXIT chip clearing its own
 strip (one rule, inset live again), a lifestyle chip filtering the whole shop
 instead of the shelf you are standing on, and the home rows stating that they
-scroll — a drawn grey scrollbar in Standard, arrows in Enlarged.
+scroll — **one affordance per mode**, a drawn grey scrollbar in Standard and,
+in Enlarged, arrows in a strip *below* the row with a dash per tile between
+them (orange on the tile you are on). The arrows step exactly one tile,
+measured from the row's real pitch rather than a fraction of its width.
+
+**Only the Standard bar and the Enlarged strip are on home.** The shop's
+`.feedrow`, `.catcircles` and `.subcats` scroll the same way and still say
+nothing; `hrow()` takes them unchanged if Jack wants them covered.
 
 *Version 27 shipped with the Standard guard red and this line claiming
 otherwise. That is fixed, and the rule it broke is at the bottom of this file —
