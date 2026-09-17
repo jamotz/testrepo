@@ -2563,7 +2563,21 @@ function moodChips(el){
   if(!el)return;
   el.innerHTML=Object.keys(FEEL).map(function(k){return '<button class="chip tap '+LIFECLASS[k]+' '+(S.mood===k?'sel':'')+'" data-mood="'+k+'" aria-pressed="'+(S.mood===k?'true':'false')+'">'+lifeGlyph(k,'chiplg')+lifeLabel(k)+'</button>';}).join("");
   el.querySelectorAll("[data-mood]").forEach(function(b){b.addEventListener("click",function(){
-    S.mood=S.mood===b.dataset.mood?null:b.dataset.mood;moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
+    var on=S.mood!==b.dataset.mood;
+    S.mood=on?b.dataset.mood:null;
+    /* A lifestyle is a view ACROSS the shop, not a filter inside the shelf you
+       happen to be standing on. Picking one therefore drops the shelf-scoped
+       facets, the way Guide Me's "Back to Shop" already does when it hands over
+       a lifestyle. Without this, tapping Discovery from the Flower shelf showed
+       4 of its 36 products and left the Flower title and bubbles in place, so it
+       read as though nothing had happened.
+       Cross-shelf facets (brands, THC, on sale) are KEPT: they mean the same
+       thing on every shelf, so a lifestyle does not have to undo them. The ones
+       cleared here are exactly the ones that only make sense inside one type --
+       including `size`, whose options come from SIZES[type] ("3.5 g" excludes
+       every edible), and `deal`, which is a single shelf's promotion. */
+    if(on){S.type=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.size=null;S.deal=null;}
+    moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));
     if(S.screen!=="list")nav("list");else renderList();
   });});
 }
@@ -2723,7 +2737,11 @@ function renderList(){
     return;
   }
   dh.innerHTML="";
-  $("#ltitle").textContent=S.type?TYPES[S.type]:"All Products";
+  /* With no type, a lifestyle names the list rather than leaving it "All
+     Products" — the view is all products IN that lifestyle, and saying so is
+     what tells you the chip did something. lifeLabel(), never FEEL[k], so the
+     Use-product-type switch reaches this too. */
+  $("#ltitle").textContent=S.type?TYPES[S.type]:(S.mood?lifeLabel(S.mood):"All Products");
   var learn=$("#learnbtn"),subs=SUBS[S.type],sc=$("#subcats");
   if(S.type==="concentrate"){
     /* two-layer concentrate bubbles: category row -> tap one and the row becomes
