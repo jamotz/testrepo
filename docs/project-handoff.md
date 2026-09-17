@@ -1,7 +1,15 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-09-03 · branch `claude/accessibility-handoff-review-dhabtz`
-**Live prototype:** https://claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968
+**Last updated:** 2026-09-17 · branch `claude/accessibility-handoff-review-dhabtz`
+**Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j
+
+> Both of these address the same artifact and either works as `url=`:
+> `claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j` (what the tool returns now) and
+> `claude.ai/code/artifact/ff102055-8262-4b48-a681-8d77f802c968` (the older
+> form this file carried for weeks). A republish through the old form comes
+> back labelled with the new one — that is the **same** artifact, not a second
+> one. Confirmed 2026-09-17 by listing: one *Origins — App Prototype*, 🌿,
+> version 27 → 28. Don't "fix" a mismatch here by publishing without `url=`.
 
 Hi-fi clickable prototype of the **Origins** cannabis retail app, built for Jack
 Motzkin's UX portfolio case study. Everything is a single self-contained HTML
@@ -86,9 +94,14 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`5f66ce8`** (republished 2026-09-11 — **`standard-guard.py` is RED at this
-commit; see next steps §1**, the claim of "all four guards green" made here was
-not re-run) — the Final/pt2 catalogs, terpene-driven
+`fea857b`** (**Version 28**, republished 2026-09-17, all five checks green and
+each one re-run to say so: `standard-guard.py` PASS 220 = 220 against its new
+`5f66ce8` baseline, `snapshot-guard.js` PASS, `enlarged-check.js` 0 findings
+across 4 viewports × 24 screens, `ratio.js` unchanged, and `lglyph-probe.js`
+254 elements / 0 differences). Version 27 shipped with the Standard guard red
+and this line claiming otherwise; that is fixed, and the rule it broke is at
+the bottom of this file — **re-run the check before repeating the claim.**
+The build is the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
 rota, running-now first), the brown title bar on every screen, the outlined
@@ -292,9 +305,8 @@ polish and the open questions below.
    diagnosis as much as to a green run: the first bullet above was written from
    reading the stylesheet, and one build would have disproved it.
 
-   **Still to do:** republish the artifact and update the live-link line above —
-   the rendering is byte-for-byte unchanged, so this is housekeeping, not a fix
-   anyone is waiting on.
+   **Republished 2026-09-17 at `fea857b`, Version 28**, and the live-link line
+   above now names it.
 
 2. **General touch-ups** — Jack is doing a pass across the app, screen by
    screen. Home, shop, cart, Origins U and the account screens have each been
