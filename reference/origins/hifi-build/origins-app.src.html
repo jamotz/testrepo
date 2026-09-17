@@ -34,6 +34,25 @@
   --nav-pad:8px 2px 14px;
   --text-nav:9px;            /* tab bar label */
   --text-pill:11px;          /* weight/size pill on a card */
+
+  /* The strain letters. Each .lglyph stands in for a lifestyle LOGO, so its
+     size is an image dimension wearing a font-size, and it is paired with the
+     image it replaces rather than set on the type curve: the letter is the
+     same height as the picture it swaps out, in both modes. That is why three
+     of these six do not move in Enlarged -- their images don't either. Change
+     one of these and change its twin in the same commit:
+         --lglyph-chip  <-> .chip .chiplg          16 -> 20.5px
+         --lglyph-badge <-> .fcard .fbadge img     24 -> 31px
+         --lglyph-oc    <-> .oc.life .lifeglyph    28 -> 36px
+         --lglyph-pimg  <-> .pimg .life img        16px, no Enlarged rule
+         --lglyph-edu   <-> .educard .edulife img  24px, no Enlarged rule
+         --lglyph-feel  <-> .feelchip .chiplogo    32px, no Enlarged rule */
+  --lglyph-chip:12px;
+  --lglyph-badge:13px;
+  --lglyph-pimg:12px;
+  --lglyph-edu:15px;
+  --lglyph-feel:21px;
+  --lglyph-oc:19px;
 }
 /* Enlarged — the whole accessibility layer is these values. WCAG 2.2 AA is the
    baseline: 2.5.8 Target Size wants 24px minimum and we go to 52, 1.4.4 Resize
@@ -59,6 +78,16 @@
   --nav-pad:10px 2px 16px;
   --text-nav:15px;
   --text-pill:22px;
+  /* Three grow with their image; three hold, because their image holds. The
+     held values are repeated rather than omitted so this block states the
+     whole family -- an absent token here would read as an oversight, which is
+     exactly the reading that has to be ruled out. */
+  --lglyph-chip:15px;        /* .chip .chiplg          -> 20.5px */
+  --lglyph-badge:21px;       /* .fcard .fbadge img     -> 31px   */
+  --lglyph-oc:25px;          /* .oc.life .lifeglyph    -> 36px   */
+  --lglyph-pimg:12px;        /* holds: .pimg .life img has no Enlarged rule */
+  --lglyph-edu:15px;         /* holds: .educard .edulife img likewise        */
+  --lglyph-feel:21px;        /* holds: .feelchip .chiplogo likewise          */
 }
 
 /* ── Type scale ───────────────────────────────────────────────────────────
@@ -432,12 +461,12 @@ body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-
    One rule per context because each sizes its glyph differently. */
 .lglyph{display:inline-flex;align-items:center;justify-content:center;flex:none;
   font-family:var(--head);font-weight:700;line-height:1;color:#000;letter-spacing:.01em}
-.chip .lglyph{height:16px;font-size:12px}
-.fcard .fbadge .lglyph{height:19px;font-size:13px}
-.pimg .life .lglyph{height:16px;font-size:12px}
-.educard .edulife .lglyph{height:24px;font-size:15px}
-.feelchip .lglyph{height:32px;font-size:21px}
-.oc.life .lglyph{height:28px;width:32px;font-size:19px;justify-content:flex-start}
+.chip .lglyph{height:16px;font-size:var(--lglyph-chip)}
+.fcard .fbadge .lglyph{height:19px;font-size:var(--lglyph-badge)}
+.pimg .life .lglyph{height:16px;font-size:var(--lglyph-pimg)}
+.educard .edulife .lglyph{height:24px;font-size:var(--lglyph-edu)}
+.feelchip .lglyph{height:32px;font-size:var(--lglyph-feel)}
+.oc.life .lglyph{height:28px;width:32px;font-size:var(--lglyph-oc);justify-content:flex-start}
 .oc.life .lifeglyph{height:28px;width:32px;object-fit:contain;object-position:left center;flex:none}
 .oc.life .lifeword{height:25px;width:auto;object-fit:contain;display:block}
 .oc.life.discovery{background:var(--disc)}
@@ -1090,7 +1119,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 #scr.enlarged .oc .box{width:25.6px;height:25.6px}
 #scr.enlarged .feelchip svg{width:30.7px;height:30.7px}
 #scr.enlarged .chip .chiplg{width:20.5px;height:20.5px}
-#scr.enlarged .chip .lglyph{height:20.5px;font-size:15px}
+#scr.enlarged .chip .lglyph{height:20.5px}
 #scr.enlarged .taptoggle .d{width:11.5px;height:11.5px}
 
 /* ── Alignment ────────────────────────────────────────────────────────────
@@ -1116,7 +1145,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 #scr.enlarged .bub{padding:4px 9px;line-height:1.25}
 /* wizard lifestyle wordmarks are images, so scale the box they sit in */
 #scr.enlarged .oc.life .lifeglyph{height:36px;width:41px}
-#scr.enlarged .oc.life .lglyph{height:36px;width:41px;font-size:25px}
+#scr.enlarged .oc.life .lglyph{height:36px;width:41px}
 #scr.enlarged .oc{min-height:var(--target-size)}
 
 /* ══ Jack's Enlarged punch list, 2026-08-20 ══════════════════════════════ */
@@ -1138,7 +1167,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 /* Product tile: the lifestyle badge was still at its Standard 30px */
 #scr.enlarged .fcard .fbadge{width:48px;height:48px}
 #scr.enlarged .fcard .fbadge img{width:31px;height:31px}
-#scr.enlarged .fcard .fbadge .lglyph{height:31px;font-size:21px}
+#scr.enlarged .fcard .fbadge .lglyph{height:31px}
 
 /* Size pill: bigger, centred, no tick */
 #scr.enlarged .fcard .fsz{min-height:42px;padding:8px 18px;

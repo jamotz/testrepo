@@ -1425,6 +1425,47 @@ U had never been in that list because nothing on it printed one until now.
 The mechanism is in `architecture.md`; these are the calls Jack made on top of
 it, in the order he made them.
 
+### The strain letters are sized to the logo they replace, not to the type curve
+**2026-09-17.** Each `.lglyph` is a letter standing in for a lifestyle
+*wordmark image* — the one thing the *Use product type* switch can't re-letter,
+so it swaps the picture for a glyph. Its `font-size` is therefore an image
+dimension wearing a type property, and it is paired with its twin:
+
+| token | slot | the image it replaces | Standard | Enlarged |
+|---|---|---|---:|---:|
+| `--lglyph-chip` | mood chip | `.chip .chiplg` | 12px | 15px |
+| `--lglyph-badge` | product card badge | `.fcard .fbadge img` | 13px | 21px |
+| `--lglyph-oc` | Guide Me option | `.oc.life .lifeglyph` | 19px | 25px |
+| `--lglyph-pimg` | product page badge | `.pimg .life img` | 12px | **holds** |
+| `--lglyph-edu` | Origins U tile | `.educard .edulife img` | 15px | **holds** |
+| `--lglyph-feel` | Guide Me feel chip | `.feelchip .chiplogo` | 21px | **holds** |
+
+**Three hold in Enlarged because their images hold** — those three images have
+no `#scr.enlarged` rule, so a letter that grew would break away from the picture
+it stands in for and overflow a box that didn't move. Putting these six on the
+global `--fs-*` scale would have done exactly that: a 12px letter to 22px inside
+a 16px slot.
+
+**The absent Enlarged values are stated rather than omitted.** All six appear in
+the `#scr.enlarged` block, three of them repeating their Standard value, because
+a missing token there reads as an oversight — and was in fact read that way
+once: the 2026-09-11 handoff logged the three as "the product-page back button
+again, an enumeration something got left off". That was wrong, and it was wrong
+in the most plausible possible way, since the back button *had* been exactly
+that bug eight days earlier. What settled it was a build: 254 `.lglyph` elements
+measured across both modes and ten screens, every letter matching its twin.
+
+**The general rule:** *an enumeration with three entries missing is a bug; a
+pairing with three halves deliberately equal is a design. You cannot tell which
+from the stylesheet* — both look like an incomplete list. Measure, or find the
+thing the value is paired with.
+
+`lglyph-probe.js` is that measurement, committed because none of the other four
+guards can see these elements at all: `.lglyph` renders only when *Use product
+type* is on, and every guard leaves it off. A guard's silence is only as broad
+as its selector — the same lesson the full-screen exit strip taught, in a
+different dimension.
+
 ### The scale was flattened — legibility beats hierarchy here
 The generated curve compressed upward but still kept a spread: 9.5px rose to
 17.6, 13px to 21.3, 14px to 22.4. Jack's call after seeing it on screen was that

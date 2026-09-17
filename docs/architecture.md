@@ -687,6 +687,17 @@ hand and reached **15.6% coverage**: a few things grew, most didn't, and control
 that had been given a `min-height` ended up as tall boxes around small labels.
 Generating the mapping took it to **100%**.
 
+**One family sits outside that scale on purpose: `--lglyph-*`** (2026-09-17, six
+tokens). The strain letters are text standing in for the lifestyle *logos*, so
+each one's size is an image dimension wearing a `font-size`, and it is paired
+with the picture it replaces rather than set on the type curve — which is why
+three of the six do not move in Enlarged: their images don't either. Putting
+them on the global px tokens would have grown a 12px letter to 22px inside a
+16px box its image still occupies. **They are still tokens**, declared in both
+blocks so the whole family and its Enlarged half are readable in one place; they
+just answer to their twin instead of to the curve. The twin is named beside each
+token — change one, change the other in the same commit.
+
 **The curve is set by the container, not chosen in isolation.** This is the one
 thing to understand before touching it. Enlarged view puts one card across, so a
 product card goes **198px → 409px (×2.07)**. A type curve tuned on its own — the
@@ -763,9 +774,16 @@ certify whatever regression is already in it, and a stored baseline is exactly
 what got lost the first time. Keep that property if you rewrite the guard.
 
 It is validated against the regression itself, not just against green: run it
-over the history and it passes through `e817dae`, **fails at `8be0ad6` and
-`e67f341`** naming all six tokens, and passes again from `25c88fe`. A guard
-nobody has seen fail is not a guard.
+over the history and it **fails at `8be0ad6` and `e67f341`**, the two commits
+that carried the real regression. A guard nobody has seen fail is not a guard,
+and this one is re-validated against those two commits after every re-baseline
+(most recently 2026-09-17 → `5f66ce8`: both still exit 1).
+
+*It used to read "passes through `e817dae` … and passes again from `25c88fe`".
+That stopped being true when the baseline moved forward: the guard measures
+drift from its baseline onward, so commits **older** than the baseline now fail
+too, legitimately. Only the two regression commits are a meaningful validation
+target — they must fail from any baseline.*
 
 **What it does not cover:** stylesheet text only — not a size applied by JS at
 runtime, nor a cascade/specificity effect that changes which rule wins.

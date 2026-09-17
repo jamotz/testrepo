@@ -94,7 +94,21 @@ from collections import Counter
 # "See more" control (.bmore, 11px), a new visible element and so a real Standard
 # change, not an accepted delta. Diff read first: one gained declaration, nothing
 # lost.
-BASELINE = "623bcf8"
+#
+# Moved again 2026-09-17: 623bcf8 -> 5f66ce8. 5f66ce8 added the strain letters,
+# and .lglyph is a new visible element in six contexts, so Standard gained six
+# font-size declarations. Every difference read before moving: 0 lost, 6 gained,
+# no selector appearing as both -- i.e. NOT the count=1 signature, where an
+# enlarged value overwrites its Standard twin and the same selector shows up on
+# both sides. A new element needs sizes; this is a real Standard change and the
+# documented answer to one is a deliberate re-baseline.
+#
+# It went red at 5f66ce8 and stayed red for six days while the docs said all four
+# guards were green. Nothing re-ran it. That is the second time this guard has
+# lapsed at exactly the moment it was doing its job -- see design-decisions.md,
+# "Standard took six enlarged values for one build". The guard was right both
+# times; what failed was running it.
+BASELINE = "5f66ce8"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs

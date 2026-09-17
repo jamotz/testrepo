@@ -251,47 +251,50 @@ polish and the open questions below.
 
 ## Immediate next steps
 
-1. **`standard-guard.py` is FAILING on the current tip, and the docs said it
-   wasn't.** Verified 2026-09-11: PASS through `9448d20`, **FAIL from `5f66ce8`
-   onward** (`--rev` takes a commit, so this is one command per commit to
-   confirm). The live link was republished at `5f66ce8` and the line above
-   claimed all four guards green. It was not re-run.
+1. ~~**`standard-guard.py` is FAILING on the current tip**~~ — **FIXED
+   2026-09-17.** It was red from `5f66ce8` for six days while this file said all
+   four guards were green; nothing had re-run it. `BASELINE` is now `5f66ce8`
+   and the guard is green at 220 = 220.
 
-   ```
-   baseline 623bcf8: 214 Standard font-size declarations
-   working tree:     220   — FAIL (0 lost, 6 gained)
-   ```
+   The re-baseline was the whole fix, and it was deliberate, not a way to get to
+   green: 0 lost, 6 gained, no selector on both sides — **not** the `count=1`
+   signature. All six gains were `.lglyph`, an element that did not exist before
+   `5f66ce8` added the strain letters, and a new element needs sizes. Still
+   validated against the fault: `8be0ad6` and `e67f341` both still exit 1.
 
-   **Read the output before acting: this is a legitimate change, not the
-   `count=1` regression.** Nothing was lost and no selector appears as both `-`
-   and `+`; all six gains are `.lglyph`, an element that did not exist before
-   `5f66ce8` added the strain letters. New elements need sizes, so Standard
-   genuinely moved. The documented response is therefore to **re-baseline
-   deliberately** — point `BASELINE` at `5f66ce8`, in a commit that says what
-   moved and why — *not* to widen the guard or add exceptions.
+   The six are now `--lglyph-*` tokens rather than hard-coded literals, so the
+   "every font-size is a token" invariant holds again — see `architecture.md`
+   for why they are their own family and not part of the `--fs-*` curve.
 
-   **Two things this exposed, both worth fixing first:**
+   **Two claims written here on 2026-09-11 were wrong. Both are worth keeping
+   as a caution, because both sounded right:**
 
-   - **Three of the six new `.lglyph` sizes have no Enlarged override.**
-     `#scr.enlarged` covers `.chip`, `.oc.life` and `.fcard .fbadge`; it does
-     **not** cover `.pimg .life` (12px), `.educard .edulife` (15px) or
-     `.feelchip` (21px). With *Use product type* on, those three letters stay at
-     their Standard size in Enlarged while the screen around them doubles.
-     **This is the product-page back button again** — a hand-written
-     enumeration that something got left off — one week later, in the newest
-     feature. See *Done since (2026-09-03 → 09-11)* for that lesson.
-   - **The six declarations are hard-coded literals, not `--fs-*` tokens**, so
-     they sit outside the token system that `architecture.md` says every
-     font-size in the app belongs to. That is *why* the guard counted them;
-     tokenising them is the fix that makes both problems go away at once.
+   - ~~"Three of the six have no Enlarged override … the letters stay Standard-
+     sized while the screen doubles, the back button again."~~ **No.** Each
+     `.lglyph` replaces a lifestyle *logo*, and it is sized to that image, not
+     to the type curve. `.chip`, `.fcard .fbadge` and `.oc.life` grow **because
+     their images grow** (`.chiplg` 16→20.5, `fbadge img` 24→31, `.lifeglyph`
+     28→36); `.pimg .life`, `.educard .edulife` and `.feelchip` hold **because
+     their images hold** — those three have no `#scr.enlarged` rule either.
+     `5f66ce8` got this right. Measured on a build, both modes, 254 elements:
+     the letter matches its twin everywhere. *Whether those three **images**
+     should grow in Enlarged is a separate, older question about how far the
+     mode reaches into decoration — it predates the letters and is not this.*
+   - ~~"They are literals not tokens, which is *why* the guard counted them."~~
+     **No.** The guard resolves tokens back to literals and counts declarations
+     either way. The count rose because six declarations were *added*.
+     Tokenising changed nothing about the guard, and the re-baseline would have
+     been needed regardless. Two independent things that read as one.
 
-   Order: tokenise the six, give all six an Enlarged value, rebuild, re-run all
-   four guards, **then** re-baseline if anything legitimately remains, then
-   republish and update the live-link line above.
+   *The standing rule that actually broke here is written down twice in this
+   file:* **a verification claim is only as good as the script behind it —
+   re-run the check yourself before repeating the claim.** That applies to a
+   diagnosis as much as to a green run: the first bullet above was written from
+   reading the stylesheet, and one build would have disproved it.
 
-   *The standing rule this broke is already written down twice in this file:*
-   **a verification claim is only as good as the script behind it — re-run the
-   check yourself before repeating the claim.**
+   **Still to do:** republish the artifact and update the live-link line above —
+   the rendering is byte-for-byte unchanged, so this is housekeeping, not a fix
+   anyone is waiting on.
 
 2. **General touch-ups** — Jack is doing a pass across the app, screen by
    screen. Home, shop, cart, Origins U and the account screens have each been
@@ -562,6 +565,7 @@ reference/origins/
 │   ├── standard-guard.py         ← Enlarged guard: Standard must not move (run it)
 │   ├── snapshot-guard.js         ← Enlarged guard: same, from computed styles
 │   ├── enlarged-check.js         ← does Enlarged itself work (overflow/targets)
+│   ├── lglyph-probe.js           ← the strain letters, both modes (nothing else sees them)
 │   ├── filter-audit.js           ← counts products behind every filter option
 │   ├── drawer-test.js            ← drives the Brands clamp / type scoping
 │   ├── xlsxread.py               ← the one xlsx reader they all share
