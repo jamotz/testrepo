@@ -3344,9 +3344,27 @@ function syncRow(h){
 function syncRowArrows(root){
   (root||document).querySelectorAll(".hrow").forEach(syncRow);
 }
-/* One tap moves most of a screenful: in Enlarged that is one card (they take
-   the full width), in Standard just under two. Measuring a card instead would
-   have to cross the zoom boundary; the container does not. */
+/* One tap moves exactly one tile.
+   The first version stepped by clientWidth * 0.85, on the assumption that in
+   Enlarged a card IS the row's width. It isn't: the row is 452 wide but pads
+   16 a side, so a full-width card is 420 and the pitch with its gap is 434 —
+   0.85 of 452 is 384, which left every tap 50px short and the next card
+   hanging half-off the screen. "Most of a screenful" is not a tile.
+   So measure the real pitch: the distance between the first two children.
+   That has to be done in rect space and divided back by the frame's scale k,
+   because the cards carry `zoom` in Standard and offsetLeft/offsetWidth do not
+   agree with scrollLeft across a zoom boundary — the same disagreement that
+   made a deal tile 40px too tall. k comes from the row itself, so the two
+   measurements can't drift apart. */
+function rowStep(r){
+  var a=r.children[0],b=r.children[1];
+  if(a&&b){
+    var k=r.getBoundingClientRect().width/r.clientWidth||1;
+    var pitch=(b.getBoundingClientRect().left-a.getBoundingClientRect().left)/k;
+    if(pitch>8)return pitch;                /* a sane pitch, not a collapsed row */
+  }
+  return Math.max(120,r.clientWidth*0.85);  /* single-child row: fall back */
+}
 function wireRowArrows(root){
   (root||document).querySelectorAll(".hrow").forEach(function(h){
     var r=h.firstElementChild; if(!r)return;
@@ -3379,9 +3397,12 @@ function wireRowArrows(root){
     h.querySelectorAll(".rowarr").forEach(function(b){
       b.addEventListener("click",function(e){
         e.stopPropagation();                       /* the row sits inside tap handlers */
-        var step=Math.max(120,r.clientWidth*0.85);
-        r.scrollBy({left:b.classList.contains("next")?step:-step,
-                    behavior:motionOff()?"auto":"smooth"});
+        var step=rowStep(r);
+        /* Snap to the tile grid rather than adding a step to wherever a swipe
+           happened to stop, or the row drifts out of alignment one tap at a
+           time and never recovers. */
+        var i=Math.round(r.scrollLeft/step)+(b.classList.contains("next")?1:-1);
+        r.scrollTo({left:Math.max(0,i*step),behavior:motionOff()?"auto":"smooth"});
       });
     });
   });
