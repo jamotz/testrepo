@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 2cde1b0          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base b88fcd5          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,14 +139,27 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 2cde1b0. History, most recent first:
+ * Current baseline: b88fcd5. History, most recent first:
  *
+ *   b88fcd5  2026-09-17  Standard swapped the arrows for a drawn scrollbar
+ *            (arrows are Enlarged-only now). On `home`: div.rowbar and
+ *            div.rowbarT added, the arrow and the old wrapper signature
+ *            removed (the wrapper gained a can-scroll class, so its key
+ *            changed), and three heights grew by exactly the bar: deal-sec
+ *            310.156 -> 316.156 and 312.125 -> 318.125, div.deals 1000.44 ->
+ *            1018.44. +6px a section rather than +16, because the bar's 10px
+ *            bottom margin collapses into .deal-sec's 16px. Nothing else in 24
+ *            screens.
  *   2cde1b0  2026-09-17  the home rows took scroll arrows. Two ADDED keys on
  *            `home` and nothing else in 24 screens: div.can-next.hrow (the
  *            wrapper) and button.next.rowarr.tap (the visible arrow). The prev
  *            arrow is display:none at rest, and this guard skips those, which
  *            is why only one of the pair shows up. New visible controls, so a
  *            real Standard change, not an accepted delta.
+ *            Superseded the same day by b88fcd5 above: two re-baselines in one
+ *            session is fine when each is a deliberate design change that was
+ *            read in full. It is only a problem if it becomes the habit that
+ *            replaces reading the diff.
  *   623bcf8  2026-09-11  the Brands facet gained a centred "See more" (.bmore).
  *   c77eff1  2026-09-11  vape circles took real photos; .vape .vc was deleted.
  *   470e2b5  2026-09-03  the vape screen took the shop chrome.
