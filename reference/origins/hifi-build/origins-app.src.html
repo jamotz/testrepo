@@ -235,10 +235,18 @@ body.fs .phone{padding:0;border-radius:0;box-shadow:none}
 /* the exit chip gets its own strip so it never covers the app's header, and
    the tab bar clears the home indicator (viewport-fit=cover lets us under it) */
 body.fs .scr{border-radius:0;padding-top:calc(48px + env(safe-area-inset-top,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-body.fs .fsexit{top:calc(9px + env(safe-area-inset-top,0px))}
 body.fs .island,body.fs .status{display:none}
 .fsexit{display:none}
-body.fs .fsexit{position:absolute;left:14px;top:14px;z-index:210;display:inline-flex;align-items:center;gap:8px;
+/* ONE rule, and `top` reads the inset. There were two `body.fs .fsexit` rules
+   at identical specificity for months: this one hard-coded `top:14px` and won,
+   so the other one's calc(9px + env(safe-area-inset-top)) never applied and the
+   notch handling was dead. Measured y=14.0 in both modes, never 9 + inset.
+   Keep the top value HERE, in the rule that sets the box -- a second rule that
+   only nudges `top` is what let the two drift apart unnoticed.
+   9px is not a tweak: the chip is 35px tall (50px in Enlarged) and the strip
+   above the app is 48px (68px), so 9 + 35 = 44 clears 48 by 4. At 14px it
+   measured 49 against 48 -- the chip overhung its own strip by 1px. */
+body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-top,0px));z-index:210;display:inline-flex;align-items:center;gap:8px;
   background:rgba(23,18,13,.82);color:#F3EADB;border:0;border-radius:100px;padding:9px 15px 9px 11px;
   font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--fs-12_0);letter-spacing:.1em;
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 3px 12px rgba(0,0,0,.3)}

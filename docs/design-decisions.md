@@ -1656,15 +1656,38 @@ reported clean: true within the scope, wrong as a claim about the screen. It was
 found by looking at a screenshot. **A guard's silence is only as broad as its
 selector**, and this one's is narrower than the thing it appears to describe.
 
-*Left unfixed, flagged here* (still open; `origins-app.src.html:209` and `:212`
-as of 2026-09-11 — the line numbers move, the defect doesn't): `body.fs .fsexit`
-is declared twice with identical specificity, and the later one hard-codes
-`top:14px`, which
-kills the earlier `calc(9px + env(safe-area-inset-top,0px))`. The notch handling
-is dead code — measured y=14.0 in both modes, never 9 + inset. On a notched
-iPhone the chip may sit under the notch. Not fixed because `env(safe-area-inset-*)`
-is 0 in headless Chromium, so the fix can be written but not verified from here;
-it wants a real device, or Jack's eye.
+**The duplicate rule that killed the notch handling — fixed 2026-09-17.**
+`body.fs .fsexit` was declared **twice at identical specificity**, and the later
+one hard-coded `top:14px`, so the earlier
+`calc(9px + env(safe-area-inset-top,0px))` never applied: measured y=14.0 in
+both modes, never 9 + inset. There is one rule now, and it carries the calc.
+
+**It was never only a notch bug, which is why it was worth fixing blind.** The
+strip reserved above the app is 48px (68px in Enlarged) and the chip is 35px
+tall (50px), so the intended 9px top leaves 4px of clearance. At 14px it
+measured **49px against a 48px strip — the chip overhung its own strip by 1px**,
+on every device, notch or not. Measured on a build at 393×852 and 320×568:
+
+| | before | after |
+|---|---|---|
+| Standard | chip 14 → 49, strip 48, clearance **−1** | chip 9 → 44, clearance **+4** |
+| Enlarged | chip 14 → 64, strip 68, clearance +4 | chip 9 → 59, clearance **+9** |
+
+**What is verified and what still isn't.** The inset is 0 in headless Chromium,
+so what a *notched* iPhone does remains unverified — but that is now a question
+about a live value rather than about dead code, and the non-notch case (the 1px
+overhang) is fixed and measured. Jack's eye is still the check on a real handset.
+
+**Keep the top value in the rule that sets the box.** A second rule that only
+nudges `top` is exactly what let the two drift apart for months without anyone
+seeing it: both were plausible, neither was obviously redundant, and CSS
+silently picked the later one.
+
+**Note which guard did *not* catch this.** `snapshot-guard.js` passes on this
+change — it walks `.s[data-s="…"]`, and `#fsexit` is outside every screen root,
+the same chrome-layer blind spot that let the original overlap ship. A PASS from
+it is not evidence about this element. `fsexit-probe.js` is, and is committed
+beside the other checks.
 
 ### Vape wears the shop chrome, and the guard was re-baselined for it
 The vape screen had no `.sbar`. It opened straight into the brown chipbar with

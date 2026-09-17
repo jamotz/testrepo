@@ -494,15 +494,20 @@ polish and the open questions below.
    an earlier note claiming those two were empty was wrong (Jack, 2026-08-17;
    see `design-decisions.md`).
 
-6. **`body.fs .fsexit` is declared twice and the notch handling is dead code.**
-   `origins-app.src.html:209` and `:212`, identical specificity, and the later
-   one hard-codes `top:14px` — which kills the earlier
-   `calc(9px + env(safe-area-inset-top,0px))`. Measured y=14.0 in both modes,
-   never 9 + inset, so on a notched iPhone the EXIT chip may sit under the
-   notch. **The duplicate can be cleaned up now**; whether the notch offset is
-   *right* can't be verified from here, because `env(safe-area-inset-*)` is 0 in
-   headless Chromium. It wants a real device, or Jack's eye. Full write-up in
-   `design-decisions.md` under *The full-screen exit strip*.
+6. ~~**`body.fs .fsexit` is declared twice and the notch handling is dead
+   code**~~ — **FIXED 2026-09-17.** One rule now, carrying
+   `top:calc(9px + env(safe-area-inset-top,0px))`.
+
+   It was not only a notch bug, which is why it could be fixed without a
+   handset: at the hard-coded `top:14px` the 35px chip measured **49px against
+   its own 48px strip**, overhanging by 1px on every device. Now 9 → 44 against
+   48 (clearance +4), and 9 → 59 against 68 in Enlarged (+9). Measured at
+   393×852 and 320×568 by `fsexit-probe.js`, committed beside the other checks.
+
+   **Still open, and now a smaller question:** `env(safe-area-inset-*)` is 0 in
+   headless Chromium, so what a *notched* iPhone does is still unverified — but
+   it is a live value now rather than dead code. Worth one look on a real
+   handset.
 
 7. **One open question for Jack**, flagged where it lives: the **four deal
    flowers** are his brands but my strain picks (`DEALS` in
@@ -578,6 +583,7 @@ reference/origins/
 │   ├── snapshot-guard.js         ← Enlarged guard: same, from computed styles
 │   ├── enlarged-check.js         ← does Enlarged itself work (overflow/targets)
 │   ├── lglyph-probe.js           ← the strain letters, both modes (nothing else sees them)
+│   ├── fsexit-probe.js           ← the full-screen EXIT chip vs its strip (ditto)
 │   ├── filter-audit.js           ← counts products behind every filter option
 │   ├── drawer-test.js            ← drives the Brands clamp / type scoping
 │   ├── xlsxread.py               ← the one xlsx reader they all share
