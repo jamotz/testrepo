@@ -94,13 +94,21 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`fea857b`** (**Version 28**, republished 2026-09-17, all five checks green and
-each one re-run to say so: `standard-guard.py` PASS 220 = 220 against its new
-`5f66ce8` baseline, `snapshot-guard.js` PASS, `enlarged-check.js` 0 findings
-across 4 viewports × 24 screens, `ratio.js` unchanged, and `lglyph-probe.js`
-254 elements / 0 differences). Version 27 shipped with the Standard guard red
-and this line claiming otherwise; that is fixed, and the rule it broke is at
-the bottom of this file — **re-run the check before repeating the claim.**
+`bb66fe2`** (**Version 29**, republished 2026-09-17), and every check was
+re-run at that commit rather than assumed: `standard-guard.py` PASS 220 = 220
+against its `5f66ce8` baseline, `snapshot-guard.js` PASS against its
+**`b88fcd5`** baseline, `enlarged-check.js` 0 findings across 4 viewports × 24
+screens, `ratio.js` unchanged, `lglyph-probe.js` 254 elements / 0 differences,
+`fsexit-probe.js` clearance +4 / +9, `mood-probe.js` 8/8 global.
+
+Version 29 carries, on top of 28: the full-screen EXIT chip clearing its own
+strip (one rule, inset live again), a lifestyle chip filtering the whole shop
+instead of the shelf you are standing on, and the home rows stating that they
+scroll — a drawn grey scrollbar in Standard, arrows in Enlarged.
+
+*Version 27 shipped with the Standard guard red and this line claiming
+otherwise. That is fixed, and the rule it broke is at the bottom of this file —
+**re-run the check before repeating the claim.***
 The build is the Final/pt2 catalogs, terpene-driven
 feelings and scents rendered with Jack's icon set, drinks with their IA bubbles,
 the four deal flowers with bag-wide mix & match, the Deals Calendar (two-a-week
@@ -584,6 +592,8 @@ reference/origins/
 │   ├── enlarged-check.js         ← does Enlarged itself work (overflow/targets)
 │   ├── lglyph-probe.js           ← the strain letters, both modes (nothing else sees them)
 │   ├── fsexit-probe.js           ← the full-screen EXIT chip vs its strip (ditto)
+│   ├── mood-probe.js             ← what a lifestyle chip does to the filter state
+│   ├── rowarrow-probe.js         ← home row affordances + the tile-height trap
 │   ├── filter-audit.js           ← counts products behind every filter option
 │   ├── drawer-test.js            ← drives the Brands clamp / type scoping
 │   ├── xlsxread.py               ← the one xlsx reader they all share
