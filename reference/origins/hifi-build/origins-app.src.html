@@ -345,6 +345,28 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 .deal-banner .bs .bu{font-size:var(--fs-9_5);letter-spacing:.07em;opacity:.82;margin-top:4px}
 .dealrow{display:flex;gap:14px;overflow-x:auto;padding:2px 16px 10px}
 .dealrow .fcard{flex:none;width:218px;zoom:.9}
+/* A home row says it scrolls. Two cards fit the 452px design width almost
+   exactly (16 + 196 + 14 + 196 = 422 of 452), so the third card was not peeking
+   far enough to read as "there is more" — and in Enlarged, where a card takes
+   the full width, there was no hint at all. One arrow per end, each shown only
+   while there is something in that direction.
+
+   The arrows are absolutely positioned SIBLINGS of the row, never children of
+   it: a flex child with a height of its own is what once dragged every tile in
+   a .dealrow 40px taller, and .rowarr carries a fixed height by definition.
+   Out of flow, it cannot reach the tiles. It also sits outside the row's
+   overflow, so the scroller never clips it. */
+.hrow{position:relative}
+.rowarr{position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+  width:34px;height:34px;border-radius:50%;padding:0;
+  border:1.5px solid #E1DBCD;background:rgba(255,255,255,.95);color:var(--olive);
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.16)}
+.hrow.can-prev>.rowarr.prev,.hrow.can-next>.rowarr.next{display:inline-flex}
+.rowarr.prev{left:5px}
+.rowarr.next{right:5px}
+.rowarr svg{width:18px;height:18px}
+.rowarr:active{background:#fff;border-color:var(--olive)}
 /* shop feed tiles match the home tile size. Remove .tiles-compact from #view for
    the larger tiles (the current shop size) — reserved for a future a11y toggle. */
 .tiles-compact .feedrow .fcard{zoom:.9}
@@ -1015,10 +1037,15 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
    to Enlarged view — Standard's 24px icon buttons already clear AA's 24px. */
 #scr.enlarged .tabs button,#scr.enlarged .sbar .bk,#scr.enlarged .qty button,
 #scr.enlarged .fsclose,#scr.enlarged .sw,#scr.enlarged .acav,
-#scr.enlarged .pihead .pihback,#scr.enlarged .bmore,
+#scr.enlarged .pihead .pihback,#scr.enlarged .bmore,#scr.enlarged .rowarr,
 #scr.enlarged .fcard .fsz,#scr.enlarged .fszs button{min-height:var(--target-size)}
 #scr.enlarged .sbar .bk,#scr.enlarged .qty button,#scr.enlarged .fsclose,
-#scr.enlarged .acav,#scr.enlarged .pihead .pihback{min-width:var(--target-size)}
+#scr.enlarged .acav,#scr.enlarged .pihead .pihback,
+#scr.enlarged .rowarr{min-width:var(--target-size)}
+/* the row arrows are round, so both axes have to move together or the circle
+   becomes a capsule; the glyph grows with them rather than rattling inside */
+#scr.enlarged .rowarr{width:var(--target-size);height:var(--target-size)}
+#scr.enlarged .rowarr svg{width:26px;height:26px}
 /* separate two adjacent small controls so a near-miss doesn't hit the other */
 #scr.enlarged .qty{gap:10px}
 /* The last controls under 24px in Enlarged view: the Sort <select>, the row
@@ -2167,7 +2194,7 @@ function fitFrame(){
   box.style.width=Math.round((DESIGN_W+bez)*k)+"px";
   box.style.height=Math.round((h+bez)*k)+"px";
 }
-addEventListener("resize",fitFrame);
+addEventListener("resize",function(){fitFrame();syncRowArrows();});  /* a narrower stage changes what overflows */
 addEventListener("orientationchange",function(){setTimeout(fitFrame,120);});
 function setFull(on){
   document.body.classList.toggle("fs",on);
@@ -2253,7 +2280,9 @@ function nav(k){
   /* a hidden screen measures 0, so the brand row can only be sized once home is
      actually on - renderHome() runs while the app is still on the landing screen */
   if(k==="vape")renderVape();
-  if(k==="home")sizeDealRows();
+  /* same reason the brand row is sized here: a hidden row reports scrollWidth
+     == clientWidth, so the arrows can only be decided once home is on screen */
+  if(k==="home"){sizeDealRows();syncRowArrows($("#deals"));}
 }
 document.querySelectorAll("[data-nav]").forEach(function(b){b.addEventListener("click",function(){
   var k=b.dataset.nav;
@@ -3229,18 +3258,69 @@ function renderHome(){
      sale:1. Four flowers carry it today - two Passion Flower, two Lifestyles,
      nominated in gen_catalog_products.py - and both sections render. */
   if(d1.length)
-  html+='<div class="deal-sec">'+dealBannerFor("pair")+'<div class="dealrow">'+
-    d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+seeAllCard("pair")+'</div></div>';
-  html+='<div class="deal-sec">'+dealBannerFor("brand")+'<div class="brandrow">'+
-    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+seeAllCard("brand")+'</div></div>';
+  html+='<div class="deal-sec">'+dealBannerFor("pair")+hrow("dealrow",
+    d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+seeAllCard("pair"))+'</div>';
+  html+='<div class="deal-sec">'+dealBannerFor("brand")+hrow("brandrow",
+    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+seeAllCard("brand"))+'</div>';
   if(d3.length)
-  html+='<div class="deal-sec">'+dealBannerFor("bulk")+'<div class="dealrow">'+
-    d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+seeAllCard("bulk")+'</div></div>';
+  html+='<div class="deal-sec">'+dealBannerFor("bulk")+hrow("dealrow",
+    d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+seeAllCard("bulk"))+'</div>';
   $("#deals").innerHTML=html;
   $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#deals").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz);});});
   $("#deals").querySelectorAll("[data-seeall]").forEach(function(b){b.addEventListener("click",function(){openDeal(b.dataset.seeall);});});
+  wireRowArrows($("#deals"));
   sizeDealRows();
+}
+/* Wraps a horizontal row so it can carry its own scroll arrows. The row stays
+   exactly what it was - same class, same children - so sizeDealRows() and every
+   existing querySelector still find it; the wrapper only gives the arrows
+   something to be positioned against. */
+var ARR_L='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+var ARR_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+function hrow(cls,inner){
+  return '<div class="hrow"><div class="'+cls+'">'+inner+'</div>'+
+    '<button class="rowarr prev tap" type="button" aria-label="Scroll left">'+ARR_L+'</button>'+
+    '<button class="rowarr next tap" type="button" aria-label="Scroll right">'+ARR_R+'</button></div>';
+}
+/* Which arrows a row should be showing right now. Everything here is in the
+   scroller's own layout pixels - scrollLeft, scrollWidth and clientWidth all
+   agree with each other and are unaffected by the transform on the phone frame.
+   Do NOT reach for getBoundingClientRect() to measure a step: that IS scaled by
+   k, and mixing the two coordinate spaces is the trap that made a deal tile
+   40px too tall once already.
+   The 2px slack absorbs sub-pixel rounding, which otherwise leaves a "next"
+   arrow lit at the very end of a row. */
+function syncRow(h){
+  var r=h.firstElementChild; if(!r)return;
+  var max=r.scrollWidth-r.clientWidth;
+  h.classList.toggle("can-prev",max>2&&r.scrollLeft>2);
+  h.classList.toggle("can-next",max>2&&r.scrollLeft<max-2);
+}
+/* Takes a CONTAINER and syncs the rows inside it. querySelectorAll never
+   matches its own root, so handing this an .hrow itself silently does nothing —
+   which it did: the left arrow stayed hidden after scrolling, because the
+   scroll listener was passing its own row in here instead of calling syncRow. */
+function syncRowArrows(root){
+  (root||document).querySelectorAll(".hrow").forEach(syncRow);
+}
+/* One tap moves most of a screenful: in Enlarged that is one card (they take
+   the full width), in Standard just under two. Measuring a card instead would
+   have to cross the zoom boundary; the container does not. */
+function wireRowArrows(root){
+  (root||document).querySelectorAll(".hrow").forEach(function(h){
+    var r=h.firstElementChild; if(!r)return;
+    r.addEventListener("scroll",function(){syncRow(h);});
+    h.querySelectorAll(".rowarr").forEach(function(b){
+      b.addEventListener("click",function(e){
+        e.stopPropagation();                       /* the row sits inside tap handlers */
+        var step=Math.max(120,r.clientWidth*0.85);
+        r.scrollBy({left:b.classList.contains("next")?step:-step,
+                    behavior:motionOff()?"auto":"smooth"});
+      });
+    });
+  });
+  syncRowArrows(root);
 }
 /* the last card in every deal row */
 function seeAllCard(k){
@@ -3508,7 +3588,7 @@ $("#taptoggle").addEventListener("click",function(){this.classList.toggle("on");
 
 $("#landlogo").src=IMG["logo_origins"];$("#landmap").src=IMG["map_redmond"];
 $("#seattlebtn").addEventListener("click",function(){toast("Seattle store — coming soon");});
-window.addEventListener("load",sizeDealRows);   /* webfonts change the tile height */
+window.addEventListener("load",function(){sizeDealRows();syncRowArrows();});   /* webfonts change the tile height, and so the row's scrollWidth */
 renderFeel();renderMethod();moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));renderShop();renderHome();
 $("#dealscal1").addEventListener("click",function(){nav("dealcal");});
 $("#dealscal2").addEventListener("click",function(){nav("dealcal");});
