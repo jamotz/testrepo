@@ -3,22 +3,30 @@
 
 Sources (reference/origins/product info/):
   - Edible_Filter_Architecture_v2.xlsx  -> the filter IA (levels + effect tiles)
-  - WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx -> the 50 products + prices
+  - WA_Edibles_By_Brand_Final_Curated_Cannabinoid_Serving_Totals.xlsx
+      -> the 50 products, prices, and a SERVING and TOTAL mg for every
+         cannabinoid plus Servings Per Package (Jack, 2026-09-20)
 
 Filter path per the IA (Jack confirmed the THC drill-down):
   Edibles -> category  (THC Edibles / CBD Edibles / THC Dominant / CBD Dominant / Balanced)
     THC Edibles -> extraction (Distillate / Live Resin / Rosin / Live Rosin) -> strain
     everything else -> effect tile (Pain Relief, Relax, Focus, Unwind, ...)
 
-Packaging: one package per product — 10 mg servings, 100 mg total (the lone
-CBD-only product is 25 mg CBD). Prices are authored (the sheet has none).
+Packaging: the sheet states it outright now. Every row carries
+"<CANNABINOID> Serving mg" and "<CANNABINOID> Total mg" for THC/CBD/CBN/CBG and
+a "Servings Per Package" — so nothing here derives a dose, and the old note
+about 10 mg servings / 100 mg totals is retired as an assumption. It happens to
+be true of all 50 rows today; the point is that the app no longer relies on it.
+
+This replaced a sheet with a single "Other mg" column, which could not express
+a product carrying CBD *and* CBN. Prices come from the sheet.
 
 Run: python3 reference/origins/hifi-build/gen_edibles.py
 """
-import os, re, zipfile
+import os, re, sys, zipfile
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-XLSX = os.path.join(REPO, "reference/origins/product info/WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx")
+XLSX = os.path.join(REPO, "reference/origins/product info/WA_Edibles_By_Brand_Final_Curated_Cannabinoid_Serving_Totals.xlsx")
 
 def read_rows(path):
     z = zipfile.ZipFile(path); names = z.namelist()
@@ -50,6 +58,20 @@ def read_rows(path):
 rows = read_rows(XLSX)
 hdr = rows[0]
 # pad short rows, and drop the sheet's "=== SECTION ===" separators
+# Re-assert the sheet's layout on every run and refuse to emit rather than
+# emit shifted data. A reader that mishandles empty cells shifts whole rows and
+# still looks plausible - see design-decisions.md, "The sheet was never broken,
+# the reader was".
+CANNABINOIDS = ["THC", "CBD", "CBN", "CBG"]
+REQUIRED = (["Brand", "Product Name", "Edible Type", "Category", "Extraction",
+             "Lifestyle", "Effect Filter", "Cannabinoid Combo", "Ratio (Tile)"]
+            + ["%s %s mg" % (c, w) for c in CANNABINOIDS for w in ("Serving", "Total")]
+            + ["Servings Per Package", "Flavor", "Description",
+               "WA Retail Price (USD)"])
+missing = [c for c in REQUIRED if c not in hdr]
+if missing:
+    sys.exit("gen_edibles: sheet is missing column(s): %s" % ", ".join(missing))
+
 recs = [dict(zip(hdr, r + [""] * (len(hdr) - len(r))))
         for r in rows[1:]
         if len(r) > 3 and r[0].strip() and not r[0].startswith("===")]
@@ -114,6 +136,15 @@ FEEL = {"Pain Relief":["Relief","Calm","Clear"],"Relax":["Relaxed","Calm","Mello
 FEEL_STRAIN = {"Sativa":["Uplifted","Energized","Focused"],"Hybrid":["Balanced","Giddy","Relaxed"],
                "Indica":["Relaxed","Sleepy","Calm"]}
 
+# Brands merged on 2026-09-11, when deriving the Brands facet from the catalog
+# showed one brand under two spellings. That merge was made in the sheets AS
+# WELL AS the app specifically so a regeneration could not undo it - and then
+# this sheet arrived with "Constellation Cannabis" again, which re-split the
+# facet 6/6 and took the catalog from 42 brands back to 43. Normalising here
+# too means an upload cannot reintroduce it: the sheet is still the source for
+# everything else, this is only the one rename it keeps losing.
+BRAND_MERGE = {"Constellation Cannabis": "Constellation", "Swift": "Swifts"}
+
 def esc(s): return s.replace('"', '\\"')
 
 out = []
@@ -123,17 +154,43 @@ for i, r in enumerate(recs):
     flavor = flavour_of(name)          # derived; the sheet's Flavor column is unreliable
     effect = r["Effect Filter"]
     strain = r["Lifestyle"]                      # sheet calls Sativa/Hybrid/Indica "Lifestyle"
-    thc, cbd, other = float(r["THC mg"] or 0), float(r["CBD mg"] or 0), float(r["Other mg"] or 0)
     combo, ratio = r["Cannabinoid Combo"], r["Ratio (Tile)"]
-    # the tile chips carry real numbers only — the cannabinoid combo and its ratio
-    # live in the product name instead (Jack, 2026-08-06)
-    pot  = "%g mg THC" % thc
-    pack = "%g mg" % cbd if combo == "CBD Only" else "100 mg"
-    cbdf = 'cbdv:%g,cbdu:" mg",' % cbd if (combo != "THC Only" and cbd) else ""
-    # the third cannabinoid (CBG/CBN) — its name comes from the combo, its
-    # weight from the sheet's "Other mg"
-    if combo != "THC Only" and other:
-        cbdf += 'othv:%g,' % other
+    srv = float(r["Servings Per Package"] or 0)
+    if srv <= 0:
+        sys.exit("gen_edibles: %s has no Servings Per Package" % name)
+
+    # Serving AND total, per cannabinoid, both read from the sheet. The sheet
+    # asserts total == serving x servings; check it rather than trusting it,
+    # because a row that breaks the relationship would otherwise render a
+    # bubble that silently disagrees with the serving line beside it.
+    serving, total = {}, {}
+    for c in CANNABINOIDS:
+        sv = float(r["%s Serving mg" % c] or 0)
+        tv = float(r["%s Total mg" % c] or 0)
+        if not sv and not tv:
+            continue
+        if abs(tv - sv * srv) > 0.01:
+            sys.exit("gen_edibles: %s %s total %g != serving %g x %g servings"
+                     % (name, c, tv, sv, srv))
+        serving[c], total[c] = sv, tv
+
+    # Order the chips the way the combo names them, so "THC:CBD:CBN" reads
+    # THC, CBD, CBN left to right. "THC Only"/"CBD Only" name one.
+    order = [c for c in combo.replace(" Only", "").split(":") if c in serving]
+    for c in CANNABINOIDS:                      # anything the combo forgot to name
+        if c in serving and c not in order:
+            order.append(c)
+    if not order:
+        sys.exit("gen_edibles: %s states no cannabinoid at all" % name)
+
+    # can: the one place an edible's cannabinoid numbers live. [serving, total]
+    # per cannabinoid, in combo order. The tile shows the totals, the size slot
+    # shows the serving; neither is stored twice.
+    can = "can:{%s}," % ",".join('%s:[%g,%g]' % (c, serving[c], total[c]) for c in order)
+    thc = serving.get("THC", 0)
+    cbd = serving.get("CBD", 0)
+    main = order[0]                              # what the serving line names
+    pack = "100 mg"                              # one package size across the shelf
     # anything carrying more than straight THC is a Holistic product, whatever the
     # strain or effect would otherwise suggest
     if combo != "THC Only":
@@ -150,13 +207,14 @@ for i, r in enumerate(recs):
     sub2 = r["Extraction"] if cat == "THC Edibles" else effect
     p = float(r["WA Retail Price (USD)"])   # real WA retail, straight from the sheet
     out.append(
-        ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,%s%s'
-        'sub:"%s",sub2:"%s"%s,etype:"%s",pot:"%s",combo:"%s",ratio:"%s",'
+        ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,srv:%g,%s%s'
+        'sub:"%s",sub2:"%s"%s,etype:"%s",main:"%s",combo:"%s",ratio:"%s",'
         'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
-        % (esc(name), esc(r["Brand"]), photo(etype, name, i), p, pack, p, pack,
-           thc if thc else cbd, ("cbd:1," if cbd and cbd >= thc else ""), cbdf,
+        % (esc(name), esc(BRAND_MERGE.get(r["Brand"], r["Brand"])),
+           photo(etype, name, i), p, pack, p, pack,
+           serving[main], srv, ("cbd:1," if cbd and cbd >= thc else ""), can,
            cat, sub2, (',sub3:"%s"' % strain if cat == "THC Edibles" else ""), etype,
-           pot, combo, ratio, st, life,
+           main, combo, ratio, st, life,
            round(4.0 + (i % 10) * 0.1, 1), 5 + (i * 5) % 34,
            '","'.join(feels), flavor, esc(r["Description"])))
 
