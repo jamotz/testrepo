@@ -672,12 +672,15 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
    the deal card and the product page all draw the same thing now. */
 .fcard .fsz{background:#fff;color:var(--olive);border:1.5px solid var(--olive);border-radius:100px;font-family:var(--head);font-weight:600;font-size:var(--text-pill);padding:4px 11px;letter-spacing:.03em}
 .fcard .fsz.sel{background:var(--olive);color:#F0EAD8;border-color:var(--olive)}
-/* serving/total reads as a fact about the product, not a chosen size — so it
-   takes the cannabinoid bubbles' tinted treatment in the olive it already had,
-   rather than the solid fill that marks the selected size. */
-/* serving/total is a fact about the product, not a size you can choose, so it
-   keeps the tinted chip rather than joining the outlined/solid pair */
-.fcard .fsz.serv{background:#EDEFE1;color:var(--olive);border-color:#D2DBBC;padding:4px 9px}
+/* One pill, one colour: the solid dark olive, on every shelf (Jack,
+   2026-09-20). This retires the 2026-08-14 tinted treatment (#EDEFE1 ground,
+   #D2DBBC border) that serving/total pills wore to mark them as "a fact about
+   the product, not a size you can choose". The distinction cost more than it
+   bought: on a product tile only ever ONE weight shows, so nothing is being
+   chosen there either, and the two grounds made flower and edibles look like
+   different components on the same shelf. `serv` keeps only its tighter
+   padding, since its text is longer. */
+.fcard .fsz.serv{padding:4px 9px}
 .fcard .fadd{margin-top:auto;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:var(--fs-11_5);padding:9px 0;width:100%}
 
 .lhead2{padding:14px 16px 2px;background:#fff}
@@ -926,6 +929,7 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 .bhide{display:none!important}
 .brandmore{display:flex;justify-content:center;margin-top:11px}
 .bmore{background:none;border:0;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--fs-11_0);letter-spacing:.08em;color:var(--or);padding:7px 14px}
+.dsec .dnote{margin-top:9px;font-family:var(--body);font-size:var(--fs-11_5);color:var(--ink-2);line-height:1.45}
 .lock{margin-top:10px;background:#F3EFE6;border:1px dashed #C9C2B4;border-radius:8px;padding:12px;font-size:var(--fs-12_0);color:var(--ink-2);line-height:1.5}
 .lock b{font-family:var(--head);text-transform:uppercase;font-size:var(--fs-10_5);letter-spacing:.08em;color:var(--olive)}
 .sw{width:46px;height:26px;border-radius:100px;background:#D8D2C6;border:0;position:relative;transition:background .2s}
@@ -1690,7 +1694,14 @@ function setAdv(k,on){
 }
 const LIFECLASS={discovery:"disc",adventurous:"adv",social:"soc",unwind:"unw",nightlife:"night",holistic:"hol"};
 const TYPES={flower:"Flower",preroll:"Pre-Rolls",concentrate:"Concentrates",edible:"Edibles",drink:"Drinks",topical:"Topicals"};
-const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:["0.5 g","0.75 g","1 g"],concentrate:["1 g"],edible:["2.5 mg","10 mg","30 mg","100 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"],topical:["50 mL","100 mL","200 mL","250 mL"]};
+/* Edible sizes are a PER-SERVING THC dose (Jack, 2026-09-20), not a package:
+   every edible ships one 10-serving package, so the thing a shopper chooses by
+   is the strength of a single piece. The four values are the ones the catalog
+   actually holds - 1 mg (1 product), 2 mg (1), 5 mg (1), 10 mg (41).
+   The old list here was package sizes, 2.5/10/30/100 mg, of which THREE matched
+   nothing at all: every edible is a 100 mg package. Same dead-facet shape as
+   the Brands list, and unaudited because filter-audit.js does not cover Size. */
+const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:["0.5 g","0.75 g","1 g"],concentrate:["1 g"],edible:["1 mg","2 mg","5 mg","10 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"],topical:["50 mL","100 mL","200 mL","250 mL"]};
 /* Concentrate taxonomy (Jack's "Concentrate Categories and filters" doc):
    layer 1 = category, layer 2 = the consistencies/forms sold under it. */
 /* Edible filter IA (Edible_Filter_Architecture_v2.xlsx). THC Edibles drill
@@ -2629,7 +2640,16 @@ function match(p){
   if(S.mood&&p.f.indexOf(S.mood)<0)return false;
   if(S.brands.length&&S.brands.indexOf(p.b)<0)return false;
   if(S.sale&&!p.sale)return false;
-  if(S.size){var sz=sizesFor(p);if(sz.indexOf(S.size)<0)return false;}
+  if(S.size){
+    /* Every other shelf's Size facet names a package the product comes in, and
+       matches p.szs. Edibles name a per-serving THC dose instead, so this shelf
+       matches the serving out of `can` - p.szs there is the 100 mg package and
+       would never equal "10 mg". */
+    if(p.t==="edible"){
+      if(!p.can||!p.can.THC||p.can.THC[0]!==parseFloat(S.size))return false;
+    }
+    else{var sz=sizesFor(p);if(sz.indexOf(S.size)<0)return false;}
+  }
   if(S.thc){var v=p.thc;
     if(S.thc==="cbd"){if(!p.cbd)return false;}
     else if(v==null){return false;}
@@ -3730,7 +3750,10 @@ function drawDrawer(){
    '<div class="dsec"><div class="dt">Product type</div><div class="opts">'+Object.keys(TYPES).map(function(k){return '<button class="opt tap '+(S.type===k?'sel':'')+'" data-ft="'+k+'">'+TYPES[k]+'</button>';}).join("")+'</div></div>'+
    '<div class="dsec"><div class="dt">Size '+(S.type?'<span class="hint">'+TYPES[S.type]+' sizes</span>':'')+'</div>'+
      (szList?'<div class="opts">'+szList.map(function(s){return '<button class="opt tap '+(S.size===s?'sel':'')+'" data-fs="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>'
-       :'<div class="lock"><b>Choose a product type first</b><br>Sizes adapt to the product — grams for flower, mg for edibles, mL for topicals. No impossible combos, no wrong results.</div>')+'</div>'+
+       :'<div class="lock"><b>Choose a product type first</b><br>Sizes adapt to the product — grams for flower, mg for edibles, mL for topicals. No impossible combos, no wrong results.</div>')+
+     /* Edibles alone measure their size per serving, so this shelf says so
+        rather than leaving "10 mg" to be read as the whole package. */
+     (S.type==="edible"?'<div class="dnote">Per serving. Every edible is a 10-serving package.</div>':'')+'</div>'+
    '<div class="dsec"><div class="dt">THC %</div><div class="opts">'+[["low","Low (<10%)"],["mod","Moderate (10–20%)"],["high","High (20%+)"],["cbd","Only CBD"]].map(function(o){return '<button class="opt tap '+(S.thc===o[0]?'sel':'')+'" data-fh="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>'+
    (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands'+(S.type?' <span class="hint">'+TYPES[S.type]+' brands</span>':'')+'</div><div class="opts" id="brandopts">'+brandList().map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div><div class="brandmore bhide" id="brandmore"><button class="bmore tap" id="bmorebtn">See more</button></div></div>';
   d.querySelector("#swsale").addEventListener("click",function(){S.sale=!S.sale;drawDrawer();});
