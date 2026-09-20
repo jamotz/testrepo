@@ -94,7 +94,8 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`9bcedfb`** (**Version 32**, republished 2026-09-20), and every check was
+`9bcedfb`** (**Version 32**, republished 2026-09-20; the commits after it on
+this branch are comments and docs only, so the build is current). Every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
 `enlarged-check.js` 0 findings across 4 viewports × 24 screens, `ratio.js`
 unchanged, `filter-audit.js` 308/308 products reachable via Brands with no
