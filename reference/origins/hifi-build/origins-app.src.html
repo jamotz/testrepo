@@ -1711,6 +1711,10 @@ const TYPES={flower:"Flower",preroll:"Pre-Rolls",concentrate:"Concentrates",edib
    Safe to drop: every topical carries an explicit `pz` price for its own size
    (checked, 38 of 38), so pricing never consults this table, and sizesFor()
    reads the product's own `szs`. */
+/* NOTE: `drink` here is DEAD. It is overwritten at runtime from the catalog's
+   real volumes, just after the product array (search SIZES.drink). Read that
+   override, not this literal - these mg values match no drink and reading them
+   as live leads straight to "the drink Size facet is broken", which it is not. */
 const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:["0.5 g","0.75 g","1 g"],concentrate:["1 g"],edible:["1 mg","2 mg","5 mg","10 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"]};
 /* Concentrate taxonomy (Jack's "Concentrate Categories and filters" doc):
    layer 1 = category, layer 2 = the consistencies/forms sold under it. */
