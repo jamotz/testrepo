@@ -94,12 +94,22 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`034833e`** (**Version 30**, republished 2026-09-17), and every check was
-re-run at that commit rather than assumed: `standard-guard.py` PASS 220 = 220
-against its `5f66ce8` baseline, `snapshot-guard.js` PASS against its
-**`b88fcd5`** baseline, `enlarged-check.js` 0 findings across 4 viewports × 24
-screens, `ratio.js` unchanged, `lglyph-probe.js` 254 elements / 0 differences,
-`fsexit-probe.js` clearance +4 / +9, `mood-probe.js` 8/8 global.
+`17b1a51`** (**Version 31**, republished 2026-09-20), and every check was
+re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
+`snapshot-guard.js` PASS, `enlarged-check.js` 0 findings across 4 viewports ×
+24 screens, `ratio.js` unchanged, `lglyph-probe.js` 254 elements / 0
+differences, `fsexit-probe.js` clearance +4 / +9, `mood-probe.js` 8/8 global.
+
+**Both guards baseline at `89136db` again** — they had drifted onto different
+commits between 2026-09-17 and 2026-09-20. Read the constants, not this line.
+
+Version 31 carries, on top of 30: **edibles state the package TOTAL in the
+bubbles and the serving on the slot** ("10mg THC / Serving"), from a rebuilt
+sheet that gives every cannabinoid its own Serving and Total column; the
+**Filter drawer's edible Size facet is a per-serving dose** (1 / 2 / 5 / 10 mg,
+all four live, replacing package sizes of which three matched nothing) with a
+note saying so; and **one weight-pill colour**, the solid dark olive, on every
+shelf.
 
 Versions 29–30 carry, on top of 28: the full-screen EXIT chip clearing its own
 strip (one rule, inset live again), a lifestyle chip filtering the whole shop
