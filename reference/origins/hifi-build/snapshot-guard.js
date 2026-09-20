@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 89136db          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base ad9a463          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,28 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 89136db. History, most recent first:
+ * Current baseline: ad9a463. History, most recent first:
+ *
+ *   ad9a463  2026-09-20  drinks took the edible treatment - package totals in
+ *            the bubbles, the serving on the size slot - off a re-cut sheet
+ *            carrying a SERVING and a TOTAL column per cannabinoid. ONE screen
+ *            of 24 (`shop`), 10 of its 74 cards, every one a drink and no
+ *            non-drink card touched (checked card by card, not inferred).
+ *            Every difference read before moving:
+ *              div.fszs / span.fsz.sel.serv 86-95 -> 106-114, the slot reading
+ *                "10mg THC / Serving" where it read "10mg / 100mg";
+ *              span.ovleft 0 -> 25-34, the ratio pill RENDERING AT ALL. It
+ *                needs `combo`, which the old generator never emitted, so
+ *                1:1, 1:20, 4:1:1 and the rest were dead data;
+ *              span.ovrow / span.ovright taller and wider, the bubble column
+ *                now naming CBG, CBC and CBN instead of collapsing them;
+ *              removed span.bub.thc - a CBD-only drink no longer claims
+ *                "THC 0%";
+ *              added span.bub.ratio / .cbg / .cbc / .cbn, same cause.
+ *            Not the count=1 signature: no selector appears as both a loss
+ *            and a gain with an enlarged value, and standard-guard PASSED
+ *            unchanged, so no stylesheet text moved at all - this is data
+ *            reaching elements that were always there.
  *
  *   89136db  2026-09-20  the weight pill dropped its tinted serving/total
  *            variant for the solid dark olive every other shelf already used.
