@@ -94,14 +94,26 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`17b1a51`** (**Version 31**, republished 2026-09-20), and every check was
+`9bcedfb`** (**Version 32**, republished 2026-09-20), and every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
-`snapshot-guard.js` PASS, `enlarged-check.js` 0 findings across 4 viewports ×
-24 screens, `ratio.js` unchanged, `lglyph-probe.js` 254 elements / 0
-differences, `fsexit-probe.js` clearance +4 / +9, `mood-probe.js` 8/8 global.
+`enlarged-check.js` 0 findings across 4 viewports × 24 screens, `ratio.js`
+unchanged, `filter-audit.js` 308/308 products reachable via Brands with no
+missing brands. `snapshot-guard.js` flagged one screen (`shop`) for the drinks
+change and was **deliberately re-baselined** — see the next paragraph.
 
-**Both guards baseline at `89136db` again** — they had drifted onto different
-commits between 2026-09-17 and 2026-09-20. Read the constants, not this line.
+**The two guards now baseline at DIFFERENT commits, on purpose.**
+`standard-guard.py` is still at `89136db`: the drinks change moved no
+stylesheet text at all, so it passed untouched. `snapshot-guard.js` is at
+`ad9a463`, because drinks moved COMPUTED styles on one screen. That is the
+whole point of running both — one reads stylesheet text, the other reads what
+the browser actually computes, and a data-only change shows up in exactly one
+of them. Read the constants in each file, not this line.
+
+The drinks re-baseline was checked card by card rather than reasoned about:
+10 of the `shop` screen's 74 cards changed, all ten drinks, the other 64
+byte-identical. The method is worth reusing — `snapshot-guard` tells you a
+screen moved, not which elements, so diffing the rendered cards between the
+two builds is what turns "one screen changed" into an argument.
 
 Version 31 carries, on top of 30: **edibles state the package TOTAL in the
 bubbles and the serving on the slot** ("10mg THC / Serving"), from a rebuilt
@@ -227,7 +239,7 @@ icon reads as a different tab.
 | Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
 | Pre-roll | 60 | `Pre-roll pt2 Product List Final for WA.xlsx` | by type + pack count ✓ |
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
-| Drink | 50 | `WA_Drinks_50_Product_List_Source_Inspired_Unique_Descriptions.xlsx` | by type + flavour colour ✓ |
+| Drink | 50 | `WA_Drinks_50_Product_List_Cannabinoid_Serving_Totals_Normalized.xlsx` | by type + flavour colour ✓ |
 
 **87 Holistic products**; **62 carry a cannabinoid ratio** (pre-rolls carry
 none by design — see `design-decisions.md`).
@@ -548,7 +560,7 @@ polish and the open questions below.
 |---|---|
 | Home deals | Four flowers nominated in `DEALS`; 2-for-$50 mixes and matches across the whole bag; brand tiles matched to the product tiles; Torus replaced Freddy's; a See All card per row opens the whole deal |
 | Deals Calendar | New screen from both hero buttons — seven deals on a four-week rota, two a week, **running now** then a month of upcoming, each with a generated run-out date and a product dropdown |
-| Drinks | Bubble path built from `WA_Drinks_IA_Condensed.xlsx`; the size facet lists real volumes derived from the catalog |
+| Drinks | Bubble path built from `WA_Drinks_IA_Condensed.xlsx`; the size facet lists real volumes derived from the catalog (`SIZES.drink`, overwritten at runtime just after the catalog — the literal in `SIZES` is dead, so read the override, not the constant). Dose is per serving on the tile, totals in the bubbles |
 | Kief / RSO | The "no products" note was wrong — the sheet has all 60 concentrate rows |
 | Chrome | Brown title bar on every screen; trolley icon over Cart; "Your Cart"; Origins U photos wired to images the build actually embeds |
 | Buttons | The outlined family, one weight pill app-wide, hero type at the app's own size, Logout matched to Account Settings |

@@ -1145,11 +1145,71 @@ back to red and reads with the other berries rather than borrowing a shot glass.
 ### A drink's size is a volume, so the tile states the dose instead
 `servTotal` derived an edible's total from its size (`100 mg` is the package).
 A drink's size is `12 oz` — a volume — so the same code compared milligrams to
-ounces and would have rendered `10 mg / 12 oz`. Drinks now carry `tot` (the
-package milligrams) explicitly and the tile reads `10mg / 100mg`.
+ounces and would have rendered `10 mg / 12 oz`. Drinks carry their dose
+explicitly instead.
 
 Nothing is lost: every drink names its volume in the product name ("Blackberry
 Lemonade 12 oz"), so the slot is free to carry the dose.
+
+**Superseded 2026-09-20** — the slot read `10mg / 100mg`, and Jack asked drinks
+to take the edible treatment: the package total per cannabinoid in the bubbles,
+the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
+the same branch of `servTotal` as edibles.
+
+### The prose dose column, and four things it hid
+Drinks stated their dose as **prose in one "Serving Size" column**, in eight
+shapes across 50 rows: `10mg THC / 100mg package`, `10mg THC + 10mg CBD / 10
+servings`, `1 can (2.5mg THC / 5mg CBD)`, and five more. `gen_drinks.py` parsed
+it with three regexes and a fallback that summed every `Nmg` it could find.
+
+It parsed 47 of 50 rows and produced **plausible, wrong numbers** for the rest —
+which is worse than failing. The damage was only visible once the sheet was
+re-cut with a SERVING and a TOTAL column per cannabinoid (Jack, 2026-09-20,
+matching the edibles sheet):
+
+- the slot **summed different cannabinoids into one figure**. `21mg / 210mg`
+  was 1 mg THC plus 20 mg CBG added together; `12.5mg / 125mg` was 10 THC plus
+  2.5 CBD. Neither number described anything real.
+- the eight single-serve cans were summed the same way and were not marked
+  single-serve at all.
+- a CBD-only drink rendered a **`THC 0%` bubble**, because the fallback pushed
+  `p.thc` whenever it was non-null and 0 is non-null.
+- CBG, CBC and CBN were collapsed into one `othv` field and never named. A
+  drink holding **200 mg of CBG** showed only its 10 mg of THC.
+- the **ratio pill never rendered** for any drink. It is gated on `combo`, and
+  the generator never emitted one, so 1:1, 1:20, 4:1:1 and the rest were dead
+  data sitting in the catalog.
+
+Three rows also contradicted themselves outright (Ray's Lemonade: a serving
+line implying a 100 mg package against a 50 mg total). `gen_drinks.py` now
+asserts `total == serving x servings` **per cannabinoid** and refuses to emit
+if it fails, the same check `gen_edibles.py` runs — so a sheet that disagrees
+with itself stops the build instead of reaching a tile.
+
+The lesson is not "prose is bad". It is that a parser with a **permissive
+fallback** converts bad input into confident output. The regexes were fine; the
+`sum(every number I can see)` branch underneath them is what made 47/50 look
+like 50/50.
+
+### Drinks state no `thc`, because `thc` is a percentage
+Drinks used to emit `thc` holding **milligrams**, while the THC % facet reads
+that field as a percentage. **35 of 50 drinks were filed under "High (20%+)"**
+on the strength of holding 50–100 mg. Edibles already sit out that facet for
+exactly this reason; drinks now do too, and are found by their own Size facet
+instead. `cbd` still flags the CBD-dominant ones, so "Only CBD" finds 15.
+
+### Addressing sheet columns by name, not by letter
+`gen_drinks.py` hard-coded column letters. When the sheet gained a column, every
+field after it shifted one right, and the fix was a `LEGACY_MAP` translating the
+two rows still on the old layout — a workaround that has to grow with every
+future column, and which in this case mapped a row's **Source/Basis prose into
+`ratio`**: "Mock extension based on Ray's Lemonade's established product
+format/flavor direction" was rendering as a ratio pill on the shop screen.
+
+The generator now resolves the header row to letters on every run and addresses
+columns **by name**. An inserted column is a non-event; a *renamed* one still
+fails loudly against the `REQUIRED` list rather than emitting shifted data.
+`gen_edibles.py` already worked this way, which is why it never had the bug.
 
 ### THC is milligrams here, and `cannList` assumes percent
 `cannList()` renders `p.thc` as `"%"` unless a potency string is present, so a
