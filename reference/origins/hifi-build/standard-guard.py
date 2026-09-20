@@ -108,7 +108,13 @@ from collections import Counter
 # lapsed at exactly the moment it was doing its job -- see design-decisions.md,
 # "Standard took six enlarged values for one build". The guard was right both
 # times; what failed was running it.
-BASELINE = "5f66ce8"
+#
+# Moved again 2026-09-20: 5f66ce8 -> 89136db. The Filter drawer gained a note
+# under the edible Size options ("Per serving. Every edible is a 10-serving
+# package."), which is one new visible element and so one new Standard
+# font-size declaration: 0 lost, 1 gained, ".dsec .dnote 11.5px". Read before
+# moving, and not the count=1 signature - that shows a selector on both sides.
+BASELINE = "89136db"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs

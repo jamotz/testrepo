@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 5691d4d          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 89136db          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,13 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 5691d4d. History, most recent first:
+ * Current baseline: 89136db. History, most recent first:
+ *
+ *   89136db  2026-09-20  the weight pill dropped its tinted serving/total
+ *            variant for the solid dark olive every other shelf already used.
+ *            ONE diff in 24 screens: span.fsz.sel.serv color rgb(85,86,36) ->
+ *            rgb(240,234,216) on `shop`. (backgroundColor is not in PROPS, so
+ *            only the text colour shows here; the ground changed with it.)
  *
  *   5691d4d  2026-09-20  edibles moved the package TOTAL into the bubbles and
  *            the serving onto the size slot. Four width changes on `shop` and
