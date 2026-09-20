@@ -1701,7 +1701,17 @@ const TYPES={flower:"Flower",preroll:"Pre-Rolls",concentrate:"Concentrates",edib
    The old list here was package sizes, 2.5/10/30/100 mg, of which THREE matched
    nothing at all: every edible is a 100 mg package. Same dead-facet shape as
    the Brands list, and unaudited because filter-audit.js does not cover Size. */
-const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:["0.5 g","0.75 g","1 g"],concentrate:["1 g"],edible:["1 mg","2 mg","5 mg","10 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"],topical:["50 mL","100 mL","200 mL","250 mL"]};
+/* No `topical` entry, deliberately (Jack, 2026-09-20): that shelf is not
+   filtered by size, and the drawer says so instead of offering options. What
+   was here - 50/100/200/250 mL - was not merely unhelpful but wrong: 200 mL
+   matched NO product, while 60 mL (11 products), 1 Patch (3) and 75 mL (2)
+   were not offered at all, so 16 of the 38 topicals could not be reached
+   through the facet. The shelf carries six distinct sizes across balms,
+   roll-ons, lotions and patches, which share no scale to sort on.
+   Safe to drop: every topical carries an explicit `pz` price for its own size
+   (checked, 38 of 38), so pricing never consults this table, and sizesFor()
+   reads the product's own `szs`. */
+const SIZES={flower:["1 g","3.5 g","7 g","14 g","28 g"],preroll:["0.5 g","0.75 g","1 g"],concentrate:["1 g"],edible:["1 mg","2 mg","5 mg","10 mg"],drink:["2.5 mg","10 mg","30 mg","100 mg"]};
 /* Concentrate taxonomy (Jack's "Concentrate Categories and filters" doc):
    layer 1 = category, layer 2 = the consistencies/forms sold under it. */
 /* Edible filter IA (Edible_Filter_Architecture_v2.xlsx). THC Edibles drill
@@ -3748,8 +3758,13 @@ function drawDrawer(){
   d.innerHTML='<div class="dsec"><div class="dt">On sale <button class="sw tap '+(S.sale?'on':'')+'" id="swsale"></button></div></div>'+
    '<div class="dsec"><div class="dt">Feeling</div><div class="opts">'+Object.keys(FEEL).map(function(k){return '<button class="opt tap '+(S.mood===k?'sel':'')+'" data-fm="'+k+'">'+lifeLabel(k)+'</button>';}).join("")+'</div></div>'+
    '<div class="dsec"><div class="dt">Product type</div><div class="opts">'+Object.keys(TYPES).map(function(k){return '<button class="opt tap '+(S.type===k?'sel':'')+'" data-ft="'+k+'">'+TYPES[k]+'</button>';}).join("")+'</div></div>'+
-   '<div class="dsec"><div class="dt">Size '+(S.type?'<span class="hint">'+TYPES[S.type]+' sizes</span>':'')+'</div>'+
-     (szList?'<div class="opts">'+szList.map(function(s){return '<button class="opt tap '+(S.size===s?'sel':'')+'" data-fs="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>'
+   '<div class="dsec"><div class="dt">Size '+(S.type&&szList?'<span class="hint">'+TYPES[S.type]+' sizes</span>':'')+'</div>'+
+     /* Three states, not two. Topicals get their own note rather than an empty
+        option row or the "choose a type" lock, which would both be wrong: a
+        type IS chosen, and the shelf simply has nothing sortable to offer. */
+     (S.type==="topical"
+       ?'<div class="lock"><b>Topicals aren\u2019t filtered by size</b><br>Balms, roll-ons, lotions and patches share no scale &mdash; this shelf runs from a single patch to 250 mL &mdash; so a size filter would hide more than it found. Every product states its own size on its card.</div>'
+      :szList?'<div class="opts">'+szList.map(function(s){return '<button class="opt tap '+(S.size===s?'sel':'')+'" data-fs="'+s+'">'+s.replace(" each","")+'</button>';}).join("")+'</div>'
        :'<div class="lock"><b>Choose a product type first</b><br>Sizes adapt to the product — grams for flower, mg for edibles, mL for topicals. No impossible combos, no wrong results.</div>')+
      /* Edibles alone measure their size per serving, so this shelf says so
         rather than leaving "10 mg" to be read as the whole package. */
