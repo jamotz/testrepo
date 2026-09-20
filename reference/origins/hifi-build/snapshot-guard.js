@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base b88fcd5          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 5691d4d          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,18 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: b88fcd5. History, most recent first:
+ * Current baseline: 5691d4d. History, most recent first:
+ *
+ *   5691d4d  2026-09-20  edibles moved the package TOTAL into the bubbles and
+ *            the serving onto the size slot. Four width changes on `shop` and
+ *            nothing else in 24 screens: span.ovright and span.bub.thc
+ *            59.15 -> 64.88 (the THC bubble reads "100 mg" where it read
+ *            "10 mg", one digit wider), div.fszs and span.fsz.sel.serv
+ *            87.38 -> 112.74 ("10mg THC / Serving" where it read
+ *            "10mg / 100mg"). A fifth diff, span.fbr 63.37 -> 107.29, was NOT
+ *            accepted: it was the uploaded sheet reintroducing "Constellation
+ *            Cannabis" and re-splitting a merged brand. Fixed at the source
+ *            before re-baselining, which is what that diff was for.
  *
  *   b88fcd5  2026-09-17  Standard swapped the arrows for a drawn scrollbar
  *            (arrows are Enlarged-only now). On `home`: div.rowbar and
