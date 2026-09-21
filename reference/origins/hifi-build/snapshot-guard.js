@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 8721092          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base c76ea7d          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,16 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 8721092. History, most recent first:
+ * Current baseline: c76ea7d. History, most recent first:
+ *
+ *   c76ea7d  2026-09-21  the product page gained a Terpenes section between
+ *            Details and Feelings, on the three shelves that carry terpenes.
+ *            ONE screen of 24 (`product`), and every difference is an ADDITION
+ *            - div.chipset.terp, div.csh, div.terprow, span.tbub - plus
+ *            div.pwrap growing 890.63 -> 966px, which is that section's height.
+ *            Nothing lost, no selector on both sides, so not the count=1
+ *            signature. standard-guard moved too and was re-baselined with it:
+ *            0 lost, 1 gained, one new font-size for a new element.
  *
  *   8721092  2026-09-21  Jack corrected 16 drinks to the Holistic lifestyle in
  *            the sheet (9 of them moved; 7 were already Holistic), so those

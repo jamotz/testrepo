@@ -114,7 +114,15 @@ from collections import Counter
 # package."), which is one new visible element and so one new Standard
 # font-size declaration: 0 lost, 1 gained, ".dsec .dnote 11.5px". Read before
 # moving, and not the count=1 signature - that shows a selector on both sides.
-BASELINE = "89136db"
+# Moved again 2026-09-21: 89136db -> c76ea7d. The product page gained a
+# Terpenes section on flower, pre-rolls and concentrates, which is one new
+# visible element and so one new Standard font-size declaration: 0 lost, 1
+# gained, ".chipset.terp .tbub 11.5px". Read before moving, and NOT the count=1
+# signature - that shows the same selector on both sides, an enlarged value
+# overwriting its Standard twin. A new element needs a size; this is a real
+# Standard change and the documented answer to one is a deliberate re-baseline.
+# The size is an existing token (--fs-11_5), so Enlarged needed no new rule.
+BASELINE = "c76ea7d"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
