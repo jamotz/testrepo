@@ -3,7 +3,7 @@
 
 Source (reference/origins/product info/):
   - WA_Drinks_IA_Condensed.xlsx   the filter IA + the rules sheet
-  - WA_Drinks_50_Product_List_Cannabinoid_Serving_Totals_Normalized.xlsx
+  - WA_Drinks_50_Product_List_Lifestyles_Corrected.xlsx
                                   the 50 products (Jack, 2026-09-20)
 
 That normalised sheet replaced one that stated the dose as PROSE in a single
@@ -22,7 +22,8 @@ pre-rolls, so the same bubble component serves both.
   sub  = THC / CBD / Blend   (the sheet's own cannabinoid decision)
   sub2 = Drink / Shot / Seltzer / Sorbet / Honey
 
-Lifestyle is the sheet's Strain Type column renamed - see LIFESTYLE below.
+Lifestyle is stated by the sheet (column E) since 2026-09-21; it was derived
+from Strain Type before. See LIFE_OF in feelmap.py.
 
 COLUMNS ARE ADDRESSED BY NAME, NOT BY LETTER. The previous version hard-coded
 letters, and when the sheet gained a column every field after it shifted one to
@@ -38,16 +39,35 @@ import os, re, sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 XLSX = os.path.join(REPO, "reference/origins/product info/"
-                    "WA_Drinks_50_Product_List_Cannabinoid_Serving_Totals_Normalized.xlsx")
+                    "WA_Drinks_50_Product_List_Lifestyles_Corrected.xlsx")
 
 from xlsxread import read_cells
 from html import unescape as unesc
 
-LIFESTYLE = {"Sativa": "discovery", "Sativa Hybrid": "adventurous", "Hybrid": "social",
-             "Indica Hybrid": "unwind", "Indica": "nightlife", "CBD": "holistic"}
+# The sheet states the LIFESTYLE outright now (column E, renamed from "Strain
+# Type" by Jack on 2026-09-21), using the same vocabulary as his feelings chart:
+# a strain name, or "Holistic". So the mapping lives in exactly one place -
+# feelmap.LIFE_OF - and the sheet and the chart cannot disagree about what
+# "Holistic" means.
+#
+# WHY THE SHEET CHANGED: lifestyle used to be derived from the strain alone, so
+# a drink carrying CBD or CBN still read as its strain while the equivalent
+# EDIBLE read Holistic (gen_edibles makes any product with a secondary
+# cannabinoid Holistic). 17 drinks sat on the wrong side of that. Jack did not
+# apply a blanket rule - he judged them one at a time, moving 9 of the 17 and
+# leaving 8 THC-dominant blends where they were. That judgement is data, which
+# is why it belongs in the sheet and not in a rule here.
+from feelmap import LIFE_OF, feelings_for
+
+# A drink's strain, for the settings toggle's strain-vs-lifestyle wording. The
+# sheet no longer states it separately: for the five strain lifestyles the
+# column IS the strain, and a Holistic drink takes "CBD", the same value
+# gen_edibles gives its Holistic rows, so strain and lifestyle stay one-to-one.
+def strain_of(lifestyle):
+    return "CBD" if lifestyle == "Holistic" else lifestyle
 
 CANNABINOIDS = ["THC", "CBD", "CBN", "CBG", "CBC"]
-REQUIRED = (["Brand", "Product Name", "Flavor", "Cannabinoid Category", "Strain Type",
+REQUIRED = (["Brand", "Product Name", "Flavor", "Cannabinoid Category", "Lifestyle",
              "Type", "Size", "Cannabinoid Combo", "Ratio (Tile)"]
             + ["%s %s mg" % (c, w) for c in CANNABINOIDS for w in ("Serving", "Total")]
             + ["Servings Per Package", "WA Retail Price", "Description"])
@@ -141,14 +161,31 @@ def load():
     return rows
 
 
+def category(r):
+    """The drinks IA's first level: THC / CBD / Blend.
+
+    The 2026-09-21 sheet relabelled this column's "THC" as "THC Only", matching
+    the Cannabinoid Combo vocabulary - but left "CBD" as "CBD", so the set reads
+    THC Only / CBD / Blend. Taken verbatim that renames one of the three bubbles
+    on the Drinks shop screen and leaves it asymmetric with its two neighbours.
+    The partition is untouched (still 26 / 7 / 17, exactly matching the combo),
+    so this is a label edit, and one that looks incidental rather than intended.
+    Normalised back to the documented IA here, and flagged to Jack: if he wants
+    the bubble to read "THC Only", that is a deliberate IA change and this
+    function is where to make it.
+    """
+    return {"THC Only": "THC", "CBD Only": "CBD"}.get(
+        r["Cannabinoid Category"], r["Cannabinoid Category"])
+
+
 def check(rows):
     """Refuse to emit rather than emit something plausible and wrong."""
     bad = []
     for i, r in enumerate(rows, 2):
-        if r["Cannabinoid Category"] not in ("THC", "CBD", "Blend"):
+        if category(r) not in ("THC", "CBD", "Blend"):
             bad.append("row %d: cannabinoid category %r" % (i, r["Cannabinoid Category"]))
-        if r["Strain Type"] not in LIFESTYLE:
-            bad.append("row %d: strain type %r" % (i, r["Strain Type"]))
+        if r["Lifestyle"] not in LIFE_OF:
+            bad.append("row %d: lifestyle %r" % (i, r["Lifestyle"]))
         if r["Type"] not in ("Drink", "Shot", "Seltzer", "Sorbet", "Honey"):
             bad.append("row %d: type %r" % (i, r["Type"]))
         if not re.match(r"^\$[\d.]+$", r["WA Retail Price"]):
@@ -205,7 +242,7 @@ def main():
     for i, r in enumerate(rows):
         name, brand = unesc(r["Product Name"]), unesc(r["Brand"])
         size = r["Size"]
-        life = LIFESTYLE[r["Strain Type"]]
+        life = LIFE_OF[r["Lifestyle"]]
         order, serving, total, srv = doses(r)
         main_c = order[0]                        # what the serving line names
         price = float(r["WA Retail Price"].lstrip("$"))
@@ -234,9 +271,9 @@ def main():
             % (esc(r["Product Name"]), esc(r["Brand"]), photo_for(r, unknown),
                price, size, price, size,
                serving[main_c], srv, cbd_flag, can,
-               r["Cannabinoid Category"], r["Type"], main_c,
+               category(r), r["Type"], main_c,
                r["Cannabinoid Combo"], esc(ratio),
-               esc(r["Strain Type"]), life,
+               esc(strain_of(r["Lifestyle"])), life,
                round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
                '","'.join(feelings_for(life, total, name)), esc(r["Description"])))
 
@@ -245,7 +282,7 @@ def main():
     import collections
     print("%d drinks - %s" % (len(out), ", ".join(
         "%s %d" % (k, v) for k, v in sorted(collections.Counter(
-            (r["Cannabinoid Category"] + " - " + r["Type"]) for r in rows).items()))),
+            (category(r) + " - " + r["Type"]) for r in rows).items()))),
         file=sys.stderr)
     print("photos: %s" % dict(collections.Counter(
         re.search(r'img:"([^"]*)"', o).group(1) for o in out)), file=sys.stderr)
