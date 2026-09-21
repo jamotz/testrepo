@@ -1199,6 +1199,42 @@ to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
 
+### Put the invented data where no real data exists
+The terpene catalogue was flattened: 170 products drawing on six terpenes, with
+humulene, ocimene, bisabolol and nerolidol absent entirely and linalool on a
+single product. Re-profiling all 87 strains from published chemistry fixed most
+of that, but the rare terpenes still needed somewhere to live.
+
+They went to the **low-confidence house names** — Cosmic Queen, Ginger Tea,
+Power, Gas Face, Zour Beltz. Those are invented strains with no published
+profile, so assigning one costs nothing in accuracy: there is no real chemistry
+to contradict. Ginger Tea takes bisabolol, the chamomile terpene, so the name
+earns it.
+
+That is the general move. When a data set needs values you have to supply,
+supply them where the truth is already unknown, not where it is known and you
+would be overwriting it.
+
+### Two readers, two row numbers
+Writing the sheets meant using `openpyxl` beside the existing `xlsxread`, and
+they disagree about what row anything is on. The flower sheet's header is
+spreadsheet row **3**; `xlsxread` sees it at index **1**, because the blank row
+2 is not in the sheet XML at all and the reader only ever sees rows that exist.
+
+Writing at `xlsxread`'s index would have overwritten the header. What caught it
+was asserting the three `Terp` header cells before writing a single value —
+cheap, and it failed loudly on the first run instead of silently corrupting a
+sheet. Any writer added here should assert the layout it thinks it is looking
+at, for the same reason `check()` does in every generator.
+
+### A derived field verifies itself
+Feelings and Taste are computed from the terpenes, so "do they still align?"
+has an exact answer rather than a visual one. The check rebuilt the expected
+pairs **straight from the three sheets through `terpmap`** and compared them to
+what the app actually carries: 170 of 170. The point is that it read the
+sheets, not the generator's output — comparing a generator to itself proves
+only that it is consistent, not that it is right.
+
 ### A judgement belongs in the sheet, not in a rule
 Drinks derived their lifestyle from strain; edibles made anything with a
 secondary cannabinoid Holistic. 17 drinks sat between the two conventions, and

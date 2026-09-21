@@ -94,7 +94,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`5acab40`** (**Version 37**, republished 2026-09-21). Every check was
+`10a9367`** (**Version 38**, republished 2026-09-21). Every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
 `snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
 across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
@@ -245,7 +245,21 @@ icon reads as a different tab.
 none by design — see `design-decisions.md`).
 
 **Feelings and scents come from the terpenes** on flower, concentrates and
-pre-rolls (170 products) via `terpmap.py` — nothing authored. Edibles and
+pre-rolls (170 products) via `terpmap.py` — nothing authored. **Real per-strain
+terpene profiles landed 2026-09-21** (`10a9367`): all 87 strains re-profiled
+from published chemistry, written into columns L/M/N of the three product
+lists. Linalool went from 1 product to 20 and humulene, ocimene, bisabolol and
+nerolidol appear for the first time, so all 10 terpenes are now in play. The
+rare ones sit deliberately on the low-confidence house names (Cosmic Queen,
+Ginger Tea, Power, Gas Face, Zour Beltz), which have no published chemistry to
+contradict. What shipped is recorded strain by strain at
+<https://claude.ai/artifact/W3VwLRU77whWAKLgFBfyeC>.
+
+**Terpenes are a property of a STRAIN, not a product row.** Eight pack variants
+had drifted from their base strain — *Purple Punch 3-Pack* differed from
+*Purple Punch*, *White Widow 3-Pack* from *White Widow* by a whole terpene.
+Fixed, and the way to keep it fixed is to assign per strain and apply to every
+row carrying it. `feelmap`-style: one decision, many rows. Edibles and
 drinks still carry the old placeholders and are the remaining work.
 
 **Topicals no longer show either row** (2026-09-21). They render a single
