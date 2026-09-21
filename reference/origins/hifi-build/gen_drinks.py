@@ -119,12 +119,11 @@ def num(v):
     return float(v) if v not in ("", "-") else 0.0
 
 
-FEEL = {"discovery":   ["Creative", "Focused", "Uplifted"],
-        "adventurous": ["Energetic", "Focused", "Uplifted"],
-        "social":      ["Giddy", "Chatty", "Happy"],
-        "unwind":      ["Relaxed", "Sleepy", "Body High"],
-        "nightlife":   ["Euphoric", "Giddy", "Buzzed"],
-        "holistic":    ["Calm", "Clear-Headed", "Relaxed"]}
+# Feelings come from Jack's uniform chart, shared with edibles - see feelmap.py.
+# The table that used to sit here was keyed by lifestyle alone, so all 50 drinks
+# collapsed to 5 triples and half its words ("Chatty", "Body High", "Buzzed")
+# had no icon in Jack's set.
+from feelmap import feelings_for
 
 
 def load():
@@ -239,7 +238,7 @@ def main():
                r["Cannabinoid Combo"], esc(ratio),
                esc(r["Strain Type"]), life,
                round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
-               '","'.join(FEEL[life]), esc(r["Description"])))
+               '","'.join(feelings_for(life, total, name)), esc(r["Description"])))
 
     print("\n".join(out))
 

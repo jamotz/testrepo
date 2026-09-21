@@ -121,15 +121,12 @@ LIFE_EFFECT = {"Pain Relief":"holistic","Relax":"holistic","Focus":"discovery","
 # Unwind, Nightlife; CBD = Holistic. This sheet only uses three of the six.
 LIFE_STRAIN = {"Sativa":"discovery","Sativa Hybrid":"adventurous","Hybrid":"social",
                "Indica Hybrid":"unwind","Indica":"nightlife","CBD":"holistic"}
-# effect -> the three "Feelings" chips on the product page
-FEEL = {"Pain Relief":["Relief","Calm","Clear"],"Relax":["Relaxed","Calm","Mellow"],
-        "Focus":["Focused","Clear","Uplifted"],"Unwind":["Relaxed","Mellow","Calm"],
-        "Sleep":["Sleepy","Heavy","Relaxed"],"Giggly":["Giddy","Social","Uplifted"],
-        "Calm":["Calm","Balanced","Clear"],"Chill":["Mellow","Relaxed","Calm"],
-        "Creative":["Creative","Uplifted","Clear"],"Balanced":["Balanced","Calm","Giddy"],
-        "Deep Sleep":["Sleepy","Heavy","Calm"],"Happy":["Giddy","Uplifted","Social"]}
-FEEL_STRAIN = {"Sativa":["Uplifted","Energized","Focused"],"Hybrid":["Balanced","Giddy","Relaxed"],
-               "Indica":["Relaxed","Sleepy","Calm"]}
+# Feelings come from Jack's uniform chart, shared with drinks - see feelmap.py.
+# The two private FEEL/FEEL_STRAIN tables that used to live here (and their twin
+# in gen_drinks.py) are what produced 14 feeling words on this shelf and 12 on
+# that one, ten of which had no icon in Jack's set and fell back to generated
+# SVGs. One chart, one reader, one vocabulary.
+from feelmap import feelings_for
 
 # Brands merged on 2026-09-11, when deriving the Brands facet from the catalog
 # showed one brand under two spellings. That merge was made in the sheets AS
@@ -191,7 +188,9 @@ for i, r in enumerate(recs):
         life = "holistic"
     else:
         life = LIFE_STRAIN.get(strain, "social") if cat == "THC Edibles" else LIFE_EFFECT.get(effect, "social")
-    feels = FEEL_STRAIN.get(strain, ["Balanced","Calm","Giddy"]) if cat == "THC Edibles" else FEEL.get(effect, ["Balanced","Calm","Giddy"])
+    # Keyed on the lifestyle the product already carries, plus - for Holistic -
+    # its prominent secondary cannabinoid, read from `total` rather than guessed.
+    feels = feelings_for(life, total, name)
     # Only "THC Edibles" rows carry a Lifestyle on the sheet. The rest are the
     # CBD/Dominant/Balanced categories, which are Holistic - so they read "CBD"
     # on the strain axis, keeping strain and lifestyle one-to-one for the
