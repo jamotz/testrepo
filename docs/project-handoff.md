@@ -94,7 +94,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`a40ec64`** (**Version 36**, republished 2026-09-21). Every check was
+`5acab40`** (**Version 37**, republished 2026-09-21). Every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
 `snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
 across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
@@ -239,7 +239,7 @@ icon reads as a different tab.
 | Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
 | Pre-roll | 60 | `Pre-roll pt2 Product List Final for WA.xlsx` | by type + pack count ✓ |
 | Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
-| Drink | 50 | `WA_Drinks_50_Product_List_Cannabinoid_Serving_Totals_Normalized.xlsx` | by type + flavour colour ✓ |
+| Drink | 50 | `WA_Drinks_50_Product_List_Lifestyles_Corrected.xlsx` | by type + flavour colour ✓ |
 
 **87 Holistic products**; **62 carry a cannabinoid ratio** (pre-rolls carry
 none by design — see `design-decisions.md`).
@@ -537,15 +537,28 @@ polish and the open questions below.
    became 14 words on one shelf and 12 on the other. One uniform rule deserves
    one reader.
 
-   **Open decision Jack has not made.** The two shelves assign LIFESTYLE
-   differently, and lifestyle is what decides whether the Holistic rows apply:
-   `gen_edibles` makes any product carrying a secondary cannabinoid Holistic,
-   `gen_drinks` keys on strain alone. So **17 drinks carry CBD/CBG/CBN but are
-   not Holistic** — a THC:CBN drink reads *Happy / Euphoric / Social* where the
-   equivalent edible reads *Relaxed / Sleepy / Mellow*. Not changed, because
-   lifestyle also drives the photo badge and the Feeling filter, so it is a
-   much bigger change than feelings. All 17 would key on rows the chart already
-   has (CBD 12, CBG 3, CBN 2), so it is a decision, not a blocker.
+   ~~**Open decision Jack has not made.**~~ **SETTLED 2026-09-21** (`8721092`).
+   Drinks were keying lifestyle off strain alone while edibles made any product
+   with a secondary cannabinoid Holistic, leaving 17 drinks on the wrong side.
+   Jack settled it **in the sheet, per product** rather than by a rule: column E
+   is now `Lifestyle` and states the value outright, he moved 9 of the 17, and
+   left 8 THC-dominant blends alone (each has at least twice the THC of its
+   secondary). Holistic drinks 7 → 16, all resolving to chart rows.
+
+   `gen_drinks.py`'s private LIFESTYLE table is gone — the mapping lives once in
+   `feelmap.LIFE_OF`, so the sheet and the chart cannot disagree about what
+   Holistic means. Strain is derived back for the settings toggle: the column IS
+   the strain for the five strain lifestyles, Holistic takes `CBD`.
+
+   **Watch column D on that sheet.** The same upload relabelled 26 rows from
+   `THC` to `THC Only` while leaving `CBD` as `CBD`, which taken verbatim would
+   rename one Drinks bubble and leave the set asymmetric (THC Only / CBD /
+   Blend). The partition never changed (26/17/7, matching the combo), so
+   `category()` in `gen_drinks.py` normalises it back to the documented IA. Three
+   other rows in that column were a REAL correction — Sweet Watermelon,
+   Agave Lime MAX and Blue Raspberry MAX moved THC → Blend — and pass straight
+   through. A relabel and a recategorisation arriving in one column is worth
+   telling apart before taking either.
 
    **Taste chips: closed on every shelf.** Topicals stated their form, drinks
    and edibles restated their own product name; flower, pre-rolls and

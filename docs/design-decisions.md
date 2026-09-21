@@ -1199,6 +1199,41 @@ to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
 
+### A judgement belongs in the sheet, not in a rule
+Drinks derived their lifestyle from strain; edibles made anything with a
+secondary cannabinoid Holistic. 17 drinks sat between the two conventions, and
+the obvious fix was to pick one rule and apply it to both shelves.
+
+Jack did something better: he **moved 9 of the 17 and left 8 alone**, and those
+8 are all THC-dominant (at least twice the THC of their secondary). No single
+rule produces that split — it is a judgement about each product, so it belongs
+in the sheet where it can be seen and changed, not in a generator where it would
+look like arithmetic.
+
+The generator got simpler for it. Column E now states the lifestyle outright in
+the same vocabulary as the feelings chart, so `gen_drinks.py`'s private
+LIFESTYLE table went away and the mapping lives once in `feelmap.LIFE_OF`. The
+sheet and the chart can no longer disagree about what "Holistic" means.
+
+### Two kinds of change can arrive in one column
+The same upload also edited the Cannabinoid Category column, and the two edits
+needed opposite treatment:
+
+- **3 rows THC → Blend** — a real correction. Sweet Watermelon (THC:CBG), Agave
+  Lime MAX (THC:CBG:CBC) and Blue Raspberry MAX (THC:CBN) carry secondary
+  cannabinoids and were miscategorised. Taken as-is.
+- **26 rows THC → "THC Only"** — a relabel. The partition was untouched, still
+  26/17/7 and still matching the combo exactly, so nothing was recategorised.
+  Taken verbatim it would rename one of the three bubbles on the Drinks shop
+  screen while leaving its neighbour as plain `CBD` — the set would read
+  *THC Only / CBD / Blend*. That asymmetry is the tell that it was incidental,
+  so `category()` normalises it back.
+
+What made them separable was checking the **partition**, not the labels: 26/17/7
+before and after, with every row's category still agreeing with its combo. A
+column whose values changed but whose grouping did not has been relabelled, not
+recategorised.
+
 ### One uniform rule deserves one reader
 Edibles and drinks were meant to share a feelings vocabulary. They each had
 their own `FEEL` table instead — `gen_edibles.py` carried FEEL + FEEL_STRAIN,
