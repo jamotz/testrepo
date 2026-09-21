@@ -1199,6 +1199,35 @@ to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
 
+### The page shows its own reasoning
+Feelings and Taste were asserted: two rows of adjectives with nothing saying
+where they came from. They come from the terpenes, and the terpenes were read
+by every smokeable generator and then discarded.
+
+The Terpenes section sits directly **above** both, because it is their cause —
+`terpmap` derives each row from exactly those three names, in that order. The
+side effect is that the three rows line up as columns: on Purple Punch,
+Myrcene/Relaxed/Earthy, then Caryophyllene/Grounded/Peppery, then
+Linalool/Calm/Floral. Nothing enforces that alignment; it falls out of putting
+the cause above its effects and keeping the order. Ordering by anything else
+would have hidden a real relationship the page can simply show.
+
+### Colour as the whole message
+This row is the one place on the product page that states something with colour
+alone, and that is deliberate. Every other chip carries an icon; there is no
+icon per terpene, and inventing ten would have said less than the colour does.
+
+So colour follows **aroma** — citrus yellow, pine green, lavender purple,
+pepper red — because the terpene name means nothing to most shoppers while the
+smell does. All ten of the mapping's terpenes are coloured, including four that
+had never reached a product, so a sheet that starts using one cannot produce a
+grey bubble.
+
+Contrast was computed, not eyed: every pair clears WCAG AA against its own tint
+**and** against white, in case a bubble ever sits on the page ground. Ocimene
+failed the first draft at 4.42:1 and was darkened before anything shipped. When
+colour is the only channel carrying the message, "looks fine" is not a check.
+
 ### Put the invented data where no real data exists
 The terpene catalogue was flattened: 170 products drawing on six terpenes, with
 humulene, ocimene, bisabolol and nerolidol absent entirely and linalool on a

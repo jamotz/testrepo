@@ -94,13 +94,18 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`10a9367`** (**Version 38**, republished 2026-09-21). Every check was
-re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
+`8c96066`** (**Version 39**, republished 2026-09-21). Every check was
+re-run at that commit rather than assumed: `standard-guard.py` PASS 222 = 222,
 `snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
 across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
 308/308 products reachable via Brands with no missing brands.
 
-**The two guards now baseline at DIFFERENT commits, on purpose.**
+**Both guards baseline at `c76ea7d`** — the Terpenes section is a new visible
+element, so it moved stylesheet text *and* computed styles and both were
+re-baselined together. They do not always track: read each file's constant.
+The paragraph below is why they once differed, and is worth keeping.
+
+**The two guards sometimes baseline at DIFFERENT commits, on purpose.**
 `standard-guard.py` is still at `89136db`: the drinks change moved no
 stylesheet text at all, so it passed untouched. `snapshot-guard.js` is at
 `ad9a463`, because drinks moved COMPUTED styles on one screen. That is the
@@ -261,6 +266,14 @@ had drifted from their base strain — *Purple Punch 3-Pack* differed from
 Fixed, and the way to keep it fixed is to assign per strain and apply to every
 row carrying it. `feelmap`-style: one decision, many rows. Edibles and
 drinks still carry the old placeholders and are the remaining work.
+
+**Flower, pre-rolls and concentrates now show a Terpenes row** (2026-09-21,
+`c76ea7d`) between Details and Feelings — the three terpene names as
+colour-coded bubbles, colour following aroma. It sits above Feelings and Taste
+because it is their cause: `terpmap` derives both rows from exactly those three
+names in that order, so the three rows read as columns. `TERPC` in the app
+holds all ten colours, `tp` on the product row holds the names. Every pair
+clears WCAG AA against its tint and against white.
 
 **Topicals no longer show either row** (2026-09-21). They render a single
 **"Best For"** tile naming the IA use case instead, because both rows were
