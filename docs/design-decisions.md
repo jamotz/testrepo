@@ -655,9 +655,9 @@ What is still authored, all flagged where it lives:
   hashes the strain name. No sheet states either, and they're display-only.
 - **The Account block** in `origins-app.src.html`: Noelle's orders and reviews,
   and Seattle's opening hours.
-- **Edible and drink FEELINGS**, until those sheets gain terpenes or their
-  effect columns are mapped onto the 30 terms. Their taste chips are gone
-  outright — see "A taste chip has to say something the title does not".
+- (Edible and drink feelings were here. Closed 2026-09-21: Jack's uniform
+  chart, read by `feelmap.py`. Their taste chips are gone outright — see "A
+  taste chip has to say something the title does not".)
 
 *Superseded:* the `AUTHORED`/`EXTRA` blocks in `gen_concentrates.py` (Kief rows
 51–56, syringe rows 57–60) are gone — those products live in the sheet now. So
@@ -1198,6 +1198,37 @@ Lemonade 12 oz"), so the slot is free to carry the dose.
 to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
+
+### One uniform rule deserves one reader
+Edibles and drinks were meant to share a feelings vocabulary. They each had
+their own `FEEL` table instead — `gen_edibles.py` carried FEEL + FEEL_STRAIN,
+`gen_drinks.py` its own FEEL — and the result was 14 feeling words on one shelf
+and 12 on the other, **ten of them with no icon in Jack's set**, falling back to
+generated SVGs right next to flower, which always hit the art.
+
+Nobody chose that. It is just what two copies of one idea do over time.
+
+So the chart Jack supplied is read by a single shared module, `feelmap.py`,
+which **reads the .xlsx** rather than restating it in Python — editing the chart
+is how you change the app, and adding a `Holistic / CBC` row gives both shelves
+that rule with no code change. A Holistic product whose prominent secondary has
+no row **stops the build** with a message naming the row to add. Guessing is the
+one thing it must not do, because a plausible guess is exactly what nobody
+would notice.
+
+"Prominent secondary cannabinoid" resolves from the **package total** in `can`,
+not the combo's ordering: 200 mg CBG beside 10 mg CBD is a CBG product whichever
+order the combo happens to name them in.
+
+**Check coverage before writing the code, not after.** All 78 non-holistic
+products fall in the chart's five strain rows; all 22 Holistic ones split CBD
+14 / CBG 4 / CBN 4. Knowing there were no gaps is what made it safe to let the
+missing-row case be a hard failure instead of a fallback.
+
+**Verified by re-deriving, not by reading.** The chart was transcribed a second
+time, independently, and every product's feelings recomputed from it: 100 of
+100 matched. A generator that reads a sheet and a check that reads the same
+sheet through the same parser would agree even if the parser were wrong.
 
 ### A taste chip has to say something the title does not
 Three shelves lost their Taste row in two days, for three different-looking
