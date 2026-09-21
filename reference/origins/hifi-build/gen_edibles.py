@@ -66,8 +66,10 @@ CANNABINOIDS = ["THC", "CBD", "CBN", "CBG"]
 REQUIRED = (["Brand", "Product Name", "Edible Type", "Category", "Extraction",
              "Lifestyle", "Effect Filter", "Cannabinoid Combo", "Ratio (Tile)"]
             + ["%s %s mg" % (c, w) for c in CANNABINOIDS for w in ("Serving", "Total")]
-            + ["Servings Per Package", "Flavor", "Description",
-               "WA Retail Price (USD)"])
+            # "Flavor" is deliberately NOT required: nothing reads it any more
+            # (it was already described here as not tracking the names), so
+            # demanding it would fail the build over a column we ignore.
+            + ["Servings Per Package", "Description", "WA Retail Price (USD)"])
 missing = [c for c in REQUIRED if c not in hdr]
 if missing:
     sys.exit("gen_edibles: sheet is missing column(s): %s" % ", ".join(missing))
@@ -105,17 +107,10 @@ def photo(etype, name, i):
     if etype == "Baked Goods":return pick(BAKED, name, "ed_baked_cookie")  # cookies get the cookie
     return CAP_ALT[i % len(CAP_ALT)]                                       # capsules rotate
 
-def flavour_of(name):
-    """The flavour is in the name; the Flavor column is not reliable."""
-    n = name.replace("&amp;", "&")
-    for w in ("Cookies & Cream","Sea Salt Caramel","Peanut Butter","Double Chocolate",
-              "Chocolate Chip","Oatmeal Raisin","Snickerdoodle","Fudge Brownie",
-              "Blue Raspberry","Green Apple","Dark Chocolate","Milk Chocolate",
-              "Marionberry","Elderberry","Huckleberry","Blackberry","Raspberry",
-              "Strawberry","Watermelon","Pineapple","Espresso","Cherry","Mango",
-              "Peach","Lemon","Pear"):
-        if w.lower() in n.lower(): return w
-    return "Unflavored"   # the capsules; an empty taste chip renders blank
+# flavour_of() lived here. It scanned the product NAME for one of 26 flavour
+# words and returned it as the taste chip - which is exactly why the chip was
+# redundant: it could only ever repeat a word already in the title, or fall
+# back to "Unflavored" for the capsules. Deleted with the chip it fed.
 
 # effect / strain -> the app's six lifestyles (drives card colour + badge)
 LIFE_EFFECT = {"Pain Relief":"holistic","Relax":"holistic","Focus":"discovery","Unwind":"unwind",
@@ -151,7 +146,6 @@ out = []
 for i, r in enumerate(recs):
     etype, cat = r["Edible Type"], r["Category"]
     name   = r["Product Name"]
-    flavor = flavour_of(name)          # derived; the sheet's Flavor column is unreliable
     effect = r["Effect Filter"]
     strain = r["Lifestyle"]                      # sheet calls Sativa/Hybrid/Indica "Lifestyle"
     combo, ratio = r["Cannabinoid Combo"], r["Ratio (Tile)"]
@@ -207,15 +201,21 @@ for i, r in enumerate(recs):
     sub2 = r["Extraction"] if cat == "THC Edibles" else effect
     p = float(r["WA Retail Price (USD)"])   # real WA retail, straight from the sheet
     out.append(
+        # No `ta`. 40 of the 50 edibles had their taste string contained
+        # verbatim in their own product name ("Chocolate Chip" in "Chocolate
+        # Chip Cookies"), because flavour_of() DERIVED it from the name in the
+        # first place; the other 10 are capsules that fell back to
+        # "Unflavored", a tile spending space to say nothing. Either way the
+        # row told a shopper nothing the title had not (Jack, 2026-09-21).
         ' {t:"edible",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],mg:%g,srv:%g,%s%s'
         'sub:"%s",sub2:"%s"%s,etype:"%s",main:"%s",combo:"%s",ratio:"%s",'
-        'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+        'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],d:"%s"},'
         % (esc(name), esc(BRAND_MERGE.get(r["Brand"], r["Brand"])),
            photo(etype, name, i), p, pack, p, pack,
            serving[main], srv, ("cbd:1," if cbd and cbd >= thc else ""), can,
            cat, sub2, (',sub3:"%s"' % strain if cat == "THC Edibles" else ""), etype,
            main, combo, ratio, st, life,
            round(4.0 + (i % 10) * 0.1, 1), 5 + (i * 5) % 34,
-           '","'.join(feels), flavor, esc(r["Description"])))
+           '","'.join(feels), esc(r["Description"])))
 
 print("\n".join(out))
