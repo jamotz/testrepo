@@ -94,7 +94,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`c10db30`** (**Version 33**, republished 2026-09-21). Every check was
+`b588e55`** (**Version 34**, republished 2026-09-21). Every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
 `snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
 across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
@@ -514,20 +514,33 @@ polish and the open questions below.
    instead of on match order. **Any script that edits one of the two blocks must
    anchor on the block, never on ordinal position.**
 
-4. **Feelings and scents on edibles and drinks — parked** (Jack,
-   2026-08-17: "ignore for now"). Don't pick this up without him. The other
-   three shelves are done; these 100 products still carry the old vocabulary, so
-   their chips fall back to generated SVGs while flower/concentrate/pre-roll
-   show Jack's icons. The mismatch is visible side by side. Two problems:
+4. **Feelings and scents on edibles — parked** (Jack, 2026-08-17: "ignore
+   for now"). Don't pick this up without him. The taste half of this item is
+   now closed on every shelf that had it wrong; what remains is edible tastes,
+   plus the FEELINGS question below. Both remaining shelves still carry the old
+   vocabulary, so some chips fall back to generated SVGs while
+   flower/concentrate/pre-roll show Jack's icons:
    - ~~**topicals use their own *form* as a taste**~~ — **RESOLVED 2026-09-21**
      (`c10db30`). Topicals no longer render a Taste or a Feelings row at all;
      they show one **"Best For"** tile naming the IA use case. `ta` is no longer
      emitted for that shelf. `fe` still is — if this parked work later gives
      topicals real feelings, the row can come back.
-   - **drinks use the whole flavour string** as one value (`Blackberry Lemonade`,
-     `Mojo-Rita`) — product names, not descriptors.
+   - ~~**drinks use the whole flavour string**~~ — **RESOLVED 2026-09-21**
+     (`b588e55`). Drinks no longer render a Taste row: all 50 had their flavour
+     string contained verbatim in their own product name, so the chip restated
+     the title. `ta` is no longer emitted for that shelf; `photo_for()` still
+     reads the Flavor column for the bottle-colour rules.
    - **edibles use raw flavour words** (Cream, Gas, Candy, Lemon), most of which
      map cleanly onto the 16.
+
+   **Feelings on drinks are derived, and nobody has decided about it.** The
+   same test that condemned the topical Feelings row applies here: `FEEL` in
+   `gen_drinks.py` is keyed by LIFESTYLE, so the 50 drinks collapse to 5
+   triples, one per lifestyle — and the lifestyle is already the badge on the
+   photo. Topicals lost that row for exactly this. Drinks kept it, because it
+   was not asked for and because some of those terms (Relaxed, Sleepy) DO hit
+   Jack's supplied icon set, so the row at least looks native. **Jack's call:**
+   drop it the way topicals did, or give drinks real per-product feelings.
 
    These sheets have no terpene columns, so they can't use `terpmap`. Either add
    terpenes, or map their existing flavour/effect columns onto the 30 terms.

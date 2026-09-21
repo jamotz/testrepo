@@ -1198,6 +1198,35 @@ to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
 
+### No Taste row: the flavour is the product name
+Every drink carried `ta` set to its Flavor column, and every drink names that
+flavour in its own title — checked across all 50, not sampled: the `ta` string
+was contained verbatim in `n` for 50 of 50 ("Blackberry Lemonade" in
+"Blackberry Lemonade 12 oz"). So the Taste row restated the page title three
+lines above it. Removed (Jack, 2026-09-21).
+
+The Flavor column itself still earns its keep — `photo_for()` reads it to pick
+the bottle colour. The data stays; only the chip goes.
+
+**The renderer drops the whole SECTION, not just the tiles.** `(p.ta||[])`
+would have rendered a "Taste" heading over an empty grid, which is worse than
+either showing the row or not having built it. Written as a section-level
+condition so the next shelf to lose its taste data gets the right result
+without a second edit.
+
+### Drinks kept their Feelings row, and probably should not have
+Stated plainly because it is the one loose thread here. `FEEL` in
+`gen_drinks.py` is keyed by **lifestyle**, so the 50 drinks collapse to 5
+triples — one per lifestyle — and the lifestyle is already the badge on the
+product photo. That is the same derived-data shape that cost topicals their
+Feelings row a day earlier.
+
+Two reasons it survived: it was not what Jack asked for, and unlike the topical
+vocabulary some of these terms (Relaxed, Sleepy) hit his supplied icon set, so
+the row looks native rather than falling back to generated SVGs. Neither reason
+makes the content less derived. Flagged for his decision rather than settled
+here — see project-handoff.md item 4.
+
 ### The prose dose column, and four things it hid
 Drinks stated their dose as **prose in one "Serving Size" column**, in eight
 shapes across 50 rows: `10mg THC / 100mg package`, `10mg THC + 10mg CBD / 10
