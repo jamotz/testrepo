@@ -94,13 +94,11 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`9bcedfb`** (**Version 32**, republished 2026-09-20; the commits after it on
-this branch are comments and docs only, so the build is current). Every check was
+`c10db30`** (**Version 33**, republished 2026-09-21). Every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
-`enlarged-check.js` 0 findings across 4 viewports × 24 screens, `ratio.js`
-unchanged, `filter-audit.js` 308/308 products reachable via Brands with no
-missing brands. `snapshot-guard.js` flagged one screen (`shop`) for the drinks
-change and was **deliberately re-baselined** — see the next paragraph.
+`snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
+across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
+308/308 products reachable via Brands with no missing brands.
 
 **The two guards now baseline at DIFFERENT commits, on purpose.**
 `standard-guard.py` is still at `89136db`: the drinks change moved no
@@ -246,8 +244,18 @@ icon reads as a different tab.
 none by design — see `design-decisions.md`).
 
 **Feelings and scents come from the terpenes** on flower, concentrates and
-pre-rolls (170 products) via `terpmap.py` — nothing authored. Edibles, topicals
-and drinks still carry the old placeholders and are the remaining work.
+pre-rolls (170 products) via `terpmap.py` — nothing authored. Edibles and
+drinks still carry the old placeholders and are the remaining work.
+
+**Topicals no longer show either row** (2026-09-21). They render a single
+**"Best For"** tile naming the IA use case instead, because both rows were
+derived rather than observed: `ta` was emitted as the product's FORM, so
+"Taste" read *Cream* and *Roll-On*, and the three Feelings are a seven-entry
+lookup from the use case, so all ten Pain Relief products said *Relief, Calm,
+Clear*. `fe` is still emitted — the parked feelings work below is not
+cancelled, and the row returns when real data lands. The seven use-case icons
+are drawn in-app (`USES`, beside `ICONS`/`FLAVORS`), consulted after `IMG` so
+supplied art would override them.
 
 **Lifestyle is the strain, renamed** (Jack, 2026-08-12) — Sativa/Sativa
 Hybrid/Hybrid/Indica Hybrid/Indica/CBD = Discovery/Adventurous/Social/Unwind/
@@ -506,15 +514,16 @@ polish and the open questions below.
    instead of on match order. **Any script that edits one of the two blocks must
    anchor on the block, never on ordinal position.**
 
-4. **Feelings and scents on edibles, topicals and drinks — parked** (Jack,
+4. **Feelings and scents on edibles and drinks — parked** (Jack,
    2026-08-17: "ignore for now"). Don't pick this up without him. The other
-   three shelves are done; these 138 products still carry the old vocabulary, so
+   three shelves are done; these 100 products still carry the old vocabulary, so
    their chips fall back to generated SVGs while flower/concentrate/pre-roll
-   show Jack's icons. The mismatch is visible side by side. Three separate
-   problems:
-   - **topicals use their own *form* as a taste** — `Roll-On`, `Lotion`,
-     `Balm / Salve`. Always wrong; just never noticed. A topical arguably
-     shouldn't carry a taste at all.
+   show Jack's icons. The mismatch is visible side by side. Two problems:
+   - ~~**topicals use their own *form* as a taste**~~ — **RESOLVED 2026-09-21**
+     (`c10db30`). Topicals no longer render a Taste or a Feelings row at all;
+     they show one **"Best For"** tile naming the IA use case. `ta` is no longer
+     emitted for that shelf. `fe` still is — if this parked work later gives
+     topicals real feelings, the row can come back.
    - **drinks use the whole flavour string** as one value (`Blackberry Lemonade`,
      `Mojo-Rita`) — product names, not descriptors.
    - **edibles use raw flavour words** (Cream, Gas, Candy, Lemon), most of which

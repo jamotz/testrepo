@@ -825,6 +825,48 @@ more:
 
 ## Topicals
 
+### One "Best For" tile, instead of four derived ones
+Topicals used to end on the same two rows as every other shelf — three Feelings
+icons and three Taste icons. Neither was about the product.
+
+`ta` was emitted as `esc(form)`, the **same string as `sub2` and `etype`**, so
+the Taste heading sat over *Cream*, *Roll-On* and *Balm / Salve*. Not a mapping
+that had drifted — the form was never a taste, and a topical has no taste to
+state. The generator no longer emits `ta` for this shelf at all.
+
+The Feelings row was subtler and worse. `FEEL` in `gen_topicals.py` is a
+seven-entry lookup **keyed by the use case**, so the three words were a
+restatement of `sub`: every one of the ten Pain Relief products rendered
+*Relief, Calm, Clear*, every one of the four Skincare products *Clear, Calm,
+Balanced*. Seven distinct triples across 38 products, perfectly correlated with
+a category the breadcrumb already names. It looked like product data because it
+varied between products; it varied only because the category did.
+
+Both are replaced by **one tile naming the use case** (Jack, 2026-09-21). The
+count going down is the point: four tiles that restate a category are worth
+less than one that names it.
+
+**The general shape to watch for:** derived data reads as real data. The test is
+not "does this vary between products" but "does it vary *independently* of
+something already on screen". Group by the suspected source and count distinct
+values — 38 products collapsing to 7 triples was the whole diagnosis.
+
+### The seven use-case icons are drawn, not supplied
+Jack offered to make them. They are inline SVG in the same 24×24 stroke idiom as
+`ICONS` and `FLAVORS` (`stroke-width` 2.1, round caps, `currentColor`), which
+means they inherit the Enlarged 60px bump and the card's colour for free — a
+raster set would have needed its own Enlarged rule and its own colour handling.
+
+Cooling and Warming are deliberately a **snowflake/sun pair** so they read as
+opposites at a glance. `USES` is consulted in `pIcon` **after** `IMG` and
+`FLAVORS`, so if art keyed `"pain relief"` is supplied later it wins and these
+retire without a code change.
+
+`.chipset.best` is a single-column row laid out horizontally, because one tile
+in `.iconrow`'s three-column grid would be stranded at a third width. It
+declares no `font-size`, so the Enlarged type scale still governs it and
+`standard-guard.py` stayed green.
+
 ### The filter path is effect → form
 From sheet 1 of the catalog: Pain Relief, Recovery, Cooling, Warming, Massage,
 Skincare, Intimacy, then the form as the second level — the same shape as
