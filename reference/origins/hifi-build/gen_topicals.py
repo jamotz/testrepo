@@ -70,7 +70,13 @@ PHOTO = {"Balm / Salve": "top_balm", "Bath Soak": "top_bath", "Cream": "top_crea
 # to Unwind and Intimacy to Nightlife; that's overruled.
 LIFE = {}
 
-# ---- effect -> the three Feelings chips on the product page ----
+# ---- effect -> three Feelings chips ----
+# NOT RENDERED since 2026-09-21: the product page shows one "Best For" tile
+# naming the use case instead. This table is exactly why - it is a lookup FROM
+# the use case, so all ten Pain Relief products produced the same three words
+# and the row said nothing the crumb did not. Kept, not deleted: real feelings
+# data for topicals is parked (see project-handoff.md), and when it arrives the
+# row comes back with something product-specific in it.
 FEEL = {"Pain Relief": ["Relief", "Calm", "Clear"], "Recovery": ["Relief", "Relaxed", "Calm"],
         "Cooling": ["Clear", "Relief", "Calm"],     "Warming": ["Relaxed", "Calm", "Relief"],
         "Massage": ["Relaxed", "Mellow", "Calm"],   "Skincare": ["Clear", "Calm", "Balanced"],
@@ -139,10 +145,13 @@ for i, r in enumerate(recs):
     if cbd and cbd >= thc:
         extra += "cbd:1,"          # the flag the CBD filter reads
 
+    # No `ta`. It used to carry the FORM - the same string as sub2 and etype -
+    # so the product page rendered "Cream" and "Roll-On" under a Taste heading.
+    # A topical has no taste; the field is simply wrong for this shelf.
     out.append(
         ' {t:"topical",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],'
         '%s%ssub:"%s",sub2:"%s",etype:"%s",%scombo:"%s",ratio:"%s",'
-        'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+        'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],d:"%s"},'
         % (esc(r["Product Name"]), esc(r["Brand"]), PHOTO.get(form, "top_balm"),
            price, size, price, size,
            ("thc:%g," % thc if thc else ""), extra,
@@ -152,7 +161,7 @@ for i, r in enumerate(recs):
            "holistic",
            round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
            '","'.join(FEEL.get(effect, ["Calm", "Relief", "Clear"])),
-           esc(form), esc(r["Description"])))
+           esc(r["Description"])))
 
 print("\n".join(out))
 print("%d topicals across %d forms" % (len(out), len({r["Product Type"] for r in recs})),
