@@ -94,7 +94,7 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`b588e55`** (**Version 34**, republished 2026-09-21). Every check was
+`602aab2`** (**Version 35**, republished 2026-09-21). Every check was
 re-run at that commit rather than assumed: `standard-guard.py` PASS 221 = 221,
 `snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
 across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
@@ -214,7 +214,8 @@ icon reads as a different tab.
    - run-out dates are generated (3–7 days after a run starts, hashed so they
      don't move between renders). `DEAL_UNTIL` pins one if Jack wants a fixed
      date
-   - topical and edible feelings/taste, until those sheets catch up
+   - edible and drink FEELINGS, until those sheets catch up (the taste
+     chips are gone from those shelves entirely — see item 4)
 
    **Before writing a table that assigns something per strain, check the source
    for a column that already says it.** That mistake has been made twice — once
@@ -514,12 +515,10 @@ polish and the open questions below.
    instead of on match order. **Any script that edits one of the two blocks must
    anchor on the block, never on ordinal position.**
 
-4. **Feelings and scents on edibles — parked** (Jack, 2026-08-17: "ignore
-   for now"). Don't pick this up without him. The taste half of this item is
-   now closed on every shelf that had it wrong; what remains is edible tastes,
-   plus the FEELINGS question below. Both remaining shelves still carry the old
-   vocabulary, so some chips fall back to generated SVGs while
-   flower/concentrate/pre-roll show Jack's icons:
+4. **Feelings on edibles and drinks — parked** (Jack, 2026-08-17: "ignore
+   for now"). Don't pick this up without him. **The TASTE half of this item is
+   now closed on every shelf.** What remains is feelings. History, since the
+   three sub-items below are what the item used to be:
    - ~~**topicals use their own *form* as a taste**~~ — **RESOLVED 2026-09-21**
      (`c10db30`). Topicals no longer render a Taste or a Feelings row at all;
      they show one **"Best For"** tile naming the IA use case. `ta` is no longer
@@ -530,17 +529,36 @@ polish and the open questions below.
      string contained verbatim in their own product name, so the chip restated
      the title. `ta` is no longer emitted for that shelf; `photo_for()` still
      reads the Flavor column for the bottle-colour rules.
-   - **edibles use raw flavour words** (Cream, Gas, Candy, Lemon), most of which
-     map cleanly onto the 16.
+   - ~~**edibles use raw flavour words**~~ — **RESOLVED 2026-09-21**
+     (`602aab2`). This description was also STALE: by the time it was read, the
+     generator was not using the sheet's raw words at all. `flavour_of()`
+     derived the taste by scanning the product NAME for one of 26 flavour
+     words, so 40 of 50 chips repeated a word already in the title and the
+     other 10 (capsules) fell back to "Unflavored". `ta` and `flavour_of()` are
+     both gone.
 
-   **Feelings on drinks are derived, and nobody has decided about it.** The
-   same test that condemned the topical Feelings row applies here: `FEEL` in
-   `gen_drinks.py` is keyed by LIFESTYLE, so the 50 drinks collapse to 5
-   triples, one per lifestyle — and the lifestyle is already the badge on the
-   photo. Topicals lost that row for exactly this. Drinks kept it, because it
-   was not asked for and because some of those terms (Relaxed, Sleepy) DO hit
-   Jack's supplied icon set, so the row at least looks native. **Jack's call:**
-   drop it the way topicals did, or give drinks real per-product feelings.
+   Flower, pre-rolls and concentrates KEEP their Taste rows and should: those
+   come from `terpmap.py` and are real descriptors (Citrus, Pine, Earthy) that
+   appear nowhere in the product name. That is the test for whether a chip
+   earns its place.
+
+   **What is actually left: feelings on these two shelves are DERIVED, and
+   nobody has decided about it.** The same test that condemned the topical
+   Feelings row applies to both, measured rather than asserted:
+   - **drinks** — `FEEL` in `gen_drinks.py` is keyed by LIFESTYLE, so 50
+     products collapse to **5 triples**, one per lifestyle, and the lifestyle
+     is already the badge on the photo.
+   - **edibles** — `FEEL`/`FEEL_STRAIN` in `gen_edibles.py` are keyed by effect
+     and strain, giving **15 triples** across 50 products. Less collapsed than
+     drinks, but still a strict function: every key maps to exactly one triple,
+     and the key is in the breadcrumb (`sub2` for the effect shelves, `sub3`
+     for THC Edibles).
+
+   Both kept for now because neither was asked for, and because some of those
+   terms (Relaxed, Sleepy, Uplifted) DO hit Jack's supplied icon set, so the
+   rows look native rather than falling back to generated SVGs. Neither reason
+   makes the content less derived. **Jack's call:** drop them the way topicals
+   went, or give these shelves real per-product feelings.
 
    These sheets have no terpene columns, so they can't use `terpmap`. Either add
    terpenes, or map their existing flavour/effect columns onto the 30 terms.

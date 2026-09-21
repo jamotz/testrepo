@@ -655,8 +655,9 @@ What is still authored, all flagged where it lives:
   hashes the strain name. No sheet states either, and they're display-only.
 - **The Account block** in `origins-app.src.html`: Noelle's orders and reviews,
   and Seattle's opening hours.
-- **Edible and topical feelings/taste**, until those sheets gain terpenes or
-  their flavour/effect columns are mapped onto the 30 terms.
+- **Edible and drink FEELINGS**, until those sheets gain terpenes or their
+  effect columns are mapped onto the 30 terms. Their taste chips are gone
+  outright — see "A taste chip has to say something the title does not".
 
 *Superseded:* the `AUTHORED`/`EXTRA` blocks in `gen_concentrates.py` (Kief rows
 51–56, syringe rows 57–60) are gone — those products live in the sheet now. So
@@ -1197,6 +1198,28 @@ Lemonade 12 oz"), so the slot is free to carry the dose.
 to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
+
+### A taste chip has to say something the title does not
+Three shelves lost their Taste row in two days, for three different-looking
+reasons that are the same reason. The rule that came out of it:
+
+> A descriptor chip earns its place only if it says something the product
+> title does not. Derive it from the title and it never can.
+
+- **topicals** stated their FORM (*Cream*, *Roll-On*) — not a taste at all.
+- **drinks** stated their flavour, which is in the name 50 times out of 50.
+- **edibles** stated a flavour that `flavour_of()` had extracted FROM the name,
+  so 40 of 50 repeated a word in the title and the other 10 said *Unflavored*.
+
+Flower, pre-rolls and concentrates keep theirs, and that is the control case:
+those come from `terpmap.py` via the terpene profile, so *Citrus*, *Pine* and
+*Earthy* appear nowhere in the product name and are the only ones telling a
+shopper something new.
+
+The renderer change went in with drinks and was written as a **section-level**
+condition — no `ta`, no Taste section — rather than a per-shelf special case.
+Edibles then needed no renderer change at all, which is the small proof that
+the general form was the right one.
 
 ### No Taste row: the flavour is the product name
 Every drink carried `ta` set to its Flavor column, and every drink names that
