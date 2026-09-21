@@ -142,7 +142,8 @@ def main():
         thc, cbd = float(r["H"]), float(r["I"])
         st = r["G"].strip()
         life = LIFESTYLE[st]
-        feels, scents = terp_pairs([r.get("L", ""), r.get("M", ""), r.get("N", "")])
+        terps = [r.get("L", ""), r.get("M", ""), r.get("N", "")]
+        feels, scents = terp_pairs(terps)
 
         sub3 = (r.get("D") or "").strip() if fam in ("Infused", "Trifecta") else ""
 
@@ -157,14 +158,14 @@ def main():
         out.append(
             ' {t:"preroll",n:"%s",b:"%s",img:"%s",pr:%g,pz:{%s},szs:["%s"],'
             'thc:%g,cbdv:%g,%s%ssub:"%s",sub2:"%s",%sst:"%s",f:["%s"],'
-            'sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+            'sale:0,r:%s,rv:%d,tp:["%s"],fe:["%s"],ta:["%s"],d:"%s"},'
             % (esc(name), esc(brand), img, prices[0], pz, '","'.join(szs),
                thc, cbd, ("cbd:1," if cbd >= 1 else ""),
                ("pk:%d," % npk if npk > 1 else ""),
                br, fam, ('sub3:"%s",' % esc(sub3) if sub3 else ""),
                esc(st), life,
                round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
-               '","'.join(feels), '","'.join(scents), esc(r["K"])))
+               '","'.join(terps), '","'.join(feels), '","'.join(scents), esc(r["K"])))
 
     print("\n".join(out))
     import collections

@@ -138,17 +138,18 @@ def main():
         life = LIFESTYLE[st]
         thc, cbdpct = float(r["D"]), float(r["E"])
         prices = {label: float(r[col]) for col, label in SIZE_COLS if r.get(col)}
-        feels, scents = terp_pairs([r.get("L", ""), r.get("M", ""), r.get("N", "")])
+        terps = [r.get("L", ""), r.get("M", ""), r.get("N", "")]
+        feels, scents = terp_pairs(terps)
         cbd = (",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbdpct if cbdpct else "")
         sale = 1 if (r["A"].strip(), strain) in DEALS else 0
         out.append(
             ' {t:"flower",n:"%s",b:"%s",img:"%s",pr:%g,pz:%s,szs:%s,thc:%g%s,sub:"%s",st:"%s",'
-            'f:["%s"],sale:%d,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+            'f:["%s"],sale:%d,r:%s,rv:%d,tp:["%s"],fe:["%s"],ta:["%s"],d:"%s"},'
             % (esc(strip_cbd(strain)), esc(r["A"].strip()), photo(strain, st),
                prices["3.5 g"], json.dumps(prices), json.dumps(list(prices)),
                thc, cbd, r["F"].strip(), st, life, sale,
                round(3.9 + stable(strain, 0, 10) / 10.0, 1), stable(strain, 4, 40),
-               '","'.join(feels), '","'.join(scents), esc(r["O"])))
+               '","'.join(terps), '","'.join(feels), '","'.join(scents), esc(r["O"])))
 
     print("\n".join(out))
     import collections

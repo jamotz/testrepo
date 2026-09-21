@@ -103,7 +103,8 @@ for i, r in enumerate(recs):
     cat, form, img = JOIN[key]
     st = ST.get(r["Type"], "Hybrid")
     life = LIFESTYLE[st]          # the sheet's Type column, renamed
-    feels, scents = terp_pairs([r["Terp 1"], r["Terp 2"], r["Terp 3"]])
+    terps = [r["Terp 1"], r["Terp 2"], r["Terp 3"]]
+    feels, scents = terp_pairs(terps)
     price = float(r["Price"])
     thc, cbd = float(r["THC %"]), float(r["CBD %"])
     rating = round(3.9 + (i % 11) * 0.1, 1)
@@ -111,10 +112,11 @@ for i, r in enumerate(recs):
     out.append(
         ' {t:"concentrate",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"1 g":%g},szs:["1 g"],'
         'thc:%g%s,sub:"%s",sub2:"%s",st:"%s",f:["%s"],sale:0,r:%s,rv:%d,'
-        'fe:["%s"],ta:["%s"],d:"%s"},'
+        'tp:["%s"],fe:["%s"],ta:["%s"],d:"%s"},'
         % (esc(strip_cbd(strip_form(r["Product Name"], r["Subcategory"], r["Category"]))), esc(r["Brand"]), img, price, price,
            thc, ((",cbd:1" if st == "CBD" else "") + (",cbdv:%g" % cbd if cbd else "")), cat, form, st, life,
-           rating, revs, '","'.join(feels), '","'.join(scents), esc(r["Description"])))
+           rating, revs, '","'.join(terps), '","'.join(feels), '","'.join(scents),
+           esc(r["Description"])))
 
 print("\n".join(out))
 if unmatched:
