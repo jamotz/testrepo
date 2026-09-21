@@ -223,10 +223,15 @@ def main():
         cbd_flag = "cbd:1," if serving.get("CBD", 0) >= max(serving.get("THC", 0), 0.01) else ""
         ratio = r["Ratio (Tile)"]
 
+        # No `ta`. The Flavor column is already the product name - all 50 rows
+        # had their flavour string contained in their own name ("Blackberry
+        # Lemonade" in "Blackberry Lemonade 12 oz") - so a Taste row restated
+        # the title three lines above it. photo_for() still reads Flavor for
+        # the colour rules; only the chip is gone (Jack, 2026-09-21).
         out.append(
             ' {t:"drink",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],'
             'mg:%g,srv:%g,%s%ssub:"%s",sub2:"%s",main:"%s",combo:"%s",ratio:"%s",'
-            'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],ta:["%s"],d:"%s"},'
+            'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],d:"%s"},'
             % (esc(r["Product Name"]), esc(r["Brand"]), photo_for(r, unknown),
                price, size, price, size,
                serving[main_c], srv, cbd_flag, can,
@@ -234,7 +239,7 @@ def main():
                r["Cannabinoid Combo"], esc(ratio),
                esc(r["Strain Type"]), life,
                round(4.0 + (i % 10) * 0.1, 1), 6 + (i * 7) % 33,
-               '","'.join(FEEL[life]), esc(r["Flavor"]), esc(r["Description"])))
+               '","'.join(FEEL[life]), esc(r["Description"])))
 
     print("\n".join(out))
 
