@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base ad9a463          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 8721092          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,20 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: ad9a463. History, most recent first:
+ * Current baseline: 8721092. History, most recent first:
+ *
+ *   8721092  2026-09-21  Jack corrected 16 drinks to the Holistic lifestyle in
+ *            the sheet (9 of them moved; 7 were already Holistic), so those
+ *            cards take the Holistic colour and badge. ONE screen of 24
+ *            (`shop`), and only 3 of its 74 cards - checked card by card, not
+ *            inferred: `fcard adv` and `fcard soc` at positions 50-51 and
+ *            `fcard disc` at 57 all became `fcard hol`, every other card
+ *            byte-identical. The gains and losses are the same three cards
+ *            under different lifestyle classes (removed .adv/.soc/.disc, added
+ *            .hol, with their .fbadge twins), which is what a lifestyle change
+ *            looks like. No sizes moved at all - standard-guard passed
+ *            unchanged at 221 = 221 - so no stylesheet text was touched and
+ *            this is not the count=1 signature.
  *
  *   ad9a463  2026-09-20  drinks took the edible treatment - package totals in
  *            the bubbles, the serving on the size slot - off a re-cut sheet
