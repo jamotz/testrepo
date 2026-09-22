@@ -437,7 +437,15 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
    fixed one would make the tile the tallest thing in its row and stretch every
    product card up to meet it. */
 .btile{flex:none;width:218px;background:#0b0b0b;border-radius:12px;display:flex;flex-direction:column;align-items:center;padding:16px 12px 15px;zoom:.9}
+.btile{border:0;cursor:pointer;position:relative;text-align:center;font:inherit;color:inherit}
 .btile .btl{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
+/* The tile is a black logo card, so the sale marker has to carry its own
+   ground rather than borrow the card's. Orange on black clears AA at 5.5:1. */
+.btile .bflash{position:absolute;top:10px;left:10px;background:var(--or);color:#fff;
+  font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:var(--fs-10_0);
+  letter-spacing:.06em;padding:3px 9px;border-radius:100px;line-height:1.3}
+.btile .bcount{display:block;font-family:var(--head);font-style:normal;font-weight:500;
+  text-transform:uppercase;font-size:var(--fs-10_0);letter-spacing:.06em;color:#C9C3B6;margin-top:3px}
 .btile .btl img{max-width:88%;max-height:100%;object-fit:contain}
 /* the last card in a deal row: same footprint as a product tile, obviously not
    a product - dashed orange, and it opens the whole deal in the shop list.
@@ -2186,9 +2194,37 @@ function priceFor(p,size){
     if(size===DEAL_SIZE)return{now:DEAL_EIGHTH,was:base};
     if(size==="14 g"||size==="28 g")return{now:base*0.6,was:base};
   }
+  /* The brand deal applies to every size, so it needs no size test. Checked
+     after the flagged-flower deals purely so precedence is written down: no
+     product is in both today (the four flagged flowers are Lifestyles and
+     Passion Flower, neither a deal brand), and if one ever were, the deeper
+     per-size discount above should win rather than this flat 30%. */
+  if(inBrandDeal(p))return{now:base*(1-BRAND_DEAL_OFF),was:base};
   return{now:base,was:null};
 }
 function inPairDeal(p,size){return !!(p.sale&&p.t==="flower"&&size===DEAL_SIZE);}
+/* 30% off every size of every flower from the four top-shelf brands (Jack,
+   2026-09-22: "a blanket sale across all their flower products").
+   THE BRAND LIST LIVES HERE, not in DEALDEF, and DEALDEF borrows it. It was the
+   other way round for one build and that shipped a dead app: priceFor runs
+   during load, DEALDEF is a `const` about a thousand lines further down, and
+   reading a const before its declaration throws rather than giving undefined.
+   The throw aborted the rest of the script, so DEALDEF never initialised at all
+   and the home screen rendered zero tiles. A helper must not reach forward to a
+   `const` that initialisation-time code can beat to the punch.
+   Prefix match for the same reason the deal does it: the tile says "Royal Tree"
+   and the catalog says "Royal Tree Gardens". */
+const BRAND_DEAL_OFF=0.30;
+const BRAND_DEAL=["Royal Tree","Saints","Torus","Skord"];
+function inBrandDeal(p){
+  return p.t==="flower"&&BRAND_DEAL.some(function(x){return p.b.indexOf(x)===0;});
+}
+/* What the Filter drawer's "On sale" switch should mean. `p.sale` is narrower
+   than it reads - it is the flag gen_catalog_products.py sets on the four
+   flowers nominated for the 2-for-$50 and 40% bulk deals, and priceFor keys
+   those deals off it. A brand-deal flower is genuinely on sale too, so the
+   facet asks this instead of the raw flag. */
+function onSale(p){return !!p.sale||inBrandDeal(p);}
 /* 2-for-$50 is mix & match across the whole bag, not per line: every eighth of
    a deal flower joins one pool, so two different strains pair exactly like two
    of the same. floor(pool/2) pairs get the $25 price; an odd eighth stays
@@ -2686,7 +2722,7 @@ function match(p){
   if(S.eform&&p.etype!==S.eform)return false;
   if(S.mood&&p.f.indexOf(S.mood)<0)return false;
   if(S.brands.length&&S.brands.indexOf(p.b)<0)return false;
-  if(S.sale&&!p.sale)return false;
+  if(S.sale&&!onSale(p))return false;
   if(S.size){
     /* Every other shelf's Size facet names a package the product comes in, and
        matches p.szs. Edibles name a per-serving THC dose instead, so this shelf
@@ -3273,16 +3309,19 @@ const DEALDEF={
         items:function(){return P.filter(function(p){return p.t==="flower"&&p.sale;});}},
   bulk:{t:"flower",week:1,dow:0,label:"40% Off",copy:"Get any 14g or 28g of flower for 40% off",size:"28 g",
         items:function(){return P.filter(function(p){return p.t==="flower"&&p.sale;});}},
-  /* the brand deal is defined on brands, not on flagged products, and priceFor
-     doesn't model it - so its rows show today's price and the panel says so
-     rather than inventing a second discount path. */
+  /* The brand deal is defined on BRANDS rather than on flagged products. It
+     used to be display-only - priceFor did not model it, so the row advertised
+     30% off while every price behind it was full - and the note said so. Jack
+     asked for it to work (2026-09-22), so priceFor now applies it to every size
+     of every flower from these four, and the note below states the discount
+     instead of apologising for it. */
   brand:{t:"flower",week:3,dow:6,label:"30% Off",copy:"Try some top-shelf flower for the low",size:"3.5 g",
          /* the same four labels the home brand row shows. Matched as a prefix,
             because the tile says "Royal Tree" and the catalog says "Royal Tree
             Gardens". Freddy's used to sit here with no flower behind it at
             all; Torus has eight (Jack, 2026-08-18). */
-         brands:["Royal Tree","Saints","Torus","Skord"],
-         note:function(){return DEALDEF.brand.brands.join(" &middot; ")+" &mdash; "+dcNote("30%");},
+         brands:BRAND_DEAL,
+         note:function(){return DEALDEF.brand.brands.join(" &middot; ")+" &mdash; 30% is already off every price below, every size. Tap a brand to see just theirs.";},
          items:function(){var b=DEALDEF.brand.brands;
            return P.filter(function(p){return p.t==="flower"&&b.some(function(x){return p.b.indexOf(x)===0;});});}},
   /* Jack, 2026-08-18 — the four other shelves. */
@@ -3424,7 +3463,10 @@ function renderHome(){
   var d1=dealFlowers,d3=dealFlowers;
   /* Freddy's out, Torus in (Jack, 2026-08-18) - Freddy's had no flower in the
      catalog, so the 30% row advertised a brand with nothing behind it. */
-  var brands=[["brand_royaltree","Royal Tree"],["brand_saints","Saints"],["brand_torus","Torus"],["brand_skord","Skord"]];
+  /* logo asset per brand, in BRAND_DEAL's order - the names come from the one
+     list so the row cannot advertise a brand the price does not discount. */
+  var LOGO={"Royal Tree":"brand_royaltree","Saints":"brand_saints","Torus":"brand_torus","Skord":"brand_skord"};
+  var brands=BRAND_DEAL.map(function(n){return [LOGO[n],n];});
   var html='';
   /* A deal banner with an empty row underneath advertises a discount that
      doesn't exist, so the whole section is skipped when no flower carries
@@ -3433,8 +3475,19 @@ function renderHome(){
   if(d1.length)
   html+='<div class="deal-sec">'+dealBannerFor("pair")+hrow("dealrow",
     d1.map(function(p){var pp=priceFor(p,"3.5 g");return dealCard(p,"3.5 g",pp.was,pp.now);}).join('')+seeAllCard("pair"))+'</div>';
+  /* Each tile opens the deal narrowed to that brand (Jack, 2026-09-22: "clicking
+     on the brand will show results only from their brand"), so it is a button,
+     not a div. It states the brand's own flower count, because a tile that
+     opens a filtered list should say how much is behind it - and because two of
+     these brands also sell pre-rolls and concentrates that are NOT in this sale,
+     so "6 flowers" is the honest number rather than everything they make. */
   html+='<div class="deal-sec">'+dealBannerFor("brand")+hrow("brandrow",
-    brands.map(function(b){return '<div class="btile" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'"><span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt="'+b[1]+'"></span><b class="bname">'+b[1]+'</b></div>';}).join('')+seeAllCard("brand"))+'</div>';
+    brands.map(function(b){
+      var n=P.filter(function(x){return x.t==="flower"&&x.b.indexOf(b[1])===0;}).length;
+      return '<button class="btile tap" data-brand="'+b[1]+'" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'" aria-label="'+b[1]+' \u2014 '+n+' flowers, 30% off">'+
+        '<span class="bflash">30% Off</span>'+
+        '<span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt=""></span>'+
+        '<b class="bname">'+b[1]+'</b><i class="bcount">'+n+' flowers</i></button>';}).join('')+seeAllCard("brand"))+'</div>';
   if(d3.length)
   html+='<div class="deal-sec">'+dealBannerFor("bulk")+hrow("dealrow",
     d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+seeAllCard("bulk"))+'</div>';
@@ -3442,6 +3495,19 @@ function renderHome(){
   $("#deals").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#deals").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz);});});
   $("#deals").querySelectorAll("[data-seeall]").forEach(function(b){b.addEventListener("click",function(){openDeal(b.dataset.seeall);});});
+  /* openDeal clears the facets, so set the brand AFTER it. S.brands matches p.b
+     exactly while the tile carries a prefix, so resolve the prefix against the
+     catalog - "Royal Tree" finds "Royal Tree Gardens". match() already ANDs
+     S.deal with S.brands, so the deal stays in force and the banner stays true:
+     everything on screen is 30% off. */
+  $("#deals").querySelectorAll("[data-brand]").forEach(function(b){b.addEventListener("click",function(){
+    var pre=b.dataset.brand;
+    openDeal("brand");
+    S.brands=P.filter(function(x){return x.t==="flower"&&x.b.indexOf(pre)===0;})
+              .map(function(x){return x.b;})
+              .filter(function(v,i,a){return a.indexOf(v)===i;});
+    renderList();
+  });});
   wireRowArrows($("#deals"));
   sizeDealRows();
 }
@@ -3611,7 +3677,12 @@ function sizeDealRows(){
 }
 /* "See All" -> the shop list, narrowed to that one deal */
 function openDeal(k){
+  /* S.brands is cleared here too. It never mattered until the brand tiles could
+     set it: "See All" after tapping Torus kept the Torus filter and showed 8 of
+     the deal's 26. Opening a deal means the WHOLE deal - the tile handler sets
+     the brand back immediately afterwards, which is why it calls this first. */
   S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.size=null;S.thc=null;S.sale=false;
+  S.brands=[];
   S.deal=k;nav("list");
 }
 
