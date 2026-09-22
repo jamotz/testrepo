@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base fa3be8e          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 6a686de          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,24 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: fa3be8e. History, most recent first:
+ * Current baseline: 6a686de. History, most recent first:
+ *
+ *   6a686de  2026-09-22  the WA purchase-limit pass. THREE screens, all of it
+ *            deliberate:
+ *              landing - .st-name 30 -> 22.2 and .st-top/.st-phone 37.7 -> 33.2,
+ *                        because text-box-trim now trims each box to its own
+ *                        cap height so the store name and the phone number can
+ *                        share a top line. The card is 4.5px shorter as a
+ *                        result; nothing moved horizontally.
+ *              shop    - span.fbr 78.6 -> 108.0 / 104.1: the drink volume moved
+ *                        out of the product NAME and onto the brand line.
+ *                        div.fpr shifts 0.2-0.4px as the row re-flows. An
+ *                        earlier attempt put the volume in the serving pill
+ *                        instead and made every card in the row 17px taller --
+ *                        this guard is what caught it.
+ *              cart    - div.wbox and its eight children added, and .cwrap
+ *                        315.4 -> 451.4: the Washington purchase-limit bars.
+ *            No "-"/"+" pair anywhere, so no Enlarged rule lost its scope.
  *
  *   fa3be8e  2026-09-22  the 30% top-shelf brand deal started actually
  *            discounting, so 26 flowers gained a struck price. FIVE screens,

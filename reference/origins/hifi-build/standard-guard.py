@@ -126,7 +126,20 @@ from collections import Counter
 # and its logo tiles gained a "30% OFF" flash and a flower count: 0 lost, 2
 # gained, ".btile .bflash" and ".btile .bcount", both 10px. Read before moving,
 # and not the count=1 signature - no selector appears on both sides.
-BASELINE = "fa3be8e"
+#
+# Moved again 2026-09-22: fa3be8e -> 6a686de. Two new components, five new
+# declarations, 0 lost:
+#     .chipset.netq .nqline  1rem     the Net Quantity row on the product page
+#     .wboxh                 12px     "Washington purchase limits" heading
+#     .wbt span              13px     a bucket's name
+#     .wbt b                 11.5px   its "3.5 / 28 g" reading
+#     .wfine                 10.5px   "Per transaction, adult use."
+# Read before moving, and NOT the count=1 signature: no selector appears on
+# both sides, and nothing was lost. Every one is a new element that has never
+# had a size, which is the documented case for a deliberate re-baseline. All
+# five are existing tokens, so Enlarged needed no new rule and enlarged-check
+# stayed clean at 4 viewports x 24 screens.
+BASELINE = "6a686de"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
