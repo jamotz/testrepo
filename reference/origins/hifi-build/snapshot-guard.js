@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 369134e          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 2aeaecc          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,14 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 369134e. History, most recent first:
+ * Current baseline: 2aeaecc. History, most recent first:
+ *
+ *   2aeaecc  2026-09-22  "1PATCH". ONE screen: div.fszs and span.fsz.sel 3px
+ *            wider on shop, because feedPill() stopped closing the gap between
+ *            a number and a unit longer than two characters, so the topicals
+ *            shelf's "1 Patch" renders as 1 PATCH instead of 1PATCH. Checked
+ *            against all 22 distinct sizes in the catalog: that is the only
+ *            string that moves.
  *
  *   369134e  2026-09-22  the complete edibles sheet. TWO screens, and neither
  *            is a layout change: div.fpr on shop and two spans on acorders
