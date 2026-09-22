@@ -2556,6 +2556,29 @@ const TABMAP={home:"home",guide:"home",method:"home",subtype:"home",taste:"home"
 var WIZ=["guide","method","subtype","taste","finish"];
 var IMMERSIVE=["landing"].concat(WIZ);
 function nav(k){
+  /* Arriving at Shop clears the shelf you just left (Jack, 2026-09-22).
+     The Shop screen draws all seven category circles and all six browse rows
+     no matter what -- renderShop() does not read S.type at all -- so a type
+     that survives the Back button is invisible state, and it surprised exactly
+     where you would expect: tap Flower, drill to Indoor, Back to Shop, then tap
+     a lifestyle chip, and the chip dropped you back into Flower > Indoor
+     instead of showing that lifestyle across the shop.
+
+     The lifestyle chip is not the bug and is not where this is fixed. It reads
+     "narrow what is on screen", which is right on the list screen and is what
+     Jack asked for on 2026-09-22; the problem was that Shop was still secretly
+     standing inside Flower. Every other way of choosing a shelf -- a category
+     circle, a browse row's See All, the drawer's type facet -- already clears
+     strain/sub/sub2/sub3/size/deal when it sets a type, so this only brings the
+     Back path in line with them.
+
+     CROSS-SHELF STATE IS KEPT: mood, brands, thc and sale mean the same thing
+     on every shelf, so a lifestyle stays lit across Back and a category picked
+     afterwards is shown inside it. That is what makes it a global filter. */
+  if(k==="shop"){
+    S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;
+    S.size=null;S.deal=null;
+  }
   document.querySelectorAll(".s").forEach(function(x){x.classList.toggle("on",x.dataset.s===k);});
   document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b.dataset.tab===TABMAP[k]);});
   document.getElementById("scr").classList.toggle("immersive",IMMERSIVE.indexOf(k)>-1); /* full-screen landing + wizard, per the frames */

@@ -2520,3 +2520,57 @@ for this change is that pill getting 3px wider, which is the whole of it.
 Found by looking at the built product page rather than by any check — the three
 patches were the only rows affected, every guard was green, and nothing in the
 data was wrong.
+
+
+---
+
+## Shop is a fresh start
+*(2026-09-22)*
+
+The lifestyle chips came back a third time, with a path that made the previous
+two rounds look like the wrong diagnosis:
+
+> tap a product type, back out to the main shop page, tap a lifestyle — and it
+> sends you back into that product type. It should act like a global filter,
+> not be linked to prior pages.
+
+Reproduced exactly, and the state at each step is what gives it away:
+
+```
+tap Flower            screen=list   type=flower   sub=null
+drill Indoor          screen=list   type=flower   sub=Indoor
+Back to Shop          screen=shop   type=flower   sub=Indoor   <-- here
+tap Unwind on Shop    screen=list   type=flower   sub=Indoor   mood=unwind
+```
+
+**The chip was never the bug.** Step four is: the Back button changes the
+screen and nothing else, so Shop was still secretly standing inside Flower >
+Indoor. `renderShop()` does not read `S.type` at all — it draws all seven
+category circles and all six browse rows regardless — so the stale shelf was
+invisible right up until something acted on it. The chip acted on it.
+
+Fixed where it happens: arriving at Shop clears `type`, `strain`, `sub`,
+`sub2`, `sub3`, `eform`, `size` and `deal`. That is not a new rule, it is the
+existing one finally applied to the Back path — a category circle, a browse
+row's See All and the drawer's type facet had **all three** been clearing
+exactly those fields when they set a type since long before this. Back was the
+one door into a shelf that never cleaned up after itself.
+
+`mood`, `brands`, `thc` and `sale` are deliberately kept, and keeping them is
+what makes the chip global rather than merely unlinked: a lifestyle stays lit
+across Back, and a category picked afterwards opens inside it (Holistic lit,
+tap Topicals → Topicals in Holistic). Clearing the lifestyle too would have
+"fixed" the report and thrown away the feature.
+
+Verified on the built app, four paths at once: Jack's exact sequence now lands
+on **Unwind, 46 products across the shop**; narrowing inside a shelf still
+works (Holistic inside Drinks → Drinks, 16); a lit lifestyle survives Back and
+scopes the next category; and turning a chip off on Shop still does not
+navigate. All four guards green, and the snapshot guard passes outright — this
+round moved no pixels at all, because the bug was in state, not layout.
+
+*Three rounds on one control, and each round the fix moved further from the
+control.* First the chip cleared too much, then it navigated when it should not
+have, and finally it was innocent and the screen behind it was wrong. Worth
+remembering next time a widget keeps coming back: by the third report, suspect
+the state it reads rather than the widget reading it.
