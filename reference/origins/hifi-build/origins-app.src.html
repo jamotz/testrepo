@@ -559,7 +559,7 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
    just the lifestyle color as the button + a slightly bigger, centered logo, checkbox kept */
 .oc.life{position:relative;justify-content:flex-start;gap:10px;padding:12px 16px 12px 50px}
 .oc.life .box{display:block;position:absolute;left:16px;top:50%;transform:translateY(-50%)}
-/* Strain-name mode (Advanced Settings -> Use product type) swaps each lifestyle
+/* Strain-name mode (Advanced Settings -> Change lifestyle type) swaps each lifestyle
    logo for a plain letter: S, SH, H, IH, I. Holistic keeps its logo, because it
    is a cannabinoid profile rather than a strain, so there is no letter for it.
    Text rather than generated art: it renders in the app's own Oswald, stays
@@ -1616,7 +1616,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
         <div class="sbar"><button class="bk" data-back="acsettings" aria-label="Back to account settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Advanced Settings</h2></div>
         <div class="acwrap">
           <h3 class="ach3">How products are named</h3>
-          <div class="advrow"><div class="advt"><b>Use product type</b><i>Show Sativa, Hybrid and Indica in place of Discovery, Social and the rest. Same six groups, the grower's vocabulary.</i></div><button class="sw tap" data-adv="strain" aria-label="Use product type"></button></div>
+          <div class="advrow"><div class="advt"><b>Change lifestyle type</b><i>Show Sativa, Hybrid and Indica in place of Discovery, Social and the rest. Same six groups, the grower's vocabulary.</i></div><button class="sw tap" data-adv="strain" aria-label="Change lifestyle type"></button></div>
           <h3 class="ach3">Accessibility</h3>
           <div class="advrow"><div class="advt"><b>Enlarged view</b><i>Scales the whole app up together &mdash; photos, type, buttons and spacing &mdash; for easier reading at arm's length.</i></div><button class="sw tap" data-adv="enlarged" aria-label="Enlarged view"></button></div>
           <div class="advrow"><div class="advt"><b>Reduce motion</b><i>Stops sheets sliding and chevrons turning, for anyone who finds movement uncomfortable.</i></div><button class="sw tap" data-adv="nomotion" aria-label="Reduce motion"></button></div>
@@ -2875,6 +2875,23 @@ function dealSet(k){
   if(!DEALSETS[k]){var m={};DEALDEF[k].items().forEach(function(p){m[p.id]=1;});DEALSETS[k]=m;}
   return DEALSETS[k];
 }
+/* How many products a bubble would leave on screen, counted through the app's
+   own match() with that bubble's facets applied.
+
+   Every bubble row used to count only its own level -- "6 Rosin concentrates"
+   -- which is true of the catalog and stops being true on screen the moment
+   another filter is on. That gap was harmless while a lifestyle cleared the
+   shelf; since 2026-09-22 a lifestyle STAYS on while you drill, so it turned
+   into dead ends: Holistic + Concentrates + Distillate is 0 products, and the
+   Distillate bubble said nothing about it. Counting through match() means a
+   dimmed bubble now means "nothing here, with the filters you have on",
+   which is the only reading that stays true. */
+function bubbleCount(over){
+  var keep={},k;
+  for(k in over){keep[k]=S[k];S[k]=over[k];}
+  try{return P.filter(match).length;}
+  finally{for(k in keep)S[k]=keep[k];}
+}
 function match(p){
   if(S.deal&&!dealSet(S.deal)[p.id])return false;
   if(S.type&&p.t!==S.type)return false;
@@ -3102,13 +3119,26 @@ function renderVape(){
       (src?'<img src="'+src+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'>':'')+
       '</span><b>'+v[1]+'</b></div>';}).join("");
 }
+/* The category circles. Hoisted out of renderShop on 2026-09-22 because the
+   list screen draws the same row now (see typeRow): two copies of this map
+   would drift the moment a shelf changed its photo. CATS_SHOP keeps Vapes,
+   which is a screen rather than a shelf; CATS_LIST leaves it out, since a vape
+   circle inside a lifestyle would navigate away from the list it sits on. */
+const CATICON={flower:"fl_universal",concentrate:"clr_badder",edible:"ed_gum_purple",preroll:"preroll",vape:"vape",drink:"drink",topical:"top_balm"};
+const CATLABEL={flower:"Flower",concentrate:"Concentrate",edible:"Edibles",preroll:"Pre-Rolls",vape:"Vapes",drink:"Drinks",topical:"Topicals"};
+const CATSCALE={preroll:1.5,vape:1.5}; /* these cutouts sit small in the ring — enlarge to match the others */
+const CATS_SHOP=["flower","concentrate","edible","preroll","vape","drink","topical"];
+const CATS_LIST=["flower","concentrate","edible","preroll","drink","topical"];
+function catCircle(k,cls,attr){
+  var sc=CATSCALE[k],img=IMG[CATICON[k]];
+  return '<button class="cc tap '+(cls||'')+'" '+attr+'><span class="ring'+(img?'':' noimg')+'">'+
+    (img?'<img src="'+img+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'>':'')+
+    '</span><b>'+CATLABEL[k]+'</b></button>';
+}
 function renderShop(){
   moodChips($("#moodbar"));
-  var icons={flower:"fl_universal",concentrate:"clr_badder",edible:"ed_gum_purple",preroll:"preroll",vape:"vape",drink:"drink",topical:"top_balm"};
-  var labels={flower:"Flower",concentrate:"Concentrate",edible:"Edibles",preroll:"Pre-Rolls",vape:"Vapes",drink:"Drinks",topical:"Topicals"};
-  var circles=["flower","concentrate","edible","preroll","vape","drink","topical"];
-  var iconScale={preroll:1.5,vape:1.5}; /* these cutouts sit small in the ring — enlarge to match the others */
-  $("#catcircles").innerHTML=circles.map(function(k){var sc=iconScale[k];return '<button class="cc tap" data-cc="'+k+'"><span class="ring'+(IMG[icons[k]]?'':' noimg')+'">'+(IMG[icons[k]]?'<img src="'+IMG[icons[k]]+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'>':'')+'</span><b>'+labels[k]+'</b></button>';}).join("");
+  var labels=CATLABEL;
+  $("#catcircles").innerHTML=CATS_SHOP.map(function(k){return catCircle(k,"",'data-cc="'+k+'"');}).join("");
   $("#catcircles").querySelectorAll("[data-cc]").forEach(function(c){c.addEventListener("click",function(){var k=c.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.size=null;S.deal=null;nav("list");});});
   var feedcats=["flower","concentrate","edible","preroll","drink","topical"];
   $("#feed").innerHTML=feedcats.map(function(k){
@@ -3141,6 +3171,21 @@ function renderList(){
      lifestyle no longer clears the type, so both can be true at once. */
   $("#ltitle").textContent=S.type?TYPES[S.type]:(S.mood?lifeLabel(S.mood):"All Products");
   var learn=$("#learnbtn"),subs=SUBS[S.type],sc=$("#subcats");
+  /* With no shelf chosen, the bubble row was hidden and the screen under a
+     lifestyle chip was a bare grid. It shows the PRODUCT TYPES instead (Jack,
+     2026-09-22: "I'd like those to stay while clicking on each of them") — so
+     picking Discovery, then Adventurous, then Social keeps one row of shelves
+     under the chips the whole way, and a shelf is one tap from any lifestyle.
+
+     Counted against every OTHER active facet, so a type with nothing in the
+     current lifestyle dims instead of leading to an empty grid. Vapes is left
+     out: it is a screen, not a shelf, and tapping it would navigate away from
+     the list it is sitting on. */
+  var typeRow=function(){
+    return CATS_LIST.map(function(k){
+      var n=bubbleCount({type:k,sub:null,sub2:null,sub3:null,eform:null,size:null});
+      return catCircle(k,n?"":"dim",'data-ctype="'+k+'"');}).join("");
+  };
   if(S.type==="concentrate"){
     /* two-layer concentrate bubbles: category row -> tap one and the row becomes
        its consistencies, with that category parked far-left; tap it again to go
@@ -3153,12 +3198,14 @@ function renderList(){
       var rep=P.filter(function(p){return p.t==="concentrate"&&p.sub===cat;})[0];
       return rep?IMG[rep.img]:"";};
     if(!S.sub){
-      sc.innerHTML=CONC.map(function(c){return bub(c.n,"",'data-cc1="'+c.n+'"',catImg(c.n));}).join("");
+      sc.innerHTML=CONC.map(function(c){
+        var n=bubbleCount({sub:c.n,sub2:null,sub3:null});
+        return bub(c.n,(n?"":"dim"),'data-cc1="'+c.n+'"',catImg(c.n));}).join("");
     }else{
       /* sub filters stay photo-less until Jack supplies their images */
       sc.innerHTML=bub(S.sub,"back sel",'data-ccback="1"',"")+  /* filled orange back button */
         concForms(S.sub).map(function(fm){
-          var n=P.filter(function(p){return p.t==="concentrate"&&p.sub===S.sub&&p.sub2===fm;}).length;
+          var n=bubbleCount({sub2:fm,sub3:null});
           return bub(fm,(S.sub2===fm?"sel":"")+(n?"":" dim"),'data-cc2="'+fm+'"',formImg(S.sub,fm));}).join("");
     }
     sc.querySelectorAll("[data-cc1]").forEach(function(b){b.addEventListener("click",function(){
@@ -3182,26 +3229,28 @@ function renderList(){
         (img?'<img src="'+img+'" alt="">':'')+'</span><b>'+label+'</b></button>';};
     var epool=function(f){return P.filter(function(p){return p.t==="edible"&&f(p);});};
     var epick=function(f){var r=epool(f)[0];return r?IMG[r.img]:"";};
-    /* the order list, narrowed to what is actually in stock at this level */
-    var estock=function(list,key,f){return list.filter(function(v){
-      return epool(function(p){return p[key]===v&&f(p);}).length;});};
+    /* the order list, narrowed to what the CURRENT filters leave at this level
+       -- so a lifestyle with no Blend capsules in it does not offer Capsules */
+    var estock=function(list,key,over){return list.filter(function(v){
+      var o={};for(var q in over)o[q]=over[q];o[key]=v;
+      return bubbleCount(o);});};
     if(!S.sub){
       /* a THC gummy and a CBD gummy can photograph identically, so prefer a
          product whose photo no earlier bubble has already claimed */
       var eused={};
-      sc.innerHTML=estock(EDIB,"sub",function(){return true;}).map(function(c){
+      sc.innerHTML=estock(EDIB,"sub",{sub2:null,sub3:null}).map(function(c){
         var pool=epool(function(p){return p.sub===c;});
         var rep=pool.filter(function(p){return !eused[p.img];})[0]||pool[0];
         if(rep)eused[rep.img]=1;
         return eb(c,"",'data-ed1="'+c+'"',rep?IMG[rep.img]:"");}).join("");
     }else if(!S.sub2){
       sc.innerHTML=eb(S.sub,"back sel",'data-edback="1"',"")+
-        estock(EFORMS,"sub2",function(p){return p.sub===S.sub;}).map(function(x){
+        estock(EFORMS,"sub2",{sub3:null}).map(function(x){
           return eb(x,"",'data-ed2="'+x+'"',
             epick(function(p){return p.sub===S.sub&&p.sub2===x;}));}).join("");
     }else{
       sc.innerHTML=eb(S.sub2,"back sel",'data-edback="2"',"")+
-        estock(ECONC,"sub3",function(p){return p.sub===S.sub&&p.sub2===S.sub2;}).map(function(x){
+        estock(ECONC,"sub3",{}).map(function(x){
           return eb(x,(S.sub3===x?"sel":""),'data-ed3="'+x+'"',
             epick(function(p){return p.sub===S.sub&&p.sub2===S.sub2&&p.sub3===x;}));}).join("");
     }
@@ -3233,16 +3282,17 @@ function renderList(){
         var pool=P.filter(function(p){return p.t==="preroll"&&p.sub===c.n;});
         var rep=pool.filter(function(p){return !used[p.img];})[0]||pool[0];
         if(rep)used[rep.img]=1;
-        return pb(c.n,"",'data-pr1="'+c.n+'"',rep?IMG[rep.img]:"");
+        var n=bubbleCount({sub:c.n,sub2:null,sub3:null});
+        return pb(c.n,(n?"":"dim"),'data-pr1="'+c.n+'"',rep?IMG[rep.img]:"");
       }).join("");
     }else if(S.sub2==="Infused"){
       sc.innerHTML=pb(S.sub2,"back sel",'data-prback="2"',"")+PRCONC.map(function(x){
-        var n=P.filter(function(p){return p.t==="preroll"&&p.sub===S.sub&&p.sub2==="Infused"&&p.sub3===x;}).length;
+        var n=bubbleCount({sub2:"Infused",sub3:x});
         return pb(x,(S.sub3===x?"sel":"")+(n?"":" dim"),'data-pr3="'+x+'"',
           ppick(function(p){return p.sub===S.sub&&p.sub2==="Infused"&&p.sub3===x;}));}).join("");
     }else{
       sc.innerHTML=pb(S.sub,"back sel",'data-prback="1"',"")+prTypes(S.sub).map(function(x){
-        var n=P.filter(function(p){return p.t==="preroll"&&p.sub===S.sub&&p.sub2===x;}).length;
+        var n=bubbleCount({sub2:x,sub3:null});
         return pb(x,(S.sub2===x?"sel":"")+(n?"":" dim"),'data-pr2="'+x+'"',
           ppick(function(p){return p.sub===S.sub&&p.sub2===x;}));}).join("");
     }
@@ -3275,12 +3325,14 @@ function renderList(){
         var pool=P.filter(function(p){return p.t==="drink"&&p.sub===n;});
         var rep=pool.filter(function(p){return !dused[p.img];})[0]||pool[0];
         if(rep)dused[rep.img]=1;
-        return db(n,"",'data-dr1="'+n+'"',rep?IMG[rep.img]:"");}).join("");
+        var c=bubbleCount({sub:n,sub2:null});
+        return db(n,(c?"":"dim"),'data-dr1="'+n+'"',rep?IMG[rep.img]:"");}).join("");
     }else{
       sc.innerHTML=db(S.sub,"back sel",'data-drback="1"',"")+DRTYPES.filter(function(x){
         return P.some(function(p){return p.t==="drink"&&p.sub===S.sub&&p.sub2===x;});
       }).map(function(x){
-        return db(x,(S.sub2===x?"sel":""),'data-dr2="'+x+'"',
+        var c=bubbleCount({sub2:x});
+        return db(x,(S.sub2===x?"sel":"")+(c?"":" dim"),'data-dr2="'+x+'"',
           dpick(function(p){return p.sub===S.sub&&p.sub2===x;}));}).join("");
     }
     sc.querySelectorAll("[data-dr1]").forEach(function(b){b.addEventListener("click",function(){
@@ -3294,10 +3346,29 @@ function renderList(){
     sc.innerHTML=subs.map(function(x){
       var rep=P.filter(function(p){return p.t===S.type&&p.sub===x;})[0]||P.filter(function(p){return p.t===S.type;})[0];
       var img=rep?IMG[rep.img]:"";
-      return '<button class="cc tap '+(S.sub===x?'sel':'')+'" data-sub="'+x+'"><span class="ring"><img src="'+(img||'')+'" alt=""></span><b>'+x+'</b></button>';
+      var n=bubbleCount({sub:x});
+      return '<button class="cc tap '+(S.sub===x?'sel':'')+(n?'':' dim')+'" data-sub="'+x+'"><span class="ring"><img src="'+(img||'')+'" alt=""></span><b>'+x+'</b></button>';
     }).join("");
     sc.querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){S.sub=S.sub===b.dataset.sub?null:b.dataset.sub;renderList();});});
-  }else{learn.style.display="none";sc.style.display="none";sc.innerHTML="";}
+  }else{
+    learn.style.display="none";sc.style.display="flex";sc.innerHTML=typeRow();
+  }
+  /* Every drill in this app parks its parent far-left as a filled back bubble —
+     concentrates, edibles, pre-rolls and drinks all do it. The shelf is one
+     more level above those, so it gets the same treatment: tapping the parked
+     bubble returns to the type row WITHOUT touching the lifestyle, which is
+     what makes the row feel like a place you can come back to rather than a
+     one-way door. Only added when the branch did not already draw its own back
+     bubble, so a drilled shelf never shows two. */
+  if(S.type&&!sc.querySelector("[data-ccback],[data-edback],[data-prback],[data-drback]")){
+    sc.insertAdjacentHTML("afterbegin",catCircle(S.type,"back sel",'data-ctback="1"'));
+  }
+  sc.querySelectorAll("[data-ctype]").forEach(function(b){b.addEventListener("click",function(){
+    S.type=b.dataset.ctype;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.size=null;
+    renderList();});});
+  sc.querySelectorAll("[data-ctback]").forEach(function(b){b.addEventListener("click",function(){
+    S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.size=null;
+    renderList();});});
   drawResults();
 }
 function drawResults(){
@@ -3679,14 +3750,17 @@ function renderHome(){
      not a div. It states the brand's own flower count, because a tile that
      opens a filtered list should say how much is behind it - and because two of
      these brands also sell pre-rolls and concentrates that are NOT in this sale,
-     so "6 flowers" is the honest number rather than everything they make. */
+     so the count is what the tile opens, not everything the brand makes.
+     Reads "6 Products" rather than "6 flowers" (Jack, 2026-09-22): the count is
+     still flower-only, because the sale is, but the row sits among deals that
+     are not all flower and the noun was doing no work. */
   html+='<div class="deal-sec">'+dealBannerFor("brand")+hrow("brandrow",
     brands.map(function(b){
       var n=P.filter(function(x){return x.t==="flower"&&x.b.indexOf(b[1])===0;}).length;
-      return '<button class="btile tap" data-brand="'+b[1]+'" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'" aria-label="'+b[1]+' \u2014 '+n+' flowers, 30% off">'+
+      return '<button class="btile tap" data-brand="'+b[1]+'" style="background:'+(IMG["bg_"+b[0]]||'#0b0b0b')+'" aria-label="'+b[1]+' \u2014 '+n+' products, 30% off">'+
         '<span class="bflash">30% Off</span>'+
         '<span class="btl"><img src="'+(IMG[b[0]]||'')+'" alt=""></span>'+
-        '<b class="bname">'+b[1]+'</b><i class="bcount">'+n+' flowers</i></button>';}).join('')+seeAllCard("brand"))+'</div>';
+        '<b class="bname">'+b[1]+'</b><i class="bcount">'+n+' Products</i></button>';}).join('')+seeAllCard("brand"))+'</div>';
   if(d3.length)
   html+='<div class="deal-sec">'+dealBannerFor("bulk")+hrow("dealrow",
     d3.map(function(p){var pp=priceFor(p,"28 g");return dealCard(p,"28 g",pp.was,pp.now);}).join('')+seeAllCard("bulk"))+'</div>';

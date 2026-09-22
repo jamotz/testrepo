@@ -2574,3 +2574,73 @@ control.* First the chip cleared too much, then it navigated when it should not
 have, and finally it was innocent and the screen behind it was wrong. Worth
 remembering next time a widget keeps coming back: by the third report, suspect
 the state it reads rather than the widget reading it.
+
+---
+
+## The shelf is a bubble level too
+*(2026-09-22)*
+
+With a lifestyle selected and no shelf chosen, the bubble row was hidden and the
+screen under the chips was a bare grid. Jack: *"It still doesn't show the
+product tile bubbles filters under the lifestyles when you select a lifestyle.
+Can we make that a thing. I'd like those to stay while clicking on each of
+them."*
+
+The list screen now draws the **product types** whenever no shelf is chosen, so
+clicking Discovery, then Adventurous, then Social keeps one row of shelves under
+the chips the whole way and a shelf is one tap from any lifestyle. Vapes is left
+out of that row: it is a screen, not a shelf, and tapping it would navigate away
+from the list it is sitting on.
+
+**Picking one parks it far-left as a filled back bubble**, which is not a new
+idea — concentrates, edibles, pre-rolls and drinks have all parked their parent
+that way for weeks. The shelf is simply one level above those, so it gets the
+same treatment, and the hierarchy finally reads end to end: *All types →
+Concentrates → Rosin → Live Rosin*, one back bubble per level, never two. It is
+applied however you arrived, so Shop → Flower shows the parked bubble too rather
+than the same shelf looking different depending on the door you came in by.
+
+`renderShop()`'s icon and label maps were hoisted to module scope for this
+(`CATICON` / `CATLABEL` / `catCircle`). Two screens drawing the same row from two
+copies of the same map is a drift waiting to happen.
+
+---
+
+## A dimmed bubble should mean "nothing here", not "nothing in the catalog"
+*(2026-09-22)*
+
+Adding the type row surfaced a dead end one level down: Holistic → Concentrates
+→ **Distillate** is 0 products, and the Distillate bubble gave no sign of it.
+
+Every bubble row was counting only its own level — "6 Rosin concentrates" — which
+is true of the catalog and stops being true on screen the moment another filter
+is on. That was harmless while a lifestyle *cleared* the shelf; since the
+2026-09-22 change it stays on while you drill, so the gap became reachable. The
+type row I had just added made it more reachable still, by inviting people to
+drill from inside a lifestyle.
+
+`bubbleCount(overrides)` now answers every level's question the same way: set the
+candidate facets, run the app's own `match()`, restore. Six branches, one
+counter. Two rows gained dimming they never had (the concentrate categories, and
+the flower/topical toggle row), and the edible levels stopped listing forms that
+the current lifestyle has none of.
+
+**Verified by exhaustion rather than by spot-check**: every lifestyle × every
+shelf × every bubble at every level, 898 bubbles clicked in the built app.
+Non-dimmed bubbles landing on an empty grid: **0**. Dimmed bubbles that actually
+had products: **0**. The dimming is now exactly truthful in both directions,
+which is the only version of it worth having.
+
+---
+
+## Two labels
+*(2026-09-22)*
+
+*"Use product type"* in Advanced Settings became **"Change lifestyle type"**. The
+toggle swaps the six lifestyle names for the six strain names; "product type"
+was the one phrase in the app that already means something else entirely — the
+shelf you are shopping — and it named this toggle by accident.
+
+The brand tiles on the deals row read **"6 Products"** rather than "6 flowers".
+The count is still flower-only, because the sale is, but the row sits among
+deals that are not all flower and the noun was doing no work.
