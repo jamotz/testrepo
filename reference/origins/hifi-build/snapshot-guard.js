@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 2aeaecc          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base ec77d7e          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,19 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 2aeaecc. History, most recent first:
+ * Current baseline: ec77d7e. History, most recent first:
+ *
+ *   ec77d7e  2026-09-22  the product-type bubble row. TWO screens, both
+ *            intended:
+ *              home - i.bcount 48.8 -> 55.9 wide, because the brand tiles read
+ *                     "6 Products" instead of "6 flowers".
+ *              list - button.back.cc.sel.tap and its span/img/b added: the
+ *                     shelf now parks itself far-left as a filled back bubble,
+ *                     the way every level below it already did, so the type
+ *                     row stays reachable from inside a shelf.
+ *            No "-"/"+" font-size pair. The type row itself does not appear
+ *            here: these snapshots are taken with a shelf selected, so the row
+ *            it replaces is the parked bubble above.
  *
  *   2aeaecc  2026-09-22  "1PATCH". ONE screen: div.fszs and span.fsz.sel 3px
  *            wider on shop, because feedPill() stopped closing the gap between
