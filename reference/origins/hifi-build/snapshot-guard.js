@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base c76ea7d          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base fa3be8e          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,27 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: c76ea7d. History, most recent first:
+ * Current baseline: fa3be8e. History, most recent first:
+ *
+ *   fa3be8e  2026-09-22  the 30% top-shelf brand deal started actually
+ *            discounting, so 26 flowers gained a struck price. FIVE screens,
+ *            the most this guard has ever moved at once, and all of it is that
+ *            one change:
+ *              home    - div.btile -> button.btile.tap, plus span.bflash and
+ *                        i.bcount added; span.btl shrinks 194.9 -> 176.8 to
+ *                        make room for the count line, and the row grows 0.42px
+ *              shop,
+ *              list,
+ *              product,
+ *              cart    - div.fpr roughly doubling (43 -> 83-86px) because the
+ *                        price cell now holds a was AND a now; span.was and
+ *                        span.now added; span.fsp widths shifting because the
+ *                        per-size prices in "See more sizes" are discounted too
+ *            Verified by diffing shop and list CARD BY CARD rather than
+ *            reasoning about it: 36 cards changed, every one from Royal Tree,
+ *            Saints, Torus or Skord, zero others, arithmetic exact
+ *            ($45.00 -> $31.50). Nothing lost anywhere, no selector on both
+ *            sides, so not the count=1 signature.
  *
  *   c76ea7d  2026-09-21  the product page gained a Terpenes section between
  *            Details and Feelings, on the three shelves that carry terpenes.

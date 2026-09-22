@@ -122,7 +122,11 @@ from collections import Counter
 # overwriting its Standard twin. A new element needs a size; this is a real
 # Standard change and the documented answer to one is a deliberate re-baseline.
 # The size is an existing token (--fs-11_5), so Enlarged needed no new rule.
-BASELINE = "c76ea7d"
+# Moved again 2026-09-22: c76ea7d -> fa3be8e. The 30% brand deal became real,
+# and its logo tiles gained a "30% OFF" flash and a flower count: 0 lost, 2
+# gained, ".btile .bflash" and ".btile .bcount", both 10px. Read before moving,
+# and not the count=1 signature - no selector appears on both sides.
+BASELINE = "fa3be8e"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
