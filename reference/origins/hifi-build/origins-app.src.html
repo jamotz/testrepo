@@ -2924,7 +2924,17 @@ function crumb(p){
   if(p.t==="drink"&&p.sub)return p.sub+(p.sub2?(" › "+p.sub2):"");
   return TYPES[p.t]+(p.sub?(" › "+p.sub):(p.st?(" › "+p.st):""));
 }
-function feedPill(s){s=s.replace(" each","").trim();return /mg/i.test(s)?s.replace(/\s+/g,""):s.replace(/\s+/g,"").toUpperCase();}
+/* Size pills close the gap between the number and its unit -- "3.5 g" reads as
+   3.5G, "60 mL" as 60ML -- which works while the unit is a symbol. It is not a
+   unit on a topical patch: "1 Patch" came out as 1PATCH, which reads as a typo
+   rather than a size. Close the gap only when the unit is two characters or
+   fewer (g, mg, mL, oz); keep it when the unit is a word. */
+function feedPill(s){
+  s=s.replace(" each","").trim();
+  var m=/^([\d.]+)\s+(\S+)$/.exec(s),
+      t=(m&&m[2].length>2)?s:s.replace(/\s+/g,"");
+  return /mg/i.test(s)?t:t.toUpperCase();
+}
 /* serving / total. The two formats had drifted in opposite directions: an
    edible's size is the whole package (100 mg) with the serving hidden in p.mg,
    while a pre-roll's size is one joint (0.5 g) with the pack count hidden in

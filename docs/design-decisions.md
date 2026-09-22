@@ -2448,3 +2448,75 @@ full two lines below it in Net Quantity. Jack: keep the serving, not the ounces.
 It reads `10mg THC / Serving` now, the same string the shop card has shown since
 2026-09-20, so the two agree. Every other shelf keeps `feedPill(size)`, because
 on those shelves the size genuinely is the thing being picked.
+
+---
+
+## A patch is a topical, so it is measured by weight
+*(2026-09-22)*
+
+The topicals sheet carried a column called "THC Serving/Application Review" and
+another called "Minimum Applications at ≤10mg THC", and both applied the EDIBLE
+serving rule to a topical: three single-patch SKUs at 100 mg THC were flagged
+REVIEW REQUIRED for exceeding the 10 mg per-serving limit, and every other row
+was told how many applications it would need to stay under it.
+
+Jack: "the patches should be based on the topical regulations, so by weight not
+dosage."
+
+That is what WAC 314-55-105(7) actually asks of a cannabis topical — net weight
+in ounces and grams, or volume as applicable — and the same master sheet that
+supplied the limits already says as much: for topicals, "Serving Amount Required
+on Label? Not explicitly required by topical labeling subsection". The flag was
+the edible frame applied to a class the edible frame does not govern.
+
+The columns are now "Topical Regulatory Basis" and "Unit Count (metadata)", the
+two audit rows are rewritten and marked Resolved, and patch count is recorded as
+shopper-facing metadata sitting beside the net-quantity declaration rather than
+replacing it.
+
+**The app needed no change**, which is the point worth recording: patches were
+already spending the topicals bucket by their declared 0.1 oz (2.8 g), because
+the cart adds up `nqa` — the net quantity — for every topical, and never looked
+at a dose. The sheet was describing a rule the code was not following. Fixing
+the description was the whole fix.
+
+One consequence of measuring a 0.1 oz item against a 72 oz allowance: 720
+patches fit. That is what by-weight means for something this light, and it is
+the rule rather than a bug.
+
+---
+
+## "THC Only" was a label, not a decision
+*(2026-09-22)*
+
+`gen_drinks.category()` had spent a day translating the drinks sheet's
+"THC Only" back to "THC" for the shop bubbles, with a comment explaining that
+the 2026-09-21 upload had relabelled 26 rows while leaving "CBD" alone — leaving
+the set asymmetric — and that the partition was unchanged, so it read as
+incidental. Jack confirmed: "Should just say THC."
+
+Fixed in the sheet, and the translation is **deleted rather than kept**. A
+normaliser that silently repairs data which is now correct is a trap: it makes
+the sheet and the app disagree without anything failing, and the next person to
+read either one has to find the other to know which is true. `check()` still
+rejects anything outside THC / CBD / Blend, so a future relabel fails loudly
+instead of being quietly absorbed.
+
+---
+
+## "1PATCH"
+*(2026-09-22)*
+
+Size pills close the gap between the number and its unit — `3.5 g` renders as
+3.5G, `60 mL` as 60ML — which reads well while the unit is a symbol. The
+topicals shelf has one size that is not a symbol, and `1 Patch` was rendering as
+**1PATCH**, which reads as a typo rather than a size.
+
+`feedPill()` now closes the gap only when the unit is two characters or fewer.
+Verified against every size string in the catalog: 22 distinct sizes, and the
+only one that moves is `1 Patch` → `1 PATCH`. The snapshot guard's one finding
+for this change is that pill getting 3px wider, which is the whole of it.
+
+Found by looking at the built product page rather than by any check — the three
+patches were the only rows affected, every guard was green, and nothing in the
+data was wrong.

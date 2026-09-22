@@ -173,20 +173,18 @@ def load():
 
 
 def category(r):
-    """The drinks IA's first level: THC / CBD / Blend.
+    """The drinks IA's first level: THC / CBD / Blend, straight from the sheet.
 
-    The 2026-09-21 sheet relabelled this column's "THC" as "THC Only", matching
-    the Cannabinoid Combo vocabulary - but left "CBD" as "CBD", so the set reads
-    THC Only / CBD / Blend. Taken verbatim that renames one of the three bubbles
-    on the Drinks shop screen and leaves it asymmetric with its two neighbours.
-    The partition is untouched (still 26 / 7 / 17, exactly matching the combo),
-    so this is a label edit, and one that looks incidental rather than intended.
-    Normalised back to the documented IA here, and flagged to Jack: if he wants
-    the bubble to read "THC Only", that is a deliberate IA change and this
-    function is where to make it.
+    This used to normalise "THC Only" back to "THC". The 2026-09-21 upload had
+    relabelled column D's 26 THC rows as "THC Only" while leaving "CBD" alone,
+    which taken verbatim renamed one of the three Drinks bubbles and left the
+    set asymmetric (THC Only / CBD / Blend). The partition never changed, so it
+    read as an incidental label edit rather than an IA decision -- and Jack
+    confirmed it: "Should just say THC". Fixed in the sheet on 2026-09-22, so
+    the translation is deleted rather than left as a silent repair of data that
+    is now correct. check() below rejects anything outside the three.
     """
-    return {"THC Only": "THC", "CBD Only": "CBD"}.get(
-        r["Cannabinoid Category"], r["Cannabinoid Category"])
+    return r["Cannabinoid Category"]
 
 
 def check(rows):
