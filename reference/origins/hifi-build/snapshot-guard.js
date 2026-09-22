@@ -139,7 +139,12 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: ec77d7e. History, most recent first:
+ * Current baseline: 6ff0000_PLACEHOLDER. History, most recent first:
+ *
+ *   <this commit>  2026-09-22  the parked bubble drops its photo. ONE screen:
+ *            on list, img and span.ring give way to span.noimg.ring, because
+ *            a back bubble fills its ring with orange and the photo was
+ *            showing through it behind the chevron.
  *
  *   ec77d7e  2026-09-22  the product-type bubble row. TWO screens, both
  *            intended:

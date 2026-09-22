@@ -2604,6 +2604,19 @@ than the same shelf looking different depending on the door you came in by.
 (`CATICON` / `CATLABEL` / `catCircle`). Two screens drawing the same row from two
 copies of the same map is a drift waiting to happen.
 
+**The first cut left the photo in the parked bubble**, on every shelf. A back
+bubble fills its ring with orange and draws a chevron over it, so a photo left
+inside shows *through* the orange and sits behind the chevron. The four branches
+that already had back bubbles were all passing an empty image for exactly this
+reason — but they did it with a bare `""` argument, so the rule was implied
+rather than stated, and reusing a helper that draws the photo by default walked
+straight past it. `catCircle` takes a `bare` flag now and the comment says what
+it is for. Checked across every shelf and level: 18 back bubbles, 0 carrying a
+photo.
+
+*An unwritten convention is one a new caller cannot follow.* Four call sites
+agreeing is not the same as the reason being findable.
+
 ---
 
 ## A dimmed bubble should mean "nothing here", not "nothing in the catalog"

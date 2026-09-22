@@ -3129,8 +3129,14 @@ const CATLABEL={flower:"Flower",concentrate:"Concentrate",edible:"Edibles",prero
 const CATSCALE={preroll:1.5,vape:1.5}; /* these cutouts sit small in the ring — enlarge to match the others */
 const CATS_SHOP=["flower","concentrate","edible","preroll","vape","drink","topical"];
 const CATS_LIST=["flower","concentrate","edible","preroll","drink","topical"];
-function catCircle(k,cls,attr){
-  var sc=CATSCALE[k],img=IMG[CATICON[k]];
+/* `bare` drops the photo. A parked back bubble fills its ring with orange and
+   draws a chevron over it (.subcircles .cc.back .ring), so a photo left inside
+   shows THROUGH the orange and sits behind the chevron -- which is what the
+   first cut of the type row did on every shelf. Every other back bubble in the
+   app already passes an empty image for exactly this reason; this is the same
+   rule, spelled out rather than implied by a blank argument. */
+function catCircle(k,cls,attr,bare){
+  var sc=CATSCALE[k],img=bare?"":IMG[CATICON[k]];
   return '<button class="cc tap '+(cls||'')+'" '+attr+'><span class="ring'+(img?'':' noimg')+'">'+
     (img?'<img src="'+img+'" alt=""'+(sc?' style="transform:scale('+sc+')"':'')+'>':'')+
     '</span><b>'+CATLABEL[k]+'</b></button>';
@@ -3361,7 +3367,7 @@ function renderList(){
      one-way door. Only added when the branch did not already draw its own back
      bubble, so a drilled shelf never shows two. */
   if(S.type&&!sc.querySelector("[data-ccback],[data-edback],[data-prback],[data-drback]")){
-    sc.insertAdjacentHTML("afterbegin",catCircle(S.type,"back sel",'data-ctback="1"'));
+    sc.insertAdjacentHTML("afterbegin",catCircle(S.type,"back sel",'data-ctback="1"',true));
   }
   sc.querySelectorAll("[data-ctype]").forEach(function(b){b.addEventListener("click",function(){
     S.type=b.dataset.ctype;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.size=null;
