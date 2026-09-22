@@ -2,8 +2,10 @@
 """Turn Jack's edibles catalog into the app's edible products.
 
 Source (reference/origins/product info/):
-  - WA_Edibles_THC_CBD_Blend_Expanded_CBD_Weights_Fixed.xlsx  (Jack, 2026-09-22)
-      the 55 products, their net weights, and the cannabinoid mg per serving
+  - WA_Edibles_THC_CBD_Blend_COMPLETE_Unique_Descriptions.xlsx  (Jack, 2026-09-22)
+      the 55 products: cannabinoids per SERVING and per PACKAGE, servings per
+      package, net weight, a researched WA retail price, and a Pricing Notes tab
+      recording the anchor and source behind every brand's price
   - Edible_Filter_Architecture_THC_CBD_Blend.xlsx
       the filter IA, which this file implements but does not read
 
@@ -22,27 +24,15 @@ of them and to effect tiles for the other four. Lifestyle and Effect are no
 longer a level at all; they are reached from the lifestyle chips and the global
 filter, which is where every other shelf keeps them.
 
-THREE THINGS THIS SHEET STATES DIFFERENTLY FROM THE ONE IT REPLACED, all
-recovered here rather than assumed:
-
-  Servings.  There is no "Servings Per Package" column. Net Amount (Metric) /
-  Serving Amount (g) gives it, and it is 10 for all 55 rows -- asserted below,
-  not trusted, because a row that broke it would render a package total that
-  disagreed with the serving line beside it.
-
-  The third cannabinoid.  One "Other mg" column replaced the named CBN/CBG/CBC
-  pairs. Cannabinoid Combo names which one it is ("THC:CBN" -> CBN), and the
-  Ratio column is checked against the two figures so a mislabelled row fails
-  here instead of rendering a bubble that contradicts its own ratio.
-
-  Price.  THE SHEET HAS NO PRICE COLUMN AT ALL. 44 of the 55 products are new,
-  so there is nothing to match old prices to by name either. Rather than invent
-  55 retail prices, each brand re-uses ITS OWN price ladder from the sheet this
-  one replaced (recovered at 759e5ad^) -- see PRICE_LADDER. Every brand makes
-  exactly one form in both sheets, and the ladder is walked in order so the
-  brand keeps its price level and its spread. This is the one field in the
-  catalog that is not Jack's current data; the moment the sheet carries a price
-  column, delete PRICE_LADDER and read it.
+NOTHING HERE IS DERIVED OR CARRIED FORWARD. An earlier version of this sheet
+arrived without prices, without servings-per-package and with one generic
+"Other mg" column in place of the named CBN/CBG pairs, so this file recovered
+servings from net weight / serving weight, named the third cannabinoid from the
+combo, and re-used each brand's price ladder from the sheet before it. All
+three workarounds are deleted: the complete sheet states every one of those
+outright. The cross-checks they justified are KEPT, because a check is cheap
+and a sheet can change again -- total == serving x servings is asserted per
+cannabinoid, and the derived servings figure is asserted against the stated one.
 
 Run: python3 reference/origins/hifi-build/gen_edibles.py
 """
@@ -50,41 +40,32 @@ import os, re, sys, collections
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 XLSX = os.path.join(REPO, "reference/origins/product info/"
-                    "WA_Edibles_THC_CBD_Blend_Expanded_CBD_Weights_Fixed.xlsx")
+                    "WA_Edibles_THC_CBD_Blend_COMPLETE_Unique_Descriptions.xlsx")
 
 from xlsxread import read_cells
 from html import unescape as unesc
 from feelmap import feelings_for
 
 CANNABINOIDS = ["THC", "CBD", "CBN", "CBG", "CBC"]
-REQUIRED = ["Brand", "Product Name", "Product Type", "Cannabinoid Category",
-            "Concentrate Type", "Lifestyle", "Effect", "Cannabinoid Combo",
-            "Ratio (Tile)", "THC mg", "CBD mg", "Other mg", "Description",
-            "Net Qty Basis", "Net Amount (US)", "US Unit",
-            "Net Amount (Metric)", "Metric Unit", "Serving Amount (g)"]
+REQUIRED = (["Brand", "Product Name", "Product Type", "Cannabinoid Category",
+             "Concentrate Type", "Lifestyle", "Effect", "Cannabinoid Combo",
+             "Ratio (Tile)", "Description", "WA Retail Price (USD)",
+             "Servings Per Package", "Net Qty Basis", "Net Amount (US)",
+             "US Unit", "Net Amount (Metric)", "Metric Unit", "Serving Amount (g)"]
+            + ["%s %s mg" % (c, w) for c in ("THC", "CBD", "CBN", "CBG")
+               for w in ("Serving", "Total")])
 
 EFORMS  = ["Gummies", "Chocolate", "Hard Candy", "Baked Goods", "Capsules"]
 ECONC   = ["Distillate", "Rosin", "Live Resin", "Live Rosin"]
 ECATS   = ["THC", "CBD", "Blend"]
 
-# ---- the one field the new sheet does not carry: see the module docstring ----
-# Each brand's own WA retail prices from
-# WA_Edibles_By_Brand_Final_Curated_Cannabinoid_Serving_Totals.xlsx, sorted, and
-# walked in order for that brand's rows. Five brands gained a row in the new
-# sheet, so their ladder wraps -- which repeats one of the brand's own prices
-# rather than inventing a new one.
-PRICE_LADDER = {
-    "Ceres":            [18, 18, 20, 22, 24, 24],
-    "Constellation":    [22, 22, 24, 24, 26, 26],
-    "Good Tide":        [20, 20, 24, 24, 26, 26],
-    "Green Revolution": [20, 20, 22, 22, 22, 24],
-    "Journeyman":       [24, 24, 28, 30, 30, 30],
-    "Marmas":           [22, 22, 22, 24],
-    "Pioneer Squares":  [18, 22, 22, 22],
-    "Swifts":           [22, 22, 24, 24],
-    "Verdelux":         [18, 18, 22, 22],
-    "Wyld":             [28, 28, 28, 30],
-}
+# PRICE_LADDER lived here. The sheet that arrived without prices made this
+# file re-use each brand's price ladder from the sheet before it, walked in
+# order -- the one field in the catalog that was not Jack's current data.
+# The complete sheet carries "WA Retail Price (USD)" with a Pricing Notes tab
+# behind it naming each brand's anchor, rule and source, so it is deleted
+# rather than kept "just in case": a fallback price table is exactly the kind
+# of thing that goes stale silently.
 
 # ---- photos: 3 variants per form, chosen by the product name ----
 # The sheet's Flavor column doesn't track the names, so the name is the source
@@ -120,7 +101,13 @@ def photo(etype, name, i):
 
 
 # effect / strain -> the app's six lifestyles (drives card colour + badge)
-LIFE_EFFECT = {"Pain Relief": "holistic", "Relax": "holistic", "Focus": "discovery",
+# "Comfort" is the sheet's 2026-09-22 rename of "Pain Relief" for the CBD-only
+# rows, to keep therapeutic-claim wording out of shopper-facing IA. Both are
+# listed: the old label still appears in the topicals IA, which Jack has not
+# renamed, and a label that silently falls through to "social" would be a
+# lifestyle assigned by accident.
+LIFE_EFFECT = {"Comfort": "holistic", "Pain Relief": "holistic",
+               "Relax": "holistic", "Focus": "discovery",
                "Unwind": "unwind", "Sleep": "unwind", "Giggly": "social",
                "Calm": "holistic", "Chill": "unwind", "Creative": "discovery",
                "Balanced": "social", "Deep Sleep": "unwind", "Happy": "social"}
@@ -176,26 +163,16 @@ def check(rows):
             bad.append("row %d: product type %r" % (i, r["Product Type"]))
         if r["Concentrate Type"] not in ECONC:
             bad.append("row %d: concentrate type %r" % (i, r["Concentrate Type"]))
-        if BRAND_MERGE.get(r["Brand"], r["Brand"]) not in PRICE_LADDER:
-            bad.append("row %d: no price ladder for brand %r" % (i, r["Brand"]))
+        if not re.match(r"^\$?[\d.]+$", str(r["WA Retail Price (USD)"]).strip()):
+            bad.append("row %d: price %r" % (i, r["WA Retail Price (USD)"]))
         if r["Description"].rstrip().endswith(("...", "…")):
             bad.append("row %d: description is truncated (%r)" % (i, r["Description"][-38:]))
         for col in ("Product Name", "Cannabinoid Combo", "Description",
+                    "Servings Per Package", "WA Retail Price (USD)",
                     "Net Qty Basis", "Net Amount (US)", "US Unit",
                     "Net Amount (Metric)", "Metric Unit", "Serving Amount (g)"):
             if not r[col]:
                 bad.append("row %d: column %r empty" % (i, col))
-    # every brand must make exactly one form, or the price ladder is keyed wrong
-    for brand, forms in collections.Counter(
-            (BRAND_MERGE.get(r["Brand"], r["Brand"]), r["Product Type"]) for r in rows).items():
-        pass
-    bybrand = collections.defaultdict(set)
-    for r in rows:
-        bybrand[BRAND_MERGE.get(r["Brand"], r["Brand"])].add(r["Product Type"])
-    for brand, forms in sorted(bybrand.items()):
-        if len(forms) > 1:
-            bad.append("brand %r now makes %s - the price ladder assumes one form"
-                       % (brand, sorted(forms)))
     if bad:
         print("gen_edibles: sheet layout changed - refusing to emit:", file=sys.stderr)
         for b in bad[:20]:
@@ -206,43 +183,42 @@ def check(rows):
 def doses(r):
     """-> (ordered cannabinoid list, {c: serving}, {c: total}, servings).
 
-    Servings is derived, then asserted: the sheet has no servings column, so
-    net weight / serving weight has to stand in for one."""
+    Every figure is stated by the sheet. The two cross-checks are kept from
+    when they were not: a row whose total disagrees with serving x servings
+    renders a package bubble that contradicts the serving line beside it, and
+    the Ratio column is a second statement of the same numbers."""
     name = r["Product Name"]
-    net, per = num(r["Net Amount (Metric)"]), num(r["Serving Amount (g)"])
-    if per <= 0:
-        sys.exit("gen_edibles: %s has no serving amount" % name)
-    srv = net / per
-    if abs(srv - round(srv)) > 0.01:
-        sys.exit("gen_edibles: %s net %g / serving %g = %g, not a whole number of servings"
-                 % (name, net, per, srv))
-    srv = float(round(srv))
+    srv = num(r["Servings Per Package"])
+    if srv <= 0:
+        sys.exit("gen_edibles: %s has no Servings Per Package" % name)
 
-    combo = r["Cannabinoid Combo"]
-    named = [c for c in combo.replace(" Only", "").split(":") if c]
-    # "Other mg" is whichever cannabinoid the combo names that isn't THC or CBD
-    other = [c for c in named if c not in ("THC", "CBD")]
-    if len(other) > 1:
-        sys.exit("gen_edibles: %s names two 'other' cannabinoids (%s)" % (name, combo))
-    mg = {"THC": num(r["THC mg"]), "CBD": num(r["CBD mg"])}
-    if other:
-        if other[0] not in CANNABINOIDS:
-            sys.exit("gen_edibles: %s names unknown cannabinoid %r" % (name, other[0]))
-        mg[other[0]] = num(r["Other mg"])
-    elif num(r["Other mg"]):
-        sys.exit("gen_edibles: %s carries Other mg but the combo names no third cannabinoid"
-                 % name)
-
-    serving = {c: v for c, v in mg.items() if v}
-    order = [c for c in named if c in serving]
+    serving, total = {}, {}
     for c in CANNABINOIDS:
+        key = "%s Serving mg" % c
+        if key not in r:                       # CBC is not on this sheet
+            continue
+        sv, tv = num(r[key]), num(r["%s Total mg" % c])
+        if not sv and not tv:
+            continue
+        if abs(tv - sv * srv) > 0.01:
+            sys.exit("gen_edibles: %s %s total %g != serving %g x %g servings"
+                     % (name, c, tv, sv, srv))
+        serving[c], total[c] = sv, tv
+
+    # net weight / serving weight has to agree with the stated servings count;
+    # this is what USED to produce the servings figure, and it still proves it
+    net, per = num(r["Net Amount (Metric)"]), num(r["Serving Amount (g)"])
+    if per > 0 and abs(net / per - srv) > 0.01:
+        sys.exit("gen_edibles: %s net %g / serving %g = %g, but the sheet says "
+                 "%g servings" % (name, net, per, net / per, srv))
+
+    order = [c for c in r["Cannabinoid Combo"].replace(" Only", "").split(":") if c in serving]
+    for c in CANNABINOIDS:                     # anything the combo forgot to name
         if c in serving and c not in order:
             order.append(c)
     if not order:
         sys.exit("gen_edibles: %s states no cannabinoid at all" % name)
 
-    # the Ratio column is a second statement of the same numbers - check them
-    # against each other so a mislabelled row fails here, not on the shelf
     ratio = r["Ratio (Tile)"].strip()
     if ratio and len(order) > 1:
         parts = ratio.split(":")
@@ -254,7 +230,6 @@ def doses(r):
                 sys.exit("gen_edibles: %s ratio %s disagrees with %s"
                          % (name, ratio, dict(zip(order, got))))
 
-    total = {c: serving[c] * srv for c in serving}
     return order, serving, total, srv
 
 
@@ -264,7 +239,6 @@ def main():
         sys.exit("gen_edibles: expected 55 product rows, read %d" % len(rows))
     check(rows)
 
-    seen = collections.Counter()
     out, servings_seen = [], collections.Counter()
     for i, r in enumerate(rows):
         brand = BRAND_MERGE.get(r["Brand"], r["Brand"])
@@ -276,9 +250,9 @@ def main():
         servings_seen[srv] += 1
         main_c = order[0]
 
-        ladder = PRICE_LADDER[brand]
-        price  = float(ladder[seen[brand] % len(ladder)])
-        seen[brand] += 1
+        price = num(r["WA Retail Price (USD)"])
+        if price <= 0:
+            sys.exit("gen_edibles: %s has no price" % name)
 
         # the package size label names the MAIN cannabinoid's package total, so
         # a 25 mg/serving CBD gummy reads 250 mg rather than borrowing the THC

@@ -2375,3 +2375,76 @@ so Guide Me's edible question had to move to `S.eform` (which matches
 `p.etype`). Its options were "Chocolates, Gummies, Mints, Drinks" — two forms
 the catalog has never carried, Drinks being its own shelf — and are now the
 same five forms the shop uses.
+
+---
+
+## The bars follow the rule, not the shelf
+*(2026-09-22, same day, superseding the section above)*
+
+The first cut gave each of the six shop shelves its own weight bar, with the
+accuracy cost written into `LIMITS`. Jack read that and removed the compromise:
+
+> "Flower includes plain flower pre rolls and flower. Concentrate includes
+> concentrate and infused/trifecta pre-rolls. They are not separate entities."
+
+So there are five buckets and the Pre-Rolls shelf has no bar. `limitKey()`
+routes each pre-roll by `sub2`: the 35 plain rows spend flower's 1 oz, the 20
+Infused and 5 Trifecta rows spend concentrate's 7 g. Verified in the built app:
+eight eighths fill flower to 28 g, a plain joint is then refused and an infused
+one is still allowed; one concentrate plus six infused joints is exactly 7 g.
+
+Worth recording that the compromise was never necessary. The argument for shelf
+bars was that a shopper can map a bar onto the shelf they were browsing — but a
+bar is not a shelf, it is an allowance, and two shelves sharing one allowance is
+the fact being communicated. A cart holding an eighth and two joints showing
+*one* Flower bar at 4.5 g says something true that two bars at 3.5 and 1 could
+not. The clearer design and the correct one were the same design, and naming the
+inaccuracy in a comment was not a substitute for not having it.
+
+Topicals keep a separate 72 oz bar, which is still a deliberate divergence: the
+rule shares that bucket with liquid edibles, and a Liquids bar would read, on a
+cart holding a seltzer and a balm, as one shelf eating the other's allowance.
+
+---
+
+## Everything the edibles sheet was missing, it now states
+*(2026-09-22)*
+
+The sheet `gen_edibles.py` was built against arrived without prices, without a
+servings-per-package column, and with one generic `Other mg` column where the
+named CBN/CBG pairs had been. The generator worked around all three: servings
+came from net weight / serving weight, the third cannabinoid was named from the
+Cannabinoid Combo column, and price re-used each brand's ladder from the sheet
+before it — the one field in the catalog that was not Jack's current data.
+
+The COMPLETE sheet states every one of them, plus a Pricing Notes tab recording
+each brand's price anchor, its rule and the source URL. All three workarounds
+are deleted. **`PRICE_LADDER` in particular is deleted rather than kept as a
+fallback** — a price table that only runs when a column goes missing is exactly
+the kind of thing that survives three sheet revisions and prices the catalogue
+wrongly without anyone noticing.
+
+**The cross-checks they justified are kept.** `total == serving × servings` is
+still asserted per cannabinoid, the Ratio column is still checked against the
+two figures, and net weight / serving weight is still asserted against the
+stated servings count — the calculation that used to *produce* that number now
+proves it. A check is cheap, and a sheet can change again.
+
+One data note: the sheet renames the CBD-only effect from "Pain Relief" to
+**"Comfort"**, to keep therapeutic-claim wording out of shopper-facing IA. Both
+labels are in `LIFE_EFFECT`, because the topicals IA still uses "Pain Relief"
+and a label falling through to the default would be a lifestyle assigned by
+accident rather than a visible failure.
+
+---
+
+## A drink's pill names its dose
+*(2026-09-22)*
+
+Drinks come in one size, so the product page's size "picker" is a label, not a
+choice — and it was spending that label on the volume, which is now stated in
+full two lines below it in Net Quantity. Jack: keep the serving, not the ounces.
+
+It reads `10mg THC / Serving` now, the same string the shop card has shown since
+2026-09-20, so the two agree. Every other shelf keeps `feedPill(size)`, because
+on those shelves the size genuinely is the thing being picked.

@@ -241,7 +241,7 @@ icon reads as a different tab.
 |---|---:|---|---|
 | Flower | 50 | `Flower Final pt2 Product List for WA.xlsx` | by strain type ✓ |
 | Concentrate | 60 | `Concentrate Final Product List for WA.xlsx` (all 60 rows, Kief and RSO included) | per consistency ✓ |
-| Edible | 55 | `WA_Edibles_THC_CBD_Blend_Expanded_CBD_Weights_Fixed.xlsx` | by form + name ✓ |
+| Edible | 55 | `WA_Edibles_THC_CBD_Blend_COMPLETE_Unique_Descriptions.xlsx` | by form + name ✓ |
 | Pre-roll | 60 | `Pre-roll pt2 Product List Final for WA.xlsx` | by type + pack count ✓ |
 | Topical | 38 | `WA_Topicals_Regulatory_Audited_Patch_Weights_Simplified.xlsx` (sheet 2) + 3 authored | one per form ✓ |
 | Drink | 50 | `WA_Drinks_Regulatory_Audited.xlsx` | by type + flavour colour ✓ |
@@ -632,22 +632,24 @@ polish and the open questions below.
    - The **four deal flowers** are his brands but my strain picks (`DEALS` in
      `gen_catalog_products.py`, one line each to swap). Asked and explained
      2026-09-22; still unanswered.
-   - **The edibles sheet has no price column.** `PRICE_LADDER` in
-     `gen_edibles.py` re-uses each brand's own ladder from the sheet this one
-     replaced (recovered at `759e5ad^`), walked in order so the brand keeps its
-     price level and spread. Every brand makes exactly one form in both sheets,
-     and the generator asserts that still holds. **This is the only field in
-     the catalog that is not Jack's current data.** When the sheet carries a
-     price column, delete `PRICE_LADDER` and read it.
-   - **Pre-rolls get one 1 oz bar, and the rule has no pre-roll bucket.** A
-     plain flower pre-roll is useable cannabis and shares flower's single 1 oz
-     allowance; LCB's CCRS guidance classifies an infused or Trifecta pre-roll
-     as a *concentrate*, under the 7 g one. The shelf bar is right for the 45
-     plain pre-rolls and generous to the 15 infused/Trifecta ones, and flower +
-     plain pre-rolls can together reach 2 oz where the rule allows 1. Jack
-     chose one bar per shelf knowing this; `LIMITS` is where to change it.
-   - **Topicals get their own 72 oz bar** for the same reason: the rule puts
-     liquid topicals in the *same* bucket as liquid edibles.
+   - ~~**The edibles sheet has no price column**~~ — **CLOSED 2026-09-22.**
+     The COMPLETE sheet carries `WA Retail Price (USD)` with a Pricing Notes
+     tab naming each brand's anchor, rule and source. `PRICE_LADDER` is
+     deleted, not kept as a fallback: a stale price table fails silently.
+   - ~~**Pre-rolls get one 1 oz bar**~~ — **CLOSED 2026-09-22.** Jack: "Flower
+     includes plain flower pre rolls and flower. Concentrate includes
+     concentrate and infused/trifecta pre-rolls. They are not separate
+     entities." Five buckets now, and the pre-roll shelf has no bar of its own:
+     `limitKey()` sends its 35 plain rows to flower and its 25 Infused/Trifecta
+     rows to concentrate, which is also what WAC and the CCRS guidance say.
+   - **Topicals still get their own 72 oz bar.** The rule puts liquid topicals
+     in the *same* bucket as liquid edibles, and says nothing clear about a
+     solid balm or a bath soak. Open, and deliberate.
+   - **Three topicals are not in any sheet** — `Deep Relief Roll-On`,
+     `Rescue Balm`, `Night Recovery Cream`, authored 2026-08-10 and living in
+     `AUTHORED` in `gen_topicals.py`. Their net quantities are borrowed from
+     the per-form convention in Jack's own data and asserted against it on
+     every run. Adding them to the sheet retires the block.
 
 8. **Four sub-bubbles still have photos but no products** — see item 5.
 
