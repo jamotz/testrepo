@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base ec77d7e          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 3f96f34          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,9 +139,9 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 6ff0000_PLACEHOLDER. History, most recent first:
+ * Current baseline: 3f96f34. History, most recent first:
  *
- *   <this commit>  2026-09-22  the parked bubble drops its photo. ONE screen:
+ *   3f96f34  2026-09-22  the parked bubble drops its photo. ONE screen:
  *            on list, img and span.ring give way to span.noimg.ring, because
  *            a back bubble fills its ring with orange and the photo was
  *            showing through it behind the chevron.
