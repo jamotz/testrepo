@@ -1199,6 +1199,57 @@ to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
 
+## Deals
+
+### Put the discount in priceFor, not in the deal row
+The 30% brand deal was display-only for a month: a banner, four logo tiles, and
+full prices behind every one of them. The comment at `DEALDEF.brand` said so
+outright — "priceFor doesn't model it" — and the deal note told shoppers the
+prices below were today's rather than discounted.
+
+Making it real was one function. `priceFor` returns `{now, was}`, and the
+cards, the product page, the per-size list, the cart and the confirmation all
+already read that shape, so the discount reached five screens from one change.
+A discount implemented in the deal row would have reached exactly one.
+
+Precedence is written down even though nothing needs it: no product sits in
+both this and the flagged-flower deals, and if one ever did, the deeper
+per-size discount wins over the flat 30%.
+
+### `p.sale` does not mean "on sale"
+It means "one of the four flowers `gen_catalog_products.py` nominated for the
+2-for-$50 and bulk deals", because `priceFor` keys those deals off it. So the
+Filter drawer's **On sale** switch — reading that flag directly — could not see
+26 genuinely discounted products. It asks `onSale(p)` now, and the facet went
+from 4 products to 30.
+
+A flag whose name is broader than its meaning will be read by its name sooner
+or later. The fix is a predicate that says what the question actually is.
+
+### A helper must not reach forward to a `const`
+`inBrandDeal` first read its brand list out of `DEALDEF`, which sits about a
+thousand lines further down the file. `priceFor` runs during load; reading a
+`const` before its declaration **throws** rather than yielding `undefined`; the
+throw aborted the rest of the script, so `DEALDEF` never initialised at all and
+the home screen rendered zero tiles. The app was dead, and the build was clean.
+
+The list lives ahead of its users now and `DEALDEF` borrows it. The general
+rule: a function called during initialisation may only reach backwards. The
+reason this was caught in seconds rather than shipped is that the probe drove
+the real page and watched for `pageerror`, which a screenshot would not have
+surfaced — the layout looked plausible either way.
+
+### A big diff is not a worse diff
+`snapshot-guard` flagged five screens, the most it has ever reported at once,
+and every one was legitimate: a price cell that now holds two numbers appears
+on shop, list, product and cart, plus the tile change on home. One change can
+honestly touch five screens when it changes a price, because the price is on
+five screens.
+
+What turned "five screens moved" into an argument was diffing the cards
+themselves: 36 changed, all four deal brands, zero others, arithmetic exact.
+The screen count is not the signal; the traceability is.
+
 ### The page shows its own reasoning
 Feelings and Taste were asserted: two rows of adjectives with nothing saying
 where they came from. They come from the terpenes, and the terpenes were read

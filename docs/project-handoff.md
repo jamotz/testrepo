@@ -94,13 +94,13 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`8c96066`** (**Version 39**, republished 2026-09-21). Every check was
-re-run at that commit rather than assumed: `standard-guard.py` PASS 222 = 222,
+`d50e9b9`** (**Version 40**, republished 2026-09-22). Every check was
+re-run at that commit rather than assumed: `standard-guard.py` PASS 224 = 224,
 `snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
 across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
 308/308 products reachable via Brands with no missing brands.
 
-**Both guards baseline at `c76ea7d`** — the Terpenes section is a new visible
+**Both guards baseline at `fa3be8e`** — the Terpenes section is a new visible
 element, so it moved stylesheet text *and* computed styles and both were
 re-baselined together. They do not always track: read each file's constant.
 The paragraph below is why they once differed, and is worth keeping.
