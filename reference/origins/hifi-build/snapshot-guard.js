@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 6a686de          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 369134e          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,19 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 6a686de. History, most recent first:
+ * Current baseline: 369134e. History, most recent first:
+ *
+ *   369134e  2026-09-22  the complete edibles sheet. TWO screens, and neither
+ *            is a layout change: div.fpr on shop and two spans on acorders
+ *            moved 1.7-2.0px wide because the new sheet's real prices are
+ *            wider strings than the ones they replaced ($18 -> $22 and up).
+ *            Nothing added, nothing removed, no "-"/"+" font-size pair. Data
+ *            moving a text width is the one kind of failure this guard cannot
+ *            tell from a regression by itself -- read the diff, not the exit
+ *            code.
+ *            (The same commit merged the pre-roll bar into flower and
+ *            concentrate, which the cart screen does not show here: these
+ *            snapshots are taken with an empty bag, so the bars never render.)
  *
  *   6a686de  2026-09-22  the WA purchase-limit pass. THREE screens, all of it
  *            deliberate:
