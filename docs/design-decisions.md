@@ -2178,3 +2178,200 @@ otherwise asserted and wrote nothing, which is the good outcome. And when
 testing this, `querySelectorAll('.edulife span')` matches both the outer
 lifestyle wrapper *and* the inner letter span, so the tile reads as eleven
 entries rather than six; that is the selector, not a bug.
+---
+
+## Regulatory weight limits, and where the rule and the shelf disagree
+*(2026-09-22)*
+
+Jack asked for WA purchase limits: a cap on how much of each category can go in
+the bag, weight bars at the bottom of the cart, and the brown bubble when an
+add is refused. `WA_Cannabis_Regulatory_Weights_All_Categories.xlsx` supplies
+the figures, citing WAC 314-55-095(1)(d)(i).
+
+**The rule's buckets are not the shop's shelves**, and that is the whole design
+question. WAC limits four things per transaction: useable cannabis (1 oz),
+concentrate for inhalation (7 g), solid cannabis-infused product (16 oz) and
+liquid edible *or liquid topical* (72 oz). The shop has six shelves. They
+cross-cut in two places:
+
+- A **plain flower pre-roll** is useable cannabis and shares flower's single
+  1 oz allowance. An **infused or Trifecta** pre-roll is classified as a
+  concentrate in LCB's CCRS guidance, under the 7 g one. One Pre-Rolls shelf,
+  two buckets.
+- A **liquid topical** shares the 72 oz bucket with drinks. A balm or a bath
+  soak isn't clearly in any of the four.
+
+Presented with both, Jack chose **one bar per shelf** — six bars, with Edibles
+and Drinks renamed *Solid Edibles* and *Liquid Edibles*. The accuracy cost is
+written into `LIMITS` beside the constants, not hidden: flower plus plain
+pre-rolls can reach 2 oz where the rule allows 1, and a Trifecta pre-roll
+spends a 28 g allowance rather than a 7 g one. Six bars that a shopper can map
+onto the shelf they were just browsing beat four that are right but unplaceable
+— and the trade is one constant to reverse.
+
+**Honey and sorbet moved buckets, in the sheet rather than in code.** Both were
+declared by weight (`Net Wt. 4 oz`), which would have put them in the 16 oz
+*solid* bucket. Jack: they are liquid edibles. Eleven rows re-declared as
+volume — `Net Vol. 4 fl oz (118 mL)` — with their serving amounts, packaging
+requirement and an audit row updated to match. The app reads the sheet; the
+sheet states the classification. A rule in `gen_drinks.py` saying "honey is
+really a liquid" would have been the same fix in the place it could not be
+found.
+
+**28 g of flower reads as 28 of 28 and is still legal.** One ounce is 28.3495 g
+and the biggest jar on the shelf is 28 g, so a bar drawn against a round 28
+would show a legal ounce as full. `limitMax()` draws against the real figure and
+`L.max` labels with the round one, which is also how the packaging is sold.
+
+**The limit is enforced at one door.** Every Add and every `+` outside the cart
+goes through `addToCart`, which now returns false and toasts instead of adding.
+The cart screen's own `+` is the single increment that does not, so it carries
+the same check explicitly — a comment says so, because it is exactly the hole a
+later edit would reopen.
+
+---
+
+## Two sizes for one jar
+*(2026-09-22)*
+
+The new topicals sheet declares a regulatory net quantity (`Net Wt. 2 oz
+(56.7 g)`) beside the raw figure the catalog was built on (`60`). Those
+disagree for most rows — Ceres Dragon Balm is 60 in one column and 2 oz in the
+other — so one of them had to win the size pill.
+
+Jack's call: **neither replaces the other.** The tile keeps the millilitre
+figure shoppers have been seeing, the sheet gained an explicit `App Tile Size`
+column to hold it, and the regulatory declaration gets its own row on the
+product page and drives the cart bar. They are different facts about the same
+jar, so they get different fields: `szs`/`pz` stay in mL, `nq` is the printed
+declaration, `nqa`/`nqb` are what the cart adds up.
+
+**Drinks went the other way.** Their volume was in their *names* — "Blackberry
+Lemonade 12 oz" — which is the same fact twice once the product page states it.
+`trim_size()` takes off an exact trailing match of the Size cell and nothing
+else, and the generator proves the 50 products stay distinguishable afterwards
+before it emits anything (two Sungaze seltzers differ only by volume).
+
+That left the card with no volume at all, and the first attempt to put it back
+— appending `· 12 OZ` to the serving pill — wrapped to two lines in a 452px
+card, orphaned the separator and made **every** card in the row 17px taller,
+drinks or not. It rides the brand line instead, which is short enough to take
+it. The snapshot guard is what showed the row growing; the screenshot is what
+showed it looking wrong.
+
+---
+
+## The sheet was never broken, the reader was — the openpyxl variant
+*(2026-09-22)*
+
+Adding one column to the topicals sheet with openpyxl blanked the cached value
+of **35** formula cells in that file and **445** in the drinks file, including
+`K`/`M`/`O`/`Q`/`S` — the per-cannabinoid *total mg* columns `gen_drinks.py`
+reads.
+
+`load_workbook(f)` without `data_only=True` keeps formulas and discards Excel's
+cached results; saving then writes `<f>…</f><v/>`. Excel recalculates on open,
+so the file looks perfect to a human. Every tool that reads cached values —
+this repo's generators, and `data_only=True` in openpyxl itself — sees blanks.
+
+Caught only because `gen_topicals.py` asserts a net quantity on every row and
+died on row one. Without that assert it would have emitted 35 topicals with an
+empty `nq` and a build that looked fine.
+
+Restored from the pre-edit blobs in git and written back as **literal values,
+not formulas**, so the figures survive the next save by any tool, then verified
+cell-by-cell against those blobs: the only differences were the 99 cells of the
+11 honey/sorbet rows, the 4-cell audit row and the 36 cells of the new column.
+
+**The rule this adds:** an assertion that a value *exists* is worth as much as
+one that it is correct, and a spreadsheet edit is a code change — diff it
+against what it replaced before trusting it.
+
+---
+
+## Aligning two different type sizes by their cap height
+*(2026-09-22)*
+
+Jack has asked twice for the store name and the phone number on the landing
+page to share a top line. `align-items:center` put the phone's first line
+4–6px above the city name, and — because the two cards' phone blocks wrap to
+different heights in Enlarged — off by a *different* amount on each card
+(measured −5.5/−6.5px Standard, +2.2/−11.4px Enlarged).
+
+`flex-start` is not the fix either. Each element's box top sits a
+font-size-proportional half-leading above its cap height, and the two sizes do
+not scale together between the token sets (20→26 against 13→22), so no fixed
+nudge can hold at both. The measured residual was 3px.
+
+`text-box-trim: trim-start` + `text-box-edge: cap alphabetic` makes each box
+*start* at its own cap height, so `flex-start` then aligns the letters
+themselves. **0.00px on both cards at both sizes**, measured by scanning the
+rendered pixels for the first row of ink rather than by reading
+`getBoundingClientRect`, which returns the line box and had been quietly
+reporting a constant −0.92px whatever the font size.
+
+Browsers without `text-box-trim` fall back to plain `flex-start`, still closer
+than the centring it replaces.
+
+---
+
+## A lifestyle narrows what you are looking at
+*(2026-09-22)*
+
+The mood chips used to clear `type`, `sub`, `sub2`, `sub3`, `eform`, `size` and
+`deal` and hand back every product in that lifestyle. The reasoning written
+here on 2026-08-17 was that "a lifestyle is a view ACROSS the shop, not a
+filter inside the shelf you happen to be standing on", and the symptom it was
+fixing was real: tapping Discovery from the Flower shelf showed 4 of 36
+products and left the Flower title and bubbles in place, so it read as though
+nothing had happened.
+
+Jack's answer is the opposite one, and it is better: **the bubbles should stay
+and the lifestyle should narrow what they produced.** The original symptom was
+never that the shelf survived — it was that 4-of-36 looked like a no-op. The
+chip lighting up, the count changing and the bubbles staying put say plainly
+that the lifestyle did something *to this shelf*.
+
+Two bugs fell out of the same state-versus-paint split:
+
+- **Back to Shop left the chip lit** with nothing filtered by it, and tapping
+  it there to clear it ran the `S.screen!=="list"` branch and dropped you on
+  All Products. Turning a chip *off* now never navigates: it can only
+  un-narrow a view you are already looking at.
+- **Clear all** already set `S.mood = null`, but redrew only the drawer — so
+  the chip on the bar behind it stayed lit. It redraws the three mood bars now.
+
+Both were invisible in the state and obvious on screen, which is the argument
+for driving the real app in a browser rather than reading the reducer.
+
+---
+
+## Edibles open on the cannabinoid, like every other shelf
+*(2026-09-22)*
+
+The old edible IA opened on five mixed categories — THC Edibles, CBD Edibles,
+THC Dominant, CBD Dominant, Balanced — which asked a *cannabinoid* question and
+an *effect* question on the same row of bubbles, then drilled to extraction for
+one of them and to effect tiles for the other four.
+
+`Edible_Filter_Architecture_THC_CBD_Blend.xlsx` replaces it with
+**Cannabinoid → Product Type → Concentrate Type**, matching drinks and
+pre-rolls, which both open on THC / CBD / Blend. Lifestyle and Effect stop
+being a level and are reached from the lifestyle chips and the global filter,
+where every other shelf keeps them.
+
+Jack's message said "type of edible to start off with" and his sheet said
+cannabinoid first; asked which, he confirmed the sheet and asked for the sheet
+to say so in words rather than in column headings. It does now, on both tabs.
+
+All three levels are **inventory-driven** — a level offers only values some
+product on the shelf actually has, in the sheet's order — so a bubble can never
+lead to an empty shelf. The old renderer offered a fixed list per category and
+dimmed the empties instead. Blend → Capsules correctly offers three concentrate
+types, not four: no Blend capsule is made with Live Rosin.
+
+One consequence worth knowing: `S.sub` for an edible now holds THC/CBD/Blend,
+so Guide Me's edible question had to move to `S.eform` (which matches
+`p.etype`). Its options were "Chocolates, Gummies, Mints, Drinks" — two forms
+the catalog has never carried, Drinks being its own shelf — and are now the
+same five forms the shop uses.

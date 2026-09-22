@@ -1,6 +1,6 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-09-17 · branch `claude/accessibility-handoff-review-dhabtz`
+**Last updated:** 2026-09-22 · branch `claude/accessibility-handoff-review-dhabtz`
 **Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j
 
 > Both of these address the same artifact and either works as `url=`:
@@ -235,16 +235,28 @@ icon reads as a different tab.
 
 ## Current state
 
-**308 products** across six types:
+**313 products** across six types:
 
 | Type | Count | Source | Photos |
 |---|---:|---|---|
 | Flower | 50 | `Flower Final pt2 Product List for WA.xlsx` | by strain type ✓ |
 | Concentrate | 60 | `Concentrate Final Product List for WA.xlsx` (all 60 rows, Kief and RSO included) | per consistency ✓ |
-| Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
+| Edible | 55 | `WA_Edibles_THC_CBD_Blend_Expanded_CBD_Weights_Fixed.xlsx` | by form + name ✓ |
 | Pre-roll | 60 | `Pre-roll pt2 Product List Final for WA.xlsx` | by type + pack count ✓ |
-| Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
-| Drink | 50 | `WA_Drinks_50_Product_List_Lifestyles_Corrected.xlsx` | by type + flavour colour ✓ |
+| Topical | 38 | `WA_Topicals_Regulatory_Audited_Patch_Weights_Simplified.xlsx` (sheet 2) + 3 authored | one per form ✓ |
+| Drink | 50 | `WA_Drinks_Regulatory_Audited.xlsx` | by type + flavour colour ✓ |
+
+**Three of those six sources were replaced on 2026-09-22** and the old
+filenames are deleted from the branch — a generator pointed at one of them now
+fails at `read_rows`, which is the intended failure. The edibles file is a
+**catalogue replacement, not an edit**: 44 of its 55 products are new and 41 of
+the old 50 are gone, so nothing can be matched across by name.
+
+**Every edible, drink and topical now carries a regulatory net quantity**
+(`nq` the printed declaration, `nqa` the US amount, `nqb` "Weight"/"Volume"),
+shown on the product page between Details and Feelings and added up by the
+cart's weight bars. Flower, pre-rolls and concentrates don't need one: their
+size pill IS the regulatory weight.
 
 **87 Holistic products**; **62 carry a cannabinoid ratio** (pre-rolls carry
 none by design — see `design-decisions.md`).
@@ -615,9 +627,29 @@ polish and the open questions below.
    it is a live value now rather than dead code. Worth one look on a real
    handset.
 
-7. **One open question for Jack**, flagged where it lives: the **four deal
-   flowers** are his brands but my strain picks (`DEALS` in
-   `gen_catalog_products.py`, one line each to swap).
+7. **Open questions for Jack**, each flagged where it lives:
+
+   - The **four deal flowers** are his brands but my strain picks (`DEALS` in
+     `gen_catalog_products.py`, one line each to swap). Asked and explained
+     2026-09-22; still unanswered.
+   - **The edibles sheet has no price column.** `PRICE_LADDER` in
+     `gen_edibles.py` re-uses each brand's own ladder from the sheet this one
+     replaced (recovered at `759e5ad^`), walked in order so the brand keeps its
+     price level and spread. Every brand makes exactly one form in both sheets,
+     and the generator asserts that still holds. **This is the only field in
+     the catalog that is not Jack's current data.** When the sheet carries a
+     price column, delete `PRICE_LADDER` and read it.
+   - **Pre-rolls get one 1 oz bar, and the rule has no pre-roll bucket.** A
+     plain flower pre-roll is useable cannabis and shares flower's single 1 oz
+     allowance; LCB's CCRS guidance classifies an infused or Trifecta pre-roll
+     as a *concentrate*, under the 7 g one. The shelf bar is right for the 45
+     plain pre-rolls and generous to the 15 infused/Trifecta ones, and flower +
+     plain pre-rolls can together reach 2 oz where the rule allows 1. Jack
+     chose one bar per shelf knowing this; `LIMITS` is where to change it.
+   - **Topicals get their own 72 oz bar** for the same reason: the rule puts
+     liquid topicals in the *same* bucket as liquid edibles.
+
+8. **Four sub-bubbles still have photos but no products** — see item 5.
 
    *The Filter-pill contrast question is closed* (2026-08-20): Filter now uses
    Origins U's Search olive `#555624` at 7.66:1, clearing AA and AAA. The
