@@ -74,10 +74,39 @@ def embed(relpath, maxw, q=82):
     b = io.BytesIO(); im.save(b, "JPEG", quality=q, optimize=True)
     return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
 
+def embed_crop_square(relpath, box, maxw, q=82):
+    """box = (left, top, right, bottom) in source pixels; crops then embeds as PNG (keeps transparency)."""
+    im = Image.open(ref / relpath)
+    im = im.crop(box)
+    if im.width > maxw:
+        im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
+    b = io.BytesIO(); im.save(b, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
+
+def embed_crop(relpath, box, maxw, q=82):
+    """box = (left, top, right, bottom) in source pixels; crops then embeds as JPEG."""
+    im = Image.open(ref / relpath)
+    if im.mode != "RGB":
+        im = im.convert("RGB")
+    im = im.crop(box)
+    if im.width > maxw:
+        im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
+    b = io.BytesIO(); im.save(b, "JPEG", quality=q, optimize=True)
+    return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
+
 src = src.replace("%%HERO_IMG%%", embed("photos/hill.webp", 1400, 80))
 src = src.replace("%%MAP_IMG%%", embed("photos/Australia Map.png", 1000, 82))
 src = src.replace("%%FAQ_IMG%%", embed("photos/FAQ photo.webp", 900, 82))
 src = src.replace("%%FEEDBACK_IMG%%", embed("photos/Volunteer Photo.jpeg", 1400, 80))
+src = src.replace("%%YOUTUBE_IMG%%", embed("photos/Media - Youtube Photo.png", 1200, 82))
+src = src.replace("%%EVENT1_IMG%%", embed("photos/Fundraiser Photo 3.png", 700, 82))
+src = src.replace("%%EVENT2_IMG%%", embed("photos/Fundraiser Photo.png", 700, 82))
+src = src.replace("%%FB_COVER_IMG%%", embed_crop("photos/Media - Facebook Photo.png", (0, 0, 2192, 745), 1200, 82))
+src = src.replace("%%FB_AVATAR_IMG%%", embed_crop_square("logos/OxFam Logo w: Background.png", (0, 50, 400, 450), 160))
+src = src.replace("%%EXPERTS_IMG%%", embed("photos/Media Photo.png", 700, 82))
+src = src.replace("%%CONTACT_IMG%%", embed("photos/Media Contact Headshot 2.png", 300, 84))
+src = src.replace("%%REPORT_IMG%%", embed("photos/Report Photo.jpeg", 1200, 80))
+src = src.replace("%%PORTAL_IMG%%", embed("photos/OxFam Portal Photo.webp", 700, 82))
 
 # ---- entity-encode everything outside <script>/<style> ----
 segs = re.split(r'(<script[\s\S]*?</script>|<style[\s\S]*?</style>)', src)
