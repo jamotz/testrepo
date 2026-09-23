@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""Assemble the Oxfam wizard FAQ page: embed fonts + logo SVG + photos.
-Source screenshots are the user's own lo-fi mockups (reference/oxfam/lofi,
-reference/oxfam/photos, reference/oxfam/logos) -- NOT the old page-0X
-carbon-copy of the real site used by ../hifi-build for the case study.
-Run from anywhere: python3 reference/oxfam/wizard-build/asm_landing.py
+"""Assemble the ONE combined Oxfam wizard artifact (landing/FAQ/feedback as
+in-page screens toggled by nav(), not three separate artifacts).
+Run from anywhere: python3 reference/oxfam/wizard-build/asm_wizard.py
 Fonts (Oswald, Open Sans) are fetched from Google Fonts once and cached
 durably in ./fontcache so later runs work offline.
-Output: <scratchpad>/oxfam-wizard-faq.html (or ./oxfam-wizard-landing.html)."""
+Output: <scratchpad>/oxfam-wizard.html (or ./oxfam-wizard.html)."""
 from PIL import Image
 import base64, io, os, pathlib, re, urllib.request
 
@@ -14,7 +12,7 @@ REPO = pathlib.Path(__file__).resolve().parents[3]
 ref = REPO / "reference/oxfam"
 build = pathlib.Path(__file__).resolve().parent
 cache = build / "fontcache"; cache.mkdir(exist_ok=True)
-src = (build / "faq.src.html").read_text()
+src = (build / "wizard.src.html").read_text()
 
 SCRATCH = pathlib.Path(os.environ.get("CLAUDE_SCRATCHPAD", ""))
 out_dir = SCRATCH if SCRATCH.exists() else pathlib.Path(".")
@@ -76,14 +74,17 @@ def embed(relpath, maxw, q=82):
     b = io.BytesIO(); im.save(b, "JPEG", quality=q, optimize=True)
     return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
 
+src = src.replace("%%HERO_IMG%%", embed("photos/hill.webp", 1400, 80))
+src = src.replace("%%MAP_IMG%%", embed("photos/Australia Map.png", 1000, 82))
 src = src.replace("%%FAQ_IMG%%", embed("photos/FAQ photo.webp", 900, 82))
+src = src.replace("%%FEEDBACK_IMG%%", embed("photos/Volunteer Photo.jpeg", 1400, 80))
 
 # ---- entity-encode everything outside <script>/<style> ----
 segs = re.split(r'(<script[\s\S]*?</script>|<style[\s\S]*?</style>)', src)
 src = ''.join(x if (x[:7] == '<script' or x[:6] == '<style')
               else x.encode('ascii', 'xmlcharrefreplace').decode() for x in segs)
 
-out = out_dir / "oxfam-wizard-faq.html"
+out = out_dir / "oxfam-wizard.html"
 out.write_text(src)
 markers = src.count("%%") + src.count("/*FONTS*/") + src.count("<!--LOGO-->")
 print(f"wrote {out} ({len(src)//1024} KB); fonts={len(fcss)}; markers left={markers}")
