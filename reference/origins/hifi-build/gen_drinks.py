@@ -3,8 +3,8 @@
 
 Source (reference/origins/product info/):
   - WA_Drinks_IA_Condensed.xlsx   the filter IA + the rules sheet
-  - WA_Drinks_50_Product_List_Lifestyles_Corrected.xlsx
-                                  the 50 products (Jack, 2026-09-20)
+  - WA_Drinks_Regulatory_Audited.xlsx
+                                  the 50 products (Jack, 2026-09-22)
 
 That normalised sheet replaced one that stated the dose as PROSE in a single
 "Serving Size" column, in eight different shapes -- "10mg THC / 100mg package",
@@ -39,7 +39,7 @@ import os, re, sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 XLSX = os.path.join(REPO, "reference/origins/product info/"
-                    "WA_Drinks_50_Product_List_Lifestyles_Corrected.xlsx")
+                    "WA_Drinks_Regulatory_Audited.xlsx")
 
 from xlsxread import read_cells
 from html import unescape as unesc
@@ -70,7 +70,18 @@ CANNABINOIDS = ["THC", "CBD", "CBN", "CBG", "CBC"]
 REQUIRED = (["Brand", "Product Name", "Flavor", "Cannabinoid Category", "Lifestyle",
              "Type", "Size", "Cannabinoid Combo", "Ratio (Tile)"]
             + ["%s %s mg" % (c, w) for c in CANNABINOIDS for w in ("Serving", "Total")]
-            + ["Servings Per Package", "WA Retail Price", "Description"])
+            + ["Servings Per Package", "WA Retail Price", "Description",
+               "Net Qty Basis", "Net Amount (US)", "US Unit",
+               "Regulatory Quantity Display"])
+
+# The sheet names every drink after its own volume -- "Blackberry Lemonade
+# 12 oz". Jack, 2026-09-22: take it out of the name, because the regulatory net
+# quantity now has a line of its own on the product page and the name was
+# carrying a fact twice. Only an EXACT trailing " " + the Size cell comes off,
+# so a name that happens to end in a number keeps it.
+def trim_size(name, size):
+    tail = " " + size.strip()
+    return name[:-len(tail)] if name.endswith(tail) else name
 
 # ---- Photos. Jack supplied 11 shots: three bottle colours, four shot colours,
 #      two can sizes, one sorbet and one honey. One flat photo per type would
@@ -162,20 +173,18 @@ def load():
 
 
 def category(r):
-    """The drinks IA's first level: THC / CBD / Blend.
+    """The drinks IA's first level: THC / CBD / Blend, straight from the sheet.
 
-    The 2026-09-21 sheet relabelled this column's "THC" as "THC Only", matching
-    the Cannabinoid Combo vocabulary - but left "CBD" as "CBD", so the set reads
-    THC Only / CBD / Blend. Taken verbatim that renames one of the three bubbles
-    on the Drinks shop screen and leaves it asymmetric with its two neighbours.
-    The partition is untouched (still 26 / 7 / 17, exactly matching the combo),
-    so this is a label edit, and one that looks incidental rather than intended.
-    Normalised back to the documented IA here, and flagged to Jack: if he wants
-    the bubble to read "THC Only", that is a deliberate IA change and this
-    function is where to make it.
+    This used to normalise "THC Only" back to "THC". The 2026-09-21 upload had
+    relabelled column D's 26 THC rows as "THC Only" while leaving "CBD" alone,
+    which taken verbatim renamed one of the three Drinks bubbles and left the
+    set asymmetric (THC Only / CBD / Blend). The partition never changed, so it
+    read as an incidental label edit rather than an IA decision -- and Jack
+    confirmed it: "Should just say THC". Fixed in the sheet on 2026-09-22, so
+    the translation is deleted rather than left as a silent repair of data that
+    is now correct. check() below rejects anything outside the three.
     """
-    return {"THC Only": "THC", "CBD Only": "CBD"}.get(
-        r["Cannabinoid Category"], r["Cannabinoid Category"])
+    return r["Cannabinoid Category"]
 
 
 def check(rows):
@@ -238,10 +247,30 @@ def main():
     rows = load()
     check(rows)
 
+    # Two Sungaze seltzers differ only by volume ("... 12 oz" / "... Supernova
+    # 16 oz"), so prove the trim leaves 50 distinguishable products rather than
+    # discovering a collision on the shelf.
+    trimmed = [(unesc(r["Brand"]), trim_size(unesc(r["Product Name"]), r["Size"]))
+               for r in rows]
+    dupes = {k for k in trimmed if trimmed.count(k) > 1}
+    if dupes:
+        sys.exit("gen_drinks: trimming the size collides these products: %s"
+                 % sorted(dupes))
+
     out, unknown = [], set()
     for i, r in enumerate(rows):
-        name, brand = unesc(r["Product Name"]), unesc(r["Brand"])
         size = r["Size"]
+        name, brand = trim_size(unesc(r["Product Name"]), size), unesc(r["Brand"])
+        # The regulatory declaration, and the two numbers the cart adds up.
+        # The sheet formats with Excel's TEXT(x,"0.##"), which leaves a whole
+        # number wearing a trailing point; correct in a spreadsheet, wrong on a
+        # product page, so it comes off here and the sheet stays uniform.
+        nq  = re.sub(r"(\d)\.(?=\s)", r"\1", r["Regulatory Quantity Display"])
+        nqa = num(r["Net Amount (US)"])
+        nqb = r["Net Qty Basis"]
+        if not nq or not nqa or nqb not in ("Weight", "Volume"):
+            sys.exit("gen_drinks: %s has no usable net quantity (%r/%r/%r)"
+                     % (name, nq, nqa, nqb))
         life = LIFE_OF[r["Lifestyle"]]
         order, serving, total, srv = doses(r)
         main_c = order[0]                        # what the serving line names
@@ -266,10 +295,11 @@ def main():
         # the colour rules; only the chip is gone (Jack, 2026-09-21).
         out.append(
             ' {t:"drink",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],'
+            'nq:"%s",nqa:%g,nqb:"%s",'
             'mg:%g,srv:%g,%s%ssub:"%s",sub2:"%s",main:"%s",combo:"%s",ratio:"%s",'
             'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],d:"%s"},'
-            % (esc(r["Product Name"]), esc(r["Brand"]), photo_for(r, unknown),
-               price, size, price, size,
+            % (esc(name), esc(r["Brand"]), photo_for(r, unknown),
+               price, size, price, size, esc(nq), nqa, nqb,
                serving[main_c], srv, cbd_flag, can,
                category(r), r["Type"], main_c,
                r["Cannabinoid Combo"], esc(ratio),

@@ -2,9 +2,17 @@
 """Turn Jack's topicals catalog into the app's topical products.
 
 Source (reference/origins/product info/):
-  - WA_Topicals_Product_Catalog_Final.xlsx
+  - WA_Topicals_Regulatory_Audited_Patch_Weights_Simplified.xlsx
       sheet 1: the filter IA  (effect -> the forms available for it)
       sheet 2: the 35 products
+
+Two sizes, deliberately. The sheet now carries a REGULATORY net quantity
+("Net Wt. 2. oz (56.7 g)") alongside the raw figure the catalog was built on
+(60, 75, 100, ...). Jack's call, 2026-09-22: the tile keeps the millilitre
+figure shoppers have been seeing, and the regulatory declaration gets its own
+line on the product page and drives the cart's weight bar. They are different
+facts about the same jar, so they get different fields: `szs`/`pz` stay in mL,
+`nq` is the printed declaration, and `nqa`/`nqb` are what the cart adds up.
 
 Filter path: Topicals -> effect (Pain Relief, Recovery, Cooling, Warming,
 Massage, Skincare, Intimacy), then the form as the second level, matching how
@@ -18,7 +26,8 @@ Run: python3 reference/origins/hifi-build/gen_topicals.py
 import os, re, sys, zipfile
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-XLSX = os.path.join(REPO, "reference/origins/product info/WA_Topicals_Product_Catalog_Final.xlsx")
+XLSX = os.path.join(REPO, "reference/origins/product info/"
+                    "WA_Topicals_Regulatory_Audited_Patch_Weights_Simplified.xlsx")
 
 
 def read_rows(path, sheet_idx=0):
@@ -88,7 +97,11 @@ def esc(s):
 
 
 def size_label(raw):
-    """Sizes are millilitres except the patches, which come by the piece."""
+    """Sizes are millilitres except the patches, which come by the piece.
+
+    The sheet's "App Tile Size" column already reads "60 mL" / "1 Patch", so
+    this now only has to cope with the AUTHORED rows below, which still carry
+    a bare number the way the old sheet did."""
     raw = (raw or "").strip()
     return raw if not raw.replace(".", "").isdigit() else "%g mL" % float(raw)
 
@@ -122,20 +135,64 @@ def cannabinoids(r):
 
 
 # ---- AUTHORED: not in Jack's sheet, added on request (2026-08-10).
-# Two THC-only Pain Relief products and one CBD:CBN Recovery cream. Columns
-# match the sheet exactly so they flow through the same code path.
+# Two THC-only Pain Relief products and one CBD:CBN Recovery cream. These three
+# are the reason the app has 38 topicals against the sheet's 35.
+#
+# Their net quantities are NOT in any sheet, so they are taken from the form's
+# own convention in Jack's data rather than made up per product: every Roll-On
+# he lists is 3.4 fl oz (100 mL), every Balm / Salve 2 oz (56.7 g), every Cream
+# 2 oz (56.7 g). Asserted against the sheet below, so if he ever re-sizes a
+# form these stop agreeing loudly instead of drifting quietly.
+AUTHORED_NQ = {"Roll-On":      ("Volume", 3.4, "fl oz", 100.0, "mL"),
+               "Balm / Salve": ("Weight", 2.0, "oz",     56.7, "g"),
+               "Cream":        ("Weight", 2.0, "oz",     56.7, "g")}
 AUTHORED = """Agro Couture\tDeep Relief Roll-On\tRoll-On\tPain Relief\t200\t0\t\t\t100\t27.99\tTHC-forward roll-on built for targeted relief on sore joints and hard-worked muscles.
 Heylo\tRescue Balm\tBalm / Salve\tPain Relief\t200\t0\t\t\t60\t22.99\tThick THC balm that stays where it is applied, for concentrated relief on a single sore spot.
 Mary's Medicinals\tNight Recovery Cream\tCream\tRecovery\t0\t100\tCBN 100mg\tCBD:CBN 1:1\t50\t32.99\tEvening recovery cream pairing CBD with CBN, formulated for the end of a long day."""
 
 hdr, recs = read_rows(XLSX, 1)
+NQ_COLS = ["Net Qty Basis", "Net Amount (US)", "US Unit",
+           "Net Amount (Metric)", "Metric Unit", "Regulatory Quantity Display",
+           "App Tile Size"]
+missing = [c for c in NQ_COLS if c not in hdr]
+if missing:
+    sys.exit("gen_topicals: sheet is missing column(s): %s" % ", ".join(missing))
+if len(recs) != 35:
+    sys.exit("gen_topicals: expected 35 sheet rows, read %d" % len(recs))
+
+# The forms the AUTHORED rows borrow a net quantity from must still agree with
+# the sheet, or the borrowed figure has quietly gone stale.
+for form, (_b, us, uu, _m, _mu) in AUTHORED_NQ.items():
+    seen = {(r["Net Amount (US)"], r["US Unit"]) for r in recs if r["Product Type"] == form}
+    if ("%g" % us, uu) not in {(str(float(a)).rstrip("0").rstrip("."), u) for a, u in seen}:
+        sys.exit("gen_topicals: AUTHORED_NQ[%r] says %g %s, sheet says %s"
+                 % (form, us, uu, sorted(seen)))
+
 for line in AUTHORED.strip().split("\n"):
-    recs.append(dict(zip(hdr, line.split("\t"))))
+    r = dict(zip(hdr, line.split("\t")))
+    basis, us, uu, mt, mu = AUTHORED_NQ[r["Product Type"]]
+    r["Net Qty Basis"], r["Net Amount (US)"], r["US Unit"] = basis, us, uu
+    r["Net Amount (Metric)"], r["Metric Unit"] = mt, mu
+    r["Regulatory Quantity Display"] = "%s %g %s (%g %s)" % (
+        "Net Wt." if basis == "Weight" else "Net Vol.", us, uu, mt, mu)
+    r["App Tile Size"] = ""                      # falls through to size_label()
+    recs.append(r)
 out = []
 for i, r in enumerate(recs):
     form, effect = r["Product Type"].strip(), r["Effect"].strip()
     pot, cbd, othv, othname, combo, ratio = cannabinoids(r)
-    size = size_label(r["Size (mL)"])
+    size = size_label(r["App Tile Size"] or r["Original Size Entry"])
+    # The regulatory declaration, and the two numbers the cart adds up:
+    # `nqa` is the US amount, `nqb` its basis ("Weight" -> oz, "Volume" -> fl oz).
+    # The sheet formats with Excel's TEXT(x,"0.##"), which leaves a whole
+    # number wearing a trailing point -- "Net Wt. 2. oz (56.7 g)". Correct in a
+    # spreadsheet, wrong on a product page, so the point goes here rather than
+    # in the sheet, where it keeps all 35 rows formatted alike.
+    nq   = re.sub(r"(\d)\.(?=\s)", r"\1", r["Regulatory Quantity Display"].strip())
+    nqa  = float(r["Net Amount (US)"])
+    nqb  = r["Net Qty Basis"].strip()
+    if not nq or not nqa:
+        sys.exit("gen_topicals: %s has no net quantity" % r["Product Name"])
     price = float(r["MSRP (USD)"])
     thc = float(r["THC (mg)"] or 0)
 
@@ -150,10 +207,11 @@ for i, r in enumerate(recs):
     # A topical has no taste; the field is simply wrong for this shelf.
     out.append(
         ' {t:"topical",n:"%s",b:"%s",img:"%s",pr:%g,pz:{"%s":%g},szs:["%s"],'
+        'nq:"%s",nqa:%g,nqb:"%s",'
         '%s%ssub:"%s",sub2:"%s",etype:"%s",%scombo:"%s",ratio:"%s",'
         'st:"%s",f:["%s"],sale:0,r:%s,rv:%d,fe:["%s"],d:"%s"},'
         % (esc(r["Product Name"]), esc(r["Brand"]), PHOTO.get(form, "top_balm"),
-           price, size, price, size,
+           price, size, price, size, esc(nq), nqa, nqb,
            ("thc:%g," % thc if thc else ""), extra,
            esc(effect), esc(form), esc(form),
            ('pot:"%s",' % pot if pot else ""), combo, ratio,

@@ -1199,6 +1199,57 @@ to take the edible treatment: the package total per cannabinoid in the bubbles,
 the serving on the slot (`10mg THC / Serving`). Drinks now carry `can` and take
 the same branch of `servTotal` as edibles.
 
+## Deals
+
+### Put the discount in priceFor, not in the deal row
+The 30% brand deal was display-only for a month: a banner, four logo tiles, and
+full prices behind every one of them. The comment at `DEALDEF.brand` said so
+outright — "priceFor doesn't model it" — and the deal note told shoppers the
+prices below were today's rather than discounted.
+
+Making it real was one function. `priceFor` returns `{now, was}`, and the
+cards, the product page, the per-size list, the cart and the confirmation all
+already read that shape, so the discount reached five screens from one change.
+A discount implemented in the deal row would have reached exactly one.
+
+Precedence is written down even though nothing needs it: no product sits in
+both this and the flagged-flower deals, and if one ever did, the deeper
+per-size discount wins over the flat 30%.
+
+### `p.sale` does not mean "on sale"
+It means "one of the four flowers `gen_catalog_products.py` nominated for the
+2-for-$50 and bulk deals", because `priceFor` keys those deals off it. So the
+Filter drawer's **On sale** switch — reading that flag directly — could not see
+26 genuinely discounted products. It asks `onSale(p)` now, and the facet went
+from 4 products to 30.
+
+A flag whose name is broader than its meaning will be read by its name sooner
+or later. The fix is a predicate that says what the question actually is.
+
+### A helper must not reach forward to a `const`
+`inBrandDeal` first read its brand list out of `DEALDEF`, which sits about a
+thousand lines further down the file. `priceFor` runs during load; reading a
+`const` before its declaration **throws** rather than yielding `undefined`; the
+throw aborted the rest of the script, so `DEALDEF` never initialised at all and
+the home screen rendered zero tiles. The app was dead, and the build was clean.
+
+The list lives ahead of its users now and `DEALDEF` borrows it. The general
+rule: a function called during initialisation may only reach backwards. The
+reason this was caught in seconds rather than shipped is that the probe drove
+the real page and watched for `pageerror`, which a screenshot would not have
+surfaced — the layout looked plausible either way.
+
+### A big diff is not a worse diff
+`snapshot-guard` flagged five screens, the most it has ever reported at once,
+and every one was legitimate: a price cell that now holds two numbers appears
+on shop, list, product and cart, plus the tile change on home. One change can
+honestly touch five screens when it changes a price, because the price is on
+five screens.
+
+What turned "five screens moved" into an argument was diffing the cards
+themselves: 36 changed, all four deal brands, zero others, arithmetic exact.
+The screen count is not the signal; the traceability is.
+
 ### The page shows its own reasoning
 Feelings and Taste were asserted: two rows of adjectives with nothing saying
 where they came from. They come from the terpenes, and the terpenes were read
@@ -2127,3 +2178,482 @@ otherwise asserted and wrote nothing, which is the good outcome. And when
 testing this, `querySelectorAll('.edulife span')` matches both the outer
 lifestyle wrapper *and* the inner letter span, so the tile reads as eleven
 entries rather than six; that is the selector, not a bug.
+---
+
+## Regulatory weight limits, and where the rule and the shelf disagree
+*(2026-09-22)*
+
+Jack asked for WA purchase limits: a cap on how much of each category can go in
+the bag, weight bars at the bottom of the cart, and the brown bubble when an
+add is refused. `WA_Cannabis_Regulatory_Weights_All_Categories.xlsx` supplies
+the figures, citing WAC 314-55-095(1)(d)(i).
+
+**The rule's buckets are not the shop's shelves**, and that is the whole design
+question. WAC limits four things per transaction: useable cannabis (1 oz),
+concentrate for inhalation (7 g), solid cannabis-infused product (16 oz) and
+liquid edible *or liquid topical* (72 oz). The shop has six shelves. They
+cross-cut in two places:
+
+- A **plain flower pre-roll** is useable cannabis and shares flower's single
+  1 oz allowance. An **infused or Trifecta** pre-roll is classified as a
+  concentrate in LCB's CCRS guidance, under the 7 g one. One Pre-Rolls shelf,
+  two buckets.
+- A **liquid topical** shares the 72 oz bucket with drinks. A balm or a bath
+  soak isn't clearly in any of the four.
+
+Presented with both, Jack chose **one bar per shelf** — six bars, with Edibles
+and Drinks renamed *Solid Edibles* and *Liquid Edibles*. The accuracy cost is
+written into `LIMITS` beside the constants, not hidden: flower plus plain
+pre-rolls can reach 2 oz where the rule allows 1, and a Trifecta pre-roll
+spends a 28 g allowance rather than a 7 g one. Six bars that a shopper can map
+onto the shelf they were just browsing beat four that are right but unplaceable
+— and the trade is one constant to reverse.
+
+**Honey and sorbet moved buckets, in the sheet rather than in code.** Both were
+declared by weight (`Net Wt. 4 oz`), which would have put them in the 16 oz
+*solid* bucket. Jack: they are liquid edibles. Eleven rows re-declared as
+volume — `Net Vol. 4 fl oz (118 mL)` — with their serving amounts, packaging
+requirement and an audit row updated to match. The app reads the sheet; the
+sheet states the classification. A rule in `gen_drinks.py` saying "honey is
+really a liquid" would have been the same fix in the place it could not be
+found.
+
+**28 g of flower reads as 28 of 28 and is still legal.** One ounce is 28.3495 g
+and the biggest jar on the shelf is 28 g, so a bar drawn against a round 28
+would show a legal ounce as full. `limitMax()` draws against the real figure and
+`L.max` labels with the round one, which is also how the packaging is sold.
+
+**The limit is enforced at one door.** Every Add and every `+` outside the cart
+goes through `addToCart`, which now returns false and toasts instead of adding.
+The cart screen's own `+` is the single increment that does not, so it carries
+the same check explicitly — a comment says so, because it is exactly the hole a
+later edit would reopen.
+
+---
+
+## Two sizes for one jar
+*(2026-09-22)*
+
+The new topicals sheet declares a regulatory net quantity (`Net Wt. 2 oz
+(56.7 g)`) beside the raw figure the catalog was built on (`60`). Those
+disagree for most rows — Ceres Dragon Balm is 60 in one column and 2 oz in the
+other — so one of them had to win the size pill.
+
+Jack's call: **neither replaces the other.** The tile keeps the millilitre
+figure shoppers have been seeing, the sheet gained an explicit `App Tile Size`
+column to hold it, and the regulatory declaration gets its own row on the
+product page and drives the cart bar. They are different facts about the same
+jar, so they get different fields: `szs`/`pz` stay in mL, `nq` is the printed
+declaration, `nqa`/`nqb` are what the cart adds up.
+
+**Drinks went the other way.** Their volume was in their *names* — "Blackberry
+Lemonade 12 oz" — which is the same fact twice once the product page states it.
+`trim_size()` takes off an exact trailing match of the Size cell and nothing
+else, and the generator proves the 50 products stay distinguishable afterwards
+before it emits anything (two Sungaze seltzers differ only by volume).
+
+That left the card with no volume at all, and the first attempt to put it back
+— appending `· 12 OZ` to the serving pill — wrapped to two lines in a 452px
+card, orphaned the separator and made **every** card in the row 17px taller,
+drinks or not. It rides the brand line instead, which is short enough to take
+it. The snapshot guard is what showed the row growing; the screenshot is what
+showed it looking wrong.
+
+---
+
+## The sheet was never broken, the reader was — the openpyxl variant
+*(2026-09-22)*
+
+Adding one column to the topicals sheet with openpyxl blanked the cached value
+of **35** formula cells in that file and **445** in the drinks file, including
+`K`/`M`/`O`/`Q`/`S` — the per-cannabinoid *total mg* columns `gen_drinks.py`
+reads.
+
+`load_workbook(f)` without `data_only=True` keeps formulas and discards Excel's
+cached results; saving then writes `<f>…</f><v/>`. Excel recalculates on open,
+so the file looks perfect to a human. Every tool that reads cached values —
+this repo's generators, and `data_only=True` in openpyxl itself — sees blanks.
+
+Caught only because `gen_topicals.py` asserts a net quantity on every row and
+died on row one. Without that assert it would have emitted 35 topicals with an
+empty `nq` and a build that looked fine.
+
+Restored from the pre-edit blobs in git and written back as **literal values,
+not formulas**, so the figures survive the next save by any tool, then verified
+cell-by-cell against those blobs: the only differences were the 99 cells of the
+11 honey/sorbet rows, the 4-cell audit row and the 36 cells of the new column.
+
+**The rule this adds:** an assertion that a value *exists* is worth as much as
+one that it is correct, and a spreadsheet edit is a code change — diff it
+against what it replaced before trusting it.
+
+---
+
+## Aligning two different type sizes by their cap height
+*(2026-09-22)*
+
+Jack has asked twice for the store name and the phone number on the landing
+page to share a top line. `align-items:center` put the phone's first line
+4–6px above the city name, and — because the two cards' phone blocks wrap to
+different heights in Enlarged — off by a *different* amount on each card
+(measured −5.5/−6.5px Standard, +2.2/−11.4px Enlarged).
+
+`flex-start` is not the fix either. Each element's box top sits a
+font-size-proportional half-leading above its cap height, and the two sizes do
+not scale together between the token sets (20→26 against 13→22), so no fixed
+nudge can hold at both. The measured residual was 3px.
+
+`text-box-trim: trim-start` + `text-box-edge: cap alphabetic` makes each box
+*start* at its own cap height, so `flex-start` then aligns the letters
+themselves. **0.00px on both cards at both sizes**, measured by scanning the
+rendered pixels for the first row of ink rather than by reading
+`getBoundingClientRect`, which returns the line box and had been quietly
+reporting a constant −0.92px whatever the font size.
+
+Browsers without `text-box-trim` fall back to plain `flex-start`, still closer
+than the centring it replaces.
+
+---
+
+## A lifestyle narrows what you are looking at
+*(2026-09-22)*
+
+The mood chips used to clear `type`, `sub`, `sub2`, `sub3`, `eform`, `size` and
+`deal` and hand back every product in that lifestyle. The reasoning written
+here on 2026-08-17 was that "a lifestyle is a view ACROSS the shop, not a
+filter inside the shelf you happen to be standing on", and the symptom it was
+fixing was real: tapping Discovery from the Flower shelf showed 4 of 36
+products and left the Flower title and bubbles in place, so it read as though
+nothing had happened.
+
+Jack's answer is the opposite one, and it is better: **the bubbles should stay
+and the lifestyle should narrow what they produced.** The original symptom was
+never that the shelf survived — it was that 4-of-36 looked like a no-op. The
+chip lighting up, the count changing and the bubbles staying put say plainly
+that the lifestyle did something *to this shelf*.
+
+Two bugs fell out of the same state-versus-paint split:
+
+- **Back to Shop left the chip lit** with nothing filtered by it, and tapping
+  it there to clear it ran the `S.screen!=="list"` branch and dropped you on
+  All Products. Turning a chip *off* now never navigates: it can only
+  un-narrow a view you are already looking at.
+- **Clear all** already set `S.mood = null`, but redrew only the drawer — so
+  the chip on the bar behind it stayed lit. It redraws the three mood bars now.
+
+Both were invisible in the state and obvious on screen, which is the argument
+for driving the real app in a browser rather than reading the reducer.
+
+---
+
+## Edibles open on the cannabinoid, like every other shelf
+*(2026-09-22)*
+
+The old edible IA opened on five mixed categories — THC Edibles, CBD Edibles,
+THC Dominant, CBD Dominant, Balanced — which asked a *cannabinoid* question and
+an *effect* question on the same row of bubbles, then drilled to extraction for
+one of them and to effect tiles for the other four.
+
+`Edible_Filter_Architecture_THC_CBD_Blend.xlsx` replaces it with
+**Cannabinoid → Product Type → Concentrate Type**, matching drinks and
+pre-rolls, which both open on THC / CBD / Blend. Lifestyle and Effect stop
+being a level and are reached from the lifestyle chips and the global filter,
+where every other shelf keeps them.
+
+Jack's message said "type of edible to start off with" and his sheet said
+cannabinoid first; asked which, he confirmed the sheet and asked for the sheet
+to say so in words rather than in column headings. It does now, on both tabs.
+
+All three levels are **inventory-driven** — a level offers only values some
+product on the shelf actually has, in the sheet's order — so a bubble can never
+lead to an empty shelf. The old renderer offered a fixed list per category and
+dimmed the empties instead. Blend → Capsules correctly offers three concentrate
+types, not four: no Blend capsule is made with Live Rosin.
+
+One consequence worth knowing: `S.sub` for an edible now holds THC/CBD/Blend,
+so Guide Me's edible question had to move to `S.eform` (which matches
+`p.etype`). Its options were "Chocolates, Gummies, Mints, Drinks" — two forms
+the catalog has never carried, Drinks being its own shelf — and are now the
+same five forms the shop uses.
+
+---
+
+## The bars follow the rule, not the shelf
+*(2026-09-22, same day, superseding the section above)*
+
+The first cut gave each of the six shop shelves its own weight bar, with the
+accuracy cost written into `LIMITS`. Jack read that and removed the compromise:
+
+> "Flower includes plain flower pre rolls and flower. Concentrate includes
+> concentrate and infused/trifecta pre-rolls. They are not separate entities."
+
+So there are five buckets and the Pre-Rolls shelf has no bar. `limitKey()`
+routes each pre-roll by `sub2`: the 35 plain rows spend flower's 1 oz, the 20
+Infused and 5 Trifecta rows spend concentrate's 7 g. Verified in the built app:
+eight eighths fill flower to 28 g, a plain joint is then refused and an infused
+one is still allowed; one concentrate plus six infused joints is exactly 7 g.
+
+Worth recording that the compromise was never necessary. The argument for shelf
+bars was that a shopper can map a bar onto the shelf they were browsing — but a
+bar is not a shelf, it is an allowance, and two shelves sharing one allowance is
+the fact being communicated. A cart holding an eighth and two joints showing
+*one* Flower bar at 4.5 g says something true that two bars at 3.5 and 1 could
+not. The clearer design and the correct one were the same design, and naming the
+inaccuracy in a comment was not a substitute for not having it.
+
+Topicals keep a separate 72 oz bar, which is still a deliberate divergence: the
+rule shares that bucket with liquid edibles, and a Liquids bar would read, on a
+cart holding a seltzer and a balm, as one shelf eating the other's allowance.
+
+---
+
+## Everything the edibles sheet was missing, it now states
+*(2026-09-22)*
+
+The sheet `gen_edibles.py` was built against arrived without prices, without a
+servings-per-package column, and with one generic `Other mg` column where the
+named CBN/CBG pairs had been. The generator worked around all three: servings
+came from net weight / serving weight, the third cannabinoid was named from the
+Cannabinoid Combo column, and price re-used each brand's ladder from the sheet
+before it — the one field in the catalog that was not Jack's current data.
+
+The COMPLETE sheet states every one of them, plus a Pricing Notes tab recording
+each brand's price anchor, its rule and the source URL. All three workarounds
+are deleted. **`PRICE_LADDER` in particular is deleted rather than kept as a
+fallback** — a price table that only runs when a column goes missing is exactly
+the kind of thing that survives three sheet revisions and prices the catalogue
+wrongly without anyone noticing.
+
+**The cross-checks they justified are kept.** `total == serving × servings` is
+still asserted per cannabinoid, the Ratio column is still checked against the
+two figures, and net weight / serving weight is still asserted against the
+stated servings count — the calculation that used to *produce* that number now
+proves it. A check is cheap, and a sheet can change again.
+
+One data note: the sheet renames the CBD-only effect from "Pain Relief" to
+**"Comfort"**, to keep therapeutic-claim wording out of shopper-facing IA. Both
+labels are in `LIFE_EFFECT`, because the topicals IA still uses "Pain Relief"
+and a label falling through to the default would be a lifestyle assigned by
+accident rather than a visible failure.
+
+---
+
+## A drink's pill names its dose
+*(2026-09-22)*
+
+Drinks come in one size, so the product page's size "picker" is a label, not a
+choice — and it was spending that label on the volume, which is now stated in
+full two lines below it in Net Quantity. Jack: keep the serving, not the ounces.
+
+It reads `10mg THC / Serving` now, the same string the shop card has shown since
+2026-09-20, so the two agree. Every other shelf keeps `feedPill(size)`, because
+on those shelves the size genuinely is the thing being picked.
+
+---
+
+## A patch is a topical, so it is measured by weight
+*(2026-09-22)*
+
+The topicals sheet carried a column called "THC Serving/Application Review" and
+another called "Minimum Applications at ≤10mg THC", and both applied the EDIBLE
+serving rule to a topical: three single-patch SKUs at 100 mg THC were flagged
+REVIEW REQUIRED for exceeding the 10 mg per-serving limit, and every other row
+was told how many applications it would need to stay under it.
+
+Jack: "the patches should be based on the topical regulations, so by weight not
+dosage."
+
+That is what WAC 314-55-105(7) actually asks of a cannabis topical — net weight
+in ounces and grams, or volume as applicable — and the same master sheet that
+supplied the limits already says as much: for topicals, "Serving Amount Required
+on Label? Not explicitly required by topical labeling subsection". The flag was
+the edible frame applied to a class the edible frame does not govern.
+
+The columns are now "Topical Regulatory Basis" and "Unit Count (metadata)", the
+two audit rows are rewritten and marked Resolved, and patch count is recorded as
+shopper-facing metadata sitting beside the net-quantity declaration rather than
+replacing it.
+
+**The app needed no change**, which is the point worth recording: patches were
+already spending the topicals bucket by their declared 0.1 oz (2.8 g), because
+the cart adds up `nqa` — the net quantity — for every topical, and never looked
+at a dose. The sheet was describing a rule the code was not following. Fixing
+the description was the whole fix.
+
+One consequence of measuring a 0.1 oz item against a 72 oz allowance: 720
+patches fit. That is what by-weight means for something this light, and it is
+the rule rather than a bug.
+
+---
+
+## "THC Only" was a label, not a decision
+*(2026-09-22)*
+
+`gen_drinks.category()` had spent a day translating the drinks sheet's
+"THC Only" back to "THC" for the shop bubbles, with a comment explaining that
+the 2026-09-21 upload had relabelled 26 rows while leaving "CBD" alone — leaving
+the set asymmetric — and that the partition was unchanged, so it read as
+incidental. Jack confirmed: "Should just say THC."
+
+Fixed in the sheet, and the translation is **deleted rather than kept**. A
+normaliser that silently repairs data which is now correct is a trap: it makes
+the sheet and the app disagree without anything failing, and the next person to
+read either one has to find the other to know which is true. `check()` still
+rejects anything outside THC / CBD / Blend, so a future relabel fails loudly
+instead of being quietly absorbed.
+
+---
+
+## "1PATCH"
+*(2026-09-22)*
+
+Size pills close the gap between the number and its unit — `3.5 g` renders as
+3.5G, `60 mL` as 60ML — which reads well while the unit is a symbol. The
+topicals shelf has one size that is not a symbol, and `1 Patch` was rendering as
+**1PATCH**, which reads as a typo rather than a size.
+
+`feedPill()` now closes the gap only when the unit is two characters or fewer.
+Verified against every size string in the catalog: 22 distinct sizes, and the
+only one that moves is `1 Patch` → `1 PATCH`. The snapshot guard's one finding
+for this change is that pill getting 3px wider, which is the whole of it.
+
+Found by looking at the built product page rather than by any check — the three
+patches were the only rows affected, every guard was green, and nothing in the
+data was wrong.
+
+
+---
+
+## Shop is a fresh start
+*(2026-09-22)*
+
+The lifestyle chips came back a third time, with a path that made the previous
+two rounds look like the wrong diagnosis:
+
+> tap a product type, back out to the main shop page, tap a lifestyle — and it
+> sends you back into that product type. It should act like a global filter,
+> not be linked to prior pages.
+
+Reproduced exactly, and the state at each step is what gives it away:
+
+```
+tap Flower            screen=list   type=flower   sub=null
+drill Indoor          screen=list   type=flower   sub=Indoor
+Back to Shop          screen=shop   type=flower   sub=Indoor   <-- here
+tap Unwind on Shop    screen=list   type=flower   sub=Indoor   mood=unwind
+```
+
+**The chip was never the bug.** Step four is: the Back button changes the
+screen and nothing else, so Shop was still secretly standing inside Flower >
+Indoor. `renderShop()` does not read `S.type` at all — it draws all seven
+category circles and all six browse rows regardless — so the stale shelf was
+invisible right up until something acted on it. The chip acted on it.
+
+Fixed where it happens: arriving at Shop clears `type`, `strain`, `sub`,
+`sub2`, `sub3`, `eform`, `size` and `deal`. That is not a new rule, it is the
+existing one finally applied to the Back path — a category circle, a browse
+row's See All and the drawer's type facet had **all three** been clearing
+exactly those fields when they set a type since long before this. Back was the
+one door into a shelf that never cleaned up after itself.
+
+`mood`, `brands`, `thc` and `sale` are deliberately kept, and keeping them is
+what makes the chip global rather than merely unlinked: a lifestyle stays lit
+across Back, and a category picked afterwards opens inside it (Holistic lit,
+tap Topicals → Topicals in Holistic). Clearing the lifestyle too would have
+"fixed" the report and thrown away the feature.
+
+Verified on the built app, four paths at once: Jack's exact sequence now lands
+on **Unwind, 46 products across the shop**; narrowing inside a shelf still
+works (Holistic inside Drinks → Drinks, 16); a lit lifestyle survives Back and
+scopes the next category; and turning a chip off on Shop still does not
+navigate. All four guards green, and the snapshot guard passes outright — this
+round moved no pixels at all, because the bug was in state, not layout.
+
+*Three rounds on one control, and each round the fix moved further from the
+control.* First the chip cleared too much, then it navigated when it should not
+have, and finally it was innocent and the screen behind it was wrong. Worth
+remembering next time a widget keeps coming back: by the third report, suspect
+the state it reads rather than the widget reading it.
+
+---
+
+## The shelf is a bubble level too
+*(2026-09-22)*
+
+With a lifestyle selected and no shelf chosen, the bubble row was hidden and the
+screen under the chips was a bare grid. Jack: *"It still doesn't show the
+product tile bubbles filters under the lifestyles when you select a lifestyle.
+Can we make that a thing. I'd like those to stay while clicking on each of
+them."*
+
+The list screen now draws the **product types** whenever no shelf is chosen, so
+clicking Discovery, then Adventurous, then Social keeps one row of shelves under
+the chips the whole way and a shelf is one tap from any lifestyle. Vapes is left
+out of that row: it is a screen, not a shelf, and tapping it would navigate away
+from the list it is sitting on.
+
+**Picking one parks it far-left as a filled back bubble**, which is not a new
+idea — concentrates, edibles, pre-rolls and drinks have all parked their parent
+that way for weeks. The shelf is simply one level above those, so it gets the
+same treatment, and the hierarchy finally reads end to end: *All types →
+Concentrates → Rosin → Live Rosin*, one back bubble per level, never two. It is
+applied however you arrived, so Shop → Flower shows the parked bubble too rather
+than the same shelf looking different depending on the door you came in by.
+
+`renderShop()`'s icon and label maps were hoisted to module scope for this
+(`CATICON` / `CATLABEL` / `catCircle`). Two screens drawing the same row from two
+copies of the same map is a drift waiting to happen.
+
+**The first cut left the photo in the parked bubble**, on every shelf. A back
+bubble fills its ring with orange and draws a chevron over it, so a photo left
+inside shows *through* the orange and sits behind the chevron. The four branches
+that already had back bubbles were all passing an empty image for exactly this
+reason — but they did it with a bare `""` argument, so the rule was implied
+rather than stated, and reusing a helper that draws the photo by default walked
+straight past it. `catCircle` takes a `bare` flag now and the comment says what
+it is for. Checked across every shelf and level: 18 back bubbles, 0 carrying a
+photo.
+
+*An unwritten convention is one a new caller cannot follow.* Four call sites
+agreeing is not the same as the reason being findable.
+
+---
+
+## A dimmed bubble should mean "nothing here", not "nothing in the catalog"
+*(2026-09-22)*
+
+Adding the type row surfaced a dead end one level down: Holistic → Concentrates
+→ **Distillate** is 0 products, and the Distillate bubble gave no sign of it.
+
+Every bubble row was counting only its own level — "6 Rosin concentrates" — which
+is true of the catalog and stops being true on screen the moment another filter
+is on. That was harmless while a lifestyle *cleared* the shelf; since the
+2026-09-22 change it stays on while you drill, so the gap became reachable. The
+type row I had just added made it more reachable still, by inviting people to
+drill from inside a lifestyle.
+
+`bubbleCount(overrides)` now answers every level's question the same way: set the
+candidate facets, run the app's own `match()`, restore. Six branches, one
+counter. Two rows gained dimming they never had (the concentrate categories, and
+the flower/topical toggle row), and the edible levels stopped listing forms that
+the current lifestyle has none of.
+
+**Verified by exhaustion rather than by spot-check**: every lifestyle × every
+shelf × every bubble at every level, 898 bubbles clicked in the built app.
+Non-dimmed bubbles landing on an empty grid: **0**. Dimmed bubbles that actually
+had products: **0**. The dimming is now exactly truthful in both directions,
+which is the only version of it worth having.
+
+---
+
+## Two labels
+*(2026-09-22)*
+
+*"Use product type"* in Advanced Settings became **"Change lifestyle type"**. The
+toggle swaps the six lifestyle names for the six strain names; "product type"
+was the one phrase in the app that already means something else entirely — the
+shelf you are shopping — and it named this toggle by accident.
+
+The brand tiles on the deals row read **"6 Products"** rather than "6 flowers".
+The count is still flower-only, because the sale is, but the row sits among
+deals that are not all flower and the noun was doing no work.

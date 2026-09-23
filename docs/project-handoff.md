@@ -1,7 +1,7 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-09-17 · branch `claude/accessibility-handoff-review-dhabtz`
-**Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j
+**Last updated:** 2026-09-22 · branch `claude/accessibility-handoff-review-dhabtz`
+**Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j — **Version 46**, built at `232e7b4`
 
 > Both of these address the same artifact and either works as `url=`:
 > `claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j` (what the tool returns now) and
@@ -94,13 +94,13 @@ Rendering/screenshots use the preinstalled Chromium via Playwright:
 Publishing: republish to the **same artifact URL** above, or the link Jack has
 already shared stops being the live one. Pass the URL as `url=` — publishing
 without it mints a separate artifact. **The live link is current as of
-`8c96066`** (**Version 39**, republished 2026-09-21). Every check was
-re-run at that commit rather than assumed: `standard-guard.py` PASS 222 = 222,
+`d50e9b9`** (**Version 40**, republished 2026-09-22). Every check was
+re-run at that commit rather than assumed: `standard-guard.py` PASS 224 = 224,
 `snapshot-guard.js` PASS on all 24 screens, `enlarged-check.js` 0 findings
 across 4 viewports × 24 screens, `ratio.js` unchanged, `filter-audit.js`
 308/308 products reachable via Brands with no missing brands.
 
-**Both guards baseline at `c76ea7d`** — the Terpenes section is a new visible
+**Both guards baseline at `fa3be8e`** — the Terpenes section is a new visible
 element, so it moved stylesheet text *and* computed styles and both were
 re-baselined together. They do not always track: read each file's constant.
 The paragraph below is why they once differed, and is worth keeping.
@@ -235,16 +235,28 @@ icon reads as a different tab.
 
 ## Current state
 
-**308 products** across six types:
+**313 products** across six types:
 
 | Type | Count | Source | Photos |
 |---|---:|---|---|
 | Flower | 50 | `Flower Final pt2 Product List for WA.xlsx` | by strain type ✓ |
 | Concentrate | 60 | `Concentrate Final Product List for WA.xlsx` (all 60 rows, Kief and RSO included) | per consistency ✓ |
-| Edible | 50 | `WA_Edibles_By_Brand_Final_Curated_Normalized.xlsx` | by form + name ✓ |
+| Edible | 55 | `WA_Edibles_THC_CBD_Blend_COMPLETE_Unique_Descriptions.xlsx` | by form + name ✓ |
 | Pre-roll | 60 | `Pre-roll pt2 Product List Final for WA.xlsx` | by type + pack count ✓ |
-| Topical | 38 | `WA_Topicals_Product_Catalog_Final.xlsx` (sheet 2) + 3 authored | one per form ✓ |
-| Drink | 50 | `WA_Drinks_50_Product_List_Lifestyles_Corrected.xlsx` | by type + flavour colour ✓ |
+| Topical | 38 | `WA_Topicals_Regulatory_Audited_Patch_Weights_Simplified.xlsx` (sheet 2) + 3 authored | one per form ✓ |
+| Drink | 50 | `WA_Drinks_Regulatory_Audited.xlsx` | by type + flavour colour ✓ |
+
+**Three of those six sources were replaced on 2026-09-22** and the old
+filenames are deleted from the branch — a generator pointed at one of them now
+fails at `read_rows`, which is the intended failure. The edibles file is a
+**catalogue replacement, not an edit**: 44 of its 55 products are new and 41 of
+the old 50 are gone, so nothing can be matched across by name.
+
+**Every edible, drink and topical now carries a regulatory net quantity**
+(`nq` the printed declaration, `nqa` the US amount, `nqb` "Weight"/"Volume"),
+shown on the product page between Details and Feelings and added up by the
+cart's weight bars. Flower, pre-rolls and concentrates don't need one: their
+size pill IS the regulatory weight.
 
 **87 Holistic products**; **62 carry a cannabinoid ratio** (pre-rolls carry
 none by design — see `design-decisions.md`).
@@ -615,9 +627,31 @@ polish and the open questions below.
    it is a live value now rather than dead code. Worth one look on a real
    handset.
 
-7. **One open question for Jack**, flagged where it lives: the **four deal
-   flowers** are his brands but my strain picks (`DEALS` in
-   `gen_catalog_products.py`, one line each to swap).
+7. **Open questions for Jack**, each flagged where it lives:
+
+   - The **four deal flowers** are his brands but my strain picks (`DEALS` in
+     `gen_catalog_products.py`, one line each to swap). Asked and explained
+     2026-09-22; still unanswered.
+   - ~~**The edibles sheet has no price column**~~ — **CLOSED 2026-09-22.**
+     The COMPLETE sheet carries `WA Retail Price (USD)` with a Pricing Notes
+     tab naming each brand's anchor, rule and source. `PRICE_LADDER` is
+     deleted, not kept as a fallback: a stale price table fails silently.
+   - ~~**Pre-rolls get one 1 oz bar**~~ — **CLOSED 2026-09-22.** Jack: "Flower
+     includes plain flower pre rolls and flower. Concentrate includes
+     concentrate and infused/trifecta pre-rolls. They are not separate
+     entities." Five buckets now, and the pre-roll shelf has no bar of its own:
+     `limitKey()` sends its 35 plain rows to flower and its 25 Infused/Trifecta
+     rows to concentrate, which is also what WAC and the CCRS guidance say.
+   - **Topicals still get their own 72 oz bar.** The rule puts liquid topicals
+     in the *same* bucket as liquid edibles, and says nothing clear about a
+     solid balm or a bath soak. Open, and deliberate.
+   - **Three topicals are not in any sheet** — `Deep Relief Roll-On`,
+     `Rescue Balm`, `Night Recovery Cream`, authored 2026-08-10 and living in
+     `AUTHORED` in `gen_topicals.py`. Their net quantities are borrowed from
+     the per-form convention in Jack's own data and asserted against it on
+     every run. Adding them to the sheet retires the block.
+
+8. **Four sub-bubbles still have photos but no products** — see item 5.
 
    *The Filter-pill contrast question is closed* (2026-08-20): Filter now uses
    Origins U's Search olive `#555624` at 7.66:1, clearing AA and AAA. The

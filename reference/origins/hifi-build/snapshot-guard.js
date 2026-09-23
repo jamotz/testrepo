@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base c76ea7d          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 3f96f34          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,80 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: c76ea7d. History, most recent first:
+ * Current baseline: 3f96f34. History, most recent first:
+ *
+ *   3f96f34  2026-09-22  the parked bubble drops its photo. ONE screen:
+ *            on list, img and span.ring give way to span.noimg.ring, because
+ *            a back bubble fills its ring with orange and the photo was
+ *            showing through it behind the chevron.
+ *
+ *   ec77d7e  2026-09-22  the product-type bubble row. TWO screens, both
+ *            intended:
+ *              home - i.bcount 48.8 -> 55.9 wide, because the brand tiles read
+ *                     "6 Products" instead of "6 flowers".
+ *              list - button.back.cc.sel.tap and its span/img/b added: the
+ *                     shelf now parks itself far-left as a filled back bubble,
+ *                     the way every level below it already did, so the type
+ *                     row stays reachable from inside a shelf.
+ *            No "-"/"+" font-size pair. The type row itself does not appear
+ *            here: these snapshots are taken with a shelf selected, so the row
+ *            it replaces is the parked bubble above.
+ *
+ *   2aeaecc  2026-09-22  "1PATCH". ONE screen: div.fszs and span.fsz.sel 3px
+ *            wider on shop, because feedPill() stopped closing the gap between
+ *            a number and a unit longer than two characters, so the topicals
+ *            shelf's "1 Patch" renders as 1 PATCH instead of 1PATCH. Checked
+ *            against all 22 distinct sizes in the catalog: that is the only
+ *            string that moves.
+ *
+ *   369134e  2026-09-22  the complete edibles sheet. TWO screens, and neither
+ *            is a layout change: div.fpr on shop and two spans on acorders
+ *            moved 1.7-2.0px wide because the new sheet's real prices are
+ *            wider strings than the ones they replaced ($18 -> $22 and up).
+ *            Nothing added, nothing removed, no "-"/"+" font-size pair. Data
+ *            moving a text width is the one kind of failure this guard cannot
+ *            tell from a regression by itself -- read the diff, not the exit
+ *            code.
+ *            (The same commit merged the pre-roll bar into flower and
+ *            concentrate, which the cart screen does not show here: these
+ *            snapshots are taken with an empty bag, so the bars never render.)
+ *
+ *   6a686de  2026-09-22  the WA purchase-limit pass. THREE screens, all of it
+ *            deliberate:
+ *              landing - .st-name 30 -> 22.2 and .st-top/.st-phone 37.7 -> 33.2,
+ *                        because text-box-trim now trims each box to its own
+ *                        cap height so the store name and the phone number can
+ *                        share a top line. The card is 4.5px shorter as a
+ *                        result; nothing moved horizontally.
+ *              shop    - span.fbr 78.6 -> 108.0 / 104.1: the drink volume moved
+ *                        out of the product NAME and onto the brand line.
+ *                        div.fpr shifts 0.2-0.4px as the row re-flows. An
+ *                        earlier attempt put the volume in the serving pill
+ *                        instead and made every card in the row 17px taller --
+ *                        this guard is what caught it.
+ *              cart    - div.wbox and its eight children added, and .cwrap
+ *                        315.4 -> 451.4: the Washington purchase-limit bars.
+ *            No "-"/"+" pair anywhere, so no Enlarged rule lost its scope.
+ *
+ *   fa3be8e  2026-09-22  the 30% top-shelf brand deal started actually
+ *            discounting, so 26 flowers gained a struck price. FIVE screens,
+ *            the most this guard has ever moved at once, and all of it is that
+ *            one change:
+ *              home    - div.btile -> button.btile.tap, plus span.bflash and
+ *                        i.bcount added; span.btl shrinks 194.9 -> 176.8 to
+ *                        make room for the count line, and the row grows 0.42px
+ *              shop,
+ *              list,
+ *              product,
+ *              cart    - div.fpr roughly doubling (43 -> 83-86px) because the
+ *                        price cell now holds a was AND a now; span.was and
+ *                        span.now added; span.fsp widths shifting because the
+ *                        per-size prices in "See more sizes" are discounted too
+ *            Verified by diffing shop and list CARD BY CARD rather than
+ *            reasoning about it: 36 cards changed, every one from Royal Tree,
+ *            Saints, Torus or Skord, zero others, arithmetic exact
+ *            ($45.00 -> $31.50). Nothing lost anywhere, no selector on both
+ *            sides, so not the count=1 signature.
  *
  *   c76ea7d  2026-09-21  the product page gained a Terpenes section between
  *            Details and Feelings, on the three shelves that carry terpenes.
