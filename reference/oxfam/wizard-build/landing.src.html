@@ -34,8 +34,9 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 }
 
 /* hero */
-.hero{position:relative;min-height:230px;overflow:hidden;background:#2a2620}
-.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero{position:relative;min-height:230px;overflow:hidden;background:var(--green)}
+.hero .photo{position:absolute;top:0;right:0;bottom:0;width:62%}
+.hero .photo img{width:100%;height:100%;object-fit:cover;object-position:center}
 .hero .green{position:absolute;inset:0;background:var(--green);
   clip-path:polygon(0 0, 60% 0, 42% 100%, 0 100%)}
 .hero .txt{position:relative;z-index:2;padding:40px 40px;color:#fff;max-width:60%}
@@ -48,9 +49,6 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .sec-h.left{display:flex;align-items:center;gap:12px;justify-content:center}
 .sec-h .pin{width:34px;height:34px;color:var(--ink)}
 
-/* search */
-.search{display:flex;justify-content:center;gap:10px}
-.search input{width:min(340px,60%);border:1px solid #b9b9b2;border-radius:5px;padding:11px 14px;font-family:var(--body);font-size:14px;background:#fff}
 .btn{font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:13px;
   background:var(--green-2);color:#fff;border:0;border-radius:6px;padding:11px 20px;cursor:pointer;transition:background .2s}
 .btn:hover{background:var(--green-d)}
@@ -67,18 +65,20 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 
 /* locations */
 .loc{display:grid;grid-template-columns:1fr 1.25fr;gap:34px;align-items:start;margin-top:8px}
+.loc .office{border:2px solid var(--green);border-radius:10px;padding:22px 24px}
 .loc .office h3{font-size:clamp(1.4rem,3vw,1.9rem);color:var(--green);line-height:1.02;margin-bottom:16px}
 .loc .office p{font-size:13.5px;color:var(--ink);margin:0 0 12px}
 .loc .office .lab{font-weight:700}
-.loc .map{border-radius:8px;overflow:hidden;border:1px solid #c7ccc0;background:var(--map)}
+.loc .map{border-radius:8px;overflow:hidden;border:2px solid var(--green);background:var(--map)}
 .loc .map img{width:100%;display:block}
 .map-btn{margin-top:18px}
 .states{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:34px;text-align:center}
+.states .st{border:2px solid var(--green);border-radius:10px;padding:14px 12px}
 .states .st b{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:13px;color:var(--ink);display:block;margin-bottom:6px;letter-spacing:.02em}
 .states .st p{font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.5}
 
 /* contact panel */
-.contact{margin:12px 0 48px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:.85fr 1.15fr;background:#cfcfca}
+.contact{border-radius:12px;overflow:hidden;display:grid;grid-template-columns:.85fr 1.15fr;background:#cfcfca}
 .contact .side{background:var(--green);color:#fff;padding:26px 24px}
 .contact .side h3{font-size:1.35rem;margin-bottom:12px;line-height:1.05}
 .contact .side p{font-size:13.5px;color:#eef0e6;margin:0 0 14px}
@@ -130,7 +130,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 
   <!-- HERO -->
   <div class="hero">
-    <img class="bg" src="%%HERO_IMG%%" alt="Uluru at sunset">
+    <div class="photo"><img src="%%HERO_IMG%%" alt="Uluru at sunset"></div>
     <div class="green"></div>
     <div class="txt">
       <h1>Contact Us</h1>
@@ -139,13 +139,22 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
   </div>
 
   <div class="wrap">
-    <!-- SEARCH -->
+    <!-- CONTACT DIRECTLY -->
     <section class="sec">
-      <h2 class="sec-h">Search for Topics</h2>
-      <form class="search" onsubmit="mockSubmit(event,this)">
-        <input type="text" placeholder="Search for help within our FAQ" aria-label="Search FAQ">
-        <button class="btn" type="submit">Submit</button>
-      </form>
+      <div class="contact" id="contactPanel">
+        <div class="side">
+          <h3>Contact Us Directly</h3>
+          <p>Leave your information and we&rsquo;ll get back to you as soon as possible through our support.</p>
+          <p class="call">Call 1800 088 110</p>
+        </div>
+        <form class="form" id="contactForm" onsubmit="mockSubmit(event,this)">
+          <div class="f"><label>Name <i>*</i></label><input type="text" required></div>
+          <div class="inq"><label>Inquiry <i>*</i></label><textarea required></textarea></div>
+          <div class="f"><label>Email <i>*</i></label><input type="email" required></div>
+          <div class="f"><label>Phone</label><input type="tel"></div>
+          <button class="btn submit" type="submit">Submit</button>
+        </form>
+      </div>
     </section>
 
     <!-- QUICK LINKS -->
@@ -199,24 +208,6 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
         <div class="st"><b>Canberra</b><p>CARE Australia Suite G.06 Ground Floor, 243 Northbourne Avenue, Lyneham ACT</p></div>
         <div class="st"><b>Perth</b><p>Liberty Work Space Level 12, 197 St Georges Terrace, Perth 6000</p></div>
         <div class="st"><b>South Australia</b><p>Oxfam Bookshop Adelaide, 5&ndash;7 Hutt St, Adelaide SA 5000</p></div>
-      </div>
-    </section>
-
-    <!-- CONTACT DIRECTLY -->
-    <section>
-      <div class="contact" id="contactPanel">
-        <div class="side">
-          <h3>Contact Us Directly</h3>
-          <p>Leave your information and we&rsquo;ll get back to you as soon as possible through our support.</p>
-          <p class="call">Call 1800 088 110</p>
-        </div>
-        <form class="form" id="contactForm" onsubmit="mockSubmit(event,this)">
-          <div class="f"><label>Name <i>*</i></label><input type="text" required></div>
-          <div class="inq"><label>Inquiry <i>*</i></label><textarea required></textarea></div>
-          <div class="f"><label>Email <i>*</i></label><input type="email" required></div>
-          <div class="f"><label>Phone</label><input type="tel"></div>
-          <button class="btn submit" type="submit">Submit</button>
-        </form>
       </div>
     </section>
   </div>
