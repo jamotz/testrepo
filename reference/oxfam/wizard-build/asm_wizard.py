@@ -107,6 +107,7 @@ src = src.replace("%%EXPERTS_IMG%%", embed("photos/Media Photo.png", 700, 82))
 src = src.replace("%%CONTACT_IMG%%", embed("photos/Media Contact Headshot 2.png", 300, 84))
 src = src.replace("%%REPORT_IMG%%", embed("photos/Report Photo.jpeg", 1200, 80))
 src = src.replace("%%PORTAL_IMG%%", embed("photos/OxFam Portal Photo.webp", 700, 82))
+src = src.replace("%%ACCOUNT_IMG%%", embed("photos/Create an account.jpeg", 1400, 80))
 
 # ---- entity-encode everything outside <script>/<style> ----
 segs = re.split(r'(<script[\s\S]*?</script>|<style[\s\S]*?</style>)', src)

@@ -11,17 +11,20 @@ appending another `.screen` section and wiring its Quick Link / nav entry
 point to `nav('newid')` instead of `toast('Coming soon')`.
 
 Built screens (`data-screen` id): `landing` (Contact Us), `faq`, `feedback`,
-`fundraising`, `media`, `report`, `myoxfam-signin`, `portal`. `myoxfam-signin`
-has no lo-fi mockup behind it -- built to match the established panel
-language (green side + white form, same shape as Contact Us Directly)
-rather than copied from a frame; mock-authenticates straight into `portal`
-on submit, and `portal`'s "Log out" returns to it.
+`fundraising`, `media`, `report`, `myoxfam-signin`, `portal`,
+`create-account`. `create-account` mirrors its lo-fi mockup (`../lofi/Create
+an Account.png`) -- title bar + green-side bullet list + white form. Only
+`myoxfam-signin` has no mockup behind it; it was built to match the
+established panel language (green side + white form, same shape as Contact
+Us Directly) rather than copied from a frame. Both mock-authenticate
+straight into `portal` on submit; `portal`'s "Log out" returns to
+`myoxfam-signin`, and its "Create one" link goes to `create-account`.
 
 - `wizard.src.html` -- markup + CSS + JS for every screen, with %%HERO_IMG%%,
   %%MAP_IMG%%, %%FAQ_IMG%%, %%FEEDBACK_IMG%%, %%YOUTUBE_IMG%%, %%EVENT1_IMG%%,
   %%EVENT2_IMG%%, %%FB_COVER_IMG%%, %%FB_AVATAR_IMG%%, %%EXPERTS_IMG%%,
-  %%CONTACT_IMG%%, %%REPORT_IMG%%, %%PORTAL_IMG%%, <!--LOGO--> and /*FONTS*/
-  markers
+  %%CONTACT_IMG%%, %%REPORT_IMG%%, %%PORTAL_IMG%%, %%ACCOUNT_IMG%%,
+  <!--LOGO--> and /*FONTS*/ markers
 - `asm_wizard.py` -- embeds fonts, photos, and the traced logo SVG once each
   (some via `embed_crop`/`embed_crop_square` -- a few source photos, e.g. the
   Facebook cover, bake in more than the mockup wants shown, so the build

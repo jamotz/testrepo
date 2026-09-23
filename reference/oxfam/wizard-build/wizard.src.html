@@ -252,6 +252,18 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .signin .switch{grid-column:1;text-align:center;font-size:13px;color:var(--ink-soft);margin-top:4px}
 .signin .switch a{color:var(--green-2);font-weight:700;text-decoration:none;cursor:pointer}
 
+/* Create an Account (reuses .contact panel shape, with a full-width title bar above it) */
+.acct-card{border-radius:12px;overflow:hidden}
+.acct-card .contact{border-radius:0}
+.acct-title{background:var(--green);color:#fff;text-align:center;padding:16px;font-size:1.15rem}
+.acct-card .side ul{margin:14px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.acct-card .side li{font-size:13.5px;color:#eef0e6}
+.acct-card .form .f.half{grid-column:span 1}
+.form-check{grid-column:1/-1;display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+.form-check input{margin-top:3px;flex:none}
+.form-check a{color:var(--green-2);font-weight:700;text-decoration:none;cursor:pointer}
+.acct-card .form .submit{grid-column:2}
+
 /* MyOxfam portal */
 .portal-head{background:var(--green);color:#fff;border-radius:10px 10px 0 0;padding:20px 26px;
   display:flex;align-items:center;justify-content:space-between}
@@ -439,7 +451,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
               <a onclick="toast('Coming soon')">How can I participate in fundraising</a>
               <a onclick="toast('Coming soon')">Our privacy policy</a>
               <a onclick="toast('Coming soon')">Find volunteer opportunities</a>
-              <a onclick="toast('Coming soon')">Where can I make an account</a>
+              <a onclick="nav('create-account')">Where can I make an account</a>
             </div>
           </div>
           <div>
@@ -702,8 +714,51 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
             <div class="f"><label>Email <i>*</i></label><input type="email" required></div>
             <div class="f"><label>Password <i>*</i></label><input type="password" required></div>
             <button class="btn submit" type="submit">Sign In</button>
-            <p class="switch">Don&rsquo;t have an account? <a onclick="toast('Coming soon')">Create one</a></p>
+            <p class="switch">Don&rsquo;t have an account? <a onclick="nav('create-account')">Create one</a></p>
           </form>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ================= CREATE AN ACCOUNT ================= -->
+  <section class="screen" data-screen="create-account" id="screen-create-account">
+    <div class="hero">
+      <div class="photo"><img src="%%ACCOUNT_IMG%%" alt="Community members Oxfam works alongside"></div>
+      <div class="green"></div>
+      <div class="txt">
+        <h1>Create an Account</h1>
+        <p class="prose">We want to make your experience as an Oxfam Australia supporter the best it can be.</p>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <section class="sec">
+        <div class="acct-card">
+          <div class="acct-title"><h3>Create an Account</h3></div>
+          <div class="contact" id="acctPanel">
+            <div class="side">
+              <p>This unique, secure profile is where you can;</p>
+              <ul>
+                <li>View your Donation History</li>
+                <li>View your Tax Receipts</li>
+                <li>Keep your Information up to date</li>
+                <li>Decide how and when you want to hear from us</li>
+                <li>Register for our Events and Fundraisers</li>
+              </ul>
+            </div>
+            <form class="form" id="acctForm" onsubmit="mockAccountCreate(event,this)">
+              <div class="f half"><label>First Name <i>*</i></label><input type="text" required></div>
+              <div class="f half"><label>Last Name <i>*</i></label><input type="text" required></div>
+              <div class="f half"><label>Email <i>*</i></label><input type="email" required></div>
+              <div class="f half"><label>Phone #</label><input type="tel"></div>
+              <div class="f half"><label>Password <i>*</i></label><input type="password" required></div>
+              <div class="f half"><label>Password <i>*</i></label><input type="password" required></div>
+              <label class="form-check"><input type="checkbox" required> I agree to the <a onclick="toast('Coming soon')">Terms and Conditions</a> and <a onclick="toast('Coming soon')">Privacy</a> Policy</label>
+              <label class="form-check"><input type="checkbox"> I would like to receive updates and newsletters via email</label>
+              <button class="btn submit" type="submit">Submit</button>
+            </form>
+          </div>
         </div>
       </section>
     </div>
@@ -839,6 +894,13 @@ function mockSubmit(e, form){
 
 /* ---- MyOxfam sign-in: mock-authenticate, then drop straight into the portal ---- */
 function mockSignIn(e, form){
+  e.preventDefault();
+  form.reset();
+  nav("portal");
+}
+
+/* ---- Create an Account: mock-register, then drop straight into the portal ---- */
+function mockAccountCreate(e, form){
   e.preventDefault();
   form.reset();
   nav("portal");
