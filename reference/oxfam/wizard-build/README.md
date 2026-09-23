@@ -39,15 +39,25 @@ a second via `%%CONTACT_IMG%%`'s second use in `wizard.src.html` if one shows
 up.
 
 Anything that links to a screen that isn't built yet calls `toast('Coming
-soon')` (top nav, Donate, social icons, most footer links, FAQ's Quick
-Links/Popular Topics, Fundraising's buttons/events/Follow Us, Media's topic
-pills/Our Experts, Report's policy buttons, Portal's account rows/tiles)
-rather than doing nothing silently -- flip it to `nav('id')` once that
-screen exists. Header logo, Login, FAQs/Media/Contact-us footer links, and
-every landing Quick Link that has a built destination already route through
-`nav()`.
+soon')` (most header dropdown items, Donate, social icons, most footer
+links, FAQ's Quick Links, Fundraising's buttons/events/Follow Us, Media's
+topic pills/Our Experts, Report's policy buttons, Portal's individual
+account/donation/event links) rather than doing nothing silently -- flip it
+to `nav('id')` once that screen exists. Header logo, Login, a few header
+dropdown items, FAQs/Media/Contact-us footer links, and every landing Quick
+Link that has a built destination already route through `nav()`.
+
+**Dynamic interactions (built):**
+- Header nav dropdowns (`.nav-item`/`.dropdown`, `toggleDropdown()`) -- one
+  open at a time, closes on an outside click or on `nav()`
+- FAQ Popular Topics accordion (`.topic-row`, `toggleTopic()`) -- any number
+  open at once, answers cross-link to other screens via `nav()`
+- Chat panel (`#chatPanel`, `toggleChat()`/`sendChatMessage()`) -- a real
+  mock conversation: greeting on open, typed messages get a canned reply
+  after a short delay
+- Portal's My Account/Donations/Volunteering groups (`.pgroup`,
+  `togglePortalGroup()`) -- each collapses/expands independently, open by
+  default to match the mockup
 
 Each screen still gets built and signed off one at a time, same as the
 Origins prototype -- it just lands in this one file instead of a new one.
-Dynamic interactions beyond screen-to-screen nav (dropdowns, FAQ accordion,
-a real chat panel, portal accordions actually collapsing) come later.

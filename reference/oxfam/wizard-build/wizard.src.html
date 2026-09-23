@@ -26,9 +26,18 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .site-head .brand .tag{font-family:var(--body);font-size:11.5px;color:var(--ink-soft);line-height:1.35;
   border-left:1px solid #d8d8d2;padding-left:14px}
 .site-nav{display:flex;align-items:center;gap:26px}
-.site-nav a{font-family:var(--body);font-size:14px;color:var(--ink);text-decoration:none;
+.nav-item{position:relative}
+.nav-link{font-family:var(--body);font-size:14px;color:var(--ink);background:none;border:0;padding:0;
   display:inline-flex;align-items:center;gap:5px;cursor:pointer}
-.site-nav a svg{width:11px;height:11px}
+.nav-link svg{width:11px;height:11px;transition:transform .15s}
+.nav-item.open .nav-link svg{transform:rotate(180deg)}
+.dropdown{position:absolute;top:100%;left:0;margin-top:14px;background:#fff;border:1px solid #e2e2dc;
+  border-radius:8px;box-shadow:0 12px 28px rgba(0,0,0,.15);min-width:200px;padding:8px;
+  display:none;flex-direction:column;z-index:45}
+.nav-item.open .dropdown{display:flex}
+.dropdown a{display:block;padding:9px 12px;border-radius:5px;font-family:var(--body);font-size:13.5px;
+  color:var(--ink);text-decoration:none;cursor:pointer}
+.dropdown a:hover{background:var(--bg)}
 .head-actions{display:flex;align-items:center;gap:10px}
 .donate{font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.03em;
   font-size:13px;background:var(--green-2);color:#fff;border:0;border-radius:5px;padding:11px 18px;
@@ -135,12 +144,18 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
   text-decoration:none;text-align:center;transition:background .2s;cursor:pointer}
 .faq-ql a:hover{background:var(--green-d)}
 .topics{display:flex;flex-direction:column;border:1px solid #d7d7d0;border-radius:8px;overflow:hidden;background:#fff}
-.topics a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;
-  color:var(--ink);text-decoration:none;font-family:var(--body);font-weight:600;font-size:14px;
-  border-bottom:1px solid #e7e7e1;transition:background .15s;cursor:pointer}
-.topics a:last-child{border-bottom:0}
-.topics a:hover{background:#f3f5ee}
-.topics a svg{width:16px;height:16px;flex:none;color:var(--ink)}
+.topic-row{border-bottom:1px solid #e7e7e1}
+.topic-row:last-child{border-bottom:0}
+.topic-q{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px 18px;
+  color:var(--ink);background:none;border:0;text-align:left;font-family:var(--body);font-weight:600;font-size:14px;
+  transition:background .15s;cursor:pointer}
+.topic-q:hover{background:#f3f5ee}
+.topic-q .chev{width:16px;height:16px;flex:none;color:var(--ink);transition:transform .2s}
+.topic-row.open .topic-q .chev{transform:rotate(90deg)}
+.topic-a{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.topic-a p{margin:0;padding:0 18px 16px;font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+.topic-a a{color:var(--green-2);font-weight:700;text-decoration:none;cursor:pointer}
+.topic-row.open .topic-a{max-height:120px}
 
 /* newsletter panel (FAQ) */
 .newsletter{margin:12px 0 4px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr 1.2fr;
@@ -168,11 +183,27 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .site-foot .ack{max-width:620px;margin:0 auto 12px;font-size:12.5px;line-height:1.65;color:#e9ecdf}
 .site-foot .auth{font-size:12px;color:#cfd6bd;margin:0}
 
-/* chat fab */
+/* chat fab + panel */
 .chat{position:fixed;right:20px;bottom:20px;display:inline-flex;align-items:center;gap:8px;background:var(--green-2);
-  color:#fff;border-radius:100px;padding:11px 18px;font-family:var(--head);font-weight:600;text-transform:uppercase;
-  font-size:14px;letter-spacing:.03em;box-shadow:0 8px 24px rgba(0,0,0,.25);text-decoration:none;cursor:pointer}
+  color:#fff;border:0;border-radius:100px;padding:11px 18px;font-family:var(--head);font-weight:600;text-transform:uppercase;
+  font-size:14px;letter-spacing:.03em;box-shadow:0 8px 24px rgba(0,0,0,.25);text-decoration:none;cursor:pointer;z-index:65}
 .chat svg{width:20px;height:20px}
+.chat-panel{position:fixed;right:20px;bottom:88px;width:320px;max-height:420px;background:#fff;border-radius:12px;
+  box-shadow:0 16px 40px rgba(0,0,0,.3);display:none;flex-direction:column;overflow:hidden;z-index:65}
+.chat-panel.open{display:flex}
+.chat-head{background:var(--green);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.03em;font-size:14px}
+.chat-head button{background:none;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:0}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:180px;background:var(--bg)}
+.msg{max-width:80%;padding:10px 13px;border-radius:12px;font-size:13.5px;line-height:1.45}
+.msg.bot{align-self:flex-start;background:#fff;border:1px solid #e2e2dc;color:var(--ink);border-bottom-left-radius:2px}
+.msg.user{align-self:flex-end;background:var(--green-2);color:#fff;border-bottom-right-radius:2px}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid #e7e7e1;background:#fff}
+.chat-input input{flex:1;border:1px solid #c9c9c0;border-radius:100px;padding:9px 14px;font-family:var(--body);
+  font-size:13.5px;color:var(--ink);background:#fff}
+.chat-input button{font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.03em;font-size:12.5px;
+  background:var(--green-2);color:#fff;border:0;border-radius:100px;padding:9px 16px;cursor:pointer}
+@media(max-width:480px){ .chat-panel{width:calc(100vw - 40px)} }
 
 /* title band with a subtitle (Media, Report, Fundraising) */
 .title-band .lede{max-width:640px;margin:14px auto 0;font-family:var(--body);font-weight:700;
@@ -276,10 +307,14 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
   display:grid;grid-template-columns:1fr 1.15fr;gap:0}
 .portal-nav{padding:24px;border-right:1px solid #e7e7e1;display:flex;flex-direction:column;gap:18px}
 .pgroup{border:1px solid var(--green);border-radius:8px;overflow:hidden}
-.pgroup .head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;font-family:var(--body);
-  font-weight:700;font-size:14.5px;color:var(--ink)}
-.pgroup .head svg{width:14px;height:14px;color:var(--ink)}
-.pgroup .item{display:block;padding:11px 16px;font-size:13.5px;color:var(--ink);border-top:1px solid #e7e7e1}
+.pgroup .head{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 16px;
+  font-family:var(--body);font-weight:700;font-size:14.5px;color:var(--ink);background:none;border:0;
+  text-align:left;cursor:pointer}
+.pgroup .head .chev{width:14px;height:14px;color:var(--ink);transition:transform .2s;flex:none}
+.pgroup.open .head .chev{transform:rotate(180deg)}
+.pgroup .items{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.pgroup.open .items{max-height:220px}
+.pgroup .item{display:block;padding:11px 16px;font-size:13.5px;color:var(--ink);border-top:1px solid #e7e7e1;cursor:pointer}
 .portal-side{padding:24px}
 .portal-tiles{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
 .portal-tiles a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
@@ -335,10 +370,38 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
       <span class="tag">You and Oxfam,<br>tackling poverty together</span>
     </a>
     <nav class="site-nav">
-      <a onclick="toast('Coming soon')">What we do <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
-      <a onclick="toast('Coming soon')">Get involved <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
-      <a onclick="toast('Coming soon')">News and reports <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
-      <a onclick="toast('Coming soon')">Shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
+      <div class="nav-item">
+        <button class="nav-link" onclick="toggleDropdown(this)">What we do <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="dropdown">
+          <a onclick="toast('Coming soon')">Our Programs</a>
+          <a onclick="toast('Coming soon')">Emergency Response</a>
+          <a onclick="toast('Coming soon')">Policy &amp; Advocacy</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link" onclick="toggleDropdown(this)">Get involved <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="dropdown">
+          <a onclick="toast('Coming soon')">Donate</a>
+          <a onclick="nav('fundraising')">Fundraise</a>
+          <a onclick="toast('Coming soon')">Volunteer</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link" onclick="toggleDropdown(this)">News and reports <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="dropdown">
+          <a onclick="toast('Coming soon')">Latest News</a>
+          <a onclick="toast('Coming soon')">Annual Report</a>
+          <a onclick="nav('media')">Media Releases</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link" onclick="toggleDropdown(this)">Shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="dropdown">
+          <a onclick="toast('Coming soon')">Gifts That Change Lives</a>
+          <a onclick="toast('Coming soon')">Homewares</a>
+          <a onclick="toast('Coming soon')">Gift Cards</a>
+        </div>
+      </div>
     </nav>
     <div class="head-actions">
       <a class="donate" onclick="toast('Coming soon')">Donate Now</a>
@@ -457,13 +520,34 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
           <div>
             <h2 class="sec-h" style="text-align:left">Popular Topics</h2>
             <div class="topics">
-              <a onclick="toast('Coming soon')">How to change my recurring donations <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
-              <a onclick="toast('Coming soon')">Find an article about our work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
-              <a onclick="toast('Coming soon')">How to report an incident or concern <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
-              <a onclick="toast('Coming soon')">How do I volunteer or find events <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
-              <a onclick="toast('Coming soon')">Want to change your account details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
-              <a onclick="toast('Coming soon')">How do I update my payment details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
-              <a onclick="toast('Coming soon')">How do I contact my local office <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+              <div class="topic-row">
+                <button class="topic-q" onclick="toggleTopic(this)">How to change my recurring donations <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="topic-a"><p>Sign in to <a onclick="nav('myoxfam-signin')">My Oxfam</a> and go to Donations &rarr; Reoccurring Donations to update the amount, frequency or payment method on your regular gift.</p></div>
+              </div>
+              <div class="topic-row">
+                <button class="topic-q" onclick="toggleTopic(this)">Find an article about our work <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="topic-a"><p>Browse <a onclick="nav('media')">Media Releases</a> for the latest stories, research and updates from the communities we work with.</p></div>
+              </div>
+              <div class="topic-row">
+                <button class="topic-q" onclick="toggleTopic(this)">How to report an incident or concern <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="topic-a"><p>Use the <a onclick="nav('report')">File a Report</a> form, or call our Supporter Services team on 1800 088 110.</p></div>
+              </div>
+              <div class="topic-row">
+                <button class="topic-q" onclick="toggleTopic(this)">How do I volunteer or find events <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="topic-a"><p>Check <a onclick="nav('fundraising')">Fundraising</a> for upcoming events, or sign in to <a onclick="nav('myoxfam-signin')">My Oxfam</a> to browse and join events near you.</p></div>
+              </div>
+              <div class="topic-row">
+                <button class="topic-q" onclick="toggleTopic(this)">Want to change your account details <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="topic-a"><p>Sign in to <a onclick="nav('myoxfam-signin')">My Oxfam</a> and go to My Account &rarr; Personal Details to update your name, email or address.</p></div>
+              </div>
+              <div class="topic-row">
+                <button class="topic-q" onclick="toggleTopic(this)">How do I update my payment details <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="topic-a"><p>Sign in to <a onclick="nav('myoxfam-signin')">My Oxfam</a> and go to Donations &rarr; My Donations to update the card used for your gifts.</p></div>
+              </div>
+              <div class="topic-row">
+                <button class="topic-q" onclick="toggleTopic(this)">How do I contact my local office <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="topic-a"><p>Visit <a onclick="nav('landing')">Contact Us</a> and use the interactive map to find the address and details for your nearest office.</p></div>
+              </div>
             </div>
           </div>
         </div>
@@ -777,22 +861,28 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
         </div>
         <div class="portal-body">
           <div class="portal-nav">
-            <div class="pgroup">
-              <div class="head">My Account <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-              <a class="item" onclick="toast('Coming soon')">Personal Details</a>
-              <a class="item" onclick="toast('Coming soon')">Password/Privacy</a>
-              <a class="item" onclick="toast('Coming soon')">Notifications</a>
+            <div class="pgroup open">
+              <button type="button" class="head" onclick="togglePortalGroup(this)">My Account <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="items">
+                <a class="item" onclick="toast('Coming soon')">Personal Details</a>
+                <a class="item" onclick="toast('Coming soon')">Password/Privacy</a>
+                <a class="item" onclick="toast('Coming soon')">Notifications</a>
+              </div>
             </div>
-            <div class="pgroup">
-              <div class="head">Donations <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-              <a class="item" onclick="toast('Coming soon')">My Donations</a>
-              <a class="item" onclick="toast('Coming soon')">Reoccurring Donations</a>
+            <div class="pgroup open">
+              <button type="button" class="head" onclick="togglePortalGroup(this)">Donations <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="items">
+                <a class="item" onclick="toast('Coming soon')">My Donations</a>
+                <a class="item" onclick="toast('Coming soon')">Reoccurring Donations</a>
+              </div>
             </div>
-            <div class="pgroup">
-              <div class="head">Volunteering and Events <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-              <a class="item" onclick="toast('Coming soon')">My Fundraisers</a>
-              <a class="item" onclick="toast('Coming soon')">Event Calendar</a>
-              <a class="item" onclick="toast('Coming soon')">Join an Event</a>
+            <div class="pgroup open">
+              <button type="button" class="head" onclick="togglePortalGroup(this)">Volunteering and Events <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="items">
+                <a class="item" onclick="toast('Coming soon')">My Fundraisers</a>
+                <a class="item" onclick="toast('Coming soon')">Event Calendar</a>
+                <a class="item" onclick="toast('Coming soon')">Join an Event</a>
+              </div>
             </div>
           </div>
           <div class="portal-side">
@@ -835,7 +925,21 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
   </footer>
 </div>
 
-<a class="chat" onclick="toast('Coming soon')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Chat</a>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <span>Oxfam Support</span>
+    <button type="button" onclick="toggleChat()" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg bot">Hi! How can we help you today?</div>
+  </div>
+  <form class="chat-input" onsubmit="sendChatMessage(event)">
+    <input type="text" id="chatText" placeholder="Type a message&hellip;" aria-label="Chat message" autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<button type="button" class="chat" onclick="toggleChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Chat</button>
 
 <script>
 /* ---- navigation between screens ---- */
@@ -844,6 +948,7 @@ function nav(id){
   for (var i = 0; i < screens.length; i++){
     screens[i].classList.toggle("active", screens[i].dataset.screen === id);
   }
+  closeAllDropdowns();
   window.scrollTo({top: 0, left: 0, behavior: "auto"});
 }
 
@@ -861,6 +966,63 @@ function toast(msg){
   t.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2000);
+}
+
+/* ---- header nav dropdowns: one open at a time, closes on an outside click ---- */
+function closeAllDropdowns(){
+  var items = document.querySelectorAll(".nav-item.open");
+  for (var i = 0; i < items.length; i++) items[i].classList.remove("open");
+}
+function toggleDropdown(btn){
+  var item = btn.closest(".nav-item");
+  var isOpen = item.classList.contains("open");
+  closeAllDropdowns();
+  if (!isOpen) item.classList.add("open");
+}
+document.addEventListener("click", function(e){
+  if (!e.target.closest(".nav-item")) closeAllDropdowns();
+});
+
+/* ---- FAQ Popular Topics accordion: any number can be open at once ---- */
+function toggleTopic(btn){
+  btn.closest(".topic-row").classList.toggle("open");
+}
+
+/* ---- MyOxfam portal: My Account / Donations / Volunteering groups, each independently collapsible ---- */
+function togglePortalGroup(btn){
+  btn.closest(".pgroup").classList.toggle("open");
+}
+
+/* ---- chat panel: mock support chat ---- */
+function toggleChat(){
+  document.getElementById("chatPanel").classList.toggle("open");
+}
+var chatReplies = [
+  "Thanks for reaching out! A member of our support team will be with you shortly.",
+  "Got it -- I've passed that along to our Supporter Services team.",
+  "Thanks! In the meantime, our FAQ page covers most common questions."
+];
+var chatReplyIndex = 0;
+function sendChatMessage(e){
+  e.preventDefault();
+  var input = document.getElementById("chatText");
+  var text = input.value.trim();
+  if (!text) return;
+  var msgs = document.getElementById("chatMsgs");
+  var userMsg = document.createElement("div");
+  userMsg.className = "msg user";
+  userMsg.textContent = text;
+  msgs.appendChild(userMsg);
+  input.value = "";
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(function(){
+    var botMsg = document.createElement("div");
+    botMsg.className = "msg bot";
+    botMsg.textContent = chatReplies[chatReplyIndex % chatReplies.length];
+    chatReplyIndex++;
+    msgs.appendChild(botMsg);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 700);
 }
 
 /* ---- mock-submit for every form on every screen ---- */
