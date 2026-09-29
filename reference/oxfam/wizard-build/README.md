@@ -23,8 +23,8 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
 - `wizard.src.html` -- markup + CSS + JS for every screen, with %%HERO_IMG%%,
   %%MAP_IMG%%, %%FAQ_IMG%%, %%FEEDBACK_IMG%%, %%YOUTUBE_IMG%%, %%EVENT1_IMG%%,
   %%EVENT2_IMG%%, %%FB_COVER_IMG%%, %%FB_AVATAR_IMG%%, %%EXPERTS_IMG%%,
-  %%CONTACT_IMG%%, %%REPORT_IMG%%, %%PORTAL_IMG%%, %%ACCOUNT_IMG%%,
-  <!--LOGO--> and /*FONTS*/ markers
+  %%CONTACT1_IMG%%, %%CONTACT2_IMG%%, %%REPORT_IMG%%, %%PORTAL_IMG%%,
+  %%ACCOUNT_IMG%%, <!--LOGO--> and /*FONTS*/ markers
 - `asm_wizard.py` -- embeds fonts, photos, and the traced logo SVG once each
   (some via `embed_crop`/`embed_crop_square` -- a few source photos, e.g. the
   Facebook cover, bake in more than the mockup wants shown, so the build
@@ -33,10 +33,9 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
 - `fontcache/` -- Oswald + Open Sans woff2s, fetched once so later builds work
   offline
 
-Media Contacts (on `media`) reuses the same headshot photo for both Lily
-Partland and Lucy Brown -- only one was ever supplied despite asking; swap in
-a second via `%%CONTACT_IMG%%`'s second use in `wizard.src.html` if one shows
-up.
+Media Contacts (on `media`) now uses two distinct headshots -- Lily Partland
+(left, `%%CONTACT1_IMG%%`) gets `Media Contact Headshot 1.png`, Lucy Brown
+(right, `%%CONTACT2_IMG%%`) keeps `Media Contact Headshot 2.png`.
 
 Anything that links to a screen that isn't built yet calls `toast('Coming
 soon')` (most header dropdown items, Donate, social icons, most footer
@@ -61,3 +60,25 @@ Link that has a built destination already route through `nav()`.
 
 Each screen still gets built and signed off one at a time, same as the
 Origins prototype -- it just lands in this one file instead of a new one.
+
+**Visual-polish pass (large edit list, done in one go):** header logo
+recolored to `--green` (`#4d5a2b`, was a bright placeholder `#75C044`);
+every text-entry/account box (`.contact` and its `.signin`/`.acct-card`
+variants, `.newsletter`, `.portal-body`) now carries a 2px `--green`
+outline; the FAQ newsletter panel and Fundraising's "How to Get Started"
+block had their one-off extra margins removed so section spacing is
+consistent everywhere; `.title-band` (the plain-text hero used by FAQ,
+Fundraising, Media, Report, MyOxfam Sign In) is now sized and colored to
+match the photo heroes, with centered white text. Per-page: landing's
+Contact Us Directly panel got the required privacy disclaimer; Feedback's
+hero photo is recentered so faces aren't cropped out; MyOxfam Sign In is
+now a single narrow vertical card instead of a wide side-by-side split;
+Create Account's hero text box was narrowed so it no longer runs outside
+the green wedge onto the photo; Fundraising's Learn More button lost its
+force-stretched full-width style, its video thumbnail now shows with
+`object-fit:contain` instead of being cropped, and the block got top/bottom
+divider lines; Media's topic pills are all one fixed height, "Australian
+Government"/"Obama and Yemen" were renamed to "AUS Government"/"Climate
+Change", Our In-House Experts was pushed further down to match the MVP's
+layout, and the two Media Contacts headshots are now distinct people
+(`Media Contact Headshot 1.png` / `Media Contact Headshot 2.png`).

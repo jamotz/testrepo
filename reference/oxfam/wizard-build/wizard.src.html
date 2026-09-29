@@ -55,18 +55,21 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .hero{position:relative;min-height:230px;overflow:hidden;background:var(--green)}
 .hero .photo{position:absolute;top:0;right:0;bottom:0;width:62%}
 .hero .photo img{width:100%;height:100%;object-fit:cover;object-position:center}
-#screen-feedback .hero .photo img{object-position:center 30%}
+#screen-feedback .hero .photo img{object-position:center 12%}
 .hero .green{position:absolute;inset:0;background:var(--green);
   clip-path:polygon(0 0, 60% 0, 42% 100%, 0 100%)}
 .hero .txt{position:relative;z-index:2;padding:40px 40px;color:#fff;max-width:60%}
 .hero h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1;margin-bottom:14px}
 .hero p{font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:13px;letter-spacing:.03em;line-height:1.5;color:#eef0e6;margin:0}
 .hero p.prose{font-family:var(--body);font-weight:400;text-transform:none;font-size:15px;letter-spacing:0}
-@media(max-width:820px){ .hero .txt{max-width:78%} }
+#screen-create-account .hero .txt{max-width:38%}
+@media(max-width:820px){ .hero .txt{max-width:78%} #screen-create-account .hero .txt{max-width:52%} }
 
-/* page title (FAQ -- no hero photo on that page) */
-.title-band{padding:44px 40px 8px;text-align:center}
-.title-band h1{font-size:clamp(1.9rem,4.4vw,2.7rem)}
+/* page title (FAQ, Fundraising, Media, Report, MyOxfam Sign In -- plain-text heroes,
+   sized to match the photo heroes, text centered since there's no photo) */
+.title-band{min-height:230px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;background:var(--green);color:#fff;padding:40px 40px}
+.title-band h1{font-size:clamp(2rem,4.6vw,3.1rem);color:#fff}
 
 /* section headings */
 .sec{padding:44px 0}
@@ -120,8 +123,11 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .states .st:hover{background:#f3f5ee}
 
 /* contact-shaped panel -- Contact Us Directly (landing) + feedback form (feedback) */
-.contact{border-radius:12px;overflow:hidden;display:grid;grid-template-columns:.85fr 1.15fr;background:#cfcfca}
-.contact .side{background:var(--green);color:#fff;padding:26px 24px}
+.contact{border-radius:12px;overflow:hidden;display:grid;grid-template-columns:.85fr 1.15fr;
+  background:#cfcfca;border:2px solid var(--green)}
+.contact .side .disclaimer{font-size:12px;color:#dfe4d1;line-height:1.6;margin-top:auto;padding-top:14px}
+.contact .side .disclaimer a{color:#fff;font-weight:700}
+.contact .side{background:var(--green);color:#fff;padding:26px 24px;display:flex;flex-direction:column;height:100%}
 .contact .side h3{font-size:1.35rem;margin-bottom:12px;line-height:1.05}
 .contact .side p{font-size:13.5px;color:#eef0e6;margin:0 0 14px}
 .contact .side .call{font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:14px}
@@ -158,7 +164,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .topic-row.open .topic-a{max-height:120px}
 
 /* newsletter panel (FAQ) */
-.newsletter{margin:12px 0 4px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr 1.2fr;
+.newsletter{border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr 1.2fr;
   border:2px solid var(--green)}
 .newsletter .photo img{width:100%;height:100%;object-fit:cover;display:block}
 .newsletter .body{padding:28px 26px;background:#fff}
@@ -207,18 +213,18 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 
 /* title band with a subtitle (Media, Report, Fundraising) */
 .title-band .lede{max-width:640px;margin:14px auto 0;font-family:var(--body);font-weight:700;
-  font-size:15px;line-height:1.5;color:var(--ink)}
+  font-size:15px;line-height:1.5;color:#eef0e6}
 
 /* Fundraising: How to get started */
-.getstarted{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch;margin-top:8px}
+.getstarted{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch;
+  border-top:1px solid #d7d7d0;border-bottom:1px solid #d7d7d0;padding:34px 0}
 .getstarted .txt{padding:8px 40px 8px 0}
 .getstarted .txt p{font-size:14.5px;margin:0 0 22px}
 .getstarted .actions{display:flex;flex-wrap:wrap;gap:14px}
 .getstarted .actions .btn{display:inline-flex;align-items:center;gap:8px}
 .getstarted .actions .btn svg{width:16px;height:16px}
-.getstarted .actions .full{flex-basis:100%}
-.getstarted .vid{border-radius:8px;overflow:hidden}
-.getstarted .vid img{width:100%;height:100%;object-fit:cover}
+.getstarted .vid{border-radius:8px;overflow:hidden;background:#000;display:flex;align-items:center}
+.getstarted .vid img{width:100%;height:100%;object-fit:contain}
 
 /* Fundraising: Events near you */
 .event-panel{background:#dcdcd6;border-radius:10px;padding:26px}
@@ -245,13 +251,13 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .topic-box{background:var(--map);border-radius:12px;padding:20px}
 .topic-pills{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .topic-pills a{display:flex;align-items:center;justify-content:center;text-align:center;background:var(--green-2);
-  color:#fff;border-radius:100px;padding:13px 14px;font-family:var(--body);font-weight:700;font-size:13.5px;
+  color:#fff;border-radius:100px;padding:13px 14px;min-height:54px;font-family:var(--body);font-weight:700;font-size:13.5px;
   text-decoration:none;cursor:pointer;transition:background .2s;line-height:1.3}
 .topic-pills a:hover{background:var(--green-d)}
 .media-search{display:flex;gap:10px}
 .media-search input{flex:1;border:2px solid var(--ink);border-radius:5px;padding:11px 14px;font-family:var(--body);
   font-size:14px;background:#fff;color:var(--ink)}
-.experts{margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.experts{margin-top:100px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 .experts img{border-radius:8px;width:100%}
 .experts p{font-size:13.5px;margin:0 0 16px}
 
@@ -277,15 +283,15 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .policy-actions{display:flex;gap:14px;margin-top:22px}
 @media(max-width:820px){ .subhero .txt{max-width:74%} }
 
-/* MyOxfam sign-in (reuses .contact panel shape) */
-.signin{max-width:640px;margin:0 auto}
+/* MyOxfam sign-in (reuses .contact panel shape, stacked vertically) */
+.signin{max-width:460px;margin:0 auto;grid-template-columns:1fr}
 .signin .form{grid-template-columns:1fr}
 .signin .switch{grid-column:1;text-align:center;font-size:13px;color:var(--ink-soft);margin-top:4px}
 .signin .switch a{color:var(--green-2);font-weight:700;text-decoration:none;cursor:pointer}
 
 /* Create an Account (reuses .contact panel shape, with a full-width title bar above it) */
-.acct-card{border-radius:12px;overflow:hidden}
-.acct-card .contact{border-radius:0}
+.acct-card{border-radius:12px;overflow:hidden;border:2px solid var(--green)}
+.acct-card .contact{border-radius:0;border:0}
 .acct-title{background:var(--green);color:#fff;text-align:center;padding:16px;font-size:1.15rem}
 .acct-card .side ul{margin:14px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
 .acct-card .side li{font-size:13.5px;color:#eef0e6}
@@ -303,7 +309,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .portal-head .acct{display:flex;align-items:center;gap:8px;font-family:var(--body);font-weight:700;font-size:14px}
 .portal-head .acct svg{width:22px;height:22px}
 .portal-head .signout{font-family:var(--body);font-size:12.5px;color:#e9ecdf;text-decoration:underline;cursor:pointer}
-.portal-body{border:1px solid #d7d7d0;border-top:0;border-radius:0 0 10px 10px;background:#fff;
+.portal-body{border:2px solid var(--green);border-top:0;border-radius:0 0 10px 10px;background:#fff;
   display:grid;grid-template-columns:1fr 1.15fr;gap:0}
 .portal-nav{padding:24px;border-right:1px solid #e7e7e1;display:flex;flex-direction:column;gap:18px}
 .pgroup{border:1px solid var(--green);border-radius:8px;overflow:hidden}
@@ -428,6 +434,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
             <h3>Contact Us Directly</h3>
             <p>Leave your information and we&rsquo;ll get back to you as soon as possible through our support.</p>
             <p class="call">Call 1800 088 110</p>
+            <p class="disclaimer">By filling out this form, you agree that Oxfam Australia may contact you about your request. You consent to Oxfam Australia collecting and handling your personal information in accordance with its updated and user-friendly <a onclick="toast('Coming soon')">Privacy Policy</a>. If you have any questions please email us at <a href="mailto:enquire@oxfam.org.au">enquire@oxfam.org.au</a> or call 1800 088 110.</p>
           </div>
           <form class="form" id="contactForm" onsubmit="mockSubmit(event,this)">
             <div class="f"><label>Name <i>*</i></label><input type="text" required></div>
@@ -620,7 +627,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
             <div class="actions">
               <a class="btn" onclick="toast('Coming soon')">GoFundraise</a>
               <a class="btn" onclick="toast('Coming soon')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.6h2.6l.4-3H13.5V8.4c0-.9.2-1.5 1.5-1.5h1.6V4.2C16.3 4.2 15.3 4 14.2 4c-2.3 0-3.9 1.4-3.9 4v2.4H7.7v3h2.6V21z"/></svg>Use Facebook</a>
-              <a class="btn full" onclick="toast('Coming soon')">Learn More</a>
+              <a class="btn" onclick="toast('Coming soon')">Learn More</a>
             </div>
           </div>
           <div class="vid"><img src="%%YOUTUBE_IMG%%" alt="Video: How your donation is making dreams come true in Timor-Leste" style="cursor:pointer" onclick="toast('Coming soon')"></div>
@@ -679,12 +686,12 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
             <p style="margin:-16px 0 18px;font-size:13.5px;color:var(--ink-soft)">Find articles based on popular topics we write about</p>
             <div class="topic-box">
               <div class="topic-pills">
-                <a onclick="toast('Coming soon')">Australian Government</a>
+                <a onclick="toast('Coming soon')">AUS Government</a>
                 <a onclick="toast('Coming soon')">COVID-19</a>
                 <a onclick="toast('Coming soon')">Foreign Aid</a>
                 <a onclick="toast('Coming soon')">Oxfam AUS</a>
                 <a onclick="toast('Coming soon')">Poverty</a>
-                <a onclick="toast('Coming soon')">Obama and Yemen</a>
+                <a onclick="toast('Coming soon')">Climate Change</a>
                 <a onclick="toast('Coming soon')">United Nations</a>
                 <a onclick="toast('Coming soon')">Trailwalker</a>
                 <a onclick="toast('Coming soon')">Emergency Response</a>
@@ -722,7 +729,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
               <p><span class="lab">Mobile:</span> +61 418 118 687</p>
               <p><span class="lab">Email:</span> Lilyp@oxfam.org.au</p>
             </div>
-            <div class="avatar"><img src="%%CONTACT_IMG%%" alt="Lily Partland"></div>
+            <div class="avatar"><img src="%%CONTACT1_IMG%%" alt="Lily Partland"></div>
           </div>
           <div class="contact-card">
             <div>
@@ -732,7 +739,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
               <p><span class="lab">Mobile:</span> +61 418 118 687</p>
               <p><span class="lab">Email:</span> lucyb@oxfam.org.au</p>
             </div>
-            <div class="avatar"><img src="%%CONTACT_IMG%%" alt="Lucy Brown"></div>
+            <div class="avatar"><img src="%%CONTACT2_IMG%%" alt="Lucy Brown"></div>
           </div>
         </div>
       </section>
