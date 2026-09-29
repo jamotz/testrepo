@@ -62,10 +62,10 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .hero h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1;margin-bottom:14px}
 .hero p{font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:13px;letter-spacing:.03em;line-height:1.5;color:#eef0e6;margin:0}
 .hero p.prose{font-family:var(--body);font-weight:400;text-transform:none;font-size:15px;letter-spacing:0}
-#screen-create-account .hero .txt{max-width:38%}
-@media(max-width:820px){ .hero .txt{max-width:78%} #screen-create-account .hero .txt{max-width:52%} }
+#screen-media .hero .txt{max-width:38%}
+@media(max-width:820px){ .hero .txt{max-width:78%} #screen-media .hero .txt{max-width:52%} }
 
-/* page title (FAQ, Fundraising, Media, Report, MyOxfam Sign In -- plain-text heroes,
+/* page title (FAQ, Fundraising, Report -- plain-text heroes,
    sized to match the photo heroes, text centered since there's no photo) */
 .title-band{min-height:230px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;text-align:center;background:var(--green);color:#fff;padding:40px 40px}
@@ -678,9 +678,13 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 
   <!-- ================= MEDIA ================= -->
   <section class="screen" data-screen="media" id="screen-media">
-    <div class="title-band">
-      <h1>Media Inquiries</h1>
-      <p class="lede">Have any questions about our organization or stay up-to-date on our latest media releases</p>
+    <div class="hero">
+      <div class="photo"><img src="%%ACCOUNT_IMG%%" alt="Community members Oxfam works alongside"></div>
+      <div class="green"></div>
+      <div class="txt">
+        <h1>Media Inquiries</h1>
+        <p class="prose">Have any questions about our organization or stay up-to-date on our latest media releases</p>
+      </div>
     </div>
 
     <div class="wrap">
@@ -817,15 +821,6 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 
   <!-- ================= CREATE AN ACCOUNT ================= -->
   <section class="screen" data-screen="create-account" id="screen-create-account">
-    <div class="hero">
-      <div class="photo"><img src="%%ACCOUNT_IMG%%" alt="Community members Oxfam works alongside"></div>
-      <div class="green"></div>
-      <div class="txt">
-        <h1>Create an Account</h1>
-        <p class="prose">We want to make your experience as an Oxfam Australia supporter the best it can be.</p>
-      </div>
-    </div>
-
     <div class="wrap">
       <section class="sec">
         <div class="acct-card">

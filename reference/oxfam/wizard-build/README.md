@@ -33,6 +33,11 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
 - `fontcache/` -- Oswald + Open Sans woff2s, fetched once so later builds work
   offline
 
+MyOxfam Sign In and Create an Account have no hero -- just their cards under
+the header. `%%ACCOUNT_IMG%%` (`Create an account.jpeg`) now backs Media
+Inquiries' split photo hero instead; `#screen-media .hero .txt` is narrowed
+to 38% so its longer subtitle stays inside the green wedge.
+
 Media Contacts (on `media`) now uses two distinct headshots -- Lily Partland
 (left, `%%CONTACT1_IMG%%`) gets `Media Contact Headshot 1.png`, Lucy Brown
 (right, `%%CONTACT2_IMG%%`) keeps `Media Contact Headshot 2.png`.
