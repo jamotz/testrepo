@@ -247,7 +247,8 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
   background:#1877f2;color:#fff;border:0;border-radius:6px;padding:11px 20px;white-space:nowrap;cursor:pointer}
 
 /* Media: popular topics + search + experts */
-.media-cols{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:start}
+.media-cols{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:stretch}
+.media-col{display:flex;flex-direction:column}
 .topic-box{background:var(--map);border-radius:12px;padding:20px}
 .topic-pills{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .topic-pills a{display:flex;align-items:center;justify-content:center;text-align:center;background:var(--green-2);
@@ -686,10 +687,10 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
     <div class="wrap">
       <section class="sec">
         <div class="media-cols">
-          <div>
+          <div class="media-col">
             <h2 class="sec-h" style="text-align:left">Popular Topics</h2>
             <p style="margin:-16px 0 18px;font-size:13.5px;color:var(--ink-soft)">Find articles based on popular topics we write about</p>
-            <div class="topic-box">
+            <div class="topic-box" style="margin-top:auto">
               <div class="topic-pills">
                 <a onclick="toast('Coming soon')">AUS Government</a>
                 <a onclick="toast('Coming soon')">COVID-19</a>
@@ -704,18 +705,20 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
               </div>
             </div>
           </div>
-          <div>
+          <div class="media-col">
             <h2 class="sec-h" style="text-align:left">Search Media Releases</h2>
             <form class="media-search" onsubmit="mockSubmit(event,this)">
               <input type="text" placeholder="Search for Articles within our Media Releases" aria-label="Search media releases">
               <button class="btn" type="submit">Submit</button>
             </form>
-            <h2 class="sec-h" style="text-align:left;margin-top:100px;margin-bottom:14px">Our In-House Experts</h2>
-            <div class="experts">
-              <img src="%%EXPERTS_IMG%%" alt="Oxfam staff in the field">
-              <div class="experts-box">
-                <p>Oxfam staff are able to provide expert comment or background briefings to media on a number of specialist topics</p>
-                <a class="btn" onclick="toast('Coming soon')">Our Experts</a>
+            <div style="margin-top:auto">
+              <h2 class="sec-h" style="text-align:left;margin-bottom:14px">Our In-House Experts</h2>
+              <div class="experts">
+                <img src="%%EXPERTS_IMG%%" alt="Oxfam staff in the field">
+                <div class="experts-box">
+                  <p>Oxfam staff are able to provide expert comment or background briefings to media on a number of specialist topics</p>
+                  <a class="btn" onclick="toast('Coming soon')">Our Experts</a>
+                </div>
               </div>
             </div>
           </div>
