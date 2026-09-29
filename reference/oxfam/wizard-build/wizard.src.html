@@ -287,14 +287,12 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 @media(max-width:820px){ .subhero .txt{max-width:74%} }
 
 /* MyOxfam sign-in (reuses .contact panel shape, stacked vertically -- email, password,
-   submit, create-account link each their own full-width row, top flush with the hero) */
+   submit, create-account link each their own full-width row; no hero on this screen) */
 .signin{max-width:460px;margin:0 auto;grid-template-columns:1fr}
 .signin-logo{width:64px;height:auto;display:block;margin:0 auto 16px}
 .signin .form{display:flex;flex-direction:column;gap:16px}
 .signin .switch{text-align:center;font-size:13px;color:var(--ink-soft);margin-top:4px}
 .signin .switch a{color:var(--green-2);font-weight:700;text-decoration:none;cursor:pointer}
-#screen-myoxfam-signin .sec{padding-top:0}
-
 /* Create an Account (reuses .contact panel shape, with a full-width title bar above it) */
 .acct-card{border-radius:12px;overflow:hidden;border:2px solid var(--green)}
 .acct-card .contact{border-radius:0;border:0}
@@ -797,11 +795,6 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
   <!-- No lo-fi mockup for this screen -- built to match the established panel language
        (same shape as Contact Us Directly / Feedback / Report) rather than copied from a frame. -->
   <section class="screen" data-screen="myoxfam-signin" id="screen-myoxfam-signin">
-    <div class="title-band">
-      <h1>My Oxfam</h1>
-      <p class="lede">Sign in to manage your donations, details and events.</p>
-    </div>
-
     <div class="wrap">
       <section class="sec">
         <div class="contact signin" id="signinPanel">
