@@ -43,9 +43,10 @@ otherwise reuses has `.submit{grid-column:2}` for its landing/feedback/report
 layout, and mixing that grid-column with a 1-column grid-template silently
 creates a 2nd implicit column (fields end up side by side) with no visual
 cue why. Flex sidesteps it entirely: email, password, the Sign In button,
-and the "Create one" link stack top to bottom in DOM order, with `align-self:
-end` (inherited from `.contact .form .submit`, which still applies in flex)
-keeping the button right-aligned instead of stretched full width. This
+and the "Create one" link stack top to bottom in DOM order, with
+`.signin .form .submit{align-self:center}` centering the button (overriding
+the `align-self:end` it would otherwise inherit from `.contact .form
+.submit`, which still applies in flex) instead of stretching it full width. This
 screen has no hero -- just the card, centered under the header -- and its
 green `.side` leads with the white-recolored stacked Oxfam logo
 (`<!--SIGNIN_LOGO-->`, built from `oxfam-logo-stacked.svg` with its fill
