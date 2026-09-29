@@ -32,8 +32,14 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
   `python3 reference/oxfam/wizard-build/asm_wizard.py`. Besides the artifact
   fragment, it writes the same build as a standalone page to
   `site/public/work/oxfam/proto.html` -- the portfolio case study's
-  "Explore the prototype" iframe -- so rebuild the site (`cd site && npm ci &&
+  "MVP / Hi-Fi build" iframe -- so rebuild the site (`cd site && npm ci &&
   npm run build`) and commit `site/dist/` after any wizard change
+- `case_shots.js` -- after `asm_wizard.py`, run `node
+  reference/oxfam/wizard-build/case_shots.js` to refresh the case study's
+  MVP / Hi-Fi screenshots (`site/public/work/oxfam/hifi-*.jpg`, used by the
+  Results gallery and the wireframe → lo-fi → MVP comparisons). The older
+  Figma screens (`home.jpg`, `faq.jpg`, ...) are the case study's "Lo-fi: the
+  Figma build" section and stay as they are
 - `fontcache/` -- Oswald + Open Sans woff2s, fetched once so later builds work
   offline
 

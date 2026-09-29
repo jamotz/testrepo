@@ -24,13 +24,28 @@ const decisions = [
   { k: 'Access', d: 'Accessible, legible, brand-aligned patterns' },
 ];
 
-const results = [
-  { k: 'faq', label: 'FAQ', n: '01' },
-  { k: 'feedback', label: 'Feedback', n: '02' },
-  { k: 'myoxfam', label: 'MyOxfam', n: '03' },
-  { k: 'fundraising', label: 'Fundraising', n: '04' },
-  { k: 'media', label: 'Media', n: '05' },
-  { k: 'report', label: 'Report', n: '06' },
+// Lo-fi: the original Figma build
+const lofi = [
+  { k: 'home', label: 'Contact Us', n: '01' },
+  { k: 'faq', label: 'FAQ', n: '02' },
+  { k: 'feedback', label: 'Feedback', n: '03' },
+  { k: 'myoxfam', label: 'Create Account', n: '04' },
+  { k: 'portal', label: 'MyOxfam Portal', n: '05' },
+  { k: 'fundraising', label: 'Fundraising', n: '06' },
+  { k: 'media', label: 'Media', n: '07' },
+  { k: 'report', label: 'Report', n: '08' },
+];
+// MVP / Hi-Fi: the coded build (screenshots from reference/oxfam/wizard-build/case_shots.js)
+const hifi = [
+  { k: 'hifi-landing', label: 'Contact Us', n: '01' },
+  { k: 'hifi-faq', label: 'FAQ', n: '02' },
+  { k: 'hifi-feedback', label: 'Feedback', n: '03' },
+  { k: 'hifi-myoxfam-signin', label: 'MyOxfam Sign In', n: '04' },
+  { k: 'hifi-create-account', label: 'Create Account', n: '05' },
+  { k: 'hifi-portal', label: 'MyOxfam Portal', n: '06' },
+  { k: 'hifi-fundraising', label: 'Fundraising', n: '07' },
+  { k: 'hifi-media', label: 'Media', n: '08' },
+  { k: 'hifi-report', label: 'Report', n: '09' },
 ];
 ---
 <Base
@@ -116,23 +131,37 @@ const results = [
       <!-- Iteration -->
       <section class="csec" id="iteration">
         <div class="shead" data-reveal><span class="n">05</span><h2>Design format &amp; iteration</h2></div>
-        <p class="lead" data-reveal>From low-fidelity wireframes to a validated high-fidelity design. Two flows, wireframe to final:</p>
+        <p class="lead" data-reveal>Three passes: wireframes, a lo-fi build in Figma, then a coded MVP / hi-fi build. Two flows, wireframe to MVP:</p>
         <p class="viewhint" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Click any image to expand the full page</p>
-        <div class="arrowlab" data-reveal>Contact landing &nbsp;—&nbsp; wireframe → final</div>
-        <div class="compare" data-reveal>
-          <figure><div class="frame crop"><img src="/work/oxfam/wf_landing.jpg" alt="Landing wireframe" /></div><figcaption class="cap">Lo-fi wireframe</figcaption></figure>
-          <figure><div class="frame crop"><img src="/work/oxfam/home.jpg" alt="Landing final" /></div><figcaption class="cap"><b>High-fidelity</b></figcaption></figure>
+        <div class="arrowlab" data-reveal>Contact landing &nbsp;—&nbsp; wireframe → lo-fi → MVP</div>
+        <div class="compare three" data-reveal>
+          <figure><div class="frame crop"><img src="/work/oxfam/wf_landing.jpg" alt="Landing wireframe" /></div><figcaption class="cap">Wireframe</figcaption></figure>
+          <figure><div class="frame crop"><img src="/work/oxfam/home.jpg" alt="Landing, lo-fi Figma build" /></div><figcaption class="cap">Lo-fi · Figma</figcaption></figure>
+          <figure><div class="frame crop"><img src="/work/oxfam/hifi-landing.jpg" alt="Landing, MVP / hi-fi build" /></div><figcaption class="cap"><b>MVP / Hi-Fi</b></figcaption></figure>
         </div>
-        <div class="arrowlab" style="margin-top:24px" data-reveal>MyOxfam portal &nbsp;—&nbsp; wireframe → final</div>
-        <div class="compare" data-reveal>
-          <figure><div class="frame crop"><img src="/work/oxfam/wf_portal.jpg" alt="Portal wireframe" /></div><figcaption class="cap">Lo-fi wireframe</figcaption></figure>
-          <figure><div class="frame crop"><img src="/work/oxfam/portal.jpg" alt="Portal final" /></div><figcaption class="cap"><b>High-fidelity</b></figcaption></figure>
+        <div class="arrowlab" style="margin-top:24px" data-reveal>MyOxfam portal &nbsp;—&nbsp; wireframe → lo-fi → MVP</div>
+        <div class="compare three" data-reveal>
+          <figure><div class="frame crop"><img src="/work/oxfam/wf_portal.jpg" alt="Portal wireframe" /></div><figcaption class="cap">Wireframe</figcaption></figure>
+          <figure><div class="frame crop"><img src="/work/oxfam/portal.jpg" alt="Portal, lo-fi Figma build" /></div><figcaption class="cap">Lo-fi · Figma</figcaption></figure>
+          <figure><div class="frame crop"><img src="/work/oxfam/hifi-portal.jpg" alt="Portal, MVP / hi-fi build" /></div><figcaption class="cap"><b>MVP / Hi-Fi</b></figcaption></figure>
         </div>
+      </section>
+
+      <!-- Lo-fi -->
+      <section class="csec" id="lofi">
+        <div class="shead" data-reveal><span class="n">06</span><h2>Lo-fi: the Figma build</h2></div>
+        <p class="lead" data-reveal>My first full pass at the redesign, built in Figma: the contact landing, all six support pages, and the MyOxfam account flow. It set the structure and page layouts that the MVP was built from. <a class="jump" href="#explore">See the MVP / Hi-Fi build ↓</a></p>
+        <div class="screens" data-stage="lo-fi Figma build" data-reveal>
+          {lofi.map((r) => (
+            <div class="screen"><div class="shot"><img src={`/work/oxfam/${r.k}.jpg`} alt={`${r.label} (lo-fi Figma build)`} /></div><div class="screenlab">{r.label}<span class="tag">{r.n}</span></div></div>
+          ))}
+        </div>
+        <p class="viewhint" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Click any screen to view the full page</p>
       </section>
 
       <!-- Testing -->
       <section class="csec" id="testing">
-        <div class="shead" data-reveal><span class="n">06</span><h2>Testing insights</h2></div>
+        <div class="shead" data-reveal><span class="n">07</span><h2>Testing insights</h2></div>
         <div class="two">
           <div class="callout" data-reveal>Usability testing turned assumptions into evidence — and reshaped the second pass.</div>
           <div data-reveal>
@@ -147,16 +176,17 @@ const results = [
 
       <!-- Results -->
       <section class="csec" id="results">
-        <div class="shead" data-reveal><span class="n">07</span><h2>Results</h2></div>
-        <p class="lead" data-reveal>A clearer path to help and a restructured MyOxfam portal — delivered as a cohesive set of high-fidelity pages, improved through testing and presented to stakeholders.</p>
+        <div class="shead" data-reveal><span class="n">08</span><h2>Results</h2></div>
+        <p class="lead" data-reveal>A clearer path to help and a restructured MyOxfam portal — carried from the lo-fi Figma build into a coded MVP / hi-fi build, improved through testing and presented to stakeholders. <a class="jump" href="#explore">Try it live ↓</a></p>
         <div class="stats" data-reveal>
           <div class="stat"><div class="big">6</div><div class="statlab">Redesigned support pages, one clear entry</div></div>
           <div class="stat"><div class="big">1</div><div class="statlab">Restructured MyOxfam portal (+ account flow)</div></div>
           <div class="stat"><div class="big">✓</div><div class="statlab">Usability tested &amp; presented to stakeholders</div></div>
         </div>
-        <div class="screens" data-reveal>
-          {results.map((r) => (
-            <div class="screen"><div class="shot"><img src={`/work/oxfam/${r.k}.jpg`} alt={r.label} /></div><div class="screenlab">{r.label}<span class="tag">{r.n}</span></div></div>
+        <div class="arrowlab" data-reveal>MVP / Hi-Fi build &nbsp;—&nbsp; every page</div>
+        <div class="screens" data-stage="MVP / hi-fi build" data-reveal>
+          {hifi.map((r) => (
+            <div class="screen"><div class="shot"><img src={`/work/oxfam/${r.k}.jpg`} alt={`${r.label} (MVP / hi-fi build)`} /></div><div class="screenlab">{r.label}<span class="tag">{r.n}</span></div></div>
           ))}
         </div>
         <p class="viewhint" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Click any screen to view the full page</p>
@@ -164,7 +194,7 @@ const results = [
 
       <!-- Reflection -->
       <section class="csec" id="reflection">
-        <div class="shead" data-reveal><span class="n">08</span><h2>Reflection</h2></div>
+        <div class="shead" data-reveal><span class="n">09</span><h2>Reflection</h2></div>
         <div class="two">
           <div class="callout" data-reveal>What I’d carry forward — and do differently next time.</div>
           <div data-reveal>
@@ -175,16 +205,17 @@ const results = [
 
       <!-- Explore -->
       <section class="csec" id="explore">
-        <div class="shead" data-reveal><span class="n">09</span><h2>Explore the prototype</h2></div>
-        <p class="lead" data-reveal>The redesign as a working prototype — click the buttons <em>inside</em> the pages to move through it. The contact landing branches to six pages; MyOxfam goes one level deeper (sign in → the portal, or create an account).</p>
+        <div class="shead" data-reveal><span class="n">10</span><h2>MVP / Hi-Fi build</h2></div>
+        <p class="lead" data-reveal>The lo-fi Figma build, rebuilt as a coded, clickable MVP — click the buttons <em>inside</em> the pages to move through it. The contact landing branches to six pages; MyOxfam goes one level deeper (sign in → the portal, or create an account). <a class="jump" href="#lofi">Compare the lo-fi ↑</a></p>
         <div class="explorer" data-reveal>
           <div class="exp">
             <div class="exp-bar">
               <span class="dots"><i></i><i></i><i></i></span>
-              <span class="exp-crumb">oxfam-australia.org · prototype</span>
+              <span class="exp-crumb">oxfam-australia.org · MVP / hi-fi build</span>
+              <a class="exp-back exp-open" href="/work/oxfam/proto.html" target="_blank" rel="noopener">Open full screen ↗</a>
               <button class="exp-back" id="protohome" type="button">⟲ Home</button>
             </div>
-            <iframe id="proto-frame" class="exp-frame" title="Oxfam support prototype — click through the real pages" src="/work/oxfam/proto.html" loading="lazy"></iframe>
+            <iframe id="proto-frame" class="exp-frame" title="Oxfam support MVP / hi-fi build — click through the pages" src="/work/oxfam/proto.html" loading="lazy"></iframe>
           </div>
           <p class="exp-hint">Tip: open <b>MyOxfam</b> (or <b>Login</b>) and sign in with anything to reach the portal. The header menus, FAQ topics, map pins and <b>Chat</b> all work too.</p>
         </div>
@@ -253,6 +284,7 @@ const results = [
   .snap-row p{color:var(--ink);font-size:1.02rem;line-height:1.55}
   .jump{color:var(--gold);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
   .jump:hover{text-decoration:underline}
+  .jump{white-space:nowrap}
   @media (max-width:560px){.snap-row{grid-template-columns:1fr;gap:4px}}
   .case-meta{display:grid;grid-template-columns:repeat(4,auto);gap:14px 44px;margin:26px 0 0;
     padding-top:22px;border-top:1px solid var(--line)}
@@ -292,7 +324,8 @@ const results = [
   .cap{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--muted-fg);margin-top:10px}
   .cap b{color:var(--gold);font-weight:500}
   .compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px}
-  @media (max-width:760px){.compare{grid-template-columns:1fr}}
+  .compare.three{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:760px){.compare,.compare.three{grid-template-columns:1fr}}
   .arrowlab{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:12px 0 6px}
   .testing-fig{margin-top:18px}
@@ -357,6 +390,11 @@ const results = [
     color:var(--ink-soft);border:1px solid var(--line-2);background:transparent;border-radius:7px;padding:6px 11px;cursor:pointer}
   .exp-back:disabled{opacity:.4;cursor:default}
   .exp-back:not(:disabled):hover{border-color:var(--gold);color:var(--gold)}
+  .exp-open{text-decoration:none;white-space:nowrap}
+  .exp-open + .exp-back{margin-left:0}
+  .exp-back{white-space:nowrap}
+  @media (max-width:560px){.exp-crumb{display:none}.exp-bar{gap:8px}.exp-back{padding:6px 8px}}
+  @media (max-width:400px){.exp-bar .dots{display:none}}
   .exp-crumb{color:var(--ink)}
   .exp-frame{width:100%;height:clamp(460px,80vh,860px);border:0;display:block;background:#e9e9e6}
   .exp-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted-fg);margin-top:12px}
@@ -432,7 +470,9 @@ const results = [
         const im = s.querySelector('img');
         const l = s.querySelector('.screenlab');
         const name = l ? l.childNodes[0].textContent.trim() : '';
-        if (im && im.src) open(im.src, '<b>' + name + '</b> — final high-fidelity page');
+        const g = s.closest('.screens');
+        const stage = (g && g.dataset.stage) || 'final page';
+        if (im && im.src) open(im.src, '<b>' + name + '</b> — ' + stage);
       });
     });
     document.querySelectorAll('.persona-wrap img').forEach((im) => {
