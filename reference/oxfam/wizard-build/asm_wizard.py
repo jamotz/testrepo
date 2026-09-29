@@ -125,3 +125,11 @@ out = out_dir / "oxfam-wizard.html"
 out.write_text(src)
 markers = src.count("%%") + src.count("/*FONTS*/") + src.count("<!--LOGO-->")
 print(f"wrote {out} ({len(src)//1024} KB); fonts={len(fcss)}; markers left={markers}")
+
+# ---- same build as a standalone page for the portfolio case study's iframe ----
+proto = REPO / "site/public/work/oxfam/proto.html"
+proto.write_text('<!doctype html><html lang="en"><head><meta charset="utf-8">'
+                 '<meta name="viewport" content="width=device-width, initial-scale=1">'
+                 '<title>Oxfam Support &mdash; Prototype</title></head><body>'
+                 + src + '</body></html>')
+print(f"wrote {proto.relative_to(REPO)}")

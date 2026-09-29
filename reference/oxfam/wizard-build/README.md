@@ -29,7 +29,11 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
   (some via `embed_crop`/`embed_crop_square` -- a few source photos, e.g. the
   Facebook cover, bake in more than the mockup wants shown, so the build
   crops rather than the whole file); needs Pillow. Run from repo root:
-  `python3 reference/oxfam/wizard-build/asm_wizard.py`
+  `python3 reference/oxfam/wizard-build/asm_wizard.py`. Besides the artifact
+  fragment, it writes the same build as a standalone page to
+  `site/public/work/oxfam/proto.html` -- the portfolio case study's
+  "Explore the prototype" iframe -- so rebuild the site (`cd site && npm ci &&
+  npm run build`) and commit `site/dist/` after any wizard change
 - `fontcache/` -- Oswald + Open Sans woff2s, fetched once so later builds work
   offline
 
