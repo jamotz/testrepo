@@ -56,6 +56,8 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .hero .photo{position:absolute;top:0;right:0;bottom:0;width:62%}
 .hero .photo img{width:100%;height:100%;object-fit:cover;object-position:center}
 #screen-feedback .hero .photo img{object-position:center 12%}
+/* photo scaled up and overflowing the right edge so Uluru sits centered in the exposed area */
+#screen-landing .hero .photo{left:38%;right:auto;width:70.75%}
 .hero .green{position:absolute;inset:0;background:var(--green);
   clip-path:polygon(0 0, 60% 0, 42% 100%, 0 100%)}
 .hero .txt{position:relative;z-index:2;padding:40px 40px;color:#fff;max-width:60%}
