@@ -283,11 +283,14 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .policy-actions{display:flex;gap:14px;margin-top:22px}
 @media(max-width:820px){ .subhero .txt{max-width:74%} }
 
-/* MyOxfam sign-in (reuses .contact panel shape, stacked vertically) */
+/* MyOxfam sign-in (reuses .contact panel shape, stacked vertically -- email, password,
+   submit, create-account link each their own full-width row, top flush with the hero) */
 .signin{max-width:460px;margin:0 auto;grid-template-columns:1fr}
-.signin .form{grid-template-columns:1fr}
-.signin .switch{grid-column:1;text-align:center;font-size:13px;color:var(--ink-soft);margin-top:4px}
+.signin-logo{width:64px;height:auto;display:block;margin:0 auto 16px}
+.signin .form{display:flex;flex-direction:column;gap:16px}
+.signin .switch{text-align:center;font-size:13px;color:var(--ink-soft);margin-top:4px}
 .signin .switch a{color:var(--green-2);font-weight:700;text-decoration:none;cursor:pointer}
+#screen-myoxfam-signin .sec{padding-top:0}
 
 /* Create an Account (reuses .contact panel shape, with a full-width title bar above it) */
 .acct-card{border-radius:12px;overflow:hidden;border:2px solid var(--green)}
@@ -798,6 +801,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
       <section class="sec">
         <div class="contact signin" id="signinPanel">
           <div class="side">
+            <!--SIGNIN_LOGO-->
             <h3>Welcome Back</h3>
             <p>Sign in to view your donation history, update your details, and manage your events and fundraisers.</p>
           </div>

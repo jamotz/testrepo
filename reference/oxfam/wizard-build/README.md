@@ -24,7 +24,7 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
   %%MAP_IMG%%, %%FAQ_IMG%%, %%FEEDBACK_IMG%%, %%YOUTUBE_IMG%%, %%EVENT1_IMG%%,
   %%EVENT2_IMG%%, %%FB_COVER_IMG%%, %%FB_AVATAR_IMG%%, %%EXPERTS_IMG%%,
   %%CONTACT1_IMG%%, %%CONTACT2_IMG%%, %%REPORT_IMG%%, %%PORTAL_IMG%%,
-  %%ACCOUNT_IMG%%, <!--LOGO--> and /*FONTS*/ markers
+  %%ACCOUNT_IMG%%, <!--LOGO-->, <!--SIGNIN_LOGO--> and /*FONTS*/ markers
 - `asm_wizard.py` -- embeds fonts, photos, and the traced logo SVG once each
   (some via `embed_crop`/`embed_crop_square` -- a few source photos, e.g. the
   Facebook cover, bake in more than the mockup wants shown, so the build
@@ -36,6 +36,21 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
 Media Contacts (on `media`) now uses two distinct headshots -- Lily Partland
 (left, `%%CONTACT1_IMG%%`) gets `Media Contact Headshot 1.png`, Lucy Brown
 (right, `%%CONTACT2_IMG%%`) keeps `Media Contact Headshot 2.png`.
+
+MyOxfam Sign In's card is a plain flex column (`.signin .form{display:flex;
+flex-direction:column}`), not a grid -- the `.contact .form` grid this panel
+otherwise reuses has `.submit{grid-column:2}` for its landing/feedback/report
+layout, and mixing that grid-column with a 1-column grid-template silently
+creates a 2nd implicit column (fields end up side by side) with no visual
+cue why. Flex sidesteps it entirely: email, password, the Sign In button,
+and the "Create one" link stack top to bottom in DOM order, with `align-self:
+end` (inherited from `.contact .form .submit`, which still applies in flex)
+keeping the button right-aligned instead of stretched full width. The card's
+`.sec` has `padding-top:0` so its top sits flush against the hero with no
+gap, and its green `.side` leads with the white-recolored stacked Oxfam logo
+(`<!--SIGNIN_LOGO-->`, built from `oxfam-logo-stacked.svg` with its fill
+swapped to `#ffffff` at build time -- see `asm_wizard.py`) above "Welcome
+Back".
 
 Anything that links to a screen that isn't built yet calls `toast('Coming
 soon')` (most header dropdown items, Donate, social icons, most footer

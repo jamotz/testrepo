@@ -60,9 +60,15 @@ for fam, wt in [("Oswald", "500"), ("Oswald", "600"), ("Oswald", "700"),
 src = src.replace("/*FONTS*/", "\n".join(fcss))
 
 # ---- logo (real traced SVG, inlined so it scales crisply in the header) ----
-logo = (ref / "logos/oxfam-logo-horizontal.svg").read_text()
-logo = re.sub(r'<svg ', '<svg class="logo" ', logo, count=1)
+logo_src = (ref / "logos/oxfam-logo-horizontal.svg").read_text()
+logo = re.sub(r'<svg ', '<svg class="logo" ', logo_src, count=1)
 src = src.replace("<!--LOGO-->", logo)
+
+# ---- stacked logo, recolored white, for the MyOxfam sign-in card (on a green panel) ----
+stacked = (ref / "logos/oxfam-logo-stacked.svg").read_text()
+stacked = stacked.replace('fill="#4d5a2b"', 'fill="#ffffff"')
+stacked = re.sub(r'<svg ', '<svg class="signin-logo" ', stacked, count=1)
+src = src.replace("<!--SIGNIN_LOGO-->", stacked)
 
 # ---- images ----
 def embed(relpath, maxw, q=82):
