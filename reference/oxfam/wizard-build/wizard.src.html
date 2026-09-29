@@ -65,7 +65,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 #screen-media .hero .txt{max-width:38%}
 @media(max-width:820px){ .hero .txt{max-width:78%} #screen-media .hero .txt{max-width:52%} }
 
-/* page title (FAQ, Fundraising, Report -- plain-text heroes,
+/* page title (FAQ, Fundraising -- plain-text heroes,
    sized to match the photo heroes, text centered since there's no photo) */
 .title-band{min-height:230px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;text-align:center;background:var(--green);color:#fff;padding:40px 40px}
@@ -304,7 +304,7 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 .form-check{grid-column:1/-1;display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--ink-soft);line-height:1.5}
 .form-check input{margin-top:3px;flex:none}
 .form-check a{color:var(--green-2);font-weight:700;text-decoration:none;cursor:pointer}
-.acct-card .form .submit{grid-column:2}
+.acct-card .form .submit{grid-column:1/-1;justify-self:center}
 
 /* MyOxfam portal */
 .portal-head{background:var(--green);color:#fff;border-radius:10px 10px 0 0;padding:20px 26px;
@@ -759,9 +759,23 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
 
   <!-- ================= REPORT ================= -->
   <section class="screen" data-screen="report" id="screen-report">
-    <div class="title-band">
-      <h1>File a Report</h1>
-      <p class="lede">Have an issue with something related to or directly concerning Oxfam</p>
+    <div class="wrap">
+      <section class="sec">
+        <div class="contact" id="reportPanel">
+          <div class="side">
+            <h3>File a Report Here</h3>
+            <p>If you need to report a matter referring to the Oxfam Australia Senior Management please submit a report.</p>
+            <p>We encourage the reporting of any instances of suspected unethical, illegal, fraudulent or undesirable conduct involving Oxfam or our partners. Our Whistleblower Policy protects those who lodge a complaint or grievance, so you can do so without fear of intimidation, disadvantage or reprisal. You can remain anonymous if you wish, and you don&rsquo;t need to have evidence to report a concern. We will treat the information you give us confidentially.</p>
+          </div>
+          <form class="form" id="reportForm" onsubmit="mockSubmit(event,this)">
+            <div class="f"><label>Name <i>*</i></label><input type="text" required></div>
+            <div class="inq"><label>Report <i>*</i></label><textarea required></textarea></div>
+            <div class="f"><label>Email <i>*</i></label><input type="email" required></div>
+            <div class="f"><label>Phone #</label><input type="tel"></div>
+            <button class="btn submit" type="submit">Submit</button>
+          </form>
+        </div>
+      </section>
     </div>
 
     <div class="subhero">
@@ -775,24 +789,6 @@ h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;text-transform:upperca
           <a class="btn" onclick="toast('Coming soon')">Whistleblower Policy</a>
         </div>
       </div>
-    </div>
-
-    <div class="wrap">
-      <section class="sec">
-        <div class="contact" id="reportPanel">
-          <div class="side">
-            <h3>File a Report Here</h3>
-            <p>If you need to report a matter referring to the Oxfam Australia Senior Management please submit a report.</p>
-          </div>
-          <form class="form" id="reportForm" onsubmit="mockSubmit(event,this)">
-            <div class="f"><label>Name <i>*</i></label><input type="text" required></div>
-            <div class="inq"><label>Report <i>*</i></label><textarea required></textarea></div>
-            <div class="f"><label>Email <i>*</i></label><input type="email" required></div>
-            <div class="f"><label>Phone #</label><input type="tel"></div>
-            <button class="btn submit" type="submit">Submit</button>
-          </form>
-        </div>
-      </section>
     </div>
   </section>
 

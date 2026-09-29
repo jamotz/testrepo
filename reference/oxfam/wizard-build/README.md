@@ -33,8 +33,10 @@ straight into `portal` on submit; `portal`'s "Log out" returns to
 - `fontcache/` -- Oswald + Open Sans woff2s, fetched once so later builds work
   offline
 
-MyOxfam Sign In and Create an Account have no hero -- just their cards under
-the header. `%%ACCOUNT_IMG%%` (`Create an account.jpeg`) now backs Media
+MyOxfam Sign In, Create an Account and Report have no hero -- just their
+cards under the header (Create an Account's Submit is centered). Report puts
+its form first, with the whistleblower-protection paragraph in the green
+side, and the "Why Do We Want to Know?" policy band below it. `%%ACCOUNT_IMG%%` (`Create an account.jpeg`) now backs Media
 Inquiries' split photo hero instead; `#screen-media .hero .txt` is narrowed
 to 38% so its longer subtitle stays inside the green wedge.
 
