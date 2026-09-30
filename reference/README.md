@@ -13,3 +13,4 @@ That's it. Tell Claude once you've uploaded and it'll take it from there.
 
 - `oxfam/` — start here (see its README)
 - `origins/` — the app project (bubble graph + filters + screens)
+- `premier/` — the CX case study (current-site screenshots, journey map, research)
