@@ -15,17 +15,20 @@ const meta = [
   { k: 'Partner', v: 'CEO, Premier Packout' },
 ];
 
-// Hero: client sentiment across the journey, read off the journey map's sentiment row
-// (1 frustrated · 2 neutral · 3 happy · 4 delighted), one point per emoji on the map.
+// Section 09: client sentiment across the journey, read off the journey map's sentiment
+// row (1 frustrated · 2 neutral · 3 happy · 4 delighted), one point per emoji on the map.
+// Each point sits over its phase's column, so the line lines up with the phase tabs below;
+// phases with two readings (start and end) get two points.
 const mood = [1, 2, 3, 2, 3, 2, 3, 3, 1, 4, 1];
-const moodY = { 1: 170, 2: 125, 3: 80, 4: 35 };
-const moodPts = mood.map((m, i) => [40 + i * 92, moodY[m]]);
-const moodNotes = [
-  { i: 0, t: 'Finding help', below: true, anchor: 'start' },
-  { i: 8, t: 'Pack-back starts', below: true, anchor: 'end', wide: true },
-  { i: 9, t: 'Pack-back ends', below: false, anchor: 'middle' },
-  { i: 10, t: 'Aftercare', below: true, anchor: 'end' },
-];
+const moodPhase = [0, 1, 1, 2, 3, 3, 4, 5, 6, 6, 7];
+const moodY = { 1: 150, 2: 110, 3: 70, 4: 30 };
+const COL = 1000 / 8;
+const moodPts = mood.map((m, i) => {
+  const ph = moodPhase[i];
+  const pair = moodPhase.filter((p) => p === ph).length > 1;
+  const nudge = pair ? (moodPhase.indexOf(ph) === i ? -COL / 4 : COL / 4) : 0;
+  return [(ph + 0.5) * COL + nudge, moodY[m]];
+});
 
 const research = [
   { n: '01', t: 'Semi-structured interviews', d: 'One-on-one with the CEO, managers, staff, and homeowners. Open-ended questions like “What was the most stressful part of the process for you?”' },
@@ -308,17 +311,17 @@ const stages = [
       <section class="csec" id="journey">
         <div class="shead" data-reveal><span class="n">09</span><h2>Journey map &amp; deliverable</h2></div>
         <p class="lead" data-reveal>I built the map from client interviews, observation of our workflow, and customer feedback, then organized it by theme to show the bottlenecks. Pick a phase to read it.</p>
-        <figure class="mood-map" data-reveal>
-          <svg viewBox="0 0 1000 230" role="img" aria-label="Client sentiment across the journey: frustrated while finding help, mostly neutral to happy through evaluation, pack-out, storage and cleaning, frustrated again when pack-back starts, delighted when it ends, and frustrated in aftercare.">
-            <polyline class="hj-line" points={moodPts.map((p) => p.join(',')).join(' ')} />
-            {moodPts.map(([x, y], i) => (<circle class:list={['hj-dot', { low: mood[i] === 1, high: mood[i] === 4 }]} cx={x} cy={y} r="8" />))}
-            {moodNotes.map((m) => (
-              <text class:list={['hj-note', { wide: m.wide }]} x={moodPts[m.i][0]} y={moodPts[m.i][1] + (m.below ? 36 : -20)} text-anchor={m.anchor}>{m.t}</text>
-            ))}
-          </svg>
-          <figcaption>Client sentiment across the journey, from the map’s sentiment row</figcaption>
-        </figure>
         <div class="journey" data-reveal>
+          <div class="jline">
+            <div class="jline-head"><span class="mono-label">Client sentiment</span><span class="jline-hint">Click a point or a phase</span></div>
+            <svg viewBox="0 0 1000 180" role="img" aria-label="Client sentiment across the journey: frustrated while finding help, neutral to happy through work acquisition, evaluation, pack-out, storage and cleaning, frustrated when pack-back starts, delighted when it ends, and frustrated in aftercare.">
+              {stages.map((st, i) => (<rect class:list={['jband', { on: i === 0 }]} data-phase={i} x={i * COL} y="0" width={COL} height="180" />))}
+              <polyline class="hj-line" points={moodPts.map((pt) => pt.join(',')).join(' ')} />
+              {moodPts.map(([x, y], i) => (
+                <circle class:list={['hj-dot', { low: mood[i] === 1, high: mood[i] === 4, on: moodPhase[i] === 0 }]} data-phase={moodPhase[i]} cx={x} cy={y} r="9" />
+              ))}
+            </svg>
+          </div>
           <div class="jstrip" role="tablist" aria-label="Customer journey phases">
             {stages.map((s, i) => (
               <button class="jstage" role="tab" type="button" id={`tab-${s.id}`} aria-controls={`panel-${s.id}`}
@@ -379,17 +382,29 @@ const stages = [
     background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 45%,transparent) 0%,
       color-mix(in srgb,var(--bg) 66%,transparent) 45%,var(--bg) 100%)}
 
-  /* Client-sentiment line from the journey map (section 09) */
-  .mood-map{margin:22px 0 0;padding:18px 22px 14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
-  .mood-map svg{width:100%;max-width:760px;height:auto;display:block;margin:0 auto;overflow:visible}
-  .hj-line{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:5 7;opacity:.75}
-  .hj-dot{fill:var(--bg);stroke:var(--gold-soft);stroke-width:3}
-  .hj-dot.low{fill:var(--bg);stroke:var(--ink-soft)}
-  .hj-dot.high{fill:var(--gold)}
-  .hj-note{font-family:var(--mono);font-size:17px;letter-spacing:.12em;text-transform:uppercase;fill:var(--muted-fg)}
-  .mood-map figcaption{max-width:760px;margin:10px auto 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
-    text-transform:uppercase;color:var(--muted-fg);text-align:right}
-  @media (max-width:640px){.hj-note{font-size:34px}.hj-note.wide{display:none}.mood-map{padding:16px 14px 12px}}
+  /* Client-sentiment line, top of the journey panel; one column per phase, lined up with the tabs */
+  .jline{border-bottom:1px solid var(--line);padding-top:14px}
+  .jline-head{display:flex;justify-content:space-between;gap:12px;padding:0 22px}
+  .jline-head .mono-label{color:var(--gold)}
+  .jline-hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted-fg)}
+  .jline svg{display:block;width:100%;height:auto;margin-top:4px}
+  .jband{fill:transparent;cursor:pointer;transition:fill .2s}
+  .jband:hover{fill:color-mix(in srgb,var(--gold) 5%,transparent)}
+  .jband.on{fill:color-mix(in srgb,var(--gold) 10%,transparent)}
+  .hj-line{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:5 7;opacity:.7;pointer-events:none}
+  .hj-dot{fill:var(--panel);stroke:var(--gold-soft);stroke-width:3;cursor:pointer;transition:r .2s,fill .2s,stroke .2s}
+  .hj-dot.low{stroke:var(--ink-soft)}
+  .hj-dot.high{stroke:var(--gold)}
+  .hj-dot.on{r:13px;fill:var(--gold);stroke:var(--gold-soft);stroke-width:4}
+  .hj-dot:hover{stroke:var(--gold)}
+  @media (max-width:560px){
+    .jline-head{padding:0 16px}
+    .jline-hint{display:none}
+    .hj-dot{r:18px;stroke-width:6}
+    .hj-dot.on{r:26px;stroke-width:7}
+    .hj-line{stroke-width:4}
+  }
+  @media (prefers-reduced-motion:reduce){.jband,.hj-dot{transition:none}}
   .case-hero-in{position:relative;z-index:2;width:100%;padding:120px var(--pad) clamp(30px,4vw,52px)}
   .back{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;
     letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:22px;transition:color .2s}
@@ -500,7 +515,7 @@ const stages = [
   /* Journey strip: five stages as tabs, a connecting line through them */
   .journey{margin-top:22px;border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--panel)}
   .jstrip{display:grid;grid-template-columns:repeat(8,1fr);position:relative;border-bottom:1px solid var(--line)}
-  .jstrip::before{content:"";position:absolute;left:6.25%;right:6.25%;top:34px;height:2px;
+  .jstrip::before{display:none;content:"";position:absolute;left:6.25%;right:6.25%;top:34px;height:2px;
     background:linear-gradient(90deg,var(--gold),color-mix(in srgb,var(--gold) 30%,transparent))}
   .jstage{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 8px 16px;
     background:none;border:0;color:var(--ink-soft);cursor:pointer;font:inherit;transition:color .2s,background-color .2s}
@@ -601,7 +616,8 @@ const stages = [
 </style>
 
 <script>
-  // Journey strip: roving-tabindex tabs (click, or arrow keys / Home / End)
+  // Journey panel: roving-tabindex phase tabs (click, or arrow keys / Home / End), kept in
+  // step with the sentiment line above them
   (function () {
     const tabs = [...document.querySelectorAll('.jstage')];
     if (!tabs.length) return;
@@ -612,8 +628,15 @@ const stages = [
         t.tabIndex = on ? 0 : -1;
         document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
       });
+      document.querySelectorAll('.jline [data-phase]').forEach((el) => {
+        el.classList.toggle('on', Number(el.dataset.phase) === i);
+      });
       if (focus) tabs[i].focus();
     }
+    // the sentiment line: click a point, or anywhere in a phase's column, to open that phase
+    document.querySelectorAll('.jline [data-phase]').forEach((el) => {
+      el.addEventListener('click', () => select(Number(el.dataset.phase)));
+    });
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(i));
       t.addEventListener('keydown', (e) => {
