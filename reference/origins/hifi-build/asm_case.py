@@ -2,7 +2,11 @@
 """Assemble the Origins case-study artifact: embed fonts, logo, all real assets,
 and the working app prototype (as a base64 data-URI iframe).
 Run: python3 reference/origins/hifi-build/asm_case.py
-Output: <scratchpad>/origins-case.html (or ./origins-case.html)."""
+Output: <scratchpad>/origins-case.html (or ./origins-case.html).
+
+  --site   instead write the portfolio site's copy: site/public/work/origins/index.html
+           (links back to /#work) + app.html beside it, loaded by the iframe as a page
+           rather than an inline data: URI."""
 from PIL import Image
 import base64, io, json, pathlib, re, subprocess, sys
 
@@ -13,8 +17,11 @@ build = pathlib.Path(__file__).resolve().parent
 cache = REPO / "reference/oxfam/hifi-build/fontcache"
 src = (build / "origins-case.src.html").read_text()
 
-SCRATCH = pathlib.Path("/tmp/claude-0/-home-user-testrepo/ddda76a0-85c4-5287-b8c8-caa7c709d458/scratchpad")
-out_dir = SCRATCH if SCRATCH.exists() else pathlib.Path(".")
+SITE_MODE = "--site" in sys.argv
+# same lookup as asm_app.py (it writes origins-app.html there): newest scratchpad, else CWD
+_scratch = sorted(pathlib.Path("/tmp/claude-0").glob("*/*/scratchpad"))
+SCRATCH = _scratch[-1] if _scratch else pathlib.Path(".")
+out_dir = SCRATCH
 
 # ---- fonts: site woff2 (Space Grotesk + IBM Plex) + cached Oswald for the type specimen ----
 fcss = []
@@ -86,6 +93,16 @@ for k, (rel, w, q) in M.items():
     except Exception as e:
         print("WARN", k, rel, e)
 IMG["home_v2b"] = IMG.get("home_v2", "")
+if SITE_MODE:  # real image files instead of a 5 MB page of inline data: URIs
+    img_dir = site / "public/work/origins/img"
+    if img_dir.exists():
+        for old in img_dir.glob("*.jpg"):
+            old.unlink()
+    img_dir.mkdir(parents=True, exist_ok=True)
+    for k, uri in list(IMG.items()):
+        if uri:
+            (img_dir / f"{k}.jpg").write_bytes(base64.b64decode(uri.split(",", 1)[1]))
+            IMG[k] = f"/work/origins/img/{k}.jpg"
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
 # ---- logo ----
@@ -96,11 +113,16 @@ src = src.replace("<!--LOGO-->", logo)
 
 # ---- app prototype: build fresh, then embed as base64 ----
 subprocess.run([sys.executable, str(build / "asm_app.py")], check=True, cwd=str(REPO))
-app_path = (SCRATCH if SCRATCH.exists() else pathlib.Path(".")) / "origins-app.html"
+app_path = SCRATCH / "origins-app.html"
 app_doc = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
            '<meta name="viewport" content="width=device-width, initial-scale=1">'
            '<title>Origins App</title></head><body>' + app_path.read_text() + '</body></html>')
-src = src.replace("/*PROTODOC*/", base64.b64encode(app_doc.encode()).decode())
+if SITE_MODE:
+    src = src.replace("/*PROTODOC*/", "").replace("%%APPSRC%%", "/work/origins/app.html")
+    src = src.replace("%%WORK_HREF%%", "/#work").replace("%%NEXT_HREF%%", "/#work")
+else:
+    src = src.replace("/*PROTODOC*/", base64.b64encode(app_doc.encode()).decode())
+    src = src.replace("%%APPSRC%%", "").replace("%%WORK_HREF%%", "#").replace("%%NEXT_HREF%%", "#")
 
 # ---- encode: entities outside script/style, \u-escapes inside script ----
 def esc_script(block):
@@ -110,7 +132,18 @@ src = ''.join(esc_script(x) if x[:7] == '<script'
               else (x if x[:6] == '<style'
                     else x.encode('ascii', 'xmlcharrefreplace').decode()) for x in segs)
 
-out = out_dir / "origins-case.html"
-out.write_text(out_s := src)
+if SITE_MODE:
+    dest = site / "public/work/origins"; dest.mkdir(parents=True, exist_ok=True)
+    out = dest / "index.html"
+    out_s = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
+             '<meta name="viewport" content="width=device-width, initial-scale=1">'
+             '<title>Origins App Redesign &mdash; Jack Motzkin</title>'
+             '<link rel="icon" href="/favicon.svg" type="image/svg+xml"></head><body>' + src + '</body></html>')
+    out.write_text(out_s)
+    (dest / "app.html").write_text(app_doc)
+    print(f"wrote {dest / 'app.html'} ({len(app_doc)//1024} KB)")
+else:
+    out = out_dir / "origins-case.html"
+    out.write_text(out_s := src)
 print(f"wrote {out} ({len(out_s)//1024} KB); imgs={len(IMG)}; "
-      f"markers left={out_s.count('/*IMGMAP*/')+out_s.count('/*FONTS*/')+out_s.count('<!--LOGO-->')+out_s.count('/*PROTODOC*/')}")
+      f"markers left={out_s.count('/*IMGMAP*/')+out_s.count('/*FONTS*/')+out_s.count('<!--LOGO-->')+out_s.count('/*PROTODOC*/')+out_s.count('%%')}")

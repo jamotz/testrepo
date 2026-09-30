@@ -2464,11 +2464,20 @@ function fitFrame(){
 }
 addEventListener("resize",function(){fitFrame();syncRowArrows();});  /* a narrower stage changes what overflows */
 addEventListener("orientationchange",function(){setTimeout(fitFrame,120);});
-function setFull(on){
+function setFull(on,fromHost){
+  var was=document.body.classList.contains("fs");
   document.body.classList.toggle("fs",on);
   fitFrame();
   if(!on)document.getElementById("phonebox").scrollIntoView({block:"center"});
+  /* embedded in the case study: inside an iframe, full screen could only fill the
+     frame, so ask the host page to grow the frame to the viewport (and back) */
+  if(!fromHost&&was!==on&&window.parent!==window){
+    try{window.parent.postMessage({origins:"fs",on:on},"*");}catch(err){}
+  }
 }
+addEventListener("message",function(e){
+  if(e.source===window.parent&&e.data&&e.data.origins==="fs-set")setFull(!!e.data.on,true);
+});
 document.addEventListener("click",function(e){
   if(e.target.closest("#fsopen")){setFull(true);return;}
   if(e.target.closest("#fsexit"))setFull(false);
