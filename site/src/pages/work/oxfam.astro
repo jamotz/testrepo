@@ -260,7 +260,7 @@ const hifi = [
   .case-hero::after{content:"";position:absolute;inset:0;
     background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 40%,transparent) 0%,
       color-mix(in srgb,var(--bg) 62%,transparent) 45%,var(--bg) 100%)}
-  .case-hero-in{position:relative;z-index:2;width:100%;padding:120px 0 clamp(30px,4vw,52px)}
+  .case-hero-in{position:relative;z-index:2;width:100%;padding:120px var(--pad) clamp(30px,4vw,52px)}
   .back{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;
     letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:22px;transition:color .2s}
   .back:hover{color:var(--gold)}
