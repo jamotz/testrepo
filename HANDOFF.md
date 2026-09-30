@@ -95,8 +95,10 @@ will provide images and any deeper copy. Do NOT invent metrics — use real evid
 ## Live reference artifacts (persist across sessions)
 - Landing page (Kinetic, canonical): https://claude.ai/code/artifact/fb62ff96-edb1-4670-b9a0-28a104581b23
   ("motz-kinetic-live"). Now a multi-page artifact: landing + the Oxfam case study
-  (`oxfam.html`) + its images and live prototype. Refresh it from the real site with
-  `cd site && npm run build && python3 tools/bundle_artifact.py <out>`, then publish
+  (`oxfam.html`) + the Origins case study (`origins.html`), with their images and live
+  prototypes. Refresh it from the real site with
+  `python3 reference/origins/hifi-build/asm_case.py --site` (only if Origins changed),
+  then `cd site && npm run build && python3 tools/bundle_artifact.py <out>`, then publish
   `<out>/motz-kinetic-live.html` to that URL with `root=<out>` and every other file
   in `<out>` as `files`.
 - Oxfam case-study template (recruiter-optimized): https://claude.ai/code/artifact/0ee77719-44c0-4936-9399-f4694ca3c675

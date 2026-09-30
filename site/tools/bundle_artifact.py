@@ -7,7 +7,9 @@ Writes (default out_dir: ./artifact-bundle):
   motz-kinetic-live.html   landing page as a fragment (the Artifact tool wraps
                            the main page in its own <!doctype>/<head>/<body>)
   oxfam.html               the Oxfam case study, a full standalone document
-  work/oxfam/*.jpg, proto.html   images + the embedded prototype, as-is
+  origins.html             the Origins case study (built by asm_case.py --site)
+  work/oxfam/*.jpg, proto.html      Oxfam images + embedded prototype, as-is
+  work/origins/img/*, app.html      Origins images + embedded app, as-is
 
 CSS, JS and fonts are inlined into both pages (fonts as data: URIs) so each
 page stands alone; only images and the prototype stay separate files. Root-
@@ -63,7 +65,7 @@ def fragment(html):
 
 # ---- landing page (main page) ----
 landing = inline_head((DIST / "index.html").read_text())
-landing = landing.replace('href="/work/oxfam"', 'href="oxfam.html"')
+landing = landing.replace('href="/work/oxfam"', 'href="oxfam.html"').replace('href="/work/origins"', 'href="origins.html"')
 landing = re.sub(r'href="/#([\w-]+)"', r'href="#\1"', landing)
 landing = landing.replace('href="/"', 'href="#top"')
 landing = fragment(landing)
@@ -73,10 +75,15 @@ oxfam = inline_head((DIST / "work/oxfam/index.html").read_text())
 oxfam = oxfam.replace('"/work/oxfam/', '"work/oxfam/')
 oxfam = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', oxfam)
 oxfam = oxfam.replace('href="/"', 'href="index.html"')
-# no Origins case-study page exists yet; send "next project" back to the work grid
-oxfam = oxfam.replace('href="/work/origins"', 'href="index.html#work"')
+oxfam = oxfam.replace('href="/work/origins"', 'href="origins.html"')
 
-leftover = re.findall(r'(?:href|src)="/[^"]*"', landing + oxfam)
+# ---- Origins case study (third page; already self-contained apart from images + app) ----
+origins = (DIST / "work/origins/index.html").read_text()
+origins = re.sub(r'<link rel="icon"[^>]*>', "", origins)
+origins = origins.replace('"/work/origins/', '"work/origins/')   # app src + image map (in script)
+origins = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', origins)
+
+leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins)
 assert not leftover, f"unrewritten root-absolute refs: {leftover}"
 
 if OUT.exists():
@@ -84,9 +91,12 @@ if OUT.exists():
 (OUT / "work/oxfam").mkdir(parents=True)
 (OUT / "motz-kinetic-live.html").write_text(landing)
 (OUT / "oxfam.html").write_text(oxfam)
+(OUT / "origins.html").write_text(origins)
 for f in (DIST / "work/oxfam").iterdir():
     if f.suffix in (".jpg", ".png") or f.name == "proto.html":
         shutil.copy2(f, OUT / "work/oxfam" / f.name)
+shutil.copytree(DIST / "work/origins/img", OUT / "work/origins/img")
+shutil.copy2(DIST / "work/origins/app.html", OUT / "work/origins/app.html")
 
 for p in sorted(OUT.rglob("*")):
     if p.is_file():
