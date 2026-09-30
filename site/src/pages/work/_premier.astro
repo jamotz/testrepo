@@ -22,7 +22,7 @@ const moodY = { 1: 170, 2: 125, 3: 80, 4: 35 };
 const moodPts = mood.map((m, i) => [40 + i * 92, moodY[m]]);
 const moodNotes = [
   { i: 0, t: 'Finding help', below: true, anchor: 'start' },
-  { i: 8, t: 'Pack-back starts', below: true, anchor: 'end' },
+  { i: 8, t: 'Pack-back starts', below: true, anchor: 'end', wide: true },
   { i: 9, t: 'Pack-back ends', below: false, anchor: 'middle' },
   { i: 10, t: 'Aftercare', below: true, anchor: 'end' },
 ];
@@ -140,18 +140,9 @@ const stages = [
   <Nav />
   <p class="mock-badge">Premier · mockup</p>
   <main>
-    <!-- Hero: the client-sentiment line from Jack's journey map -->
+    <!-- Hero: a finished pack-out, boxed and blanket-wrapped (Jack's photo) -->
     <header class="case-hero" id="case-top">
-      <figure class="hero-map" aria-hidden="true">
-        <svg viewBox="0 0 1000 230">
-          <polyline class="hj-line" points={moodPts.map((p) => p.join(',')).join(' ')} />
-          {moodPts.map(([x, y], i) => (<circle class:list={['hj-dot', { low: mood[i] === 1, high: mood[i] === 4 }]} cx={x} cy={y} r="8" />))}
-          {moodNotes.map((m) => (
-            <text class="hj-note" x={moodPts[m.i][0]} y={moodPts[m.i][1] + (m.below ? 36 : -20)} text-anchor={m.anchor}>{m.t}</text>
-          ))}
-        </svg>
-        <figcaption>Client sentiment across the journey · from my journey map</figcaption>
-      </figure>
+      <img class="case-hero-img" src="/work/premier/hero.jpg" alt="A room after a Premier pack-out: labeled moving boxes stacked to the ceiling and furniture wrapped in blue moving blankets and plastic" />
       <div class="case-hero-in wrap">
         <a class="back" href="/#work">
           <svg width="16" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M17 6H2m0 0 5-5M2 6l5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -317,6 +308,16 @@ const stages = [
       <section class="csec" id="journey">
         <div class="shead" data-reveal><span class="n">09</span><h2>Journey map &amp; deliverable</h2></div>
         <p class="lead" data-reveal>I built the map from client interviews, observation of our workflow, and customer feedback, then organized it by theme to show the bottlenecks. Pick a phase to read it.</p>
+        <figure class="mood-map" data-reveal>
+          <svg viewBox="0 0 1000 230" role="img" aria-label="Client sentiment across the journey: frustrated while finding help, mostly neutral to happy through evaluation, pack-out, storage and cleaning, frustrated again when pack-back starts, delighted when it ends, and frustrated in aftercare.">
+            <polyline class="hj-line" points={moodPts.map((p) => p.join(',')).join(' ')} />
+            {moodPts.map(([x, y], i) => (<circle class:list={['hj-dot', { low: mood[i] === 1, high: mood[i] === 4 }]} cx={x} cy={y} r="8" />))}
+            {moodNotes.map((m) => (
+              <text class:list={['hj-note', { wide: m.wide }]} x={moodPts[m.i][0]} y={moodPts[m.i][1] + (m.below ? 36 : -20)} text-anchor={m.anchor}>{m.t}</text>
+            ))}
+          </svg>
+          <figcaption>Client sentiment across the journey, from the map’s sentiment row</figcaption>
+        </figure>
         <div class="journey" data-reveal>
           <div class="jstrip" role="tablist" aria-label="Customer journey phases">
             {stages.map((s, i) => (
@@ -372,17 +373,23 @@ const stages = [
   .case-hero{position:relative;min-height:56vh;display:flex;align-items:flex-end;overflow:hidden;
     border-bottom:1px solid var(--line);
     background:radial-gradient(ellipse 70% 90% at 85% 10%,var(--gold-glow),transparent 70%)}
-  /* Hero: client-sentiment line from the journey map, in the empty right half */
-  .hero-map{position:absolute;left:52%;right:max(4vw,24px);top:20%;margin:0;pointer-events:none}
-  .hero-map svg{width:100%;height:auto;display:block;overflow:visible}
+  /* Hero photo, darkened toward the text like the Oxfam hero */
+  .case-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+  .case-hero::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 45%,transparent) 0%,
+      color-mix(in srgb,var(--bg) 66%,transparent) 45%,var(--bg) 100%)}
+
+  /* Client-sentiment line from the journey map (section 09) */
+  .mood-map{margin:22px 0 0;padding:18px 22px 14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+  .mood-map svg{width:100%;max-width:760px;height:auto;display:block;margin:0 auto;overflow:visible}
   .hj-line{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:5 7;opacity:.75}
   .hj-dot{fill:var(--bg);stroke:var(--gold-soft);stroke-width:3}
   .hj-dot.low{fill:var(--bg);stroke:var(--ink-soft)}
   .hj-dot.high{fill:var(--gold)}
   .hj-note{font-family:var(--mono);font-size:17px;letter-spacing:.12em;text-transform:uppercase;fill:var(--muted-fg)}
-  .hero-map figcaption{margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  .mood-map figcaption{max-width:760px;margin:10px auto 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--muted-fg);text-align:right}
-  @media (max-width:1000px){.hero-map{display:none}}
+  @media (max-width:640px){.hj-note{font-size:34px}.hj-note.wide{display:none}.mood-map{padding:16px 14px 12px}}
   .case-hero-in{position:relative;z-index:2;width:100%;padding:120px var(--pad) clamp(30px,4vw,52px)}
   .back{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;
     letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:22px;transition:color .2s}
