@@ -2,6 +2,9 @@
 """Bundle the built site (site/dist) into the "motz-kinetic-live" Artifact.
 
 Run after `npm run build`:  python3 site/tools/bundle_artifact.py [out_dir]
+Draft preview (its own artifact): python3 site/tools/bundle_artifact.py --draft premier [out_dir]
+  builds a scratch copy of the site with src/pages/work/_premier.astro enabled (the
+  underscore keeps it off the live site) and writes <out_dir>/premier.html only.
 
 Writes (default out_dir: ./artifact-bundle):
   motz-kinetic-live.html   landing page as a fragment (the Artifact tool wraps
@@ -16,11 +19,15 @@ page stands alone; only images and the prototype stay separate files. Root-
 absolute links are rewritten relative: the landing page is the artifact's
 index.html, the case study sits beside it as oxfam.html.
 """
-import base64, pathlib, re, shutil, sys
+import base64, os, pathlib, re, shutil, subprocess, sys
 
 SITE = pathlib.Path(__file__).resolve().parents[1]
 DIST = SITE / "dist"
-OUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "artifact-bundle").resolve()
+args = sys.argv[1:]
+DRAFT = None
+if "--draft" in args:
+    i = args.index("--draft"); DRAFT = args[i + 1]; del args[i:i + 2]
+OUT = pathlib.Path(args[0] if args else "artifact-bundle").resolve()
 
 
 def inline_fonts(css):
@@ -60,8 +67,33 @@ def fragment(html):
     if title:
         head = head.replace(title.group(0), "") + title.group(0)
     body = re.search(r"<body[^>]*>(.*)</body>", html, re.S).group(1)
+    # the Artifact skeleton supplies <html>, so re-apply the page's accent attribute on it
+    accent = re.search(r'<html[^>]*data-accent="([\w-]+)"', html)
+    if accent:
+        head = f"<script>document.documentElement.setAttribute('data-accent','{accent.group(1)}')</script>" + head
     return head + body
 
+
+if DRAFT:
+    tmp = OUT.parent / f".draft-site-{DRAFT}"
+    if tmp.exists():
+        shutil.rmtree(tmp)
+    shutil.copytree(SITE, tmp, ignore=shutil.ignore_patterns("node_modules", "dist", ".astro"))
+    os.symlink(SITE / "node_modules", tmp / "node_modules")
+    (tmp / f"src/pages/work/_{DRAFT}.astro").rename(tmp / f"src/pages/work/{DRAFT}.astro")
+    subprocess.run(["npm", "run", "build"], cwd=tmp, check=True, stdout=subprocess.DEVNULL)
+    DIST = tmp / "dist"
+    page = fragment(inline_head((DIST / f"work/{DRAFT}/index.html").read_text()))
+    # a standalone mockup: links to the rest of the site have nowhere to go, so they return to the top
+    page = re.sub(r'href="/[^"]*"', 'href="#case-top"', page)
+    title = re.search(r"<title>(.*?)(?: — Jack Motzkin)?</title>", page).group(1)
+    page = f"<title>{title}</title>" + re.sub(r"<title>.*?</title>", "", page)
+    assert not re.findall(r'(?:href|src)="/[^"]*"', page)
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / f"{DRAFT}.html").write_text(page)
+    shutil.rmtree(tmp)
+    print(f"{OUT / (DRAFT + '.html')}  {len(page) // 1024} KB")
+    sys.exit(0)
 
 # ---- landing page (main page) ----
 landing = inline_head((DIST / "index.html").read_text())

@@ -101,6 +101,13 @@ will provide images and any deeper copy. Do NOT invent metrics — use real evid
   then `cd site && npm run build && python3 tools/bundle_artifact.py <out>`, then publish
   `<out>/motz-kinetic-live.html` to that URL with `root=<out>` and every other file
   in `<out>` as `files`.
+- Premier case study — DRAFT mockup, its own artifact: https://claude.ai/artifact/UwzyTi13HVENSr1Cvo7q8g
+  Source is `site/src/pages/work/_premier.astro` (the underscore keeps it off the live
+  site). Rebuild with `python3 site/tools/bundle_artifact.py --draft premier <out>` and
+  republish `<out>/premier.html` to that URL. `.draft` spans mark placeholder copy and
+  `.slot` boxes mark image slots. To launch: rename to `premier.astro`, delete the
+  `.mock-badge`, set the Premier card's `href` to `/work/premier` in `Work.astro`, add
+  `premier.html` to the kinetic bundle, and point Origins' "next" link at it.
 - Oxfam case-study template (recruiter-optimized): https://claude.ai/code/artifact/0ee77719-44c0-4936-9399-f4694ca3c675
 
 ## Environment note
