@@ -212,7 +212,7 @@ const hifi = [
             <div class="exp-bar">
               <span class="dots"><i></i><i></i><i></i></span>
               <span class="exp-crumb">oxfam-australia.org · MVP / hi-fi build</span>
-              <a class="exp-back exp-open" href="/work/oxfam/proto.html" target="_blank" rel="noopener">Open full screen ↗</a>
+              <button class="exp-back exp-open" id="protofull" type="button" aria-pressed="false">Full screen ↗</button>
               <button class="exp-back" id="protohome" type="button">⟲ Home</button>
             </div>
             <iframe id="proto-frame" class="exp-frame" title="Oxfam support MVP / hi-fi build — click through the pages" src="/work/oxfam/proto.html" loading="lazy"></iframe>
@@ -395,6 +395,12 @@ const hifi = [
   .exp-back:not(:disabled):hover{border-color:var(--gold);color:var(--gold)}
   .exp-open{text-decoration:none;white-space:nowrap}
   .exp-open + .exp-back{margin-left:0}
+  /* full screen: the explorer covers the whole viewport; Minimize (same button) restores it */
+  .exp.is-full{position:fixed;inset:0;z-index:300;border:0;border-radius:0;display:flex;flex-direction:column;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .exp.is-full .exp-frame{flex:1;height:auto;min-height:0}
+  :global(html.exp-full) [data-reveal]{transform:none !important}
+  :global(html.exp-full),:global(html.exp-full body){overflow:hidden}
   .exp-back{white-space:nowrap}
   @media (max-width:560px){.exp-crumb{display:none}.exp-bar{gap:8px}.exp-back{padding:6px 8px}}
   @media (max-width:400px){.exp-bar .dots{display:none}}
@@ -437,6 +443,37 @@ const hifi = [
     const home = document.getElementById('protohome');
     if (!frame || !home) return;
     home.addEventListener('click', () => { frame.src = frame.src; });
+  })();
+
+  // Prototype — Full screen / Minimize. Fills the viewport in-page, and also asks the
+  // browser for true full screen where it's allowed (the Artifact frame may refuse).
+  (function () {
+    const btn = document.getElementById('protofull');
+    const exp = btn && btn.closest('.exp');
+    const frame = document.getElementById('proto-frame');
+    if (!btn || !exp) return;
+    const isFull = () => exp.classList.contains('is-full');
+
+    function set(on) {
+      exp.classList.toggle('is-full', on);
+      document.documentElement.classList.toggle('exp-full', on);
+      btn.textContent = on ? 'Minimize ↙' : 'Full screen ↗';
+      btn.setAttribute('aria-pressed', String(on));
+      if (on) {
+        if (exp.requestFullscreen && !document.fullscreenElement) exp.requestFullscreen().catch(() => {});
+      } else if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    btn.addEventListener('click', () => set(!isFull()));
+    // Esc in true full screen exits it; follow along
+    document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && isFull()) set(false); });
+    // Esc in the in-page mode, whether focus is on the page or inside the prototype
+    const onKey = (e) => { if (e.key === 'Escape' && isFull()) set(false); };
+    document.addEventListener('keydown', onKey);
+    const hookFrame = () => { try { frame.contentWindow.document.addEventListener('keydown', onKey); } catch (err) {} };
+    if (frame) { frame.addEventListener('load', hookFrame); hookFrame(); }
   })();
 
   // Lightbox — full-page, scrollable view for any screenshot
