@@ -76,7 +76,9 @@
   --ac-premier:#3A55B4;
 
   --grid-line-rgb:21,23,28;
-  --grid-glow-rgb:200,140,40;
+  /* light mode: a deeper glow, drawn stronger, so it reads on the pale background */
+  --grid-glow-rgb:150,100,18;
+  --grid-glow-boost:2.6;
 
   color-scheme:light;
 }

@@ -120,11 +120,14 @@ if (!coarse && !reduce) {
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
   const GAP = 54, RADIUS = 118, CORE = 44;
   let W, H, mx = -9999, my = -9999, cx = -9999, cy = -9999, hasMouse = false;
-  let lineRGB = '255,255,255', glowRGB = '240,178,74';
+  let lineRGB = '255,255,255', glowRGB = '240,178,74', boost = 1;
+  // alpha scaled by the theme's --grid-glow-boost (light mode draws the glow stronger)
+  const ga = (v) => Math.min(1, v * boost);
   function readColors() {
     const s = getComputedStyle(document.documentElement);
     lineRGB = (s.getPropertyValue('--grid-line-rgb') || '255,255,255').trim();
     glowRGB = (s.getPropertyValue('--grid-glow-rgb') || '240,178,74').trim();
+    boost = parseFloat(s.getPropertyValue('--grid-glow-boost')) || 1;
   }
 
   function resize() {
@@ -164,10 +167,10 @@ if (!coarse && !reduce) {
       ctx.save();
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.clip();
       const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-      grd.addColorStop(0, 'rgba(' + glowRGB + ',0.55)');
-      grd.addColorStop(core / rad, 'rgba(' + glowRGB + ',0.28)');
+      grd.addColorStop(0, 'rgba(' + glowRGB + ',' + ga(0.55) + ')');
+      grd.addColorStop(core / rad, 'rgba(' + glowRGB + ',' + ga(0.28) + ')');
       grd.addColorStop(1, 'rgba(' + glowRGB + ',0)');
-      ctx.lineWidth = DPR * 1.1;
+      ctx.lineWidth = DPR * (boost > 1 ? 1.8 : 1.1);
       ctx.strokeStyle = grd;
       ctx.beginPath();
       const sx = Math.floor((cx - rad) / g) * g, sy = Math.floor((cy - rad) / g) * g;
@@ -183,14 +186,14 @@ if (!coarse && !reduce) {
           if (d < rad) {
             const a = 1 - d / rad;
             ctx.beginPath();
-            ctx.arc(x, y, DPR * (0.8 + a * 1.8), 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(' + glowRGB + ',' + (a * a * 0.9) + ')';
+            ctx.arc(x, y, DPR * (0.8 + a * (boost > 1 ? 2.4 : 1.8)), 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + glowRGB + ',' + ga(a * a * 0.9) + ')';
             ctx.fill();
           }
         }
       }
       const amb = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-      amb.addColorStop(0, 'rgba(' + glowRGB + ',0.07)');
+      amb.addColorStop(0, 'rgba(' + glowRGB + ',' + ga(0.07) + ')');
       amb.addColorStop(1, 'rgba(' + glowRGB + ',0)');
       ctx.fillStyle = amb;
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
