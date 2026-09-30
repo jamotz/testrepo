@@ -4,7 +4,8 @@
 Run after `npm run build`:  python3 site/tools/bundle_artifact.py [out_dir]
 Draft preview (its own artifact): python3 site/tools/bundle_artifact.py --draft premier [out_dir]
   builds a scratch copy of the site with src/pages/work/_premier.astro enabled (the
-  underscore keeps it off the live site) and writes <out_dir>/premier.html only.
+  underscore keeps it off the live site) and writes <out_dir>/premier.html, plus the
+  page's images (public/work/premier/*) at <out_dir>/work/premier/.
 
 Writes (default out_dir: ./artifact-bundle):
   motz-kinetic-live.html   landing page as a fragment (the Artifact tool wraps
@@ -84,6 +85,8 @@ if DRAFT:
     subprocess.run(["npm", "run", "build"], cwd=tmp, check=True, stdout=subprocess.DEVNULL)
     DIST = tmp / "dist"
     page = fragment(inline_head((DIST / f"work/{DRAFT}/index.html").read_text()))
+    # the page's own images ship beside it: /work/<draft>/x -> work/<draft>/x
+    page = page.replace(f'"/work/{DRAFT}/', f'"work/{DRAFT}/')
     # a standalone mockup: links to the rest of the site have nowhere to go, so they return to the top
     page = re.sub(r'href="/[^"]*"', 'href="#case-top"', page)
     title = re.search(r"<title>(.*?)(?: — Jack Motzkin)?</title>", page).group(1)
@@ -91,6 +94,11 @@ if DRAFT:
     assert not re.findall(r'(?:href|src)="/[^"]*"', page)
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{DRAFT}.html").write_text(page)
+    assets = [f for f in (DIST / f"work/{DRAFT}").iterdir() if f.name != "index.html"]
+    if assets:
+        (OUT / f"work/{DRAFT}").mkdir(parents=True, exist_ok=True)
+        for f in assets:
+            shutil.copy2(f, OUT / f"work/{DRAFT}" / f.name)
     shutil.rmtree(tmp)
     print(f"{OUT / (DRAFT + '.html')}  {len(page) // 1024} KB")
     sys.exit(0)

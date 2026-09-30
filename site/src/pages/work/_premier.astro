@@ -2,7 +2,8 @@
 // DRAFT — the leading underscore keeps Astro from building this page, so it stays off
 // the live site. Preview it as its own artifact:  python3 site/tools/bundle_artifact.py --draft premier <out>
 // To launch: rename to premier.astro, delete the .mock-badge, give the Work card href '/work/premier'.
-// Everything marked .draft is placeholder copy; every .slot is waiting on Jack's real artifacts.
+// Content comes from Jack's Premier page on jackmotzkin.com (reference/premier/current-site/)
+// and his journey map (reference/premier/journey-map/). What's still unknown is marked .draft.
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
@@ -13,84 +14,144 @@ const meta = [
   { k: 'Location', v: 'Scottsdale, AZ' },
   { k: 'Partner', v: 'CEO, Premier Packout' },
 ];
+
+// Hero: client sentiment across the journey, read off the journey map's sentiment row
+// (1 frustrated · 2 neutral · 3 happy · 4 delighted), one point per emoji on the map.
+const mood = [1, 2, 3, 2, 3, 2, 3, 3, 1, 4, 1];
+const moodY = { 1: 170, 2: 125, 3: 80, 4: 35 };
+const moodPts = mood.map((m, i) => [40 + i * 92, moodY[m]]);
+const moodNotes = [
+  { i: 0, t: 'Finding help', below: true, anchor: 'start' },
+  { i: 8, t: 'Pack-back starts', below: true, anchor: 'end' },
+  { i: 9, t: 'Pack-back ends', below: false, anchor: 'middle' },
+  { i: 10, t: 'Aftercare', below: true, anchor: 'end' },
+];
+
 const research = [
-  { n: '01', t: 'CEO working sessions', d: 'Walked the service end to end with the CEO: what happens, who does it, and where customers get stuck.' },
-  { n: '02', t: 'Journey mapping', d: 'Mapped every stage from first call to final pack-back, with the customer’s actions, questions, and feelings at each one.' },
-  { n: '03', t: 'Touchpoint audit', d: 'Listed each moment the customer hears from Premier (calls, crews, paperwork, updates) and each stretch where they hear nothing.' },
-  { n: '04', t: 'Pain-point synthesis', d: 'Grouped what surfaced into themes and ranked them by how much trust each one costs.' },
+  { n: '01', t: 'Semi-structured interviews', d: 'One-on-one with the CEO, managers, staff, and homeowners. Open-ended questions like “What was the most stressful part of the process for you?”' },
+  { n: '02', t: 'Contextual inquiry', d: 'Shadowed crews in different roles: how packers wrap fragile items, what the inventory system demands, and where labeling breaks down.' },
+  { n: '03', t: 'Satisfaction survey', d: 'Post-service ratings from 36 homeowners on a 7-point scale, from severely dissatisfied to very satisfied.' },
+  { n: '04', t: 'Thematic analysis', d: 'Clustered interviews, support tickets, and online reviews into recurring pain points (delays, miscommunication, damaged goods) by journey stage.' },
 ];
-const recs = [
-  { k: 'Visibility', d: 'Show customers what was packed, where it is, and what happens next.' },
-  { k: 'Updates', d: 'Replace “call us for a status” with updates at set milestones.' },
-  { k: 'Ownership', d: 'One coordinator owns the customer from pack-out to pack-back.' },
-  { k: 'Restore calls', d: 'Explain restore-vs-replace decisions, with photos, before they are final.' },
-  { k: 'Pack-back', d: 'Return items placed and checked off together, not boxes at the door.' },
+
+// CSAT, 36 homeowners (7-point scale). Satisfied = top three ratings: 20 / 36 = 56%.
+const csat = [
+  { l: 'Very satisfied', n: 8, flood: 5, fire: 3, top: true },
+  { l: '6', n: 5, flood: 2, fire: 3, top: true },
+  { l: '5', n: 7, flood: 2, fire: 5, top: true },
+  { l: '4', n: 3, flood: 2, fire: 1 },
+  { l: '3', n: 6, flood: 5, fire: 1 },
+  { l: '2', n: 4, flood: 4, fire: 0 },
+  { l: 'Severely dissatisfied', n: 3, flood: 1, fire: 2 },
 ];
-const stages = [
-  { id: 'pack', touch: 'Estimator visit · packing crew · contents inventory', n: '01', t: 'Pack',
-    doing: 'The home was just flooded or burned. A crew arrives to box up everything that can be saved.',
-    feel: 'Overwhelmed, displaced, unsure what they are agreeing to.',
-    pain: 'Hard to see what is being taken, what is left behind, and why.',
-    rec: 'A same-day walkthrough and a photo inventory the customer can see.' },
-  { id: 'store', touch: 'Phone calls · insurance adjuster', n: '02', t: 'Store',
-    doing: 'Belongings sit in Premier’s warehouse for weeks while the home is repaired.',
-    feel: 'Out of sight, out of control.',
-    pain: 'Long stretches with no word on where things are or how they are doing.',
-    rec: 'Proactive updates at set milestones instead of waiting for the customer to call.' },
-  { id: 'clean', touch: 'Restoration team · adjuster · non-salvageable list', n: '03', t: 'Clean',
-    doing: 'Items are cleaned and restored, or written off for the insurance claim.',
-    feel: 'Hopeful, then anxious about what can’t be saved.',
-    pain: 'Learning late that a sentimental item couldn’t be restored.',
-    rec: 'Explain restore-vs-replace calls, with photos, before they are final.' },
-  { id: 'packback', touch: 'Coordinator · contractors · insurer', n: '04', t: 'Pack-back',
-    doing: 'Scheduling the return once contractors finish and the claim allows it.',
-    feel: 'Impatient to be home.',
-    pain: 'Timing depends on contractors and the insurer, and no one owns the date.',
-    rec: 'One coordinator owns the schedule end to end and confirms it in writing.' },
-  { id: 'return', touch: 'Delivery crew · final walkthrough', n: '05', t: 'Return',
-    doing: 'Items come back into the repaired home.',
-    feel: 'Relief, and the first real sense that it’s over.',
-    pain: 'Boxes dropped instead of placed, and missing items noticed days later.',
-    rec: 'White-glove placement and a final checklist signed together.' },
+const csatMax = Math.max(...csat.map((r) => r.n));
+
+const pillars = [
+  { k: 'Website', d: 'Often the first touchpoint, and it was letting customers down: missing information, an outdated staff roster, bugs, and an unused portal. A redesign should show the process, from wrapping furniture to packing glass, and build confidence.' },
+  { k: 'Staff & fleet', d: 'The CEO wants a premier “white glove” service. That means a strict dress code with a standard uniform, and vans repaired, repainted, and wrapped so every job doubles as advertising.' },
+  { k: 'Workflow', d: 'Jobs slowed down at inventory, furniture wrapping, packing, and storage, especially in cluttered rooms and cabinets full of glassware. Better packing, truck loading, and warehouse storage speed up every job.' },
 ];
-// Hero journey line: the path's anchor points as % of its 1000x220 viewBox,
-// so each stage label sits on its dot.
-const heroPts = [[10, 62.7], [28, 31.8], [49, 71.8], [69, 37.3], [90, 54.5]];
-// Section 05: the journey as it ran vs. the white-glove version, one row per stage.
+const headline = [
+  'Be clear with homeowners about timelines',
+  'Make pack-out more efficient by improving the process',
+  'Boxes in second-level vaults, furniture on the ground level',
+  'Assign a PM to each job who gets to know the homeowner',
+];
+
+// Found (journey map, company pain points) -> recommended (Operational Workflow)
 const improvements = [
-  { s: 'Pack', now: 'The inventory stays with the crew; the customer signs and hopes.', next: 'Walkthrough on the day, and a photo inventory the customer keeps.' },
-  { s: 'Store', now: 'Status updates happen when the customer calls in.', next: 'Updates at set milestones, before the customer has to ask.' },
-  { s: 'Clean', now: 'Bad news about unsalvageable items arrives late.', next: 'Restore-vs-replace calls explained with photos while they can still be discussed.' },
-  { s: 'Pack-back', now: 'The return date floats between contractors and the insurer.', next: 'One coordinator owns the date and confirms it in writing.' },
-  { s: 'Return', now: 'The job ends when the truck leaves.', next: 'Items placed room by room and a final checklist signed together.' },
+  { s: 'Marketing', now: 'Work comes mainly from recommendations. There is no advertising and the website looks unprofessional.', next: 'Preventative content (home-maintenance tips that cut fire and flood risk), targeted ads in high-risk areas, and referral partnerships with insurers, restoration firms, and property managers.' },
+  { s: 'Pack-out', now: 'Slow inventorying holds up every job and delays completion.', next: 'A general inventory before packing starts, items packed together by where they came from, and color- or QR-coded room labels on pre-labeled packaging.' },
+  { s: 'Storage', now: 'Vault space isn’t used well: boxes take up the lower vaults and heavy contents get stacked on top.', next: 'Boxes in upper vaults and furniture on the ground level, a weight limit per box, heaviest items at the bottom, and job-specific zones in the warehouse.' },
+  { s: 'Cleaning', now: 'No one is taught how to clean properly, the team is too small for large jobs, and old laundry machines break down.', next: 'A dedicated cleaning and wrapping workspace, a task-priority system, clear roles, and maintained equipment.' },
+  { s: 'Pack-back', now: 'Different crews each visit don’t know the project, and the inventory isn’t detailed enough to find items.', next: 'One PM per job who knows the homeowner, plus consistent labels: cabinets A–Z, sectional and bed parts, photos of electronics’ plugs.' },
 ];
-// Section 09 overview table: the lenses, in reading order.
-const lenses = [
-  { k: 'doing', label: 'Customer is' },
-  { k: 'feel', label: 'Feeling' },
-  { k: 'touch', label: 'Touchpoints' },
-  { k: 'pain', label: 'Pain point' },
-  { k: 'rec', label: 'Recommendation' },
+
+const webMajor = [
+  ['Broken links', 'the “Learn How” button leads to a 404'],
+  ['Navigation', '“Our Services” and “Company” both redirect to the homepage'],
+  ['Brand recognition', 'an unrecognizable Yelp logo and an unclear LinkedIn review section'],
+  ['Address', 'a PO box instead of a business address'],
+  ['Social proof', 'no customer reviews or testimonials'],
+];
+const webMinor = [
+  ['Staff photos', 'outdated; current ones would build trust'],
+  ['Typography', 'inconsistent sizing, especially in Contact Us'],
+  ['Company story', '“25 years” vs. “15 years” of experience'],
+  ['Service copy', 'too vague to say what the company actually does'],
+];
+const uniforms = [
+  ['GM & management', 'white collared shirts'],
+  ['Project managers', 'navy collared shirts'],
+  ['Crew', 'grey collared shirts'],
+  ['Bottoms', 'a choice of pants or shorts'],
+];
+const facility = ['Detailed, wrapped company vans', 'A deep-cleaned, reorganized warehouse', 'An office fit for client meetings', 'A new rug-storage system', 'A designated cleaning area'];
+
+// Section 09: the eight phases of the journey map
+const stages = [
+  { id: 'marketing', n: '01', t: 'Marketing', mood: 'Frustrated',
+    goal: 'Find a contents company to pack up their home after a fire or flood.',
+    expect: 'Reliable, professional help that quickly clears affected areas, with an estimate in hand by the end of the day.',
+    pain: 'Pack-out companies don’t advertise. It’s a once-in-a-lifetime emergency, and they’re displaced from home for an unknown amount of time.',
+    company: 'No advertising, so work comes from recommendations. The website looks unprofessional and clients can’t visit the warehouse.' },
+  { id: 'acquisition', n: '02', t: 'Work acquisition', mood: 'Neutral, then happy',
+    goal: 'Find a company on their own, or take their renovator’s recommendation.',
+    expect: 'A simple process, contents handled with care, and a transparent, white-glove operation.',
+    pain: 'Few testimonials or trust signals, inconsistent communication channels, and an outdated website with unclear process details.',
+    company: 'Verifying with insurance what will be salvaged, getting homeowners to follow the action plan, and fitting the pack-out in ASAP.' },
+  { id: 'evaluation', n: '03', t: 'Evaluation', mood: 'Neutral',
+    goal: 'Get an estimate and a schedule.',
+    expect: 'The GM or estimator explains the process in detail, the estimate is accurate, and they know when the team will arrive.',
+    pain: 'Price and duration may be higher than expected, signing is complex, there’s too much information at once, and insurance is involved.',
+    company: 'Estimates may need adjusting, some jobs are out of scope, and upset homeowners may have to pay out of pocket.' },
+  { id: 'packout', n: '04', t: 'Pack-out', mood: 'Happy, then neutral',
+    goal: 'Get everything packed out, from the first day to the last.',
+    expect: 'Workers on time in clean vehicles, fragile items carefully wrapped, a PM who communicates openly, and every item accounted for.',
+    pain: 'Priceless items handled carelessly, the arrival time missed, the estimate far off, broken items, and the job not finished on time.',
+    company: 'Storage units late, not knowing the full scope, running short of materials, and scope growing without enough staff.' },
+  { id: 'storage', n: '05', t: 'Storage', mood: 'Happy',
+    goal: 'Keep contents safe in the warehouse until pack-back.',
+    expect: 'A secure, air-conditioned facility, photos of contents neatly stored, and every inch of vault space used.',
+    pain: 'Poor communication, forgotten items now stored away, monthly payments for an unknown time, and items damaged by improper storage.',
+    company: 'Too little storage, too little detail in the inventory, an unorganized process, and heavy contents stacked on top.' },
+  { id: 'cleaning', n: '06', t: 'Cleaning', mood: 'Happy',
+    goal: 'Get insurance-approved cleaning.',
+    expect: 'Contents cleaned with no trace of fire or flood, no further damage, and a re-inventory after cleaning.',
+    pain: 'Boxes still dirty or smelling of fire, items not cleaned to standard, and cleaning that can delay the timeline and raise costs.',
+    company: 'No one is taught to clean properly (mostly just wiping down), old machines break down, and the team is too small for big jobs.' },
+  { id: 'packback', n: '07', t: 'Pack-back', mood: 'Frustrated, then delighted',
+    goal: 'Get everything back home, from the first day to the last.',
+    expect: 'The same PM on the job, an accurate inventory, contents placed where they were, and all furniture reassembled.',
+    pain: 'Not everything arrives on day one, contents go missing, furniture is assembled wrong, and it takes longer than expected.',
+    company: 'Different crews every time, an inventory too thin to find items, and furniture or boxes missing in the warehouse.' },
+  { id: 'aftercare', n: '08', t: 'Aftercare', mood: 'Frustrated',
+    goal: 'Get damaged contents repaired.',
+    expect: 'The company takes responsibility, repairs items at no cost, gives timeline updates, and restores items to their original condition.',
+    pain: 'Poor-quality repairs (wrong colors, chips in wood, warped glass), incorrect replacements, and irreplaceable items that can only be approximated.',
+    company: 'Extra costs for replacements and driver time, unhappy clients leaving bad reviews, and hours lost to searches (five for one bed remote).' },
 ];
 ---
 <Base
   accent="premier"
   title="Premier CX Analysis — Jack Motzkin"
-  description="Case study (draft): mapping the customer journey of a fire & flood contents company with its CEO — pack-out, storage, cleaning, and pack-back — to shape a white-glove service."
+  description="Case study (draft): mapping the customer journey of Premier Packout, a fire & flood contents company, with its CEO — interviews, contextual inquiry, a 36-homeowner satisfaction survey, and a white-glove plan across the website, staff, and workflow."
 >
   <Nav />
   <p class="mock-badge">Premier · mockup</p>
   <main>
-    <!-- Hero (no photo yet: the five-stage journey line over an accent glow) -->
+    <!-- Hero: the client-sentiment line from Jack's journey map -->
     <header class="case-hero" id="case-top">
-      <div class="hero-map" aria-hidden="true">
-        <svg viewBox="0 0 1000 220" preserveAspectRatio="none">
-          <path class="hj-line" d="M20 144 C 50 141, 75 139, 100 138 C 170 132, 190 70, 280 70 C 370 70, 400 160, 490 158 C 580 156, 600 82, 690 82 C 780 82, 820 124, 900 120 C 940 118, 960 114, 980 112" vector-effect="non-scaling-stroke" />
+      <figure class="hero-map" aria-hidden="true">
+        <svg viewBox="0 0 1000 230">
+          <polyline class="hj-line" points={moodPts.map((p) => p.join(',')).join(' ')} />
+          {moodPts.map(([x, y], i) => (<circle class:list={['hj-dot', { low: mood[i] === 1, high: mood[i] === 4 }]} cx={x} cy={y} r="8" />))}
+          {moodNotes.map((m) => (
+            <text class="hj-note" x={moodPts[m.i][0]} y={moodPts[m.i][1] + (m.below ? 36 : -20)} text-anchor={m.anchor}>{m.t}</text>
+          ))}
         </svg>
-        <ol>
-          {stages.map((s, i) => (<li style={`left:${heroPts[i][0]}%;top:${heroPts[i][1]}%`}>{s.t}</li>))}
-        </ol>
-      </div>
+        <figcaption>Client sentiment across the journey · from my journey map</figcaption>
+      </figure>
       <div class="case-hero-in wrap">
         <a class="back" href="/#work">
           <svg width="16" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M17 6H2m0 0 5-5M2 6l5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -99,16 +160,17 @@ const lenses = [
         <p class="case-eyebrow"><span class="idx">03</span><span class="rule"></span>Case study · CX Research</p>
         <h1 class="case-title" data-hero-name><span class="line"><span>Premier CX</span></span><span class="line"><span class="accent">Analysis</span></span></h1>
         <p class="case-lead">
-          Partnering with the CEO of a fire &amp; flood contents company to map the customer journey
-          and surface pain points across packing, storage, cleaning, and pack-back, then shape a white-glove service.
+          Working with the CEO of a fire &amp; flood contents company to find where homeowners’ stress
+          comes from, from pack-out through storage, cleaning, and pack-back, and to turn that into a
+          white-glove service.
         </p>
       </div>
     </header>
 
     <div class="wrap">
       <div class="snapshot" data-reveal>
-        <div class="snap-row"><span class="mono-label">My role</span><p>CX researcher, working directly with the CEO to map the end-to-end customer journey from the first call to the final pack-back. <span class="draft">[Add scope and timeframe.]</span></p></div>
-        <div class="snap-row"><span class="mono-label">Outcome</span><p>A stage-by-stage journey map and a set of service recommendations for a white-glove experience. <span class="draft">[Confirm what was adopted.]</span> <a class="jump" href="#journey">See the journey ↓</a></p></div>
+        <div class="snap-row"><span class="mono-label">My role</span><p>CX researcher, working with the CEO. I ran interviews, shadowed crews, analyzed a 36-homeowner satisfaction survey and online reviews, audited the website, and built the end-to-end journey map.</p></div>
+        <div class="snap-row"><span class="mono-label">Outcome</span><p>An eight-phase journey map, a 56% satisfaction baseline, and a white-glove plan across the website, staff, and workflow. <a class="jump" href="#results">See results ↓</a></p></div>
       </div>
       <dl class="case-meta" data-reveal>
         {meta.map((m) => (<div><dt>{m.k}</dt><dd>{m.v}</dd></div>))}
@@ -121,8 +183,8 @@ const lenses = [
         <div class="shead" data-reveal><span class="n">02</span><h2>Problem overview</h2></div>
         <div class="two">
           <div data-reveal>
-            <p class="lead">When a fire or flood damages a home, Premier Packout packs out the family’s belongings, stores them, cleans and restores what can be saved, then packs everything back in.</p>
-            <p class="body-p">Customers meet the company on one of the worst days of their lives, and the service runs for weeks across several crews and an insurance claim. Every handoff is a chance to lose their trust. <span class="draft">[Tighten with the CEO’s framing of the problem.]</span></p>
+            <p class="lead">Premier Packout handles salvageable belongings after a fire or flood. It removes them from the home or business, has them professionally cleaned, stores them securely, and returns them once renovations are done.</p>
+            <p class="body-p">Insurance companies, restoration companies, adjusters, and homeowners often miscommunicate. Meanwhile homeowners live through fragile items being packed, cleaned, stored, and moved, with no clear end date for the renovation. Coordinating all of that while keeping their belongings safe adds to an already stressful time.</p>
           </div>
           <div class="callout" data-reveal>Nobody chooses to need this service, so every handoff has to earn trust.</div>
         </div>
@@ -131,13 +193,12 @@ const lenses = [
       <!-- 03 Research -->
       <section class="csec" id="research">
         <div class="shead" data-reveal><span class="n">03</span><h2>Research approach</h2></div>
-        <p class="lead" data-reveal>I worked alongside the CEO to see the service from the customer’s side, one stage at a time. <span class="draft">[Swap in your exact methods.]</span></p>
+        <p class="lead" data-reveal>I combined what people said with what I saw them do, then checked both against the numbers.</p>
         <div class="cards" data-reveal>
           {research.map((c) => (
             <div class="card"><span class="k">{c.n}</span><div><h3>{c.t}</h3><p>{c.d}</p></div></div>
           ))}
         </div>
-        <div class="slot slot-wide" data-reveal><span class="mono-label">Image slot</span>Research artifact: session notes, stakeholder map, or customer quotes</div>
       </section>
 
       <!-- 04 Recommendations (CX relabel of "Design decisions") -->
@@ -145,53 +206,95 @@ const lenses = [
         <div class="shead" data-reveal><span class="n">04</span><h2>Recommendations</h2></div>
         <div class="two">
           <div data-reveal>
-            <p class="lead">The pain points clustered around one theme: customers lose sight of their belongings, and of who is responsible for them. <span class="draft">[Confirm the themes.]</span></p>
-            <ul class="rows">
-              {recs.map((d) => (<li><span class="mono-label">{d.k}</span>{d.d}</li>))}
+            <p class="lead">My recommendations focused on better communication with renovation partners, a faster pack-out, better use of storage, and changes to staff management and the website.</p>
+            <ul class="rows nums">
+              {headline.map((h, i) => (<li><span class="mono-label">{String(i + 1).padStart(2, '0')}</span>{h}</li>))}
             </ul>
           </div>
-          <div data-reveal>
-            <div class="callout">White-glove isn’t a premium tier. It’s a service with no surprises in it.</div>
-            <p class="body-p">Each recommendation answers one question a customer is left asking today: <em>what did you take, where is it, who do I call, what couldn’t you save, when do I get it back?</em></p>
-          </div>
+          <div class="callout" data-reveal>The CEO wanted a premier, white-glove service. Every recommendation measures against that.</div>
+        </div>
+        <div class="pillars" data-reveal>
+          {pillars.map((p) => (<div class="pillar"><span class="mono-label">{p.k}</span><p>{p.d}</p></div>))}
         </div>
       </section>
 
       <!-- 05 Service improvements (CX relabel of "Design format & iteration") -->
       <section class="csec" id="improvements">
         <div class="shead" data-reveal><span class="n">05</span><h2>Service improvements</h2></div>
-        <p class="lead" data-reveal>From the journey as it ran to a white-glove version, stage by stage. <span class="draft">[Check each row against what you proposed.]</span></p>
+        <p class="lead" data-reveal>Each fix answers a pain point the company itself named on the journey map.</p>
         <div class="imp" data-reveal>
-          <div class="imp-head" aria-hidden="true"><span></span><span>Today</span><span>White-glove</span></div>
+          <div class="imp-head" aria-hidden="true"><span></span><span>What I found</span><span>What I recommended</span></div>
           {improvements.map((r) => (
             <div class="imp-row">
               <span class="imp-s">{r.s}</span>
-              <p class="imp-now"><span class="imp-lab">Today</span>{r.now}</p>
-              <p class="imp-next"><span class="imp-lab">White-glove</span>{r.next}</p>
+              <p class="imp-now"><span class="imp-lab">What I found</span>{r.now}</p>
+              <p class="imp-next"><span class="imp-lab">What I recommended</span>{r.next}</p>
             </div>
           ))}
         </div>
+
+        <h3 class="subhead" data-reveal>Website audit</h3>
+        <div class="two audit" data-reveal>
+          <div><span class="mono-label">Major</span><ul class="dlist">{webMajor.map(([k, d]) => (<li><b>{k}:</b> {d}</li>))}</ul></div>
+          <div><span class="mono-label">Minor</span><ul class="dlist">{webMinor.map(([k, d]) => (<li><b>{k}:</b> {d}</li>))}</ul></div>
+        </div>
+
+        <h3 class="subhead" data-reveal>Staff professionalism</h3>
+        <p class="body-p" data-reveal>Premier works in high-end neighborhoods, but uniforms were stained and mismatched, and there were no standard pants or shorts. I proposed a uniform by role and a cleaner company presentation.</p>
+        <div class="two staff" data-reveal>
+          <div>
+            <span class="mono-label">Uniform by role</span>
+            <ul class="dlist">{uniforms.map(([k, d]) => (<li><b>{k}:</b> {d}</li>))}</ul>
+            <span class="mono-label" style="display:block;margin-top:18px">Company &amp; facility</span>
+            <ul class="dlist">{facility.map((f) => (<li>{f}</li>))}</ul>
+          </div>
+          <figure>
+            <div class="frame light"><img src="/work/premier/van.jpg" alt="Proposed Premier Packout van wrap on a Mercedes Sprinter: logo on both sides, a blue stripe, Flood and Fire checkmarks, and a Call Now panel on the rear doors" loading="lazy" /></div>
+            <figcaption class="cap"><b>Van wrap concept</b> that turns the fleet into mobile advertising</figcaption>
+          </figure>
+        </div>
       </section>
 
-      <!-- 06 Testing -->
-      <section class="csec" id="testing">
-        <div class="shead" data-reveal><span class="n">06</span><h2>Testing insights</h2></div>
+      <!-- 06 Key insights (CX relabel of "Testing insights": this was research, not usability testing) -->
+      <section class="csec" id="insights">
+        <div class="shead" data-reveal><span class="n">06</span><h2>Key insights</h2></div>
         <div class="two">
-          <div class="callout" data-reveal>Checked against the people who run the service every day.</div>
           <div data-reveal>
-            <p class="body-p">I walked the proposed journey back through with the CEO and refined each stage against how the crews actually work. <span class="draft">[Add who validated it and the 2–3 changes it drove.]</span></p>
+            <div class="callout">The lowest points were the handoffs: finding help, the first day of pack-back, and aftercare.</div>
+            <p class="body-p">Just over half of homeowners were satisfied, and one in five rated the service 2 or lower. Online sentiment leaned positive (13 of 18 mentions) but was thin: a 5.0 Google rating from only 2 reviews, and no reviews on Yelp. New customers had almost no social proof to go on.</p>
           </div>
+          <figure class="csat" data-reveal>
+            <figcaption class="csat-head">
+              <span class="mono-label">Homeowner satisfaction · n = 36</span>
+              <span class="csat-big">56%</span><span class="csat-sub">satisfied (top three ratings)</span>
+            </figcaption>
+            <ul class="bars">
+              {csat.map((r) => (
+                <li class:list={['bar-row', { top: r.top }]} tabindex="0" aria-label={`${r.l}: ${r.n} homeowners (${r.flood} flood, ${r.fire} fire)`}>
+                  <span class="bar-l">{r.l}</span>
+                  <span class="bar-track"><span class="bar" style={`width:${(r.n / csatMax) * 100}%`}></span></span>
+                  <span class="bar-n">{r.n}</span>
+                  <span class="tip" aria-hidden="true">{r.n} homeowners · {r.flood} flood, {r.fire} fire · {Math.round((r.n / 36) * 1000) / 10}%</span>
+                </li>
+              ))}
+            </ul>
+          </figure>
+        </div>
+        <div class="stats" data-reveal>
+          <div class="stat"><div class="big">13<span class="of">/18</span></div><div class="statlab">Online mentions positive (4 negative, 1 neutral)</div></div>
+          <div class="stat"><div class="big">2</div><div class="statlab">Google reviews, the only public ratings</div></div>
+          <div class="stat"><div class="big">5</div><div class="statlab">Major website issues, from a 404 to a PO-box address</div></div>
         </div>
       </section>
 
       <!-- 07 Results -->
       <section class="csec" id="results">
         <div class="shead" data-reveal><span class="n">07</span><h2>Results</h2></div>
-        <p class="lead" data-reveal>A shared map of the customer’s experience and a clear set of changes to make it white-glove. <span class="draft">[Add what changed after, in numbers or quotes.]</span></p>
+        <p class="lead" data-reveal>A shared, evidence-backed picture of the customer’s experience and a white-glove plan across three workstreams, delivered to the CEO. <span class="draft">[Add what Premier adopted, e.g. uniforms, van wraps, storage changes, the website.]</span></p>
         <div class="stats" data-reveal>
-          <div class="stat"><div class="big">5</div><div class="statlab">Journey stages mapped, pack-out to return</div></div>
-          <div class="stat"><div class="big draft-num">#</div><div class="statlab">Pain points surfaced <span class="draft">[count]</span></div></div>
-          <div class="stat"><div class="big">1</div><div class="statlab">White-glove service blueprint for the CEO</div></div>
+          <div class="stat"><div class="big">8</div><div class="statlab">Journey phases mapped, from marketing to aftercare</div></div>
+          <div class="stat"><div class="big">56%</div><div class="statlab">Satisfaction baseline across 36 homeowners</div></div>
+          <div class="stat"><div class="big">3</div><div class="statlab">Workstreams: website, staff &amp; fleet, operations</div></div>
         </div>
         <blockquote class="quote" data-reveal>
           <p><span class="draft">[A line from the CEO, or one thing Premier changed because of this work.]</span></p>
@@ -205,7 +308,7 @@ const lenses = [
         <div class="two">
           <div class="callout" data-reveal>What I’d carry forward, and do differently next time.</div>
           <div data-reveal>
-            <p class="body-p">Working beside the CEO showed me how much of an experience lives outside any screen. Next time I’d speak with customers directly at each stage, not only through the people who serve them. <span class="draft">[Make it yours.]</span></p>
+            <p class="body-p">This project showed me how much of an experience happens off-screen: in the truck, the warehouse, and the homeowner’s living room. Next time I’d set up a follow-up satisfaction survey from the start, so the 56% baseline could show whether the changes worked. <span class="draft">[Make it yours.]</span></p>
           </div>
         </div>
       </section>
@@ -213,9 +316,9 @@ const lenses = [
       <!-- 09 Journey map & deliverable (CX relabel of the prototype section) -->
       <section class="csec" id="journey">
         <div class="shead" data-reveal><span class="n">09</span><h2>Journey map &amp; deliverable</h2></div>
-        <p class="lead" data-reveal>Pick a stage to see what the customer is going through, where it breaks, and what I recommended. <span class="draft">[Stage details are placeholders until your map is in.]</span></p>
+        <p class="lead" data-reveal>I built the map from client interviews, observation of our workflow, and customer feedback, then organized it by theme to show the bottlenecks. Pick a phase to read it.</p>
         <div class="journey" data-reveal>
-          <div class="jstrip" role="tablist" aria-label="Customer journey stages">
+          <div class="jstrip" role="tablist" aria-label="Customer journey phases">
             {stages.map((s, i) => (
               <button class="jstage" role="tab" type="button" id={`tab-${s.id}`} aria-controls={`panel-${s.id}`}
                 aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
@@ -225,32 +328,18 @@ const lenses = [
           </div>
           {stages.map((s, i) => (
             <div class="jpanel" role="tabpanel" id={`panel-${s.id}`} aria-labelledby={`tab-${s.id}`} hidden={i !== 0}>
-              <div><span class="mono-label">Customer is</span><p>{s.doing}</p></div>
-              <div><span class="mono-label">Feeling</span><p>{s.feel}</p></div>
-              <div><span class="mono-label">Touchpoints</span><p>{s.touch}</p></div>
-              <div><span class="mono-label">Pain point</span><p>{s.pain} <span class="draft">[draft]</span></p></div>
-              <div><span class="mono-label">Recommendation</span><p>{s.rec} <span class="draft">[draft]</span></p></div>
+              <div><span class="mono-label">Client goal</span><p>{s.goal}</p><span class="mono-label jmood">Sentiment</span><p>{s.mood}</p></div>
+              <div><span class="mono-label">Client expects</span><p>{s.expect}</p></div>
+              <div><span class="mono-label">Client pain points</span><p>{s.pain}</p></div>
+              <div><span class="mono-label">Company pain points</span><p>{s.company}</p></div>
             </div>
           ))}
         </div>
-        <h3 class="subhead" data-reveal>The whole map at a glance</h3>
-        <div class="jm-scroll" tabindex="0" role="region" aria-labelledby="jm-cap" data-reveal>
-          <table class="jm-table">
-            <caption id="jm-cap" class="sr-only">Premier Packout customer journey: five stages by five lenses (scrolls sideways on small screens)</caption>
-            <thead>
-              <tr><td></td>{stages.map((s) => (<th scope="col"><span class="jn-s">{s.n}</span>{s.t}</th>))}</tr>
-            </thead>
-            <tbody>
-              {lenses.map((l) => (
-                <tr class={`jm-r-${l.k}`}>
-                  <th scope="row">{l.label}</th>
-                  {stages.map((s) => (<td>{s[l.k]}</td>))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <h3 class="subhead" data-reveal>The full map</h3>
+        <div class="map-scroll" tabindex="0" role="region" aria-label="Full journey map (scrolls sideways)" data-reveal>
+          <img src="/work/premier/journey-map.jpg" alt="Premier Packout customer journey map. Goal: the client wants to find a contents company to pack up their home and store it until they can move back in. Eight phases (marketing, work acquisition, evaluation, pack-out, storage, cleaning, pack-back, aftercare) by client goals, sentiment, expectations, client pain points, and company pain points." loading="lazy" />
         </div>
-        <div class="slot slot-wide" data-reveal><span class="mono-label">Image slot</span>The original journey map deliverable, as handed to the CEO</div>
+        <p class="exp-hint" data-reveal>Scroll sideways to read it, or <a href="/work/premier/journey-map.jpg" target="_blank" rel="noopener">open it full size ↗</a></p>
       </section>
     </div>
 
@@ -283,14 +372,16 @@ const lenses = [
   .case-hero{position:relative;min-height:56vh;display:flex;align-items:flex-end;overflow:hidden;
     border-bottom:1px solid var(--line);
     background:radial-gradient(ellipse 70% 90% at 85% 10%,var(--gold-glow),transparent 70%)}
-  /* Journey line in the hero's empty right half; the title owns the left */
-  .hero-map{position:absolute;left:52%;right:max(4vw,24px);top:24%;height:40%;pointer-events:none}
-  .hero-map svg{position:absolute;inset:0;width:100%;height:100%;opacity:.7}
-  .hj-line{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:6 8}
-  .hero-map ol{position:absolute;inset:0;list-style:none;margin:0;padding:0}
-  .hero-map li{position:absolute;transform:translate(-50%,-7px);display:flex;flex-direction:column;align-items:center;gap:10px;
-    font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-fg)}
-  .hero-map li::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--bg);border:2.5px solid var(--gold-soft)}
+  /* Hero: client-sentiment line from the journey map, in the empty right half */
+  .hero-map{position:absolute;left:52%;right:max(4vw,24px);top:20%;margin:0;pointer-events:none}
+  .hero-map svg{width:100%;height:auto;display:block;overflow:visible}
+  .hj-line{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:5 7;opacity:.75}
+  .hj-dot{fill:var(--bg);stroke:var(--gold-soft);stroke-width:3}
+  .hj-dot.low{fill:var(--bg);stroke:var(--ink-soft)}
+  .hj-dot.high{fill:var(--gold)}
+  .hj-note{font-family:var(--mono);font-size:17px;letter-spacing:.12em;text-transform:uppercase;fill:var(--muted-fg)}
+  .hero-map figcaption{margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted-fg);text-align:right}
   @media (max-width:1000px){.hero-map{display:none}}
   .case-hero-in{position:relative;z-index:2;width:100%;padding:120px var(--pad) clamp(30px,4vw,52px)}
   .back{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;
@@ -362,6 +453,7 @@ const lenses = [
   .rows li{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);
     align-items:baseline;color:var(--ink)}
   .rows .mono-label{color:var(--gold)}
+  .rows.nums li{grid-template-columns:40px 1fr}
   @media (max-width:480px){.rows li{grid-template-columns:1fr;gap:4px}}
 
   /* Service improvements: today vs white-glove */
@@ -400,20 +492,20 @@ const lenses = [
 
   /* Journey strip: five stages as tabs, a connecting line through them */
   .journey{margin-top:22px;border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--panel)}
-  .jstrip{display:grid;grid-template-columns:repeat(5,1fr);position:relative;border-bottom:1px solid var(--line)}
-  .jstrip::before{content:"";position:absolute;left:10%;right:10%;top:34px;height:2px;
+  .jstrip{display:grid;grid-template-columns:repeat(8,1fr);position:relative;border-bottom:1px solid var(--line)}
+  .jstrip::before{content:"";position:absolute;left:6.25%;right:6.25%;top:34px;height:2px;
     background:linear-gradient(90deg,var(--gold),color-mix(in srgb,var(--gold) 30%,transparent))}
   .jstage{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 8px 16px;
     background:none;border:0;color:var(--ink-soft);cursor:pointer;font:inherit;transition:color .2s,background-color .2s}
   .jstage .jn{position:relative;z-index:1;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;
     border:2px solid var(--gold);background:var(--panel);font-family:var(--mono);font-size:12px;color:var(--gold);
     transition:background-color .2s,color .2s}
-  .jstage .jt{font-family:var(--display);font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:.02em}
+  .jstage .jt{font-family:var(--display);font-weight:700;font-size:.88rem;text-align:center;line-height:1.15;text-transform:uppercase;letter-spacing:.02em}
   .jstage:hover{color:var(--ink);background:color-mix(in srgb,var(--gold) 5%,transparent)}
   .jstage[aria-selected="true"]{color:var(--ink);background:color-mix(in srgb,var(--gold) 9%,transparent)}
   .jstage[aria-selected="true"] .jn{background:var(--gold);color:var(--bg)}
   .jstage:focus-visible{outline:2px solid var(--gold);outline-offset:-4px}
-  .jpanel{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+  .jpanel{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
   .jpanel[hidden]{display:none}
   .jpanel > div{padding:20px 22px;border-right:1px solid var(--line);min-width:0}
   .jpanel > div:last-child{border-right:0}
@@ -423,7 +515,11 @@ const lenses = [
     .jpanel{grid-template-columns:1fr 1fr}
     .jpanel > div{border-bottom:1px solid var(--line)}
     .jpanel > div:nth-child(even){border-right:0}
-    .jpanel > div:last-child{grid-column:1 / -1;border-bottom:0}
+    .jpanel > div:nth-last-child(-n+2){border-bottom:0}
+  }
+  @media (max-width:980px) and (min-width:561px){
+    .jstrip{grid-template-columns:repeat(4,1fr)}
+    .jstrip::before{display:none}
   }
   @media (max-width:560px){
     .jstrip{grid-template-columns:1fr;}
@@ -435,26 +531,56 @@ const lenses = [
     .jpanel > div:last-child{border-bottom:0}
   }
 
-  /* Whole-map table (sticky row labels so it reads on a phone) */
-  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  .subhead{margin:40px 0 14px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.14em;
+  /* Recommendation pillars */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:28px;border:1px solid var(--line);
+    border-radius:var(--radius);overflow:hidden;background:var(--line)}
+  .pillar{background:var(--bg);padding:22px}
+  .pillar .mono-label{color:var(--gold)}
+  .pillar p{margin-top:10px;color:var(--ink-soft);font-size:14.5px;line-height:1.6}
+  @media (max-width:820px){.pillars{grid-template-columns:1fr}}
+
+  /* Audit + staff lists */
+  .subhead{margin:44px 0 12px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.14em;
     text-transform:uppercase;color:var(--gold)}
-  .jm-scroll{overflow-x:auto;border:1px solid var(--line-2);border-radius:14px;background:var(--panel);-webkit-overflow-scrolling:touch}
-  .jm-scroll:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-  .jm-table{width:100%;min-width:860px;border-collapse:collapse;font-size:13.5px;line-height:1.5}
-  .jm-table th,.jm-table td{padding:14px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
-  .jm-table tbody tr:last-child > *{border-bottom:0}
-  .jm-table thead th{font-family:var(--display);font-weight:600;font-size:1.05rem;color:var(--ink);border-bottom:2px solid var(--gold)}
-  .jn-s{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold);margin-bottom:2px}
-  .jm-table tbody th,.jm-table thead td{position:sticky;left:0;z-index:1;background:var(--panel)}
-  .jm-table tbody th{width:128px;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.12em;
-    text-transform:uppercase;color:var(--muted-fg)}
-  @media (max-width:560px){.jm-table tbody th{width:92px;padding:14px 10px}}
-  .jm-table td{color:var(--ink-soft)}
-  .jm-r-feel td{font-family:var(--display);font-weight:500;color:var(--ink)}
-  .jm-r-pain td{color:var(--ink)}
-  .jm-r-rec td{color:var(--ink);background:color-mix(in srgb,var(--gold) 7%,transparent)}
-  .jm-r-rec th{color:var(--gold)}
+  .audit .mono-label,.staff .mono-label{color:var(--ink-soft)}
+  .dlist{list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--line)}
+  .dlist li{padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink-soft);font-size:14.5px;line-height:1.55}
+  .dlist b{color:var(--ink);font-weight:600}
+  .staff{margin-top:18px}
+  .frame{border:1px solid var(--line-2);border-radius:var(--radius);overflow:hidden}
+  .frame.light{background:#fff}
+  .frame img{display:block;width:100%}
+
+  /* CSAT bars: one series, the satisfied (top three) ratings in the accent */
+  .csat{margin:0;padding:20px 22px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+  .csat-head{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:4px 12px;margin-bottom:14px}
+  .csat-head .mono-label{grid-column:1 / -1;color:var(--muted-fg)}
+  .csat-big{font-family:var(--display);font-weight:800;font-size:2.3rem;line-height:1;color:var(--gold)}
+  .csat-sub{color:var(--ink-soft);font-size:13.5px}
+  .bars{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .bar-row{position:relative;display:grid;grid-template-columns:150px 1fr 26px;align-items:center;gap:10px;
+    padding:2px 0;border-radius:6px;outline:none}
+  .bar-l{font-size:13px;color:var(--ink-soft);text-align:right}
+  .bar-track{height:14px}
+  .bar{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--muted-fg);opacity:.55;transition:opacity .15s}
+  .bar-row.top .bar{background:var(--gold);opacity:1}
+  .bar-n{font-family:var(--mono);font-size:12px;color:var(--ink)}
+  .bar-row:hover .bar,.bar-row:focus-visible .bar{opacity:1}
+  .bar-row:focus-visible{box-shadow:0 0 0 2px var(--gold)}
+  .tip{position:absolute;right:0;bottom:calc(100% + 4px);z-index:3;padding:6px 10px;border-radius:7px;white-space:nowrap;
+    background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:11px;opacity:0;pointer-events:none;transition:opacity .12s}
+  .bar-row:hover .tip,.bar-row:focus-visible .tip{opacity:1}
+  @media (max-width:480px){.bar-row{grid-template-columns:96px 1fr 22px}.bar-l{font-size:12px}}
+  .stat .big .of{font-size:1.2rem;color:var(--muted-fg);font-weight:600}
+  #insights .stats{margin-top:24px}
+
+  /* Full journey map: its own width, scrolls sideways */
+  .map-scroll{overflow-x:auto;border:1px solid var(--line-2);border-radius:14px;background:#fff;-webkit-overflow-scrolling:touch}
+  .map-scroll img{display:block;width:1900px;max-width:none}
+  .map-scroll:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .exp-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted-fg);margin-top:12px}
+  .exp-hint a{color:var(--gold)}
+  .jmood{display:block;margin-top:14px}
 
   /* Pager */
   .pager-sec{border-top:1px solid var(--line)}
