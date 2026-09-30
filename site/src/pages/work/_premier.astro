@@ -340,10 +340,11 @@ const stages = [
           ))}
         </div>
         <h3 class="subhead" data-reveal>The full map</h3>
-        <div class="map-scroll" tabindex="0" role="region" aria-label="Full journey map (scrolls sideways)" data-reveal>
+        <button class="map-thumb" type="button" data-zoom-src="/work/premier/journey-map.jpg" aria-haspopup="dialog" data-reveal>
           <img src="/work/premier/journey-map.jpg" alt="Premier Packout customer journey map. Goal: the client wants to find a contents company to pack up their home and store it until they can move back in. Eight phases (marketing, work acquisition, evaluation, pack-out, storage, cleaning, pack-back, aftercare) by client goals, sentiment, expectations, client pain points, and company pain points." loading="lazy" />
-        </div>
-        <p class="exp-hint" data-reveal>Scroll sideways to read it, or <a href="/work/premier/journey-map.jpg" target="_blank" rel="noopener">open it full size ↗</a></p>
+          <span class="map-open" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>View full size</span>
+        </button>
+        <p class="exp-hint" data-reveal>Click the map to open it full screen, then zoom and drag to read the details.</p>
       </section>
     </div>
 
@@ -363,6 +364,22 @@ const stages = [
     </section>
   </main>
   <Footer />
+
+  <!-- Full-screen map viewer: zoom (buttons, wheel, pinch, double-click) and drag to pan -->
+  <div class="zoomer" id="zoomer" role="dialog" aria-modal="true" aria-label="Journey map, full size" hidden>
+    <div class="zoom-bar">
+      <span class="zoom-title">Journey map</span>
+      <div class="zoom-ctrls">
+        <button type="button" data-zoom="out" aria-label="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+        <output class="zoom-pct" aria-live="polite">100%</output>
+        <button type="button" data-zoom="in" aria-label="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button type="button" data-zoom="fit" class="zoom-fit">Fit</button>
+        <button type="button" data-zoom="close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+    </div>
+    <div class="zoom-stage" tabindex="-1"><img alt="" draggable="false" /></div>
+    <p class="zoom-help">Scroll or pinch to zoom · drag to move · double-click to zoom in · Esc to close</p>
+  </div>
 </Base>
 
 <style>
@@ -597,11 +614,40 @@ const stages = [
   #insights .stats{margin-top:24px}
 
   /* Full journey map: its own width, scrolls sideways */
-  .map-scroll{overflow-x:auto;border:1px solid var(--line-2);border-radius:14px;background:#fff;-webkit-overflow-scrolling:touch}
-  .map-scroll img{display:block;width:1900px;max-width:none}
-  .map-scroll:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  /* Full journey map: fits the page; opens in the zoomable viewer */
+  .map-thumb{position:relative;display:block;width:100%;padding:0;border:1px solid var(--line-2);border-radius:14px;
+    overflow:hidden;background:#fff;cursor:zoom-in;transition:border-color .2s}
+  .map-thumb img{display:block;width:100%;height:auto}
+  .map-thumb:hover,.map-thumb:focus-visible{border-color:var(--gold)}
+  .map-thumb:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .map-open{position:absolute;right:12px;bottom:12px;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;
+    border-radius:9px;background:color-mix(in srgb,var(--bg) 82%,transparent);border:1px solid var(--line-2);color:var(--ink);
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;backdrop-filter:blur(6px)}
+  .map-open svg{width:14px;height:14px}
   .exp-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted-fg);margin-top:12px}
-  .exp-hint a{color:var(--gold)}
+
+  /* Zoom viewer */
+  .zoomer{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;
+    background:color-mix(in srgb,#05060a 92%,transparent);backdrop-filter:blur(4px)}
+  .zoomer[hidden]{display:none}
+  .zoom-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,24px);
+    color:#e8e9ee;border-bottom:1px solid rgba(255,255,255,.12)}
+  .zoom-title{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+  .zoom-ctrls{display:flex;align-items:center;gap:6px}
+  .zoom-ctrls button{display:grid;place-items:center;min-width:40px;height:40px;padding:0 10px;border-radius:10px;cursor:pointer;
+    border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#fff;font-family:var(--mono);font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;transition:border-color .2s,color .2s}
+  .zoom-ctrls button:hover,.zoom-ctrls button:focus-visible{border-color:var(--gold-soft);color:var(--gold-soft)}
+  .zoom-ctrls button:focus-visible{outline:2px solid var(--gold-soft);outline-offset:2px}
+  .zoom-ctrls svg{width:18px;height:18px}
+  .zoom-pct{min-width:52px;text-align:center;font-family:var(--mono);font-size:12px;color:#c9cbd3}
+  .zoom-stage{position:relative;flex:1;overflow:hidden;cursor:grab;touch-action:none}
+  .zoom-stage.dragging{cursor:grabbing}
+  .zoom-stage:focus{outline:none}
+  .zoom-stage img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;user-select:none;
+    box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .zoom-help{margin:0;padding:10px;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:#9a9dab}
+  @media (max-width:560px){.zoom-bar{justify-content:center}.zoom-title{display:none}.zoom-pct{min-width:44px}.zoom-help{font-size:10px}}
   .jmood{display:block;margin-top:14px}
 
   /* Pager */
@@ -649,5 +695,131 @@ const stages = [
         if (n !== null) { e.preventDefault(); select(n, true); }
       });
     });
+  })();
+
+  // Full-screen map viewer. The image is positioned with translate + scale; "fit" shows the
+  // whole map, zoom keeps the point under the cursor (or pinch centre, or stage centre) still.
+  (function () {
+    const dlg = document.getElementById('zoomer');
+    const thumbs = document.querySelectorAll('[data-zoom-src]');
+    if (!dlg || !thumbs.length) return;
+    const stage = dlg.querySelector('.zoom-stage');
+    const img = stage.querySelector('img');
+    const pct = dlg.querySelector('.zoom-pct');
+    // zoom range: from the whole map up to 4× that, and never less than 1.5× the image's real pixels
+    const maxScale = () => Math.max(fit * 4, 1.5);
+    let s = 1, x = 0, y = 0, fit = 1, opener = null;
+    const pts = new Map();
+    let last = null, pinch = null;
+
+    function clamp() {
+      const w = img.naturalWidth * s, h = img.naturalHeight * s;
+      const sw = stage.clientWidth, sh = stage.clientHeight;
+      x = w <= sw ? (sw - w) / 2 : Math.min(0, Math.max(sw - w, x));
+      y = h <= sh ? (sh - h) / 2 : Math.min(0, Math.max(sh - h, y));
+    }
+    function draw() {
+      clamp();
+      img.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
+      pct.textContent = Math.round((s / fit) * 100) + '%';
+    }
+    function zoomTo(ns, cx, cy) {
+      ns = Math.min(Math.max(ns, fit), maxScale());
+      if (cx == null) { cx = stage.clientWidth / 2; cy = stage.clientHeight / 2; }
+      x = cx - ((cx - x) * ns) / s;
+      y = cy - ((cy - y) * ns) / s;
+      s = ns;
+      draw();
+    }
+    function toFit() {
+      fit = Math.min(stage.clientWidth / img.naturalWidth, stage.clientHeight / img.naturalHeight);
+      s = fit; x = 0; y = 0;
+      draw();
+    }
+    function open(src, alt, from) {
+      opener = from;
+      dlg.hidden = false;
+      document.body.style.overflow = 'hidden';
+      img.alt = alt || '';
+      const ready = () => { toFit(); dlg.querySelector('[data-zoom="in"]').focus(); };
+      if (img.getAttribute('src') === src && img.complete) ready();
+      else { img.onload = ready; img.src = src; }
+    }
+    function close() {
+      dlg.hidden = true;
+      document.body.style.overflow = '';
+      if (opener) opener.focus();
+    }
+
+    thumbs.forEach((t) => t.addEventListener('click', () => {
+      const im = t.querySelector('img');
+      open(t.dataset.zoomSrc, im ? im.alt : '', t);
+    }));
+    dlg.querySelectorAll('[data-zoom]').forEach((b) => b.addEventListener('click', () => {
+      const a = b.dataset.zoom;
+      if (a === 'in') zoomTo(s * 1.5);
+      else if (a === 'out') zoomTo(s / 1.5);
+      else if (a === 'fit') toFit();
+      else close();
+    }));
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === '+' || e.key === '=') zoomTo(s * 1.5);
+      else if (e.key === '-') zoomTo(s / 1.5);
+      else if (e.key === '0') toFit();
+      else if (e.key.startsWith('Arrow')) {
+        const d = 60;
+        if (e.key === 'ArrowLeft') x += d; if (e.key === 'ArrowRight') x -= d;
+        if (e.key === 'ArrowUp') y += d; if (e.key === 'ArrowDown') y -= d;
+        e.preventDefault(); draw();
+      } else if (e.key === 'Tab') {
+        // keep focus inside the dialog
+        const f = [...dlg.querySelectorAll('button')];
+        const i = f.indexOf(document.activeElement);   // -1 when the stage has focus
+        if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+    stage.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const r = stage.getBoundingClientRect();
+      zoomTo(s * Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top);
+    }, { passive: false });
+    stage.addEventListener('dblclick', (e) => {
+      const r = stage.getBoundingClientRect();
+      zoomTo(s < fit * 1.9 ? fit * 2.5 : fit, e.clientX - r.left, e.clientY - r.top);
+    });
+    stage.addEventListener('pointerdown', (e) => {
+      stage.focus({ preventScroll: true });   // keep keyboard control (Esc, arrows) inside the dialog
+      stage.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, [e.clientX, e.clientY]);
+      last = [e.clientX, e.clientY];
+      stage.classList.add('dragging');
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, [e.clientX, e.clientY]);
+      const r = stage.getBoundingClientRect();
+      if (pts.size === 2) {
+        const [a, b] = [...pts.values()];
+        const dist = Math.hypot(a[0] - b[0], a[1] - b[1]);
+        const cx = (a[0] + b[0]) / 2 - r.left, cy = (a[1] + b[1]) / 2 - r.top;
+        if (pinch) zoomTo(s * (dist / pinch), cx, cy);
+        pinch = dist;
+      } else if (last) {
+        x += e.clientX - last[0]; y += e.clientY - last[1];
+        last = [e.clientX, e.clientY];
+        draw();
+      }
+    });
+    const up = (e) => {
+      pts.delete(e.pointerId);
+      pinch = null;
+      last = pts.size === 1 ? [...pts.values()][0] : null;
+      if (!pts.size) stage.classList.remove('dragging');
+    };
+    stage.addEventListener('pointerup', up);
+    stage.addEventListener('pointercancel', up);
+    window.addEventListener('resize', () => { if (!dlg.hidden) toFit(); });
   })();
 </script>
