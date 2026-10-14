@@ -1983,6 +1983,16 @@ function brandList(){
 /* Narrowing the shelf can strand a selected brand that the new shelf does not
    carry: it stops being rendered, so it cannot be unselected, and match() then
    returns nothing with no visible cause. Drop those selections with the type. */
+/* Flavor is a facet of the three shelves whose taste comes from terpenes
+   (Jack, 2026-10-14). Its options are tasteList(), the same derived list
+   Guide Me offers, so the two cannot disagree. It is shelf state like Size:
+   it only means something on a tasted shelf, and leaving one clears it. */
+const TASTED=["flower","preroll","concentrate"];
+function flavorOn(){return S.flavors.length&&TASTED.indexOf(S.type)>-1;}
+function pruneFlavors(){
+  var ok=TASTED.indexOf(S.type)>-1?tasteList(S.type):[];
+  S.flavors=S.flavors.filter(function(t){return ok.indexOf(t)>-1;});
+}
 function pruneBrands(){
   var ok=brandList();
   S.brands=S.brands.filter(function(b){return ok.indexOf(b)>-1;});
@@ -2022,13 +2032,16 @@ const FEELOPTS=[
    terpenes via terpmap.py, so five options matched nothing and four real tastes
    (Earthy, Hoppy, Sweet, Woody) could not be picked (Jack, 2026-10-14). Scoped
    to the method chosen, so every option names something on that shelf. */
+var TASTECACHE={};   /* P never changes at runtime, so one scan per shelf */
 function tasteList(method){
+  var key=method||"*";if(TASTECACHE[key])return TASTECACHE[key].slice();
   var seen={},out=[];
   P.forEach(function(p){
     if(method&&p.t!==method)return;
     (p.ta||[]).forEach(function(t){if(!seen[t]){seen[t]=1;out.push(t);}});
   });
-  return out.sort(function(a,b){return a.localeCompare(b);});
+  TASTECACHE[key]=out.sort(function(a,b){return a.localeCompare(b);});
+  return out.slice();
 }
 const P=[
  {t:"flower",n:"Power",b:"Plaid Jacket",img:"fl_indhyb",pr:38,pz:{"1 g": 12.0, "3.5 g": 38.0, "7 g": 70.0, "14 g": 120.0, "28 g": 220.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:23.78,cbdv:0.24,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:0,r:4.8,rv:36,tp:["Nerolidol","Caryophyllene","Limonene"],fe:["Relaxed","Grounded","Uplifted"],ta:["Woody","Peppery","Citrus"],d:"Dense, earthy flower with peppery spice and a mellow citrus edge, finishing with a deeply relaxed, grounded character."},
@@ -2533,7 +2546,7 @@ document.addEventListener("click",function(e){
 addEventListener("keydown",function(e){if(e.key==="Escape")setFull(false);});
 function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}
 
-const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],size:null,thc:null,sale:false,deal:null,sort:"best",cart:[],screen:"home"};
+const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],flavors:[],size:null,thc:null,sale:false,deal:null,sort:"best",cart:[],screen:"home"};
 const G={feels:[],method:null,subs:[],tastes:[]};
 const $=function(q){return document.querySelector(q);};
 const view=$("#view");
@@ -2634,7 +2647,7 @@ function nav(k){
      afterwards is shown inside it. That is what makes it a global filter. */
   if(k==="shop"){
     S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;
-    S.size=null;S.deal=null;
+    S.size=null;S.deal=null;S.flavors=[];
   }
   document.querySelectorAll(".s").forEach(function(x){x.classList.toggle("on",x.dataset.s===k);});
   document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b.dataset.tab===TABMAP[k]);});
@@ -2885,6 +2898,7 @@ $("#methodnext").addEventListener("click",function(){
   if(G.method==="concentrate"){$("#subq").textContent="What kind of Concentrate do you like?";$("#sublearn").classList.add("on");renderSub();nav("subtype");}
   else if(G.method==="edible"){$("#subq").textContent="Gummies, Chocolate, Hard Candy, Baked Goods, or Capsules?";$("#sublearn").classList.remove("on");renderSub();nav("subtype");}
   else if(SMOKEABLE.indexOf(G.method)>-1){G.subs=[];renderTaste();setBack("taste","method");nav("taste");} /* flower/pre-roll -> taste */
+  else if(G.method==="vape"){G.subs=[];nav("vape");}                                     /* vape -> the web-only screen, as from the shop */
   else{G.subs=[];renderFinish();setBack("finish","method");nav("finish");}     /* topical/tincture -> finish */
 });
 $("#subnext").addEventListener("click",function(){
@@ -2907,19 +2921,52 @@ function byTaste(list){
   return list.map(function(p,i){return [score(p),i,p];})
     .sort(function(a,b){return b[0]-a[0]||a[1]-b[1];}).map(function(x){return x[2];});
 }
+/* One recommendation group's shelf: the method's products, narrowed to the
+   sub-type picked. An edible's sub-type is its form (p.etype), every other
+   shelf's is p.sub - the same split the Browse button below already makes. */
+function guideShelf(g){
+  return P.filter(function(p){
+    if(p.t!==G.method)return false;
+    if(g===TYPES[G.method])return true;
+    return G.method==="edible"?p.etype===g:p.sub===g;
+  });
+}
+/* With two or more lifestyles picked, take turns between them - otherwise the
+   first six cards are all whichever lifestyle comes first in the catalog. */
+function mixLifestyles(list,lifes){
+  var seen={};
+  return list.map(function(p,i){var k=p.f[0];seen[k]=(seen[k]||0)+1;return [seen[k],lifes.indexOf(k),i,p];})
+    .sort(function(a,b){return a[0]-b[0]||a[1]-b[1]||a[2]-b[2];}).map(function(x){return x[3];});
+}
 function renderFinish(){
   var lifes=guideLifestyles();
-  var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||"picks"];
+  /* a method with no TYPES entry (tincture) still needs a name for its note */
+  var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||(G.method.charAt(0).toUpperCase()+G.method.slice(1)+"s")];
   var chips=lifes.map(function(l){return '<div class="feelchip '+LIFECLASS[l]+'">'+lifeGlyph(l,'chiplogo')+lifeLabel(l)+'</div>';}).join("");
+  /* Every card here has to be something Browse would show (Jack, 2026-10-14).
+     This used to filter by shelf alone and never read the lifestyles, so 41 of
+     42 method x lifestyle paths recommended the wrong lifestyle; edible types
+     compared p.sub ("THC") against "Gummies" and fell back to the whole shelf;
+     and a shelf with no products (vape, tincture) fell through to P.slice(0,6),
+     six unrelated products. Now: the shelf, then the lifestyles picked, then
+     the tastes order it - and when the shelf has nothing in those lifestyles
+     it says so instead of quietly showing something else. */
   var groupHtml=groups.map(function(g){
-    var prods=byTaste(P.filter(function(p){return p.t===G.method&&(g===TYPES[G.method]||p.sub===g);})).slice(0,6);
-    var pool=prods.length?prods:P.filter(function(p){return p.t===G.method;}).slice(0,6);
-    if(!pool.length)pool=P.slice(0,6);
-    var cards=pool.map(feedCard).join("");
-    return '<div class="recgroup"><div class="rt">Recommended '+g+'</div><button class="browse tap" data-sub="'+g+'">Browse products ›</button><div class="feedrow">'+cards+'</div></div>';
+    var shelf=guideShelf(g);
+    if(!shelf.length)
+      return '<div class="recgroup"><div class="rt">'+g+'</div><div class="lock"><b>Nothing here yet</b><br>Origins doesn’t carry '+g.toLowerCase()+' right now. <a class="learnlink on" href="#" data-edu="1">Learn about them in Origins&nbsp;U&nbsp;›</a></div></div>';
+    var fit=shelf.filter(function(p){return lifes.indexOf(p.f[0])>-1;});
+    var note="";
+    if(!fit.length){
+      note='<div class="lock">No '+lifes.map(lifeLabel).join(" or ")+' '+g.toLowerCase()+' in the catalog — here are the best of the rest.</div>';
+      fit=shelf;
+    }
+    var cards=byTaste(mixLifestyles(fit,lifes)).slice(0,6).map(feedCard).join("");
+    return '<div class="recgroup"><div class="rt">Recommended '+g+'</div><button class="browse tap" data-sub="'+g+'">Browse products ›</button>'+note+'<div class="feedrow">'+cards+'</div></div>';
   }).join("");
   $("#finishwrap").innerHTML='<div class="intro">You chose to see items from these feelings.<br>Select one to explore related products:</div><div class="learn tap" id="finishlearn">Learn more ›</div><div class="feelchips">'+chips+'</div>'+groupHtml+'<div class="backshop"><button class="continue cue" id="tobackshop">Back to Shop →</button></div>';
   $("#finishlearn").addEventListener("click",function(){openEduFor(G.method,0);}); /* Recommendations: Learn more -> matching Origins U page */
+  $("#finishwrap").querySelectorAll("[data-edu]").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();openEduFor(G.method,0);});});
   $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
   $("#finishwrap").querySelectorAll("[data-sub]").forEach(function(b){b.addEventListener("click",function(){
@@ -2935,7 +2982,7 @@ function renderFinish(){
   $("#tobackshop").addEventListener("click",function(){S.mood=lifes[0]||null;S.type=null;S.sub=null;S.sub2=null;S.sub3=null;moodChips($("#moodbar"));nav("shop");});
 }
 
-function activeCount(){var n=0;["type","strain","sub","sub2","sub3","eform","mood","size","thc","deal"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;n+=S.brands.length;return n;}
+function activeCount(){var n=0;["type","strain","sub","sub2","sub3","eform","mood","size","thc","deal"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;n+=S.brands.length;if(flavorOn())n+=S.flavors.length;return n;}
 /* S.deal names a deal from DEALDEF and narrows the list to that deal's own
    products - the only facet that isn't a property of the product itself, so it
    resolves through the deal and memoises the answer (P never changes at
@@ -2972,6 +3019,7 @@ function match(p){
   if(S.eform&&p.etype!==S.eform)return false;
   if(S.mood&&p.f.indexOf(S.mood)<0)return false;
   if(S.brands.length&&S.brands.indexOf(p.b)<0)return false;
+  if(flavorOn()&&!(p.ta||[]).some(function(t){return S.flavors.indexOf(t)>-1;}))return false;
   if(S.sale&&!onSale(p))return false;
   if(S.size){
     /* Every other shelf's Size facet names a package the product comes in, and
@@ -2993,7 +3041,11 @@ function match(p){
     else if(S.thc==="high"&&!(v>20))return false;}
   return true;
 }
-function results(){var r=P.filter(match);
+/* pruneFlavors() here rather than at each of the six places that change
+   S.type: every list and every count passes through results(), so a flavor the
+   new shelf doesn't carry is gone before it can empty the list - and before
+   the drawer stops rendering the button that would unselect it. */
+function results(){pruneFlavors();var r=P.filter(match);
   if(S.sort==="plow")r.sort(function(a,b){return a.pr-b.pr;});
   if(S.sort==="phigh")r.sort(function(a,b){return b.pr-a.pr;});
   if(S.sort==="thc")r.sort(function(a,b){return (b.thc||0)-(a.thc||0);});
@@ -4035,7 +4087,7 @@ function openDeal(k){
      the deal's 26. Opening a deal means the WHOLE deal - the tile handler sets
      the brand back immediately afterwards, which is why it calls this first. */
   S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.size=null;S.thc=null;S.sale=false;
-  S.brands=[];
+  S.brands=[];S.flavors=[];
   S.deal=k;nav("list");
 }
 
@@ -4346,13 +4398,19 @@ function drawDrawer(){
         describe the wrong axis there. */
      (S.type==="edible"?'<div class="dnote">Per serving. Every edible is a 10-serving package.</div>':'')+'</div>'+
    '<div class="dsec"><div class="dt">THC %</div><div class="opts">'+[["low","Low (<10%)"],["mod","Moderate (10–20%)"],["high","High (20%+)"],["cbd","Only CBD"]].map(function(o){return '<button class="opt tap '+(S.thc===o[0]?'sel':'')+'" data-fh="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>'+
-   (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+'<div class="dsec"><div class="dt">Brands'+(S.type?' <span class="hint">'+TYPES[S.type]+' brands</span>':'')+'</div><div class="opts" id="brandopts">'+brandList().map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div><div class="brandmore bhide" id="brandmore"><button class="bmore tap" id="bmorebtn">See more</button></div></div>';
+   (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+
+   '<div class="dsec"><div class="dt">Flavor'+(TASTED.indexOf(S.type)>-1?' <span class="hint">'+TYPES[S.type]+' flavors</span>':'')+'</div>'+
+     (TASTED.indexOf(S.type)>-1
+       ?'<div class="opts">'+tasteList(S.type).map(function(t){return '<button class="opt tap '+(S.flavors.indexOf(t)>-1?'sel':'')+'" data-fl="'+t+'">'+t+'</button>';}).join("")+'</div>'
+       :'<div class="lock"><b>Choose Flower, Pre-Rolls or Concentrates</b><br>Flavor comes from terpenes, and those three shelves are the ones that carry them.</div>')+'</div>'+
+   '<div class="dsec"><div class="dt">Brands'+(S.type?' <span class="hint">'+TYPES[S.type]+' brands</span>':'')+'</div><div class="opts" id="brandopts">'+brandList().map(function(b){return '<button class="opt tap '+(S.brands.indexOf(b)>-1?'sel':'')+'" data-fb="'+b+'">'+b+'</button>';}).join("")+'</div><div class="brandmore bhide" id="brandmore"><button class="bmore tap" id="bmorebtn">See more</button></div></div>';
   d.querySelector("#swsale").addEventListener("click",function(){S.sale=!S.sale;drawDrawer();});
   d.querySelectorAll("[data-fm]").forEach(function(b){b.addEventListener("click",function(){S.mood=S.mood===b.dataset.fm?null:b.dataset.fm;drawDrawer();});});
-  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.deal=null;pruneBrands();brandsOpen=false;drawDrawer();});});
+  d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.deal=null;pruneBrands();pruneFlavors();brandsOpen=false;drawDrawer();});});
   d.querySelectorAll("[data-fs]").forEach(function(b){b.addEventListener("click",function(){S.size=S.size===b.dataset.fs?null:b.dataset.fs;drawDrawer();});});
   d.querySelectorAll("[data-fh]").forEach(function(b){b.addEventListener("click",function(){S.thc=S.thc===b.dataset.fh?null:b.dataset.fh;drawDrawer();});});
   d.querySelectorAll("[data-fe]").forEach(function(b){b.addEventListener("click",function(){S.eform=S.eform===b.dataset.fe?null:b.dataset.fe;drawDrawer();});});
+  d.querySelectorAll("[data-fl]").forEach(function(b){b.addEventListener("click",function(){var i=S.flavors.indexOf(b.dataset.fl);i>-1?S.flavors.splice(i,1):S.flavors.push(b.dataset.fl);drawDrawer();});});
   d.querySelectorAll("[data-fb]").forEach(function(b){b.addEventListener("click",function(){var i=S.brands.indexOf(b.dataset.fb);i>-1?S.brands.splice(i,1):S.brands.push(b.dataset.fb);drawDrawer();});});
   var bm=d.querySelector("#bmorebtn");
   if(bm)bm.addEventListener("click",function(){brandsOpen=true;clampBrands();});
@@ -4370,7 +4428,7 @@ $("#applyf").addEventListener("click",function(){$("#drawer").classList.remove("
    lifestyle chip on the bar behind it stayed lit while nothing was filtered by
    it, which is the same state/paint split as 3.1 (Jack, 2026-09-22). Redraw the
    three mood bars too. */
-$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.size=null;S.thc=null;S.sale=false;S.deal=null;brandsOpen=false;
+$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.flavors=[];S.size=null;S.thc=null;S.sale=false;S.deal=null;brandsOpen=false;
   moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));drawDrawer();});
 $("#sortsel").addEventListener("change",function(e){S.sort=e.target.value;renderList();});
 
