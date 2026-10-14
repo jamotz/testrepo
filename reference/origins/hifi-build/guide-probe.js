@@ -18,7 +18,7 @@ const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
     const run = (feels, method, subs) => {
       G.feels = feels; G.method = method; G.subs = subs; G.tastes = []; renderFinish();
       const cs = cards(), notes = [...document.querySelectorAll('#finishwrap .lock')].map(n => n.textContent);
-      const shelf = P.filter(q => q.t === method && (!subs.length || subs.indexOf(method === 'edible' ? q.etype : q.sub) > -1));
+      const shelf = P.filter(q => q.t === method && (!subs.length || subs.indexOf(method === 'edible' ? q.etype : method === 'drink' ? q.sub2 : q.sub) > -1));
       const inLife = shelf.filter(q => feels.indexOf(q.f[0]) > -1);
       const wrongType = cs.filter(c => shelf.indexOf(c) < 0).length;
       const wrongLife = inLife.length ? cs.filter(c => feels.indexOf(c.f[0]) < 0).length : 0;
@@ -29,16 +29,27 @@ const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
       if (shelf.length && !inLife.length && !notes.length) fails.push(label + ' (fallback without a note)');
       return cs;
     };
-    for (const m of ['flower', 'concentrate', 'edible', 'preroll', 'topical', 'tincture'])
+    for (const m of ['flower', 'concentrate', 'edible', 'drink', 'preroll', 'topical', 'tincture'])
       for (const f of Object.keys(FEEL)) run([f], m, []);
     const two = run(['discovery', 'nightlife'], 'flower', []);
     out.push('  two lifestyles, card order: ' + two.map(c => c.f[0].slice(0, 4)).join(' '));
-    for (const [m, s] of [['edible', 'Gummies'], ['edible', 'Chocolate'], ['concentrate', 'Live Resin'], ['topical', 'Pain Relief']])
+    for (const [m, s] of [['edible', 'Gummies'], ['edible', 'Chocolate'], ['concentrate', 'Live Resin'], ['topical', 'Pain Relief'], ['drink', 'Seltzer'], ['drink', 'Shot']])
       run(['social'], m, [s]);
+    /* Browse must show every card it was recommended beside */
+    for (const [f, m, s] of [['unwind', 'flower', []], ['social', 'edible', ['Gummies']], ['holistic', 'drink', ['Seltzer']], ['adventurous', 'drink', ['Shot']], ['nightlife', 'concentrate', ['Live Resin']]]) {
+      const cs = run([f], m, s);
+      document.querySelector('#finishwrap .browse').click();
+      const shown = results(), miss = cs.filter(c => shown.indexOf(c) < 0);
+      out.push(`  Browse ${m}/${f}${s.length ? '/' + s[0] : ''}: list ${shown.length}, recommended cards missing from it: ${miss.length}`);
+      if (miss.length) fails.push('Browse ' + m + '/' + f);
+      if (m === 'drink' && !document.querySelector('#subcats [data-dr2].sel')) fails.push('drink type not shown on the shelf');
+      nav('shop');
+    }
     /* vape goes to the web-only screen, as from the shop */
     G.feels = ['social']; renderMethod(); document.querySelector('[data-mk="vape"]').click(); document.getElementById('methodnext').click();
     out.push('vape -> screen "' + S.screen + '"'); if (S.screen !== 'vape') fails.push('vape routing');
     /* Flavor facet: options per shelf, filtering, pruning on shelf change */
+    S.mood = null; S.brands = []; S.thc = null; S.sale = false; S.deal = null; S.size = null; S.sub = S.sub2 = S.sub3 = S.eform = null;
     for (const t of ['flower', 'preroll', 'concentrate', 'edible', null]) {
       S.type = t; S.flavors = []; drawDrawer();
       const opts = [...document.querySelectorAll('#dbody [data-fl]')].map(x => x.dataset.fl);
