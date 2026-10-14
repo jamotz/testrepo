@@ -689,6 +689,19 @@ with content, grew every gap equally whether it needed it, and shrank the
 layout's coordinate space exactly when the content got bigger. Don't re-propose
 it.
 
+### Done 2026-10-14 — ratings, tastes, lifestyles link (not yet republished)
+
+| | |
+|---|---|
+| Tile rating | `.bub.rate` top-left of every product tile (shop, list, deals, recommendations): one star + the score to one decimal via `rating1()`, since `r:4.0` prints "4" in JS. Stacks above the ratio pill in `.ovleft`. Uses `.bub`'s own type token, so no new font-size — `standard-guard` unmoved |
+| Product page rating | `.prating` is now a button: stars, the score, "N reviews" underlined. Toasts "Reviews — coming soon" — reviews aren't built (rule 5). 24px tall in Standard, `--target-size` in Enlarged |
+| Guide Me tastes | `TASTES` is gone. `tasteList(method)` derives the options from `p.ta` on the chosen shelf, like `brandList()`. The old list (Fruity, Creamy, Nutty, Diesel, Cheese…) shared three words with the catalog. The picks now order the recommendations (`byTaste()`) — before this they were collected and never read |
+| Guide Me page 1 | "New to lifestyles? Learn about them in Origins U ›" → the Lifestyles topic page, the same `.learnlink` the concentrate step uses |
+| Strain scale (draft only) | Two options for showing Sativa → Indica + CBD at the far right of the lifestyle list, as an image: `reference/origins/mockups/guide-strain-scale-options.png`. **Not built** — waiting on Jack's pick |
+
+The ratings are still the authored values from rule 4 above (`stable()` in the
+generators) — they are just much more visible now.
+
 ### Done since (2026-09-03 → 09-11)
 
 | | |

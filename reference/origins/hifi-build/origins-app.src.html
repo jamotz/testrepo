@@ -658,6 +658,11 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 .bub.cbd{background:#ECF1E6;color:#5C7540}
 .bub.cbn{background:#EEEAF5;color:#6F53A3}
 .bub.cbg{background:#F7EDE3;color:#B4651A}
+/* Star rating, top-left of every tile above the ratio pill (Jack, 2026-10-14):
+   one star and the score to one decimal. Same .bub as its neighbours so it
+   takes their type token, and Enlarged, with no size of its own. */
+.bub.rate{font-weight:700;background:#FBF1D6;color:#5E4708}
+.bub.rate i{font-style:normal;color:#B07D00;margin-right:3px}
 .fcard .fim img{max-height:84px;max-width:80%;object-fit:contain}
 .fcard .fdiv{position:relative;height:1.5px;background:#DAD3C5;margin:8px 0 11px}
 .fcard .fbadge{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -800,7 +805,11 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 .pbrand .pcann .bub{font-size:var(--fs-11_5);padding:3.5px 9px}
 .pricerow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 .prating{color:var(--or);font-family:var(--head);font-size:var(--fs-17_0);letter-spacing:1.5px;white-space:nowrap}
-.prating i{font-style:normal;color:var(--or);margin-left:6px;letter-spacing:0;font-size:var(--fs-14_0);font-weight:600}
+.prating i{font-style:normal;color:var(--or);letter-spacing:0;font-size:var(--fs-14_0);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+/* The rating is a link to the reviews, which aren't built: it toasts "coming
+   soon" like Origins U's Search rather than doing nothing (Jack, 2026-10-14). */
+button.prating{background:none;border:0;padding:0;min-height:24px;display:inline-flex;align-items:center;gap:6px}
+.prating b{color:var(--ink);letter-spacing:0;font-weight:700}
 .pprice{font-family:var(--head);font-weight:700;font-size:var(--fs-r1_5);color:var(--ink)}
 .pprice .was{color:#A19A8D;text-decoration:line-through;font-weight:400;font-size:var(--fs-r1_0);margin-left:7px}
 .szpick{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -1187,6 +1196,7 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 #scr.enlarged .accheck{min-height:var(--target-size);display:flex;align-items:center}
 /* Product-page size picker: each option is its own target and its own row. */
 #scr.enlarged .szpick .tap,#scr.enlarged .szpick button{min-height:var(--target-size)}
+#scr.enlarged button.prating{min-height:var(--target-size)}
 #scr.enlarged .szpick{gap:10px}
 #scr.enlarged .acchecks{gap:14px}
 
@@ -1470,7 +1480,8 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
       <section class="s" data-s="guide">
         <div class="sbar"><button class="bk" data-nav="home" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
           <div class="wiz-prog"><i class="on"></i><i></i><i></i><i></i></div>
-          <div class="gw"><div class="q">How are you trying to FEEL?</div><div class="pick">Pick One or More:</div>
+          <div class="gw"><div class="q">How are you trying to FEEL?</div><div class="pick haslearn">Pick One or More:</div>
+          <button class="learnlink on" id="feellearn" type="button">New to lifestyles? Learn about them in Origins U ›</button>
           <div class="opt-list" id="feelopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="feelnext" disabled>Continue &rarr;</button></div></div>
       </section>
@@ -1981,7 +1992,20 @@ const FEELOPTS=[
  {k:"focused",t:"Focused / Energized",life:"adventurous"},
  {k:"cbd",t:"Holistic / CBD Dominant",life:"holistic"}
 ];
-const TASTES=["Fruity","Flowery","Citrus","Creamy","Nutty","Diesel","Cheese","Herbal","Pine","Peppery"];
+/* Guide Me's taste options are DERIVED from the catalog, like brandList(). The
+   hand-written list that stood here (Fruity, Flowery, Creamy, Nutty, Diesel,
+   Cheese...) shared three words with the products: their tastes come from the
+   terpenes via terpmap.py, so five options matched nothing and four real tastes
+   (Earthy, Hoppy, Sweet, Woody) could not be picked (Jack, 2026-10-14). Scoped
+   to the method chosen, so every option names something on that shelf. */
+function tasteList(method){
+  var seen={},out=[];
+  P.forEach(function(p){
+    if(method&&p.t!==method)return;
+    (p.ta||[]).forEach(function(t){if(!seen[t]){seen[t]=1;out.push(t);}});
+  });
+  return out.sort(function(a,b){return a.localeCompare(b);});
+}
 const P=[
  {t:"flower",n:"Power",b:"Plaid Jacket",img:"fl_indhyb",pr:38,pz:{"1 g": 12.0, "3.5 g": 38.0, "7 g": 70.0, "14 g": 120.0, "28 g": 220.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:23.78,cbdv:0.24,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:0,r:4.8,rv:36,tp:["Nerolidol","Caryophyllene","Limonene"],fe:["Relaxed","Grounded","Uplifted"],ta:["Woody","Peppery","Citrus"],d:"Dense, earthy flower with peppery spice and a mellow citrus edge, finishing with a deeply relaxed, grounded character."},
  {t:"flower",n:"Purple Ripple",b:"Plaid Jacket",img:"fl_indhyb2",pr:42,pz:{"1 g": 14.0, "3.5 g": 42.0, "7 g": 80.0, "14 g": 140.0, "28 g": 240.0},szs:["1 g", "3.5 g", "7 g", "14 g", "28 g"],thc:23.16,cbdv:0.12,sub:"Indoor",st:"Indica Hybrid",f:["unwind"],sale:0,r:4.8,rv:13,tp:["Myrcene","Linalool","Caryophyllene"],fe:["Relaxed","Calm","Grounded"],ta:["Earthy","Floral","Peppery"],d:"Sweet berry and grape tones fold into soft earth and floral notes for a plush, slow-building evening profile."},
@@ -2821,7 +2845,10 @@ function renderSub(){
   $("#subnext").disabled=!G.subs.length;
 }
 function renderTaste(){
-  $("#tasteopts").innerHTML=TASTES.map(function(t){return '<button class="oc tap '+(G.tastes.indexOf(t)>-1?'sel':'')+'" data-tk="'+t+'"><span class="box"></span>'+t+'</button>';}).join("");
+  var list=tasteList(G.method);
+  /* drop picks the new shelf doesn't carry - they'd rank invisibly otherwise */
+  G.tastes=G.tastes.filter(function(t){return list.indexOf(t)>-1;});
+  $("#tasteopts").innerHTML=list.map(function(t){return '<button class="oc tap '+(G.tastes.indexOf(t)>-1?'sel':'')+'" data-tk="'+t+'"><span class="box"></span>'+t+'</button>';}).join("");
   $("#tasteopts").querySelectorAll("[data-tk]").forEach(function(b){b.addEventListener("click",function(){
     var t=b.dataset.tk,i=G.tastes.indexOf(t);i>-1?G.tastes.splice(i,1):G.tastes.push(t);b.classList.toggle("sel");
   });});
@@ -2841,17 +2868,27 @@ $("#subnext").addEventListener("click",function(){
   else{renderFinish();setBack("finish","subtype");nav("finish");}                      /* edible -> finish (type IS the flavor) */
 });
 $("#tastenext").addEventListener("click",function(){renderFinish();setBack("finish","taste");nav("finish");});
+$("#feellearn").addEventListener("click",function(){renderEduTopic("lifestyles",0);}); /* Guide Me page 1: lifestyles -> Origins U */
 $("#sublearn").addEventListener("click",function(){renderEduTopic("concentrate",0);}); /* Guide Me: concentrate differences -> Origins U */
 $("#learnbtn").addEventListener("click",function(){openEduFor(S.type,0);});             /* Shop list: "Learn about the Differences" -> matching Origins U page */
 (function(){var v=document.querySelector('.vape .learn');if(v){v.classList.add("tap");v.style.cursor="pointer";v.addEventListener("click",function(){openEduFor("vape",0);});}})(); /* Vape differences -> Origins U, via EDUMAP so there is one routing table */
 
 function guideLifestyles(){return G.feels.length?G.feels.slice():["social"];}
+/* The tastes picked on the last step order the recommendations: most matches
+   first, catalog order within a tie. Ordering, not filtering - an unlucky
+   combination still recommends something. */
+function byTaste(list){
+  if(!G.tastes.length)return list;
+  function score(p){return (p.ta||[]).filter(function(t){return G.tastes.indexOf(t)>-1;}).length;}
+  return list.map(function(p,i){return [score(p),i,p];})
+    .sort(function(a,b){return b[0]-a[0]||a[1]-b[1];}).map(function(x){return x[2];});
+}
 function renderFinish(){
   var lifes=guideLifestyles();
   var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||"picks"];
   var chips=lifes.map(function(l){return '<div class="feelchip '+LIFECLASS[l]+'">'+lifeGlyph(l,'chiplogo')+lifeLabel(l)+'</div>';}).join("");
   var groupHtml=groups.map(function(g){
-    var prods=P.filter(function(p){return p.t===G.method&&(g===TYPES[G.method]||p.sub===g);}).slice(0,6);
+    var prods=byTaste(P.filter(function(p){return p.t===G.method&&(g===TYPES[G.method]||p.sub===g);})).slice(0,6);
     var pool=prods.length?prods:P.filter(function(p){return p.t===G.method;}).slice(0,6);
     if(!pool.length)pool=P.slice(0,6);
     var cards=pool.map(feedCard).join("");
@@ -3064,6 +3101,7 @@ function cardSummary(p,size,price){
      tile. The totals above already say what is in the package. */
   if(size&&!p.can)bits.push(size);
   if(price!=null)bits.push(money(price));
+  if(p.r!=null)bits.push("Rated "+rating1(p.r)+" out of 5");
   return bits.join(". ").replace(/\.\./g,".");
 }
 /* Drinks name their volume on the brand line since it came out of their names
@@ -3509,15 +3547,18 @@ var TERPC={Limonene:["#FBF0D2","#8A6100"],
  Ocimene:["#E9F3DA","#456B18"],
  Bisabolol:["#F9EAF0","#A24A74"],
  Nerolidol:["#F0EAE3","#6E5644"]};
-/* photo overlay: ratio pill top-left, cannabinoid bubbles top-right */
+/* A rating to one decimal, always: the catalog stores 4.0, which JS prints "4". */
+function rating1(r){return (Math.round(r*10)/10).toFixed(1);}
+/* photo overlay: star rating then ratio pill top-left, cannabinoid bubbles top-right */
 function tileOverlay(p){
   var ratio=(p.ratio&&p.combo&&p.combo!=="THC Only")
     ? '<span class="bub ratio">'+p.ratio+'</span>' : "";
   var bubs=cannList(p).map(function(c){
     return '<span class="bub '+c[0].toLowerCase()+'">'+c[0]+' '+c[1]+'</span>';
   }).join("");
-  if(!ratio&&!bubs)return "";
-  return '<span class="ovrow"><span class="ovleft">'+ratio+'</span>'+
+  var rate=p.r!=null?'<span class="bub rate"><i aria-hidden="true">\u2605</i>'+rating1(p.r)+'</span>':"";
+  if(!rate&&!ratio&&!bubs)return "";
+  return '<span class="ovrow"><span class="ovleft">'+rate+ratio+'</span>'+
          '<span class="ovright">'+bubs+'</span></span>';
 }
 function dealCard(p,dealSize,struck,sale){
@@ -4061,12 +4102,13 @@ function drawProduct(){
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="pcann">'+
       cannList(p).map(function(c){return '<span class="bub '+c[0].toLowerCase()+'">'+c[0]+' '+c[1]+'</span>';}).join("")+
       '</span></div>'+
-    '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><div class="prating">'+stars(p.r)+'<i>('+p.rv+')</i></div></div>'+
+    '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><button class="prating tap" id="previews" type="button" aria-label="'+esc("Rated "+rating1(p.r)+" out of 5, "+p.rv+" reviews. Reviews coming soon")+'"><span aria-hidden="true">'+stars(p.r)+'</span><b>'+rating1(p.r)+'</b><i>'+p.rv+' reviews</i></button></div>'+
     hint+szpick+
     (q>0?'<div class="pistep"><button class="tap" id="pidec">&minus;</button><b>'+q+'</b><button class="tap" id="piinc">+</button></div>'
         :'<button class="addbig tap" id="addbig">Add to Cart</button>')+
     '<div class="pdesc-h">Details</div><p class="pdesc">'+p.d+'</p>'+terp+netq+chips;
   $("#pwrap [data-b]").addEventListener("click",function(){nav(S.type?"list":"shop");});
+  $("#previews").addEventListener("click",function(){toast("Reviews — coming soon");});
   $("#pwrap").querySelectorAll("[data-sz]").forEach(function(b){b.addEventListener("click",function(){curSize=b.dataset.sz;drawProduct();});});
   var ab=$("#addbig");if(ab)ab.addEventListener("click",function(){addToCart(p.id,curSize);drawProduct();});
   var inc=$("#piinc");if(inc)inc.addEventListener("click",function(){addToCart(p.id,curSize);drawProduct();});
