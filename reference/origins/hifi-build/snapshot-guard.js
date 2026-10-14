@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 17e94b1          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 83be6bd          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,13 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 17e94b1. History, most recent first:
+ * Current baseline: 83be6bd. History, most recent first:
+ *
+ *   83be6bd  2026-10-14  Guide Me recommends what was picked. ONE screen:
+ *            finish now shows only the lifestyles chosen, so different cards
+ *            render - div.fcard and span.fbadge change lifestyle class and
+ *            span.fsp widths move with the prices. Data, not layout: no
+ *            "-"/"+" font-size pair.
  *
  *   17e94b1  2026-10-14  rating restyle, strain tags, uniform pills. SEVEN
  *            screens, all intended:
