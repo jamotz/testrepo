@@ -1505,7 +1505,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
         <div class="sbar"><button class="bk" data-nav="home" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Virtual Guide</h2></div>
           <div class="wiz-prog"><i class="on"></i><i></i><i></i><i></i></div>
           <div class="gw"><div class="q">How are you trying to FEEL?</div><div class="pick haslearn">Pick One or More:</div>
-          <button class="learnlink on" id="feellearn" type="button">New to lifestyles? Learn about them in Origins U ›</button>
+          <button class="learnlink on" id="feellearn" type="button">New to lifestyles? Learn about them in Origins&nbsp;U&nbsp;›</button>
           <div class="opt-list" id="feelopts"></div>
           <div class="wiz-foot"><button class="continue cue" id="feelnext" disabled>Continue &rarr;</button></div></div>
       </section>
@@ -4200,12 +4200,22 @@ const EDU={
    {t:"How Topicals Work",d:"Most topicals act locally and won't get you high. Learn how they interact with receptors in your skin."},
    {t:"When to Use Topicals",d:"Sore spots, dry skin and post-workout recovery — common moments people reach for a topical."},
    {t:"CBD & THC Topicals",d:"How the cannabinoid blend shapes what a topical is best used for."}]},
- lifestyles:{name:"Lifestyles",life:true,lead:"Origins sorts every product into five lifestyles so you can shop by how you want to feel. Meet them here.",topics:[
-   {t:"The Five Lifestyles",d:"Discovery, Adventurous, Social, Unwind and Nightlife — the five moods that organize the whole Origins catalog."},
-   {t:"Discovery & Adventurous",d:"Curious and clear-headed, or energized and ready to move — the daytime lifestyles."},
-   {t:"Social & Nightlife",d:"Easy conversation and good company, or a bigger night out — the lifestyles built for people."},
-   {t:"Unwind",d:"Calm, quiet and restful — the lifestyle for winding down at the end of the day."},
-   {t:"Finding Your Lifestyle",d:"Not sure where you fit? Our Guide Me wizard matches you to a lifestyle in a few taps."}]},
+ /* Six, not five: Holistic was missing from this page entirely (Jack,
+    2026-10-14). Grouped along the strain order the Guide Me tags show, Sativa
+    to Indica then CBD, and the feelings are the ones the products carry most
+    (Discovery: Energized, Motivated, Cerebral; Nightlife: Relaxed, Grounded,
+    Sleepy; Holistic: Calm, Relief...). The old "Social & Nightlife - a bigger
+    night out" contradicted Nightlife's own Sleepy. topics is a function so
+    every name goes through lifeLabel() and follows Change lifestyle type. */
+ lifestyles:{name:"Lifestyles",life:true,lead:"Origins sorts every product into six lifestyles so you can shop by how you want to feel. Meet them here.",topics:function(){
+   var L=lifeLabel;
+   return [
+   {t:"The Six Lifestyles",d:L("discovery")+", "+L("adventurous")+", "+L("social")+", "+L("unwind")+", "+L("nightlife")+" and "+L("holistic")+" — six lifestyles that run from the most energizing to the most restful, plus one built around CBD. Every product in the catalog belongs to one."},
+   {t:L("discovery")+" & "+L("adventurous"),d:"Energized, motivated and creative — the daytime lifestyles, for getting out and getting things done."},
+   {t:L("social"),d:"Happy, euphoric and uplifted — the balanced middle, made for good company."},
+   {t:L("unwind")+" & "+L("nightlife"),d:"Relaxed and grounded, all the way to sleepy — the evening lifestyles, for winding down."},
+   {t:L("holistic"),d:"Calm and clear, with little or no high — CBD-forward products for relief and balance."},
+   {t:"Finding Your Lifestyle",d:"Not sure where you fit? Our Guide Me wizard matches you to a lifestyle in a few taps."}];}},
  cbd:{name:"Forms of CBD",img:"fl_universal",lead:"CBD comes in many forms and does many things. Learn the basics and how it differs from THC.",topics:[
    {t:"What Is CBD",d:"A non-intoxicating cannabinoid known for a calmer, clearer kind of relief. Here's the primer."},
    {t:"CBD vs THC",d:"They come from the same plant but feel worlds apart. Learn what sets them apart."},
@@ -4242,7 +4252,8 @@ function renderEduTopic(catKey,openIdx){
   var c=EDU[catKey];if(!c)return;
   var chev='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
   var arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
-  var acc=c.topics.map(function(tp,i){
+  var topics=typeof c.topics==="function"?c.topics():c.topics;
+  var acc=topics.map(function(tp,i){
     return '<div class="eduitem'+(i===openIdx?" open":"")+'"><button class="edubar tap" data-ti="'+i+'"><span>'+tp.t+'</span>'+chev+'</button>'+
       '<div class="educontent"><p>'+tp.d+'</p><div class="educ-cta"><button class="educ-btn tap" type="button">Continue '+arrow+'</button></div></div></div>';
   }).join("");
