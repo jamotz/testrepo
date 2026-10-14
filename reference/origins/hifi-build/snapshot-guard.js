@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 83be6bd          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base baa8b0d          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,11 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 83be6bd. History, most recent first:
+ * Current baseline: baa8b0d. History, most recent first:
+ *
+ *   baa8b0d  2026-10-14  Drink joins Guide Me's method list. ONE screen:
+ *            method gains a button.oc and its span.box, so div.opt-list and
+ *            div.gw grow 68px. No font-size pair.
  *
  *   83be6bd  2026-10-14  Guide Me recommends what was picked. ONE screen:
  *            finish now shows only the lifestyles chosen, so different cards
