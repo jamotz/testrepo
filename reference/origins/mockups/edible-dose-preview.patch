@@ -1,0 +1,87 @@
+diff --git a/reference/origins/hifi-build/origins-app.src.html b/reference/origins/hifi-build/origins-app.src.html
+index 337f64a..9679f47 100644
+--- a/reference/origins/hifi-build/origins-app.src.html
++++ b/reference/origins/hifi-build/origins-app.src.html
+@@ -2548,7 +2548,7 @@ document.addEventListener("click",function(e){
+ addEventListener("keydown",function(e){if(e.key==="Escape")setFull(false);});
+ function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}
+ 
+-const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],flavors:[],size:null,thc:null,sale:false,deal:null,sort:"best",cart:[],screen:"home"};
++const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],flavors:[],size:null,cbdsz:null,thc:null,sale:false,deal:null,sort:"best",cart:[],screen:"home"};
+ const G={feels:[],method:null,subs:[],tastes:[]};
+ const $=function(q){return document.querySelector(q);};
+ const view=$("#view");
+@@ -2991,7 +2991,7 @@ function renderFinish(){
+   $("#tobackshop").addEventListener("click",function(){S.mood=lifes[0]||null;S.type=null;S.sub=null;S.sub2=null;S.sub3=null;moodChips($("#moodbar"));nav("shop");});
+ }
+ 
+-function activeCount(){var n=0;["type","strain","sub","sub2","sub3","eform","mood","size","thc","deal"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;n+=S.brands.length;if(flavorOn())n+=S.flavors.length;return n;}
++function activeCount(){var n=0;["type","strain","sub","sub2","sub3","eform","mood","size","thc","deal"].forEach(function(k){if(S[k])n++;});if(S.sale)n++;if(S.cbdsz&&S.type==="edible")n++;n+=S.brands.length;if(flavorOn())n+=S.flavors.length;return n;}
+ /* S.deal names a deal from DEALDEF and narrows the list to that deal's own
+    products - the only facet that isn't a property of the product itself, so it
+    resolves through the deal and memoises the answer (P never changes at
+@@ -3030,6 +3030,8 @@ function match(p){
+   if(S.brands.length&&S.brands.indexOf(p.b)<0)return false;
+   if(flavorOn()&&!(p.ta||[]).some(function(t){return S.flavors.indexOf(t)>-1;}))return false;
+   if(S.sale&&!onSale(p))return false;
++  /* CBD per serving, edibles only - the twin of the THC dose below */
++  if(S.cbdsz&&S.type==="edible"){if(!p.can||!p.can.CBD||p.can.CBD[0]!==parseFloat(S.cbdsz))return false;}
+   if(S.size){
+     /* Every other shelf's Size facet names a package the product comes in, and
+        matches p.szs. Edibles name a per-serving THC dose instead, so this shelf
+@@ -4408,11 +4410,29 @@ function renderConfirm(){
+   $("#again").addEventListener("click",function(){nav("shop");});
+ }
+ 
++/* Edibles' Size, split by cannabinoid (Jack, 2026-10-14 - PREVIEW): the dose
++   per serving, said as THC, then a CBD section below. Each lists only the
++   doses the other filters on still leave stocked, so no option leads to an
++   empty list. */
++function edibleDoses(){
++  var sec=function(title,key,state,attr){
++    var vals={};
++    P.forEach(function(p){if(p.t==="edible"&&p.can&&p.can[key])vals[p.can[key][0]]=1;});
++    var opts=Object.keys(vals).map(Number).sort(function(a,b){return b-a;}).filter(function(v){
++      var o={};o[state]=v+" mg";return bubbleCount(o)>0;});
++    return '<div class="dsec"><div class="dt">'+title+' <span class="hint">per serving</span></div>'+
++      (opts.length?'<div class="opts">'+opts.map(function(v){var lab=v+" mg";
++        return '<button class="opt tap '+(S[state]===lab?'sel':'')+'" '+attr+'="'+lab+'">'+v+' mg '+key+'</button>';}).join("")+'</div>'
++        :'<div class="dnote">No edibles with '+key+' match the filters you have on.</div>')+'</div>';};
++  return sec("THC","THC","size","data-fs")+sec("CBD","CBD","cbdsz","data-fc")+
++    '<div class="dsec" style="border-top:0;padding-top:0;margin-top:-8px"><div class="dnote">Every edible is a 10-serving package.</div></div>';
++}
+ function drawDrawer(){
+   var d=$("#dbody"),szList=S.type?SIZES[S.type]:null;
+   d.innerHTML='<div class="dsec"><div class="dt">On sale <button class="sw tap '+(S.sale?'on':'')+'" id="swsale"></button></div></div>'+
+    '<div class="dsec"><div class="dt">Feeling</div><div class="opts">'+Object.keys(FEEL).map(function(k){return '<button class="opt tap '+(S.mood===k?'sel':'')+'" data-fm="'+k+'">'+lifeLabel(k)+'</button>';}).join("")+'</div></div>'+
+    '<div class="dsec"><div class="dt">Product type</div><div class="opts">'+Object.keys(TYPES).map(function(k){return '<button class="opt tap '+(S.type===k?'sel':'')+'" data-ft="'+k+'">'+TYPES[k]+'</button>';}).join("")+'</div></div>'+
++   (S.type==="edible"?edibleDoses():
+    '<div class="dsec"><div class="dt">Size '+(S.type&&szList?'<span class="hint">'+TYPES[S.type]+' sizes</span>':'')+'</div>'+
+      /* Three states, not two. Topicals get their own note rather than an empty
+         option row or the "choose a type" lock, which would both be wrong: a
+@@ -4425,7 +4445,7 @@ function drawDrawer(){
+         rather than leaving "10 mg" to be read as the whole package. Drinks also
+         dose per serving, but their facet names VOLUMES, so the note would
+         describe the wrong axis there. */
+-     (S.type==="edible"?'<div class="dnote">Per serving. Every edible is a 10-serving package.</div>':'')+'</div>'+
++     '</div>')+
+    '<div class="dsec"><div class="dt">THC %</div><div class="opts">'+[["low","Low (<10%)"],["mod","Moderate (10–20%)"],["high","High (20%+)"],["cbd","Only CBD"]].map(function(o){return '<button class="opt tap '+(S.thc===o[0]?'sel':'')+'" data-fh="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>'+
+    (S.type==="edible"?'<div class="dsec"><div class="dt">Edible form</div><div class="opts">'+EFORMS.map(function(x){return '<button class="opt tap '+(S.eform===x?'sel':'')+'" data-fe="'+x+'">'+x+'</button>';}).join("")+'</div></div>':'')+
+    '<div class="dsec"><div class="dt">Flavor'+(TASTED.indexOf(S.type)>-1?' <span class="hint">'+TYPES[S.type]+' flavors</span>':'')+'</div>'+
+@@ -4437,6 +4457,7 @@ function drawDrawer(){
+   d.querySelectorAll("[data-fm]").forEach(function(b){b.addEventListener("click",function(){S.mood=S.mood===b.dataset.fm?null:b.dataset.fm;drawDrawer();});});
+   d.querySelectorAll("[data-ft]").forEach(function(b){b.addEventListener("click",function(){S.type=S.type===b.dataset.ft?null:b.dataset.ft;S.size=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.deal=null;pruneBrands();pruneFlavors();brandsOpen=false;drawDrawer();});});
+   d.querySelectorAll("[data-fs]").forEach(function(b){b.addEventListener("click",function(){S.size=S.size===b.dataset.fs?null:b.dataset.fs;drawDrawer();});});
++  d.querySelectorAll("[data-fc]").forEach(function(b){b.addEventListener("click",function(){S.cbdsz=S.cbdsz===b.dataset.fc?null:b.dataset.fc;drawDrawer();});});
+   d.querySelectorAll("[data-fh]").forEach(function(b){b.addEventListener("click",function(){S.thc=S.thc===b.dataset.fh?null:b.dataset.fh;drawDrawer();});});
+   d.querySelectorAll("[data-fe]").forEach(function(b){b.addEventListener("click",function(){S.eform=S.eform===b.dataset.fe?null:b.dataset.fe;drawDrawer();});});
+   d.querySelectorAll("[data-fl]").forEach(function(b){b.addEventListener("click",function(){var i=S.flavors.indexOf(b.dataset.fl);i>-1?S.flavors.splice(i,1):S.flavors.push(b.dataset.fl);drawDrawer();});});
+@@ -4457,7 +4478,7 @@ $("#applyf").addEventListener("click",function(){$("#drawer").classList.remove("
+    lifestyle chip on the bar behind it stayed lit while nothing was filtered by
+    it, which is the same state/paint split as 3.1 (Jack, 2026-09-22). Redraw the
+    three mood bars too. */
+-$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.flavors=[];S.size=null;S.thc=null;S.sale=false;S.deal=null;brandsOpen=false;
++$("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.eform=null;S.mood=null;S.brands=[];S.flavors=[];S.size=null;S.cbdsz=null;S.thc=null;S.sale=false;S.deal=null;brandsOpen=false;
+   moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));drawDrawer();});
+ $("#sortsel").addEventListener("change",function(e){S.sort=e.target.value;renderList();});
+ 
