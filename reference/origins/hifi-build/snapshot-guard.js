@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 3f96f34          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base ae8b812          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,20 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 3f96f34. History, most recent first:
+ * Current baseline: ae8b812. History, most recent first:
+ *
+ *   ae8b812  2026-10-14  ratings, tastes, lifestyles link. EIGHT screens,
+ *            three causes, all intended:
+ *              home, shop, list, finish, acrecs - span.bub.rate and its i
+ *                     added top-left of every tile, so span.ovleft goes
+ *                     0 -> ~41.6px wide on cards that had no ratio pill.
+ *              product - div.prating becomes button.prating.tap with a
+ *                     span (the stars) and a b (the score) inside.
+ *              guide - div.pick gains .haslearn, button.learnlink added
+ *                     (the Origins U lifestyles link), div.gw 22px taller.
+ *              taste - one button.oc fewer: 10 hand-written tastes become
+ *                     the 9 the flower shelf carries, div.gw 68px shorter.
+ *            No "-"/"+" font-size pair; standard-guard passes untouched.
  *
  *   3f96f34  2026-09-22  the parked bubble drops its photo. ONE screen:
  *            on list, img and span.ring give way to span.noimg.ring, because
