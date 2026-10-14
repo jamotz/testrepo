@@ -139,7 +139,13 @@ from collections import Counter
 # had a size, which is the documented case for a deliberate re-baseline. All
 # five are existing tokens, so Enlarged needed no new rule and enlarged-check
 # stayed clean at 4 viewports x 24 screens.
-BASELINE = "6a686de"
+#
+# Moved again 2026-10-14: 6a686de -> 17e94b1. One new element, one new
+# declaration, 0 lost:
+#     .oc.life .strtag       12px     the strain pill on each Guide Me lifestyle
+# Not the count=1 signature: no selector on both sides. The size is an existing
+# token (--fs-12_0), so Enlarged follows it with no rule of its own.
+BASELINE = "17e94b1"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs

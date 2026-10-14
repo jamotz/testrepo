@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base ae8b812          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 17e94b1          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,18 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: ae8b812. History, most recent first:
+ * Current baseline: 17e94b1. History, most recent first:
+ *
+ *   17e94b1  2026-10-14  rating restyle, strain tags, uniform pills. SEVEN
+ *            screens, all intended:
+ *              home, shop, list, finish, acrecs - span.bub.rate and its i
+ *                     change colour only: black number, orange star.
+ *              product - button.prating 24 -> 44px tall (the whole rating is
+ *                     the target), its inner span.prl added, so div.pricerow
+ *                     36 -> 44px and div.pwrap 8px taller; every button.szo
+ *                     52-65px -> 77.6px wide with 12px sides.
+ *              guide - span.strtag added on each lifestyle row.
+ *            No "-"/"+" font-size pair.
  *
  *   ae8b812  2026-10-14  ratings, tastes, lifestyles link. EIGHT screens,
  *            three causes, all intended:
