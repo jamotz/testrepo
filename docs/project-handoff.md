@@ -689,7 +689,7 @@ with content, grew every gap equally whether it needed it, and shrank the
 layout's coordinate space exactly when the content got bigger. Don't re-propose
 it.
 
-### Done 2026-10-14 — ratings, tastes, lifestyles link (not yet republished)
+### Done 2026-10-14 — ratings, tastes, lifestyles link, strain tags, uniform sizes (not yet republished)
 
 | | |
 |---|---|
@@ -697,7 +697,9 @@ it.
 | Product page rating | `.prating` is now a button: stars, the score, "N reviews" underlined. Toasts "Reviews — coming soon" — reviews aren't built (rule 5). 24px tall in Standard, `--target-size` in Enlarged |
 | Guide Me tastes | `TASTES` is gone. `tasteList(method)` derives the options from `p.ta` on the chosen shelf, like `brandList()`. The old list (Fruity, Creamy, Nutty, Diesel, Cheese…) shared three words with the catalog. The picks now order the recommendations (`byTaste()`) — before this they were collected and never read |
 | Guide Me page 1 | "New to lifestyles? Learn about them in Origins U ›" → the Lifestyles topic page, the same `.learnlink` the concentrate step uses |
-| Strain scale (draft only) | Two options for showing Sativa → Indica + CBD at the far right of the lifestyle list, as an image: `reference/origins/mockups/guide-strain-scale-options.png`. **Not built** — waiting on Jack's pick |
+| Strain scale | Jack picked **option A** from `reference/origins/mockups/guide-strain-scale-options.png`: a white `.strtag` pill at the far right of each Guide Me lifestyle row (Sativa … Indica, CBD), from `STRAINNAME`. Hidden in strain-name mode, where the row already says it; in Enlarged a tag that doesn't fit (Sativa Hybrid) breaks onto two lines |
+| Rating, round 2 | Tile: orange star, black number, white pill with an orange keyline. Product page: `★★★★★ 4.8 (36)` as one button with one drawn underline (`.prl::after`) 1px under the text and 5px in from each end, and a full `--target-size` tall |
+| Size pills | `.szo` has a `min-width` of a fifth of the row, so every size on the product page is one width (77.6px Standard, 76px Enlarged) and five flower sizes fill the row exactly. A drink's serving label still grows; in Enlarged so do four one-size labels (100mg, 100ML, 250ML, 1 Patch) that can't fit a fifth at 22px |
 
 The ratings are still the authored values from rule 4 above (`stable()` in the
 generators) — they are just much more visible now.

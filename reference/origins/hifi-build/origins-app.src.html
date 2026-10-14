@@ -583,6 +583,16 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 .oc.life.unwind{background:var(--unw)}
 .oc.life.nightlife{background:var(--night)}
 .oc.life.holistic{background:var(--hol)}
+/* Option A (Jack, 2026-10-14): the grower's name at the far right of each
+   lifestyle, so a new customer can see which is Sativa, which is Indica, and
+   that Holistic is CBD. Hidden in strain-name mode, where the row already
+   says it. */
+.oc.life .strtag{margin-left:auto;flex:none;font-family:var(--head);font-weight:600;font-size:var(--fs-12_0);letter-spacing:.07em;text-transform:uppercase;
+  background:#fff;color:var(--brown);border-radius:100px;padding:5px 11px;line-height:1.2}
+#scr.strainnames .oc.life .strtag{display:none}
+/* Enlarged: "SATIVA HYBRID" at 22px is wider than Adventurous leaves, so a
+   tag that doesn't fit breaks onto two lines instead of spilling the row. */
+#scr.enlarged .oc.life .strtag{flex:0 1 auto;min-width:0;white-space:normal;text-align:center;border-radius:14px;letter-spacing:.04em}
 
 .gf{padding:20px 18px 24px}
 .gf .intro{font-family:var(--head);font-weight:600;font-size:var(--fs-r1_05);color:var(--ink);line-height:1.25;text-transform:none}
@@ -661,8 +671,8 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 /* Star rating, top-left of every tile above the ratio pill (Jack, 2026-10-14):
    one star and the score to one decimal. Same .bub as its neighbours so it
    takes their type token, and Enlarged, with no size of its own. */
-.bub.rate{font-weight:700;background:#FBF1D6;color:#5E4708}
-.bub.rate i{font-style:normal;color:#B07D00;margin-right:3px}
+.bub.rate{font-weight:700;background:#fff;color:#000;box-shadow:inset 0 0 0 1px var(--or)}
+.bub.rate i{font-style:normal;color:var(--or);margin-right:3px}
 .fcard .fim img{max-height:84px;max-width:80%;object-fit:contain}
 .fcard .fdiv{position:relative;height:1.5px;background:#DAD3C5;margin:8px 0 11px}
 .fcard .fbadge{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -805,10 +815,17 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 .pbrand .pcann .bub{font-size:var(--fs-11_5);padding:3.5px 9px}
 .pricerow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 .prating{color:var(--or);font-family:var(--head);font-size:var(--fs-17_0);letter-spacing:1.5px;white-space:nowrap}
-.prating i{font-style:normal;color:var(--or);letter-spacing:0;font-size:var(--fs-14_0);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.prating i{font-style:normal;color:var(--or);letter-spacing:0;font-size:var(--fs-14_0);font-weight:600}
 /* The rating is a link to the reviews, which aren't built: it toasts "coming
    soon" like Origins U's Search rather than doing nothing (Jack, 2026-10-14). */
-button.prating{background:none;border:0;padding:0;min-height:24px;display:inline-flex;align-items:center;gap:6px}
+/* The whole run - stars, score, count - is one link with one underline under
+   it, and the button is a full target-size tall around it (Jack, 2026-10-14). */
+button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--target-size);display:inline-flex;align-items:center}
+.prating .prl{display:inline-flex;align-items:center;gap:6px;position:relative}
+/* drawn rather than a border: a border spans the whole box, and Jack wants the
+   line tucked just under the numbers and 5px in from the first star and the
+   closing bracket, not running past them */
+.prating .prl::after{content:"";position:absolute;left:5px;right:5px;bottom:1px;height:2px;border-radius:1px;background:var(--or)}
 .prating b{color:var(--ink);letter-spacing:0;font-weight:700}
 .pprice{font-family:var(--head);font-weight:700;font-size:var(--fs-r1_5);color:var(--ink)}
 .pprice .was{color:#A19A8D;text-decoration:line-through;font-weight:400;font-size:var(--fs-r1_0);margin-left:7px}
@@ -817,6 +834,12 @@ button.prating{background:none;border:0;padding:0;min-height:24px;display:inline
    Cart stays the one filled thing on the screen */
 .szo{background:#fff;color:var(--olive);border:2px solid var(--olive);border-radius:100px;padding:10px 17px;font-family:var(--head);font-weight:600;font-size:var(--fs-13_5);letter-spacing:.04em}
 .szo.sel{background:var(--olive);color:#fff}
+/* Uniform pills (Jack, 2026-10-14): every size is at least a fifth of the row,
+   so 1G and 3.5G are the same width, five flower sizes fill the row exactly,
+   and a one-size shelf's pill matches them. A label wider than that - a
+   drink's "10mg THC / Serving" - still grows, because it is one fact rather
+   than one of a set. */
+.szo{flex:0 0 auto;min-width:calc((100% - 32px) / 5);text-align:center;padding-left:12px;padding-right:12px}
 .addbig{width:100%;margin-top:13px;background:var(--or);color:#fff;border:0;border-radius:100px;font-family:var(--head);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:var(--fs-15_0);padding:13px}
 .addbig:active{background:var(--or-d)}
 /* same pill footprint as .addbig — the button turns into this stepper in place */
@@ -1196,8 +1219,9 @@ button.prating{background:none;border:0;padding:0;min-height:24px;display:inline
 #scr.enlarged .accheck{min-height:var(--target-size);display:flex;align-items:center}
 /* Product-page size picker: each option is its own target and its own row. */
 #scr.enlarged .szpick .tap,#scr.enlarged .szpick button{min-height:var(--target-size)}
-#scr.enlarged button.prating{min-height:var(--target-size)}
 #scr.enlarged .szpick{gap:10px}
+/* tighter sides so the widest flower size, 3.5G at 22px, still fits a fifth */
+#scr.enlarged .szo{min-width:calc((100% - 40px) / 5);padding-left:8px;padding-right:8px}
 #scr.enlarged .acchecks{gap:14px}
 
 /* Size sheet: large full-width rows rather than pills squeezed into a line, so
@@ -2818,7 +2842,7 @@ document.querySelectorAll(".landing .store").forEach(function(el,i){
 
 function renderFeel(){
   /* feel = the Lifestyle Overview: real brand logos, per Jack's request */
-  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span>'+lifeGlyph(k,'lifeglyph')+'<img class="lifeword" src="'+(IMG["word_"+k]||IMG["life_"+k]||'')+'" alt="'+lifeLabel(k)+'"><b class="lifewordt">'+lifeLabel(k)+'</b></button>';}).join("");
+  $("#feelopts").innerHTML=Object.keys(FEEL).map(function(k){return '<button class="oc life '+k+' tap '+(G.feels.indexOf(k)>-1?'sel':'')+'" data-fk="'+k+'"><span class="box"></span>'+lifeGlyph(k,'lifeglyph')+'<img class="lifeword" src="'+(IMG["word_"+k]||IMG["life_"+k]||'')+'" alt="'+lifeLabel(k)+'"><b class="lifewordt">'+lifeLabel(k)+'</b><span class="strtag">'+STRAINNAME[k]+'</span></button>';}).join("");
   $("#feelopts").querySelectorAll("[data-fk]").forEach(function(b){b.addEventListener("click",function(){
     var k=b.dataset.fk,i=G.feels.indexOf(k);i>-1?G.feels.splice(i,1):G.feels.push(k);
     b.classList.toggle("sel");$("#feelnext").disabled=!G.feels.length;
@@ -4102,7 +4126,7 @@ function drawProduct(){
     '<div class="pbrand"><span class="b">'+p.b+'</span><span class="pcann">'+
       cannList(p).map(function(c){return '<span class="bub '+c[0].toLowerCase()+'">'+c[0]+' '+c[1]+'</span>';}).join("")+
       '</span></div>'+
-    '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><button class="prating tap" id="previews" type="button" aria-label="'+esc("Rated "+rating1(p.r)+" out of 5, "+p.rv+" reviews. Reviews coming soon")+'"><span aria-hidden="true">'+stars(p.r)+'</span><b>'+rating1(p.r)+'</b><i>'+p.rv+' reviews</i></button></div>'+
+    '<div class="pricerow"><div class="pprice">'+priceHtml+'</div><button class="prating tap" id="previews" type="button" aria-label="'+esc("Rated "+rating1(p.r)+" out of 5, "+p.rv+" reviews. Reviews coming soon")+'"><span class="prl"><span aria-hidden="true">'+stars(p.r)+'</span><b>'+rating1(p.r)+'</b><i>('+p.rv+')</i></span></button></div>'+
     hint+szpick+
     (q>0?'<div class="pistep"><button class="tap" id="pidec">&minus;</button><b>'+q+'</b><button class="tap" id="piinc">+</button></div>'
         :'<button class="addbig tap" id="addbig">Add to Cart</button>')+
