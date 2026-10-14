@@ -1,7 +1,7 @@
 # Origins App — Project Handoff
 
-**Last updated:** 2026-09-22 · branch `claude/accessibility-handoff-review-dhabtz`
-**Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j — **Version 46**, built at `232e7b4`
+**Last updated:** 2026-10-14 · branch `claude/accessibility-handoff-review-dhabtz`
+**Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j — **Version 47**, built at `17e94b1` (republished 2026-10-14)
 
 > Both of these address the same artifact and either works as `url=`:
 > `claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j` (what the tool returns now) and
@@ -689,7 +689,7 @@ with content, grew every gap equally whether it needed it, and shrank the
 layout's coordinate space exactly when the content got bigger. Don't re-propose
 it.
 
-### Done 2026-10-14 — ratings, tastes, lifestyles link, strain tags, uniform sizes (not yet republished)
+### Done 2026-10-14 — ratings, tastes, lifestyles link, strain tags, uniform sizes (live as Version 47)
 
 | | |
 |---|---|
