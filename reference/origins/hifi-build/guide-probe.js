@@ -31,8 +31,20 @@ const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
     };
     for (const m of ['flower', 'concentrate', 'edible', 'drink', 'preroll', 'topical', 'tincture'])
       for (const f of Object.keys(FEEL)) run([f], m, []);
-    const two = run(['discovery', 'nightlife'], 'flower', []);
-    out.push('  two lifestyles, card order: ' + two.map(c => c.f[0].slice(0, 4)).join(' '));
+    /* two lifestyles: one on screen at a time, the tiles switch it, and Browse
+       opens whichever tile is selected - every card it was shown beside */
+    G.focus = null;
+    for (const pick of [null, 'unwind']) {
+      if (pick) { document.querySelector('#finishwrap [data-focus="' + pick + '"]').click(); }
+      else { G.feels = ['discovery', 'unwind']; G.method = 'flower'; G.subs = []; G.tastes = []; renderFinish(); }
+      const cs = cards(), lit = document.querySelector('#finishwrap .feelchip.sel');
+      const want = pick || 'discovery';
+      document.querySelector('#finishwrap .browse').click();
+      const shown = results(), miss = cs.filter(c => shown.indexOf(c) < 0);
+      out.push(`  two lifestyles, tile ${want}: cards ${cs.map(c => c.f[0].slice(0, 4)).join(' ')} | lit ${lit && lit.dataset.focus} | Browse mood ${S.mood}, missing ${miss.length}`);
+      if (cs.some(c => c.f[0] !== want) || !lit || lit.dataset.focus !== want || S.mood !== want || miss.length) fails.push('two lifestyles / tile ' + want);
+      nav('shop'); G.feels = ['discovery', 'unwind']; G.method = 'flower'; G.subs = []; G.tastes = []; G.focus = want; renderFinish(); nav('finish');
+    }
     for (const [m, s] of [['edible', 'Gummies'], ['edible', 'Chocolate'], ['concentrate', 'Live Resin'], ['topical', 'Pain Relief'], ['drink', 'Seltzer'], ['drink', 'Shot']])
       run(['social'], m, [s]);
     /* Browse must show every card it was recommended beside */
@@ -48,6 +60,10 @@ const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
     /* vape goes to the web-only screen, as from the shop */
     G.feels = ['social']; renderMethod(); document.querySelector('[data-mk="vape"]').click(); document.getElementById('methodnext').click();
     out.push('vape -> screen "' + S.screen + '"'); if (S.screen !== 'vape') fails.push('vape routing');
+    document.getElementById('vapeback').click();
+    out.push('  vape Back -> "' + S.screen + '"'); if (S.screen !== 'method') fails.push('vape Back from Guide Me');
+    nav('shop'); document.querySelector('#catcircles [data-cc="vape"]').click(); document.getElementById('vapeback').click();
+    out.push('  vape from shop, Back -> "' + S.screen + '"'); if (S.screen !== 'shop') fails.push('vape Back from shop');
     /* Flavor facet: options per shelf, filtering, pruning on shelf change */
     S.mood = null; S.brands = []; S.thc = null; S.sale = false; S.deal = null; S.size = null; S.sub = S.sub2 = S.sub3 = S.eform = null;
     for (const t of ['flower', 'preroll', 'concentrate', 'edible', null]) {

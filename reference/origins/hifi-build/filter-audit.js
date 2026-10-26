@@ -51,7 +51,11 @@ const path=require('path');
    r.sizes={};
    Object.keys(TYPES).forEach(t=>{
      const set={};
-     P.filter(x=>x.t===t).forEach(x=>(sizesFor(x)||[]).forEach(s=>set[s]=1));
+     /* Edibles' Size is the THC dose per serving (S.size = "10 mg"), never the
+        package: this used to enumerate package sizes (100 / 50 / 20 mg) the
+        drawer has never offered and report them as MATCHES NOTHING. */
+     if(t==='edible')P.filter(x=>x.t===t&&x.can&&x.can.THC).forEach(x=>set[x.can.THC[0]+' mg']=1);
+     else P.filter(x=>x.t===t).forEach(x=>(sizesFor(x)||[]).forEach(s=>set[s]=1));
      r.sizes[t]=Object.keys(set).map(s=>{reset();S.type=t;S.size=s;return [s,P.filter(match).length];});
    });
    reset();

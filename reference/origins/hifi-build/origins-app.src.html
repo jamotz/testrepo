@@ -598,6 +598,9 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 .gf .intro{font-family:var(--head);font-weight:600;font-size:var(--fs-r1_05);color:var(--ink);line-height:1.25;text-transform:none}
 .gf .learn{font-family:var(--head);text-transform:uppercase;font-size:var(--fs-11_0);letter-spacing:.06em;color:var(--or);margin:6px 0 18px}
 .feelchips{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+button.feelchip{border:0;cursor:pointer}
+/* the selected tile wears the lifestyle chips' black ring (3:1 on all six) */
+.feelchip.sel{outline:3px solid #000;outline-offset:-3px}
 .feelchip{width:104px;height:96px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--brown);font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--fs-14_0);letter-spacing:.04em;text-align:center;padding:4px}
 .feelchip svg{width:24px;height:24px}
 .feelchip .chiplogo{height:32px;width:auto;max-width:64%;object-fit:contain;display:block}
@@ -1569,7 +1572,7 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
       </section>
 
       <section class="s" data-s="vape">
-        <div class="sbar"><button class="bk" data-nav="shop" aria-label="Back to shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
+        <div class="sbar"><button class="bk" data-nav="shop" id="vapeback" aria-label="Back to shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shop</h2></div>
         <div class="chipbar shopchips" id="moodbar3"></div>
         <div class="vape">
           <h2>Vapes</h2><span class="learn">Learn about the Differences &rsaquo;</span>
@@ -2555,7 +2558,7 @@ addEventListener("keydown",function(e){if(e.key==="Escape")setFull(false);});
 function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}
 
 const S={type:null,strain:null,sub:null,sub2:null,sub3:null,eform:null,mood:null,brands:[],flavors:[],size:null,cbdsz:null,thc:null,sale:false,deal:null,sort:"best",cart:[],screen:"home"};
-const G={feels:[],method:null,subs:[],tastes:[]};
+const G={feels:[],method:null,subs:[],tastes:[],focus:null};
 const $=function(q){return document.querySelector(q);};
 const view=$("#view");
 function money(v){return "$"+v.toFixed(2);}
@@ -2676,7 +2679,13 @@ function nav(k){
   /* a hidden screen measures 0, so the brand row can only be sized once home is
      actually on - renderHome() runs while the app is still on the landing screen */
   if(k==="shop")shopCircles();   /* filters may have changed since it was drawn */
-  if(k==="vape")renderVape();
+  if(k==="vape"){
+    /* Back returns where you came from: the Guide Me step that sent you here,
+       or the shop. Reset each visit so the next arrival from the shop is not
+       sent into the wizard. */
+    var vb=$("#vapeback");vb.dataset.nav=vapeReturn||"shop";
+    vb.setAttribute("aria-label",vapeReturn?"Back to the guide":"Back to shop");vapeReturn=null;
+    renderVape();}
   /* same reason the brand row is sized here: a hidden row reports scrollWidth
      == clientWidth, so the arrows can only be decided once home is on screen */
   if(k==="home"){sizeDealRows();syncRowArrows($("#deals"));}
@@ -2912,14 +2921,13 @@ var SMOKEABLE=["flower","preroll","concentrate"];
 function setBack(screen,target){var e=document.querySelector('.s[data-s="'+screen+'"] [data-back]');if(e)e.dataset.back=target;}
 $("#feelnext").addEventListener("click",function(){renderMethod();nav("method");});
 $("#methodnext").addEventListener("click",function(){
-  if(G.method==="vape"){nav("vape");return;}                                  /* vape: web-only dead end */
+  if(G.method==="vape"){vapeReturn="method";nav("vape");return;}             /* vape: web-only dead end, Back returns here */
   if(G.method==="concentrate"){$("#subq").textContent="What kind of Concentrate do you like?";$("#sublearn").classList.add("on");renderSub();nav("subtype");}
   else if(G.method==="edible"){$("#subq").textContent="Gummies, Chocolate, Hard Candy, Baked Goods, or Capsules?";$("#sublearn").classList.remove("on");renderSub();nav("subtype");}
   /* Drinks (Jack, 2026-10-14): the same step edibles get - the product type is
      what a shopper picks a drink by - with the Liquid Edibles page behind it */
   else if(G.method==="drink"){$("#subq").textContent="Drinks, Shots, Seltzers, Sorbets, or Honey?";$("#sublearn").classList.add("on");renderSub();nav("subtype");}
   else if(SMOKEABLE.indexOf(G.method)>-1){G.subs=[];renderTaste();setBack("taste","method");nav("taste");} /* flower/pre-roll -> taste */
-  else if(G.method==="vape"){G.subs=[];nav("vape");}                                     /* vape -> the web-only screen, as from the shop */
   else{G.subs=[];renderFinish();setBack("finish","method");nav("finish");}     /* topical/tincture -> finish */
 });
 $("#subnext").addEventListener("click",function(){
@@ -2952,18 +2960,20 @@ function guideShelf(g){
     return G.method==="edible"?p.etype===g:G.method==="drink"?p.sub2===g:p.sub===g;
   });
 }
-/* With two or more lifestyles picked, take turns between them - otherwise the
-   first six cards are all whichever lifestyle comes first in the catalog. */
-function mixLifestyles(list,lifes){
-  var seen={};
-  return list.map(function(p,i){var k=p.f[0];seen[k]=(seen[k]||0)+1;return [seen[k],lifes.indexOf(k),i,p];})
-    .sort(function(a,b){return a[0]-b[0]||a[1]-b[1]||a[2]-b[2];}).map(function(x){return x[3];});
-}
 function renderFinish(){
   var lifes=guideLifestyles();
   /* a method with no TYPES entry (tincture) still needs a name for its note */
   var groups=(G.subs&&G.subs.length)?G.subs:[TYPES[G.method]||(G.method.charAt(0).toUpperCase()+G.method.slice(1)+"s")];
-  var chips=lifes.map(function(l){return '<div class="feelchip '+LIFECLASS[l]+'">'+lifeGlyph(l,'chiplogo')+lifeLabel(l)+'</div>';}).join("");
+  /* The tiles pick which lifestyle the page shows (Jack, 2026-10-26). They
+     were plain divs under "Select one to explore related products", and with
+     two or more lifestyles picked the cards alternated between them while
+     Browse - the shop holds one lifestyle at a time - opened only the first,
+     so half the cards weren't in the list it led to. One lifestyle on screen
+     at a time, the first by default, and Browse opens the same one. */
+  if(lifes.indexOf(G.focus)<0)G.focus=lifes[0];
+  var chips=lifes.map(function(l){var on=l===G.focus;
+    return '<button class="feelchip tap '+LIFECLASS[l]+(on?' sel':'')+'" data-focus="'+l+'" aria-pressed="'+on+'">'+lifeGlyph(l,'chiplogo')+lifeLabel(l)+'</button>';}).join("");
+  var focus=[G.focus];
   /* Every card here has to be something Browse would show (Jack, 2026-10-14).
      This used to filter by shelf alone and never read the lifestyles, so 41 of
      42 method x lifestyle paths recommended the wrong lifestyle; edible types
@@ -2976,17 +2986,19 @@ function renderFinish(){
     var shelf=guideShelf(g);
     if(!shelf.length)
       return '<div class="recgroup"><div class="rt">'+g+'</div><div class="lock"><b>Nothing here yet</b><br>Origins doesn’t carry '+g.toLowerCase()+' right now. <a class="learnlink on" href="#" data-edu="1">Learn about them in Origins&nbsp;U&nbsp;›</a></div></div>';
-    var fit=shelf.filter(function(p){return lifes.indexOf(p.f[0])>-1;});
+    var fit=shelf.filter(function(p){return focus.indexOf(p.f[0])>-1;});
     var note="";
     if(!fit.length){
-      note='<div class="lock">No '+lifes.map(lifeLabel).join(" or ")+' '+g.toLowerCase()+' in the catalog — here are the best of the rest.</div>';
+      note='<div class="lock">No '+focus.map(lifeLabel).join(" or ")+' '+g.toLowerCase()+' in the catalog — here are the best of the rest.</div>';
       fit=shelf;
     }
-    var cards=byTaste(mixLifestyles(fit,lifes)).slice(0,6).map(feedCard).join("");
+    var cards=byTaste(fit).slice(0,6).map(feedCard).join("");
     return '<div class="recgroup"><div class="rt">Recommended '+g+'</div><button class="browse tap" data-sub="'+g+'">Browse products ›</button>'+note+'<div class="feedrow">'+cards+'</div></div>';
   }).join("");
   $("#finishwrap").innerHTML='<div class="intro">You chose to see items from these feelings.<br>Select one to explore related products:</div><div class="learn tap" id="finishlearn">Learn more ›</div><div class="feelchips">'+chips+'</div>'+groupHtml+'<div class="backshop"><button class="continue cue" id="tobackshop">Back to Shop →</button></div>';
   $("#finishlearn").addEventListener("click",function(){openEduFor(G.method,0);}); /* Recommendations: Learn more -> matching Origins U page */
+  $("#finishwrap").querySelectorAll("[data-focus]").forEach(function(b){b.addEventListener("click",function(){
+    if(G.focus===b.dataset.focus)return;G.focus=b.dataset.focus;renderFinish();});});
   $("#finishwrap").querySelectorAll("[data-edu]").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();openEduFor(G.method,0);});});
   $("#finishwrap").querySelectorAll("[data-p]").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest("[data-add],.fmore,.fsclose,.szrow,.fsadd,.fstep"))return;openProduct(+c.dataset.p);});});
   $("#finishwrap").querySelectorAll("[data-add]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();addToCart(+b.dataset.add,b.dataset.sz||(sizesFor(P[+b.dataset.add])||["1 g"])[0]);});});
@@ -2999,11 +3011,11 @@ function renderFinish(){
        branch; the drinks shelf shows a type picked without a branch on a row
        of its own, so Browse can hand it over as it is. */
     if(G.method==="edible")S.eform=pickd; else if(G.method==="drink")S.sub2=pickd; else S.sub=pickd;
-    S.mood=lifes[0]||null;S.strain=null;S.size=null;S.cbdsz=null;
+    S.mood=G.focus||null;S.strain=null;S.size=null;S.cbdsz=null;
     if(!results().length)S.mood=null; /* keep the feeling pre-selected, but never hand off an empty shop */
     moodChips($("#moodbar"));moodChips($("#moodbar2"));moodChips($("#moodbar3"));nav("list");
   });});
-  $("#tobackshop").addEventListener("click",function(){S.mood=lifes[0]||null;S.type=null;S.sub=null;S.sub2=null;S.sub3=null;moodChips($("#moodbar"));nav("shop");});
+  $("#tobackshop").addEventListener("click",function(){S.mood=G.focus||null;S.type=null;S.sub=null;S.sub2=null;S.sub3=null;moodChips($("#moodbar"));nav("shop");});
 }
 
 /* Both Filter buttons show the same count. The shop page's was a literal "0"
@@ -3298,6 +3310,7 @@ function catCircle(k,cls,attr,bare){
 /* The shop's own category row, greyed where the filters that survive a trip
    back to the shop (lifestyle, brands, THC, sale) leave a shelf empty -
    counted the way the list's type row is. Vapes is a screen, never greyed. */
+var vapeReturn=null;   /* set by Guide Me just before it opens the vape screen */
 function shopCircleTap(){var k=this.dataset.cc;if(k==="vape"){nav("vape");return;}S.type=k;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;S.size=null;S.cbdsz=null;S.deal=null;nav("list");}
 function shopCircles(){
   $("#catcircles").innerHTML=CATS_SHOP.map(function(k){
@@ -4313,7 +4326,9 @@ const EDU={
  lifestyles:{name:"Lifestyles",life:true,lead:"Origins sorts every product into six lifestyles so you can shop by how you want to feel. Meet them here.",topics:function(){
    var L=lifeLabel;
    return [
-   {t:"The Six Lifestyles",d:L("discovery")+", "+L("adventurous")+", "+L("social")+", "+L("unwind")+", "+L("nightlife")+" and "+L("holistic")+" — six lifestyles that run from the most energizing to the most restful, plus one built around CBD. Every product in the catalog belongs to one."},
+   /* the sixth is named apart: in strain mode its name IS "CBD", so "plus one
+      built around CBD" after it said CBD twice */
+   {t:"The Six Lifestyles",d:L("discovery")+", "+L("adventurous")+", "+L("social")+", "+L("unwind")+" and "+L("nightlife")+" run from the most energizing to the most restful. "+(ADV.strain?"CBD sits apart from them, with little or no high.":L("holistic")+" sits apart from them, built around CBD.")+" Every product in the catalog belongs to one of the six."},
    {t:L("discovery")+" & "+L("adventurous"),d:"Energized, motivated and creative — the daytime lifestyles, for getting out and getting things done."},
    {t:L("social"),d:"Happy, euphoric and uplifted — the balanced middle, made for good company."},
    {t:L("unwind")+" & "+L("nightlife"),d:"Relaxed and grounded, all the way to sleepy — the evening lifestyles, for winding down."},
