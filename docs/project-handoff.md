@@ -707,6 +707,7 @@ it.
 | Grey, never remove | Bubbles a filter empties are greyed (`.catcircles .cc.dim`: opacity + grayscale), never dropped. The Edibles rows used to filter them out (`estock`); now every option renders. The shop page's own category circles also grey now (`shopCircles()`, redrawn on every return to the shop and when a chip is switched off there) |
 | Edible doses (2026-10-26) | The drawer's edible Size is two sections, **THC** then **CBD**, per serving, smallest first ("1 mg THC" … "10 mg THC"), each listing only the doses the other filters leave stocked — removed rather than greyed, since a dose the shelf lacks is not a choice. `S.size` keeps the THC dose as before; `S.cbdsz` is CBD's, applied only on edibles and cleared everywhere `S.size` is. In `filter-audit.js` |
 | Filter badge | The shop page's badge was a literal "0" in the markup. `setBadges()` writes both buttons from `activeCount()`, from `drawResults()` and `shopCircles()` |
+| Partial stars | The product page draws `starFill(r)`, not `stars(r)`: five pale `#DDD5C6` stars, each with an orange copy clipped to its share of the rating, so 4.8 is four full and one 80%. Per star, with the spacing outside each, so a gap never counts as rating. `stars()` still rounds, and Past Reviews (whole-number ratings) still uses it |
 
 The ratings are still the authored values from rule 4 above (`stable()` in the
 generators) — they are just much more visible now.
