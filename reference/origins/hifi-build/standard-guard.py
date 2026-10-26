@@ -175,7 +175,11 @@ from collections import Counter
 # (c4e8eca first pointed this at 32269b2, a commit from BEFORE the change - a
 # chained command skipped the app commit and the re-baseline ran anyway. The
 # guard went red against it, which is the guard working. Fixed here.)
-BASELINE = "937d48c"
+#
+# Moved again 2026-10-26: 937d48c -> 83853af. One value changed, deliberately:
+#     .status .sbbat b  11.5pt -> 10pt   the battery percentage, so it centres
+# The value intended on the selector intended, alone - a deliberate change.
+BASELINE = "83853af"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
