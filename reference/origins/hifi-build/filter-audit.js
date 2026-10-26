@@ -32,7 +32,7 @@ const path=require('path');
  await p.goto('file://'+path.resolve(process.argv[2])); await p.waitForTimeout(2200);
  const out=await p.evaluate(()=>{
    const reset=()=>{S.type=null;S.strain=null;S.sub=null;S.sub2=null;S.sub3=null;
-     S.eform=null;S.mood=null;S.brands=[];if(S.flavors)S.flavors=[];S.sale=false;S.size=null;S.thc=null;S.deal=null;};
+     S.eform=null;S.mood=null;S.brands=[];if(S.flavors)S.flavors=[];if('cbdsz' in S)S.cbdsz=null;S.sale=false;S.size=null;S.thc=null;S.deal=null;};
    const count=()=>{reset.call?0:0; return P.filter(match).length;};
    const r={total:P.length, facets:{}, catalogBrands:{}};
    P.forEach(x=>{r.catalogBrands[x.b]=(r.catalogBrands[x.b]||0)+1;});
@@ -44,6 +44,8 @@ const path=require('path');
    reset(); r.facets.EFORM=(typeof EFORMS!=='undefined'?EFORMS:[]).map(x=>{reset();S.type="edible";S.eform=x;return [x,P.filter(match).length];});
    /* Flavor: one row per shelf x option, on the three tasted shelves only */
    r.facets.FLAVOR=(typeof TASTED!=='undefined'?TASTED:[]).flatMap(t=>tasteList(t).map(x=>{reset();S.type=t;S.flavors=[x];return [t+' / '+x,P.filter(match).length];}));
+   /* CBD per serving on edibles: every dose any edible carries */
+   r.facets.CBDDOSE=('cbdsz' in S)?[...new Set(P.filter(q=>q.t==='edible'&&q.can&&q.can.CBD).map(q=>q.can.CBD[0]))].sort((a,b)=>a-b).map(v=>{reset();S.type='edible';S.cbdsz=v+' mg';return [v+' mg CBD',P.filter(match).length];}):[];
    reset(); S.sale=true; r.facets.SALE=[["on sale",P.filter(match).length]];
    // sizes offered for each type
    r.sizes={};
@@ -68,6 +70,7 @@ const path=require('path');
  show('PRODUCT TYPE facet', out.facets.TYPE);
  show('THC facet', out.facets.THC);
  if(out.facets.EFORM.length) show('EDIBLE FORM facet (type=edible)', out.facets.EFORM);
+ if(out.facets.CBDDOSE.length) show('CBD PER SERVING facet (type=edible)', out.facets.CBDDOSE);
  if(out.facets.FLAVOR.length) show('FLAVOR facet (flower, pre-rolls, concentrates)', out.facets.FLAVOR);
  show('ON SALE', out.facets.SALE);
  for(const [t,rows] of Object.entries(out.sizes)) if(rows.some(r=>r[1]===0)) show(`SIZE facet — ${t} (only zero-rows shown)`, rows.filter(r=>r[1]===0));
