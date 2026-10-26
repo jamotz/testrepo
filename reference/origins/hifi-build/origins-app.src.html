@@ -934,7 +934,11 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 .ci.rw .nm,.ci.rw .sub,.ci.rw .pr{display:block}
 .ci.rw .pr{color:var(--olive)}
 .ci.rw .chev{width:20px;height:20px;color:var(--olive);flex:none}
-.rwsheet{position:absolute;inset:0;z-index:70;pointer-events:none}
+/* overflow:hidden on the sheet's own box: the closed panel sits translated
+   below the screen, and without the clip it added 200px of scrollable
+   overflow to #scr - any scrollIntoView that touched #scr could scroll the
+   whole screen and show the sheet's top under the tab bar. */
+.rwsheet{position:absolute;inset:0;z-index:70;pointer-events:none;overflow:hidden}
 .rwsheet .dim{position:absolute;inset:0;background:rgba(20,15,9,.55);opacity:0;transition:opacity .3s}
 .rwsheet.on{pointer-events:auto}
 .rwsheet.on .dim{opacity:1}
