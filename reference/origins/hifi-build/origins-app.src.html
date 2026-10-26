@@ -268,7 +268,12 @@ body.fs .island:focus-visible{outline:2px solid var(--or);outline-offset:2px}
   margin-right:calc(2.5*var(--sb-u));display:flex;align-items:center;justify-content:center;overflow:visible}
 .status .sbbat::after{content:"";position:absolute;right:calc(-2.6*var(--sb-u));top:50%;transform:translateY(-50%);width:calc(1.6*var(--sb-u));height:calc(4.5*var(--sb-u));border-radius:0 2px 2px 0;background:rgba(0,0,0,.35)}
 .status .sbbat i{position:absolute;left:0;top:0;bottom:0;background:#000;border-radius:calc(4.2*var(--sb-u)) 0 0 calc(4.2*var(--sb-u))}
-.status .sbbat b{position:relative;font-size:calc(11.5*var(--sb-u));font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1}
+/* the percentage sits centred with air above and below (Jack, 2026-10-26):
+   at 11.5pt its line box (13.9px) was taller than the 13pt battery, so the
+   digits ran edge to edge. 10pt, and the box trimmed to the digits' own cap
+   height so the flex centring centres the ink, not the line's leading. */
+.status .sbbat b{position:relative;font-size:calc(10*var(--sb-u));font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1;
+  text-box:trim-both cap alphabetic}
 .view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);color:var(--ink)}
 
 /* interaction highlighting */
