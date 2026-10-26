@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base baa8b0d          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base eb24626          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,13 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: baa8b0d. History, most recent first:
+ * Current baseline: eb24626. History, most recent first:
+ *
+ *   eb24626  2026-10-26  partial stars. ONE screen: product's rating span
+ *            becomes span.pstars of five span.pst, each with a span.pfill;
+ *            button.prating and span.prl 1.5px narrower (the spacing moved
+ *            from letter-spacing to a margin between stars). No font-size
+ *            pair.
  *
  *   baa8b0d  2026-10-14  Drink joins Guide Me's method list. ONE screen:
  *            method gains a button.oc and its span.box, so div.opt-list and
