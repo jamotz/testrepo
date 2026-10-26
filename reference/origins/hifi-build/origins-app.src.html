@@ -948,6 +948,13 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 .edubanner{position:relative;background:#D9A87C;height:98px;display:flex;align-items:center;overflow:hidden}
 .edubanner .edubg{position:absolute;left:0;right:0;text-align:center;font-family:var(--head);font-weight:700;font-size:var(--fs-66_0);color:rgba(46,38,30,.15);letter-spacing:.04em;white-space:nowrap;pointer-events:none;user-select:none}
 .edubanner img{height:100%;width:118px;object-fit:cover;flex:none}
+/* the Lifestyles hero: the six discs in the 118px slot every other hero's
+   photo sits in, three across, two down */
+.edubanner .edulifehero{width:118px;height:100%;flex:none;display:grid;grid-template-columns:repeat(3,1fr);align-content:center;justify-items:center;gap:6px 0;padding-left:8px}
+.edulifehero span{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.edulifehero span.disc{background:var(--disc)}.edulifehero span.adv{background:var(--adv)}.edulifehero span.soc{background:var(--soc)}.edulifehero span.unw{background:var(--unw)}.edulifehero span.night{background:var(--night)}.edulifehero span.hol{background:var(--hol)}
+.edulifehero img{width:19px;height:19px;object-fit:contain}
+.edulifehero .lglyph{height:19px;font-size:var(--lglyph-edu)}
 .edubanner .edutitle{position:relative;font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:var(--fs-r2_0);color:#fff;letter-spacing:.02em;margin-left:16px;text-shadow:0 2px 7px rgba(0,0,0,.45)}
 .edulead{font-family:var(--body);font-size:var(--fs-13_0);line-height:1.5;color:var(--ink);text-align:center;padding:16px 22px 6px}
 .edusearchwrap{text-align:center;padding:6px 0 16px}
@@ -4299,7 +4306,7 @@ const EDU={
  /* AUTHORED (2026-08-20): drinks and vapes topic copy is written here, like the
     rest of this table. Drinks had been sending shoppers to the Edibles page and
     vapes to Concentrate; both now have their own. */
- drinks:{name:"Liquid Edibles",img:"drink",lead:"Seltzers, shots, sorbets and honey — cannabis you drink rather than chew, and it behaves differently from a gummy.",topics:[
+ drinks:{name:"Liquid Edibles",img:"drink",imgfit:"contain",lead:"Seltzers, shots, sorbets and honey — cannabis you drink rather than chew, and it behaves differently from a gummy.",topics:[
    {t:"Why Drinks Hit Faster",d:"Most drinks are nano-emulsified, so the THC absorbs sooner than a chewed edible. Minutes rather than up to two hours."},
    {t:"Serving vs Whole Bottle",d:"A bottle often holds several servings. Learn to read the serving line rather than the total on the label."},
    {t:"Seltzers, Shots & Sorbets",d:"A 12 oz seltzer, a 2 oz shot and a frozen sorbet are three very different experiences at the same dose."},
@@ -4325,14 +4332,21 @@ const EDU={
     every name goes through lifeLabel() and follows Change lifestyle type. */
  lifestyles:{name:"Lifestyles",life:true,lead:"Origins sorts every product into six lifestyles so you can shop by how you want to feel. Meet them here.",topics:function(){
    var L=lifeLabel;
+   var T=function(k){return ADV.strain?L(k):FEEL[k]+" · "+STRAINNAME[k];};
    return [
    /* the sixth is named apart: in strain mode its name IS "CBD", so "plus one
       built around CBD" after it said CBD twice */
    {t:"The Six Lifestyles",d:L("discovery")+", "+L("adventurous")+", "+L("social")+", "+L("unwind")+" and "+L("nightlife")+" run from the most energizing to the most restful. "+(ADV.strain?"CBD sits apart from them, with little or no high.":L("holistic")+" sits apart from them, built around CBD.")+" Every product in the catalog belongs to one of the six."},
-   {t:L("discovery")+" & "+L("adventurous"),d:"Energized, motivated and creative — the daytime lifestyles, for getting out and getting things done."},
-   {t:L("social"),d:"Happy, euphoric and uplifted — the balanced middle, made for good company."},
-   {t:L("unwind")+" & "+L("nightlife"),d:"Relaxed and grounded, all the way to sleepy — the evening lifestyles, for winding down."},
-   {t:L("holistic"),d:"Calm and clear, with little or no high — CBD-forward products for relief and balance."},
+   /* One topic per lifestyle (Jack, 2026-10-26), strain order. Each title also
+      names its strain - the Guide Me tags' word - unless strain mode is on,
+      where the strain already is the title. Feelings are the ones each
+      lifestyle's products carry most. */
+   {t:T("discovery"),d:"Energized, motivated and cerebral — the most energizing lifestyle, for a clear head and a full day."},
+   {t:T("adventurous"),d:"Uplifted, focused and creative — daytime energy with a little more ease, for getting out and doing."},
+   {t:T("social"),d:"Happy, euphoric and uplifted — the balanced middle, made for good company."},
+   {t:T("unwind"),d:"Relaxed and grounded, still a little uplifted — the start of the evening, for slowing down without switching off."},
+   {t:T("nightlife"),d:"Relaxed, grounded and sleepy — the most restful lifestyle, for the end of the night."},
+   {t:T("holistic"),d:"Calm and mellow, for relief, with little or no high — CBD-forward products for balance."},
    {t:"Finding Your Lifestyle",d:"Not sure where you fit? Our Guide Me wizard matches you to a lifestyle in a few taps."}];}},
  cbd:{name:"Forms of CBD",img:"fl_universal",lead:"CBD comes in many forms and does many things. Learn the basics and how it differs from THC.",topics:[
    {t:"What Is CBD",d:"A non-intoxicating cannabinoid known for a calmer, clearer kind of relief. Here's the primer."},
@@ -4375,7 +4389,13 @@ function renderEduTopic(catKey,openIdx){
     return '<div class="eduitem'+(i===openIdx?" open":"")+'"><button class="edubar tap" data-ti="'+i+'"><span>'+tp.t+'</span>'+chev+'</button>'+
       '<div class="educontent"><p>'+tp.d+'</p><div class="educ-cta"><button class="educ-btn tap" type="button">Continue '+arrow+'</button></div></div></div>';
   }).join("");
-  var banner=c.life?'':'<img src="'+(IMG[c.img]||"")+'" alt="">';
+  /* The Lifestyles hero carries the six lifestyle discs, the same art as its
+     hub card (Jack, 2026-10-26) - it had no image at all. A hero photo is
+     cropped to fill its slot, which suits flower and slices a tall bottle in
+     half, so Liquid Edibles fits its photo whole (imgfit). */
+  var banner=c.life
+    ?'<div class="edulifehero" aria-hidden="true">'+["discovery","adventurous","social","unwind","nightlife","holistic"].map(function(l){return '<span class="'+LIFECLASS[l]+'">'+lifeGlyph(l,'',"")+'</span>';}).join("")+'</div>'
+    :'<img src="'+(IMG[c.img]||"")+'" alt=""'+(c.imgfit?' style="object-fit:'+c.imgfit+';padding:8px 0"':'')+'>';
   var w=$("#edutopic");
   w.innerHTML='<div class="edubanner"><div class="edubg">ORIGINS</div>'+banner+'<div class="edutitle">'+c.name+'</div></div>'+
     '<p class="edulead">'+c.lead+'</p><div class="edusearchwrap">'+eduSearchPill()+'</div><div class="eduacc">'+acc+'</div>';
