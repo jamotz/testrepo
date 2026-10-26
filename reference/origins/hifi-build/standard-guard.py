@@ -165,14 +165,17 @@ from collections import Counter
 # Both elements were deleted from the stage, not resized. Not the count=1
 # signature.
 #
-# Moved again 2026-10-26: 4d6830b -> 32269b2. The phone's chrome redrawn in iOS
+# Moved again 2026-10-26: 4d6830b -> 937d48c. The phone's chrome redrawn in iOS
 # points (--sb-u, a :root length the guard resolves): 3 lost, 4 gained.
 #     lost   .status 14px, .status .r 11px, body.fs .fsexit 12px
 #     gained .status .sbtime 17pt, .status .sb5g 14pt, .status .sbbat b 11.5pt,
 #            body.fs .island .isx 13pt   (each calc(N * --sb-u))
 # No selector on both sides - not the count=1 signature. These sit outside the
 # --fs-* scale on purpose: Enlarged view must not resize system chrome.
-BASELINE = "32269b2"
+# (c4e8eca first pointed this at 32269b2, a commit from BEFORE the change - a
+# chained command skipped the app commit and the re-baseline ran anyway. The
+# guard went red against it, which is the guard working. Fixed here.)
+BASELINE = "937d48c"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
