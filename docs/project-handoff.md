@@ -1,7 +1,7 @@
 # Origins App — Project Handoff
 
 **Last updated:** 2026-10-26 · branch `claude/accessibility-handoff-review-dhabtz`
-**Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j — **Version 52**, built at `bb2dff0` (republished 2026-10-26)
+**Live prototype:** https://claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j — **Version 53**, built at `83853af` (republished 2026-10-26)
 
 > Both of these address the same artifact and either works as `url=`:
 > `claude.ai/artifact/YVnSR6tsChLJoyZrABAT4j` (what the tool returns now) and
