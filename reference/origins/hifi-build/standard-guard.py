@@ -158,7 +158,13 @@ from collections import Counter
 #     .rwopt .off 15px, .rwnote 12px
 # Not the count=1 signature: no selector on both sides. All existing tokens,
 # so Enlarged needed no rule and enlarged-check stayed clean.
-BASELINE = "bb2dff0"
+#
+# Moved again 2026-10-26: bb2dff0 -> 4d6830b. Two declarations LOST, 0 gained:
+#     .hintline   10.5px   the hint line under the phone - removed
+#     .taptoggle  11px     the Show tap points toggle - removed
+# Both elements were deleted from the stage, not resized. Not the count=1
+# signature.
+BASELINE = "4d6830b"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
