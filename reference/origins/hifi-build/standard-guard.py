@@ -164,7 +164,15 @@ from collections import Counter
 #     .taptoggle  11px     the Show tap points toggle - removed
 # Both elements were deleted from the stage, not resized. Not the count=1
 # signature.
-BASELINE = "4d6830b"
+#
+# Moved again 2026-10-26: 4d6830b -> 32269b2. The phone's chrome redrawn in iOS
+# points (--sb-u, a :root length the guard resolves): 3 lost, 4 gained.
+#     lost   .status 14px, .status .r 11px, body.fs .fsexit 12px
+#     gained .status .sbtime 17pt, .status .sb5g 14pt, .status .sbbat b 11.5pt,
+#            body.fs .island .isx 13pt   (each calc(N * --sb-u))
+# No selector on both sides - not the count=1 signature. These sit outside the
+# --fs-* scale on purpose: Enlarged view must not resize system chrome.
+BASELINE = "32269b2"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
