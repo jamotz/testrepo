@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base 780920a          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base bb2dff0          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,10 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: 780920a. History, most recent first:
+ * Current baseline: bb2dff0. History, most recent first:
+ *
+ *   bb2dff0  2026-10-26  cart rewards. ONE screen: cart gains button.ci.rw
+ *            and its spans, so div.cwrap grows 86px. No font-size pair.
  *
  *   780920a  2026-10-26  lifestyle tiles become buttons. ONE screen: finish's
  *            div.feelchip is now button.feelchip.sel.tap. No font-size pair.

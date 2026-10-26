@@ -151,7 +151,14 @@ from collections import Counter
 #     .edulifehero .lglyph   15px     the strain letters in the Lifestyles hero
 # Not the count=1 signature. An existing token (--lglyph-edu), so Enlarged
 # needs no rule of its own.
-BASELINE = "2b1eeb9"
+#
+# Moved again 2026-10-26: 2b1eeb9 -> bb2dff0. One new component, six new
+# declarations, 0 lost - the cart's rewards sheet:
+#     .rwhead h3 18px, .rwhead .x 18px, .rwbal 13px, .rwopt .pts 15px,
+#     .rwopt .off 15px, .rwnote 12px
+# Not the count=1 signature: no selector on both sides. All existing tokens,
+# so Enlarged needed no rule and enlarged-check stayed clean.
+BASELINE = "bb2dff0"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
