@@ -145,7 +145,13 @@ from collections import Counter
 #     .oc.life .strtag       12px     the strain pill on each Guide Me lifestyle
 # Not the count=1 signature: no selector on both sides. The size is an existing
 # token (--fs-12_0), so Enlarged follows it with no rule of its own.
-BASELINE = "17e94b1"
+#
+# Moved again 2026-10-26: 17e94b1 -> 2b1eeb9. One new element, one new
+# declaration, 0 lost:
+#     .edulifehero .lglyph   15px     the strain letters in the Lifestyles hero
+# Not the count=1 signature. An existing token (--lglyph-edu), so Enlarged
+# needs no rule of its own.
+BASELINE = "2b1eeb9"
 
 # Declarations that differ from the baseline without Standard rendering
 # differently. See ACCEPTED DELTAS above: each needs a reason, and each needs
