@@ -1,0 +1,114 @@
+diff --git a/reference/origins/hifi-build/origins-app.src.html b/reference/origins/hifi-build/origins-app.src.html
+index 16b70b9..2867cb1 100644
+--- a/reference/origins/hifi-build/origins-app.src.html
++++ b/reference/origins/hifi-build/origins-app.src.html
+@@ -911,6 +911,34 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
+ .ci .pr{font-family:var(--head);font-weight:700;font-size:var(--fs-14_0);margin-top:3px;color:var(--ink)}
+ .ci .pr .was{color:#8C8478;text-decoration:line-through;font-weight:400;font-size:var(--fs-12_5);margin-right:7px}
+ .ci .pr .now{color:#C0392B}
++/* Rewards (Jack, 2026-10-26 - PREVIEW): a tile the size of a cart line,
++   opening a sheet that slides up with the three tiers. */
++.ci.rw{border-color:var(--olive);cursor:pointer;width:100%;text-align:left;font:inherit}
++.ci.rw .rwic{width:54px;height:54px;flex:none;border-radius:50%;background:#EEF0E0;color:var(--olive);display:flex;align-items:center;justify-content:center}
++.ci.rw .rwic svg{width:28px;height:28px}
++.ci.rw .nm,.ci.rw .sub,.ci.rw .pr{display:block}
++.ci.rw .pr{color:var(--olive)}
++.ci.rw .chev{width:20px;height:20px;color:var(--olive);flex:none}
++.rwsheet{position:absolute;inset:0;z-index:70;pointer-events:none}
++.rwsheet .dim{position:absolute;inset:0;background:rgba(20,15,9,.55);opacity:0;transition:opacity .3s}
++.rwsheet.on{pointer-events:auto}
++.rwsheet.on .dim{opacity:1}
++.rwpanel{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:18px 18px 0 0;padding:10px 18px 24px;transform:translateY(101%);transition:transform .34s cubic-bezier(.4,.15,.2,1)}
++.rwsheet.on .rwpanel{transform:translateY(0)}
++.rwgrab{width:44px;height:5px;border-radius:3px;background:#DAD3C5;margin:0 auto 12px}
++.rwhead{display:flex;justify-content:space-between;align-items:center}
++.rwhead h3{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:var(--fs-18_0);letter-spacing:.04em;color:var(--ink)}
++.rwhead .x{background:none;border:0;font-size:var(--fs-18_0);color:var(--ink-2);width:36px;height:36px}
++.rwbal{font-family:var(--head);font-size:var(--fs-13_0);text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);margin:4px 0 14px}
++.rwbal b{color:var(--olive)}
++.rwopts{display:flex;flex-direction:column;gap:10px}
++.rwopt{display:flex;justify-content:space-between;align-items:center;width:100%;background:#fff;border:1.5px solid var(--olive);border-radius:12px;padding:14px 16px;font-family:var(--head);text-align:left}
++.rwopt .pts{font-weight:700;font-size:var(--fs-15_0);color:var(--ink)}
++.rwopt .off{font-weight:700;font-size:var(--fs-15_0);color:var(--olive)}
++.rwopt.sel{background:var(--olive)}
++.rwopt.sel .pts,.rwopt.sel .off{color:#fff}
++.rwopt:disabled{opacity:.45;filter:grayscale(1)}
++.rwnote{font-family:var(--body);font-size:var(--fs-12_0);color:var(--ink-2);line-height:1.45;margin:14px 0 4px}
+ /* Origins U */
+ .s[data-s="edu"] .sbar h2,.s[data-s="edutopic"] .sbar h2{text-transform:uppercase}
+ .eduhub{padding:20px 16px 26px;text-align:center}
+@@ -1717,6 +1745,17 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
+ 
+     </div>
+ 
++    <div class="rwsheet" id="rwsheet" aria-hidden="true">
++      <div class="dim" id="rwdim"></div>
++      <div class="rwpanel" role="dialog" aria-label="Use rewards points">
++        <div class="rwgrab"></div>
++        <div class="rwhead"><h3>Use rewards points</h3><button class="x tap" id="rwclose" aria-label="Close">&#10005;</button></div>
++        <p class="rwbal" id="rwbal"></p>
++        <div class="rwopts" id="rwopts"></div>
++        <p class="rwnote">Reward points will not affect discounted products.</p>
++        <button class="checkout tap" id="rwapply">Apply to order</button>
++      </div>
++    </div>
+     <div class="drawer" id="drawer">
+       <div class="dim" id="dim"></div>
+       <div class="dpanel">
+@@ -4429,6 +4468,29 @@ function bagSize(p,size){
+   var t=size.replace(" each","");
+   return (p.t==="edible"&&p.main)?t+" "+p.main:t;
+ }
++/* Rewards tiers (Jack, 2026-10-26). One tier per order; the percentage comes
++   off only lines that carry no other discount - deal and sale prices are
++   already reduced, and the disclaimer says so. */
++const RWTIERS=[[1000,10],[2000,20],[3000,30]];
++var RW={tier:null,pick:null};
++function rwEligible(){return cartLines().reduce(function(a,l){return a+(l.lp.total<l.lp.regTotal-0.001?0:l.lp.total);},0);}
++function rwOff(){return RW.tier?Math.round(rwEligible()*RW.tier[1])/100:0;}
++function rwSheet(open){
++  var sh=$("#rwsheet");
++  if(open){RW.pick=RW.tier;
++    $("#rwbal").innerHTML='You have <b>'+ACPTS.toLocaleString()+'</b> points';
++    $("#rwopts").innerHTML=RWTIERS.map(function(t,i){var can=ACPTS>=t[0],on=RW.pick&&RW.pick[0]===t[0];
++      return '<button class="rwopt tap'+(on?' sel':'')+'" data-rw="'+i+'"'+(can?'':' disabled')+' aria-pressed="'+!!on+'"><span class="pts">'+t[0].toLocaleString()+' points</span><span class="off">'+t[1]+'% off</span></button>';}).join("");
++    $("#rwopts").querySelectorAll("[data-rw]").forEach(function(b){b.addEventListener("click",function(){
++      var t=RWTIERS[+b.dataset.rw];RW.pick=(RW.pick&&RW.pick[0]===t[0])?null:t;
++      $("#rwopts").querySelectorAll(".rwopt").forEach(function(o){var on=RW.pick&&RWTIERS[+o.dataset.rw][0]===RW.pick[0];o.classList.toggle("sel",!!on);o.setAttribute("aria-pressed",!!on);});});});
++  }
++  sh.classList.toggle("on",open);sh.setAttribute("aria-hidden",!open);
++}
++$("#rwdim").addEventListener("click",function(){rwSheet(false);});
++$("#rwclose").addEventListener("click",function(){rwSheet(false);});
++$("#rwapply").addEventListener("click",function(){RW.tier=RW.pick;rwSheet(false);renderCart();
++  toast(RW.tier?RW.tier[1]+"% off applied":"Rewards removed");});
+ function renderCart(){
+   var w=$("#cwrap");
+   if(!S.cart.length){w.innerHTML='<div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
+@@ -4438,10 +4500,15 @@ function renderCart(){
+       '<div class="q"><button class="tap" data-d="'+i+'">−</button><b>'+c.q+'</b><button class="tap" data-u="'+i+'">+</button></div></div>';}).join("")
+    /* the pool is mix & match, so the nudge belongs to the bag, not to a line */
+    +(unpaired?'<div class="dealhint">2 for $50 &mdash; one more deal eighth pairs the last one</div>':'')
+-   +'<div class="totals"><div class="trow"><span>Subtotal (pre-tax)</span><span>'+money(cartSub()*0.63)+'</span></div>'+
+-     '<div class="trow"><span>Excise + tax (37%, incl.)</span><span>'+money(cartSub()*0.37)+'</span></div>'+
++   +'<button class="ci rw tap" id="rwcard"><span class="rwic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M12 8v13M3 12h18"/><path d="M12 8c-1.5-3-5-3.5-5-1.2C7 8 9.5 8 12 8zM12 8c1.5-3 5-3.5 5-1.2C17 8 14.5 8 12 8z"/></svg></span>'+
++       '<span class="m"><span class="nm">Use rewards points on your order</span><span class="sub">'+(RW.tier?RW.tier[0].toLocaleString()+' points &middot; '+RW.tier[1]+'% off applied':ACPTS.toLocaleString()+' points available')+'</span>'+
++       (RW.tier?'<span class="pr">&minus;'+money(rwOff())+'</span>':'')+'</span>'+
++       '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>'
++   +'<div class="totals"><div class="trow"><span>Subtotal (pre-tax)</span><span>'+money((cartSub()-rwOff())*0.63)+'</span></div>'+
++     '<div class="trow"><span>Excise + tax (37%, incl.)</span><span>'+money((cartSub()-rwOff())*0.37)+'</span></div>'+
+      (cartDiscount()>0?'<div class="trow disc"><span>Discount</span><span>&minus;'+money(cartDiscount())+'</span></div>':'')+
+-     '<div class="trow big"><span>Total</span><span>'+money(cartSub())+'</span></div></div>'+
++     (RW.tier?'<div class="trow disc"><span>Rewards ('+RW.tier[1]+'%)</span><span>&minus;'+money(rwOff())+'</span></div>':'')+
++     '<div class="trow big"><span>Total</span><span>'+money(cartSub()-rwOff())+'</span></div></div>'+
+      weightBars()+
+      '<button class="checkout tap" id="ck">Checkout — pickup</button>';
+   w.querySelectorAll("[data-d]").forEach(function(b){b.addEventListener("click",function(){var c=S.cart[+b.dataset.d];c.q--;if(c.q<1)S.cart.splice(+b.dataset.d,1);setBag();renderCart();});});
+@@ -4452,6 +4519,7 @@ function renderCart(){
+     if(!canAdd(P[c.id],c.size,1)){toast("Weight limit reached");return;}
+     c.q++;$("#bagn").textContent=S.cart.reduce(function(a,x){return a+x.q;},0);renderCart();});});
+   var ck=w.querySelector("#ck");if(ck)ck.addEventListener("click",function(){renderConfirm();nav("confirm");});
++  w.querySelector("#rwcard").addEventListener("click",function(){rwSheet(true);});
+ }
+ function renderConfirm(){
+   var items=cartLines().map(function(l){var c=l.c,p=l.p,lp=l.lp;
