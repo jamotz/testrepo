@@ -212,14 +212,13 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .stage-h .t{font-family:var(--head);font-weight:700;font-size:clamp(1.3rem,3.4vw,2rem);letter-spacing:.14em;color:#F3EADB}
 .stage-h .t em{color:var(--or);font-style:normal}
 .stage-h .s{font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:var(--fs-11_5);letter-spacing:.22em;color:#8D8172;margin-top:8px}
-.taptoggle{display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid #45392C;border-radius:100px;
-  color:#C9BCA9;font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:var(--fs-11_0);letter-spacing:.12em;padding:8px 16px}
-.taptoggle:hover{border-color:var(--or);color:var(--or)}
-.taptoggle .d{width:9px;height:9px;border-radius:50%;background:#5B4C3A;transition:.2s}
-.taptoggle.on{border-color:var(--or);color:var(--or)}
-.taptoggle.on .d{background:var(--or);box-shadow:0 0 0 3px rgba(241,96,28,.3)}
 
-.stagebtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+/* Full screen is the one control above the phone and spans its width (Jack,
+   2026-10-26); fitFrame() sets the width from the phone it just drew. The
+   tap-points toggle and the hint line under the phone are gone - everything
+   in a prototype is tappable, so neither told anyone anything. */
+.stagebtns{display:flex;justify-content:center}
+.stagebtns .fsopen{width:100%;justify-content:center;padding:12px 16px}
 .phonebox{position:relative}   /* JS sizes this to the scaled phone so the page stays tight */
 .phone{background:#000;border-radius:52px;padding:11px;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px #2A2119,0 0 70px rgba(241,96,28,.13);transform-origin:top left}
 /* phone frame — widened 15% over iPhone 393w (→452) so 2-up grids have room */
@@ -229,7 +228,7 @@ h1,h2,h3,h4{margin:0;font-family:var(--head);text-transform:uppercase;line-heigh
 .scr{position:relative;background:var(--bg);border-radius:44px;overflow:hidden;width:452px;height:852px;display:flex;flex-direction:column}
 /* full screen: the phone fills the viewport, bezel and fake hardware gone */
 body.fs .stage{padding:0;gap:0;min-height:0}
-body.fs .stage-h,body.fs .taptoggle,body.fs .fsopen{display:none}
+body.fs .stage-h,body.fs .stagebtns{display:none}
 body.fs .phonebox{position:fixed;inset:0;z-index:200}
 body.fs .phone{padding:0;border-radius:0;box-shadow:none}
 /* the exit chip gets its own strip so it never covers the app's header, and
@@ -263,7 +262,6 @@ body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-t
 /* interaction highlighting */
 @keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(241,96,28,0)}50%{box-shadow:0 0 0 5px rgba(241,96,28,.22)}}
 @media(prefers-reduced-motion:no-preference){.cue{animation:breathe 2.6s ease infinite}}
-.scr.taps [data-nav],.scr.taps [data-goto],.scr.taps .tap{outline:1.5px dashed rgba(241,96,28,.75);outline-offset:2px;border-radius:8px}
 
 .s{display:none}
 .s.on{display:block}
@@ -1080,8 +1078,6 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 .wfine{font-family:var(--head);font-size:var(--fs-10_5);letter-spacing:.08em;text-transform:uppercase;color:#8C8478;text-align:center;margin-top:8px}
 .toast{position:absolute;left:50%;bottom:120px;transform:translate(-50%,20px);background:var(--brown);color:var(--cream);font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--fs-11_5);letter-spacing:.1em;padding:11px 20px;border-radius:100px;opacity:0;pointer-events:none;transition:.3s;z-index:80;white-space:nowrap}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-.hintline{font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:var(--fs-10_5);letter-spacing:.16em;color:#6E6355;text-align:center;max-width:54ch;line-height:1.8}
-.hintline b{color:var(--or)}
 /* ---- Account, Loyalty Points, Account Settings (Jack's AC frames) ----
    Everything here is namespaced ac* — `.s` is a global display:none rule and
    the frames' controls are square-cornered, not the pill shapes used elsewhere. */
@@ -1356,7 +1352,6 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 #scr.enlarged .feelchip svg{width:30.7px;height:30.7px}
 #scr.enlarged .chip .chiplg{width:20.5px;height:20.5px}
 #scr.enlarged .chip .lglyph{height:20.5px}
-#scr.enlarged .taptoggle .d{width:11.5px;height:11.5px}
 
 /* ── Alignment ────────────────────────────────────────────────────────────
    The first pass gave controls a min-height without telling them to centre
@@ -1501,7 +1496,6 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
     <div class="s">Explore confidently &middot; Redmond, WA</div>
   </div>
   <div class="stagebtns">
-  <button class="taptoggle" id="taptoggle" type="button"><span class="d"></span>Show tap points</button>
   <button class="fsopen" id="fsopen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/></svg>Open full screen</button>
   </div>
 
@@ -1776,7 +1770,6 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
     </div>
   </div></div></div>
 
-  <p class="hintline">Full <b>Guide Me</b> wizard &rarr; feel, method, type &amp; taste &rarr; a preview of popular picks &rarr; <b>Browse products</b> drops you into the Shop pre&#8209;filtered. Toggle <b>Show tap points</b> to reveal every interaction.</p>
 </div>
 
 <script>
@@ -2579,6 +2572,7 @@ function fitFrame(){
   /* transform does not change layout size — keep the page box honest */
   box.style.width=Math.round((DESIGN_W+bez)*k)+"px";
   box.style.height=Math.round((h+bez)*k)+"px";
+  var sb=document.querySelector(".stagebtns");if(sb)sb.style.width=full?"":box.style.width;
 }
 addEventListener("resize",function(){fitFrame();syncRowArrows();});  /* a narrower stage changes what overflows */
 addEventListener("orientationchange",function(){setTimeout(fitFrame,120);});
@@ -4614,7 +4608,6 @@ $("#clearf").addEventListener("click",function(){S.type=null;S.strain=null;S.sub
 $("#sortsel").addEventListener("change",function(e){S.sort=e.target.value;renderList();});
 
 var tmr=null;function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tmr);tmr=setTimeout(function(){t.classList.remove("on");},1600);}
-$("#taptoggle").addEventListener("click",function(){this.classList.toggle("on");$("#scr").classList.toggle("taps",this.classList.contains("on"));});
 
 $("#landlogo").src=IMG["logo_origins"];$("#landmap").src=IMG["map_redmond"];
 $("#seattlebtn").addEventListener("click",function(){toast("Seattle store — coming soon");});
