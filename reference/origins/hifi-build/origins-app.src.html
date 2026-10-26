@@ -28,6 +28,8 @@
   --icon-size-sm:15px;       /* inline chip icons */
   --control-height:47px;     /* Filter / Sort pill height */
   --target-size:44px;        /* minimum interactive hit area */
+  --sb-u:1.0273px;           /* one iOS point, in design px: 452/440 framed,
+                                1/k on a phone in full screen (fitFrame) */
   --card-padding:12px;
   --grid-gap:13px;
   --section-gap:10px;
@@ -231,33 +233,43 @@ body.fs .stage{padding:0;gap:0;min-height:0}
 body.fs .stage-h,body.fs .stagebtns{display:none}
 body.fs .phonebox{position:fixed;inset:0;z-index:200}
 body.fs .phone{padding:0;border-radius:0;box-shadow:none}
-/* the exit chip gets its own strip so it never covers the app's header, and
-   the tab bar clears the home indicator (viewport-fit=cover lets us under it) */
-body.fs .scr{border-radius:0;padding-top:calc(48px + env(safe-area-inset-top,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-body.fs .island,body.fs .status{display:none}
-.fsexit{display:none}
-/* ONE rule, and `top` reads the inset. There were two `body.fs .fsexit` rules
-   at identical specificity for months: this one hard-coded `top:14px` and won,
-   so the other one's calc(9px + env(safe-area-inset-top)) never applied and the
-   notch handling was dead. Measured y=14.0 in both modes, never 9 + inset.
-   Keep the top value HERE, in the rule that sets the box -- a second rule that
-   only nudges `top` is what let the two drift apart unnoticed.
-   9px is not a tweak: the chip is 35px tall (50px in Enlarged) and the strip
-   above the app is 48px (68px), so 9 + 35 = 44 clears 48 by 4. At 14px it
-   measured 49 against 48 -- the chip overhung its own strip by 1px. */
-body.fs .fsexit{position:absolute;left:14px;top:calc(9px + env(safe-area-inset-top,0px));z-index:210;display:inline-flex;align-items:center;gap:8px;
-  background:rgba(23,18,13,.82);color:#F3EADB;border:0;border-radius:100px;padding:9px 15px 9px 11px;
-  font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--fs-12_0);letter-spacing:.1em;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 3px 12px rgba(0,0,0,.3)}
-.fsexit svg{width:15px;height:15px;stroke-width:2.8}
+/* Full screen keeps the whole header - time, island, signal, battery - and the
+   island IS the exit (Jack, 2026-10-26): tap it to leave. It says so, in
+   white on its own black, which is the only label an island ever carries.
+   This retires the separate EXIT chip and the 48px strip it needed above the
+   app. The tab bar still clears the home indicator. */
+body.fs .scr{border-radius:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body.fs .island{cursor:pointer;pointer-events:auto;top:calc(env(safe-area-inset-top,0px) + 11*var(--sb-u))}
+body.fs .island .isx{display:flex;align-items:center;gap:calc(5*var(--sb-u));color:#F3EADB;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  font-size:calc(13*var(--sb-u));font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+body.fs .island .isx svg{width:calc(12*var(--sb-u));height:calc(12*var(--sb-u));stroke-width:3}
+body.fs .island:focus-visible{outline:2px solid var(--or);outline-offset:2px}
 .fsopen{display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid #45392C;border-radius:100px;
   color:#C9BCA9;font-family:var(--head);font-weight:500;text-transform:uppercase;font-size:var(--fs-11_0);letter-spacing:.12em;padding:8px 16px}
 .fsopen:hover{border-color:var(--or);color:var(--or)}
 .fsopen svg{width:14px;height:14px;stroke-width:2.4}
-.island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:112px;height:30px;background:#000;border-radius:100px;z-index:60}
+/* The status bar is system chrome, drawn to iOS proportions in points
+   (Jack, 2026-10-26): 17pt semibold time, signal bars + 5G, a battery with
+   its percentage inside, a 126x37pt island 11pt from the top, a 54pt bar.
+   Sized in --sb-u, never the --fs-* scale, so Enlarged view leaves it alone
+   the way iOS's own text size leaves the status bar alone. */
+.island{position:absolute;top:calc(11*var(--sb-u));left:50%;transform:translateX(-50%);width:calc(126*var(--sb-u));height:calc(37*var(--sb-u));
+  background:#000;border:0;padding:0;border-radius:100px;z-index:60;display:flex;align-items:center;justify-content:center}
+.island .isx{display:none}
+.status{position:relative;flex:none;height:calc(54*var(--sb-u));display:flex;justify-content:space-between;align-items:flex-start;
+  padding-top:calc(11*var(--sb-u));background:var(--bg);color:#000;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+.status .sbtime,.status .sbr{width:calc(50% - 63*var(--sb-u));height:calc(37*var(--sb-u));display:flex;align-items:center;justify-content:center}
+.status .sbtime{font-size:calc(17*var(--sb-u));font-weight:600;letter-spacing:-.01em;padding-left:calc(6*var(--sb-u))}
+.status .sbr{gap:calc(5*var(--sb-u))}
+.status .sbsig{width:calc(17*var(--sb-u));height:calc(11*var(--sb-u));fill:currentColor}
+.status .sb5g{font-size:calc(14*var(--sb-u));font-weight:600;letter-spacing:.01em;margin-left:calc(-1*var(--sb-u))}
+.status .sbbat{position:relative;width:calc(27*var(--sb-u));height:calc(13*var(--sb-u));border-radius:calc(4.2*var(--sb-u));background:rgba(0,0,0,.35);
+  margin-right:calc(2.5*var(--sb-u));display:flex;align-items:center;justify-content:center;overflow:visible}
+.status .sbbat::after{content:"";position:absolute;right:calc(-2.6*var(--sb-u));top:50%;transform:translateY(-50%);width:calc(1.6*var(--sb-u));height:calc(4.5*var(--sb-u));border-radius:0 2px 2px 0;background:rgba(0,0,0,.35)}
+.status .sbbat i{position:absolute;left:0;top:0;bottom:0;background:#000;border-radius:calc(4.2*var(--sb-u)) 0 0 calc(4.2*var(--sb-u))}
+.status .sbbat b{position:relative;font-size:calc(11.5*var(--sb-u));font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1}
 .view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);color:var(--ink)}
-.status{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 4px;font-family:var(--head);font-weight:600;font-size:var(--fs-14_0);color:var(--ink);background:var(--bg)}
-.status .r{display:flex;gap:5px;align-items:center;font-size:var(--fs-11_0);letter-spacing:.05em}
 
 /* interaction highlighting */
 @keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(241,96,28,0)}50%{box-shadow:0 0 0 5px rgba(241,96,28,.22)}}
@@ -1321,7 +1333,6 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 .s[data-s="acorders"] .sbar h2,.s[data-s="acrecs"] .sbar h2,.s[data-s="acreviews"] .sbar h2,
 .s[data-s="acabout"] .sbar h2{text-transform:uppercase}
 
-#scr.enlarged .fsexit svg{width:19.2px;height:19.2px}
 #scr.enlarged .fsopen svg{width:17.9px;height:17.9px}
 #scr.enlarged .locbar .gift{width:25.6px;height:25.6px}
 #scr.enlarged .bagbtn{width:43.5px;height:43.5px}
@@ -1339,14 +1350,6 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
    missed it. Same treatment as .sbar .bk, which it is the sibling of. */
 #scr.enlarged .pihead .pihback svg{width:28.2px;height:28.2px}
 
-/* Full screen: the exit chip has its own strip so it never covers the app's
-   header (body.fs .scr, 48px). The chip is type in a pill, so in Enlarged it
-   grows 35 -> 50px and its bottom lands at 64px — 16px into a strip that never
-   moved, sitting on top of the mood chip bar. The strip has to grow with the
-   thing it was reserved for. 68px clears the 64px chip with the few px of slack
-   Standard has at 48/49. Found by screenshot, not by a guard: #fsexit lives
-   outside .s[data-s=...], so enlarged-check.js never looks at it. */
-body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
 #scr.enlarged .sbar .sic{width:28.2px;height:28.2px}
 #scr.enlarged .oc .box{width:25.6px;height:25.6px}
 #scr.enlarged .feelchip svg{width:30.7px;height:30.7px}
@@ -1500,9 +1503,8 @@ body.fs #scr.enlarged{padding-top:calc(68px + env(safe-area-inset-top,0px))}
   </div>
 
   <div class="phonebox" id="phonebox"><div class="phone" id="phone"><div class="scr" id="scr">
-    <button class="fsexit" id="fsexit" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Exit</button>
-    <span class="island"></span>
-    <div class="status"><span>6:25</span><span class="r">&#9679;&#9679;&#9679;&#9675; &nbsp;&#9889;</span></div>
+    <button class="island" id="island" type="button" tabindex="-1" aria-hidden="true" aria-label="Exit full screen"><span class="isx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Exit</span></button>
+    <div class="status" aria-hidden="true"><span class="sbtime">6:25</span><span class="sbr"><svg class="sbsig" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.6" y="5" width="3" height="6" rx="0.8"/><rect x="9.2" y="2.6" width="3" height="8.4" rx="0.8"/><rect x="13.8" y="0" width="3" height="11" rx="0.8"/></svg><span class="sb5g">5G</span><span class="sbbat"><i style="width:82%"></i><b>82</b></span></span></div>
 
     <div class="view tiles-compact" id="view">
 
@@ -2560,6 +2562,10 @@ function fitFrame(){
     h=DESIGN_H;
   }
   scr.style.height=h+"px";
+  /* The status bar is drawn in iOS points. Framed, the phone stands for a
+     440pt model; full screen on a phone, a point is a real CSS px, so each
+     model gets its own native 17pt time - 1/k design px per point. */
+  scr.style.setProperty("--sb-u",(full&&vw/(DESIGN_W+bez)<=1?1/k:DESIGN_W/440)+"px");
   /* The bezel carries its own unscaled width. #phonebox below is sized to the
      *scaled* footprint, and .phone is a normal block child of it — so without
      this the bezel inherits that smaller number while .scr stays a fixed 452,
@@ -2579,6 +2585,7 @@ addEventListener("orientationchange",function(){setTimeout(fitFrame,120);});
 function setFull(on,fromHost){
   var was=document.body.classList.contains("fs");
   document.body.classList.toggle("fs",on);
+  var isl=document.getElementById("island");isl.tabIndex=on?0:-1;isl.setAttribute("aria-hidden",on?"false":"true");   /* an exit only in full screen */
   fitFrame();
   if(!on)document.getElementById("phonebox").scrollIntoView({block:"center"});
   /* embedded in the case study: inside an iframe, full screen could only fill the
@@ -2592,7 +2599,7 @@ addEventListener("message",function(e){
 });
 document.addEventListener("click",function(e){
   if(e.target.closest("#fsopen")){setFull(true);return;}
-  if(e.target.closest("#fsexit"))setFull(false);
+  if(e.target.closest("#island")&&document.body.classList.contains("fs"))setFull(false);   /* the island is the exit */
 });
 addEventListener("keydown",function(e){if(e.key==="Escape")setFull(false);});
 function cartQty(id,size){var key=id+"|"+size,q=0;S.cart.forEach(function(c){if(c.key===key)q=c.q;});return q;}

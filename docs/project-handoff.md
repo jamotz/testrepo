@@ -621,6 +621,8 @@ polish and the open questions below.
    its own 48px strip**, overhanging by 1px on every device. Now 9 → 44 against
    48 (clearance +4), and 9 → 59 against 68 in Enlarged (+9). Measured at
    393×852 and 320×568 by `fsexit-probe.js`, committed beside the other checks.
+   *(Retired 2026-10-26 with the EXIT chip itself - the island is the exit now;
+   `statusbar-probe.js` replaces the probe.)*
 
    **Still open, and now a smaller question:** `env(safe-area-inset-*)` is 0 in
    headless Chromium, so what a *notched* iPhone does is still unverified — but
@@ -704,6 +706,7 @@ it.
 | Lifestyles, one by one (2026-10-26) | Eight topics: The Six Lifestyles, then one per lifestyle in strain order titled "Discovery · Sativa" (just "Sativa" in strain mode), then Finding Your Lifestyle. The hero carries the six discs (`.edulifehero`, glyphs via `lifeGlyph()` so strain mode shows letters). Liquid Edibles' hero fits its bottle whole (`imgfit:"contain"`) - `cover` had cut it top and bottom |
 | Cart rewards (2026-10-26) | A cart-line-sized "Use rewards points on your order" tile (`#rwcard`) opens a sheet that slides up (`#rwsheet`, beside the filter drawer): 1,000 / 2,000 / 3,000 points for 10 / 20 / 30% off (`RWTIERS`), tiers above the balance disabled, "Reward points will not affect discounted products." One tier per order; the percentage comes off undiscounted lines only (`rwEligible()`). The confirmation lists it as "Rewards (20% off) · 2,000 points used" above the reduced total. **Points are never deducted, on purpose** (Jack): `ACPTS` stays 3,400 so the flow can be stress-tested; the applied tier clears after each order |
 | Stage (2026-10-26) | The page around the phone is the title, one **Open full screen** button the width of the phone (`fitFrame()` sizes `.stagebtns` from the phone it draws), and the phone. The "Show tap points" toggle, its dashed `.scr.taps` outlines, and the hint line under the phone are removed - everything in the prototype is tappable |
+| Status bar & island (2026-10-26) | Drawn to iOS proportions in points via `--sb-u`: 17pt semibold time, four signal bars + "5G", a 27×13 battery with "82" inside, a 126×37 island 11pt down, a 54pt bar. Framed, a point is 452/440 design px (the phone stands for a 440pt model); full screen on a phone `fitFrame()` sets 1/k, so every model renders its native 17px. Not on the `--fs-*` scale, so **Enlarged view leaves it alone**. Full screen keeps the whole header and **the island is the exit** ("× EXIT", tap or Esc); the separate `#fsexit` chip and its 48/68px strip are gone. `statusbar-probe.js` checks it at 320/393/430 full and framed |
 | Guide Me results | `renderFinish()` never read the lifestyles: **41 of 42** method × lifestyle paths recommended the wrong one, edible types compared `p.sub` against the form and fell back to the whole shelf, and vape/tincture fell through to `P.slice(0,6)`. Now shelf (`guideShelf()`, edibles by `etype`) → lifestyles picked (`mixLifestyles()` alternates two or more) → tastes order it. A shelf with nothing in those lifestyles says so in a `.lock` note; tincture says the catalog has none; vape goes to the web-only screen like the shop. **`guide-probe.js`** checks every path and exits 1 on a mismatch |
 | Flavor facet | Drawer section between Edible form and Brands. Options are `tasteList(S.type)` — the list Guide Me uses — on `TASTED` (flower, pre-rolls, concentrates); any other shelf shows a lock note. Matches any picked flavor. `S.flavors` is shelf state: `results()` prunes it on every call, so a flavor the new shelf lacks can't strand an empty list. In `filter-audit.js`: all 25 shelf × flavor options are live |
 | Drinks in Guide Me | "Drink" sits after Edible in the method list and gets the edibles' step: the five `DRTYPES` (`SUBS.drink`), with Learn the differences → Liquid Edibles. Recommendations match `p.sub2`. Every type is sold in all three cannabinoid branches, so Browse hands over `S.sub2` alone and the drinks shelf has a row for that case: the five types across the shelf, the one picked lit, a "Drinks" back bubble to clear it |
@@ -752,7 +755,7 @@ reference/origins/
 │   ├── snapshot-guard.js         ← Enlarged guard: same, from computed styles
 │   ├── enlarged-check.js         ← does Enlarged itself work (overflow/targets)
 │   ├── lglyph-probe.js           ← the strain letters, both modes (nothing else sees them)
-│   ├── fsexit-probe.js           ← the full-screen EXIT chip vs its strip (ditto)
+│   ├── statusbar-probe.js        ← status bar in iOS points + island-as-exit (ditto)
 │   ├── mood-probe.js             ← what a lifestyle chip does to the filter state
 │   ├── rowarrow-probe.js         ← home row affordances + the tile-height trap
 │   ├── filter-audit.js           ← counts products behind every filter option

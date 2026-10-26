@@ -2657,3 +2657,20 @@ shelf you are shopping — and it named this toggle by accident.
 The brand tiles on the deals row read **"6 Products"** rather than "6 flowers".
 The count is still flower-only, because the sale is, but the row sits among
 deals that are not all flower and the noun was doing no work.
+
+## The status bar is system chrome, sized in points (2026-10-26)
+
+Jack: "the time and power looks whack." It was `6:25` in the app's Oswald at
+14px and `●●●○ ⚡` in text, on the `--fs-*` scale - so Enlarged view blew it up
+to 22px like body copy. It is now drawn the way iOS draws it, in points:
+17pt semibold time, signal bars and "5G", a battery with its percentage inside,
+a 126×37pt island 11pt down, a 54pt bar. `--sb-u` is one point in design px:
+452/440 framed (the frame stands for a 440pt phone), and 1/k full screen on a
+phone, so every model gets its native size rather than a 440pt phone scaled
+down. Enlarged view does not touch it, for the same reason iOS's own text size
+leaves the status bar alone.
+
+Full screen keeps the whole header and the island became the exit. That
+retired `#fsexit`, the 48/68px strip it needed, and `fsexit-probe.js` - the
+sections above about the chip's `top` and its strip are history now.
+`statusbar-probe.js` is the chrome layer's measurement.
