@@ -680,6 +680,9 @@ button.feelchip{border:0;cursor:pointer}
 .fcard .ovleft,.fcard .ovright{display:flex;flex-direction:column;gap:3px}
 .fcard .ovleft{align-items:flex-start}
 .fcard .ovright{align-items:flex-end}
+/* centred on the tile, not between the two columns: the columns differ in
+   width, so the gap between them is off-centre */
+.fcard .ovmid{position:absolute;left:50%;top:0;transform:translateX(-50%);display:flex}   /* flex, like the columns, so the pill is a block and lines up with them */
 .bub{font-family:var(--head);font-weight:600;font-size:var(--fs-10_0);letter-spacing:.03em;padding:2.5px 7px;border-radius:100px;white-space:nowrap;line-height:1.25}
 .bub.ratio{font-weight:700;background:#ECF1E6;color:#5C7540}
 .bub.thc{background:#FAEBE9;color:#C0392B}
@@ -3745,7 +3748,8 @@ var TERPC={Limonene:["#FBF0D2","#8A6100"],
  Nerolidol:["#F0EAE3","#6E5644"]};
 /* A rating to one decimal, always: the catalog stores 4.0, which JS prints "4". */
 function rating1(r){return (Math.round(r*10)/10).toFixed(1);}
-/* photo overlay: star rating then ratio pill top-left, cannabinoid bubbles top-right */
+/* photo overlay: star rating top-left, ratio pill top-centre, cannabinoid
+   bubbles top-right */
 function tileOverlay(p){
   var ratio=(p.ratio&&p.combo&&p.combo!=="THC Only")
     ? '<span class="bub ratio">'+p.ratio+'</span>' : "";
@@ -3754,7 +3758,10 @@ function tileOverlay(p){
   }).join("");
   var rate=p.r!=null?'<span class="bub rate"><i aria-hidden="true">\u2605</i>'+rating1(p.r)+'</span>':"";
   if(!rate&&!ratio&&!bubs)return "";
-  return '<span class="ovrow"><span class="ovleft">'+rate+ratio+'</span>'+
+  /* the star top-left, cannabinoids top-right, and a wellness product's
+     ratio centred between them along the top (Jack, 2026-10-27) */
+  return '<span class="ovrow"><span class="ovleft">'+rate+'</span>'+
+         (ratio?'<span class="ovmid">'+ratio+'</span>':'')+
          '<span class="ovright">'+bubs+'</span></span>';
 }
 function dealCard(p,dealSize,struck,sale){
