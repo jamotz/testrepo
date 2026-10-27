@@ -506,13 +506,18 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 <script>
 const IMG=/*IMGMAP*/;
 document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribute('data-img'); if(IMG[k]) el.src=IMG[k];});
-/* a link here (no #hash) lands on the first line; back/forward and reload keep their place.
-   Framed (the portfolio Artifact), also bring the frame's top into view. */
+/* a link here (no #hash) opens at the top; browser back/forward keeps its place. The
+   portfolio Artifact's viewer restores its own scroll after load (dropping visitors
+   mid-page), so until the visitor first scrolls, taps, clicks or types, put it back. */
 (function(){
   var n=performance.getEntriesByType("navigation")[0];
-  if(location.hash||(n&&n.type!=="navigate"))return;
-  scrollTo(0,0);
-  if(window.parent!==window){try{document.body.scrollIntoView({block:"start"});}catch(e){}}
+  if(location.hash||(n&&n.type==="back_forward"))return;
+  var ins=["wheel","touchstart","pointerdown","keydown"];
+  function top(){if(scrollY!==0)scrollTo({top:0,behavior:"instant"});}
+  function release(){removeEventListener("scroll",top);ins.forEach(function(t){removeEventListener(t,release,true);});}
+  top();addEventListener("scroll",top,{passive:true});
+  ins.forEach(function(t){addEventListener(t,release,{capture:true,passive:true});});
+  setTimeout(release,8000);
 })();
 /* Projects dropdown: click / keys, plus hover on fine pointers */
 (function(){

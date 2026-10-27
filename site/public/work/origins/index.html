@@ -520,13 +520,18 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 <script>
 const IMG={"hero": "/work/origins/img/hero.jpg", "cluttered": "/work/origins/img/cluttered.jpg", "pricing": "/work/origins/img/pricing.jpg", "survey_u": "/work/origins/img/survey_u.jpg", "survey_n": "/work/origins/img/survey_n.jpg", "persona1": "/work/origins/img/persona1.jpg", "persona2": "/work/origins/img/persona2.jpg", "flow_pain": "/work/origins/img/flow_pain.jpg", "filt_pain": "/work/origins/img/filt_pain.jpg", "lofi_new": "/work/origins/img/lofi_new.jpg", "lofi_g1a": "/work/origins/img/lofi_g1a.jpg", "lofi_g1b": "/work/origins/img/lofi_g1b.jpg", "lofi_g2": "/work/origins/img/lofi_g2.jpg", "lofi_shop": "/work/origins/img/lofi_shop.jpg", "lofi_scroll": "/work/origins/img/lofi_scroll.jpg", "lifestyle": "/work/origins/img/lifestyle.jpg", "sizetoggle": "/work/origins/img/sizetoggle.jpg", "home_v1": "/work/origins/img/home_v1.jpg", "home_v1b": "/work/origins/img/home_v1b.jpg", "home_v2": "/work/origins/img/home_v2.jpg", "acct_v1": "/work/origins/img/acct_v1.jpg", "acct_v2": "/work/origins/img/acct_v2.jpg", "abtest": "/work/origins/img/abtest.jpg", "flow_rec": "/work/origins/img/flow_rec.jpg", "filt_rec": "/work/origins/img/filt_rec.jpg", "hifi_over": "/work/origins/img/hifi_over.jpg", "hifi_land": "/work/origins/img/hifi_land.jpg", "hifi_prod": "/work/origins/img/hifi_prod.jpg", "hifi_acct": "/work/origins/img/hifi_acct.jpg", "home_v2b": "/work/origins/img/home_v2b.jpg"};
 document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribute('data-img'); if(IMG[k]) el.src=IMG[k];});
-/* a link here (no #hash) lands on the first line; back/forward and reload keep their place.
-   Framed (the portfolio Artifact), also bring the frame's top into view. */
+/* a link here (no #hash) opens at the top; browser back/forward keeps its place. The
+   portfolio Artifact's viewer restores its own scroll after load (dropping visitors
+   mid-page), so until the visitor first scrolls, taps, clicks or types, put it back. */
 (function(){
   var n=performance.getEntriesByType("navigation")[0];
-  if(location.hash||(n&&n.type!=="navigate"))return;
-  scrollTo(0,0);
-  if(window.parent!==window){try{document.body.scrollIntoView({block:"start"});}catch(e){}}
+  if(location.hash||(n&&n.type==="back_forward"))return;
+  var ins=["wheel","touchstart","pointerdown","keydown"];
+  function top(){if(scrollY!==0)scrollTo({top:0,behavior:"instant"});}
+  function release(){removeEventListener("scroll",top);ins.forEach(function(t){removeEventListener(t,release,true);});}
+  top();addEventListener("scroll",top,{passive:true});
+  ins.forEach(function(t){addEventListener(t,release,{capture:true,passive:true});});
+  setTimeout(release,8000);
 })();
 /* Projects dropdown: click / keys, plus hover on fine pointers */
 (function(){

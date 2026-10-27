@@ -20,21 +20,44 @@ if (!reduce) {
   gsap.ticker.lagSmoothing(0);
 }
 
-/* ---------------- Fresh visits start at the top ----------------
-   A link to a page (no #hash) should land on its first line. Back/forward and reload
-   keep the browser's restored position. Framed (the portfolio Artifact), the host
-   can keep its own scroll between pages, so also bring the frame's top into view. */
+/* ---------------- Opening a page lands on its first line ----------------
+   A link to a page (no #hash) should open at the top. Browser back/forward keeps its
+   place. The portfolio Artifact's viewer restores its own scroll position after the
+   page loads (which dropped visitors mid-page), so until the visitor first scrolls,
+   taps, clicks or presses a key, any scroll that isn't theirs is put back to the top. */
 (function startAtTop() {
   const nav = performance.getEntriesByType('navigation')[0];
-  if (location.hash || (nav && nav.type !== 'navigate')) return;
+  if (location.hash || (nav && nav.type === 'back_forward')) return;
   const top = () => {
-    window.scrollTo(0, 0);
-    if (lenis) lenis.scrollTo(0, { immediate: true });
+    if (window.scrollY === 0) return;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+  };
+  const inputs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+  const release = () => {
+    window.removeEventListener('scroll', top);
+    inputs.forEach((t) => window.removeEventListener(t, release, true));
   };
   top();
-  if (window.parent !== window && document.documentElement.hasAttribute('data-accent')) {
-    try { document.body.scrollIntoView({ block: 'start' }); } catch (e) {}
-  }
+  window.addEventListener('scroll', top, { passive: true });
+  inputs.forEach((t) => window.addEventListener(t, release, { capture: true, passive: true }));
+  setTimeout(release, 8000);
+})();
+
+/* ---------------- Hero logo: its shapes drift apart with the cursor ---------------- */
+(function logoParallax() {
+  const mark = document.querySelector('.hero-watermark');
+  if (!mark || reduce || coarse) return;
+  const depth = { 'lg-ring': 3, 'lg-w1': 5, 'lg-w2': 7, 'lg-w3': 9 };   // viewBox units; more and the waves touch
+  const parts = [...mark.querySelectorAll('.lg-part')].map((g) => {
+    const move = g.querySelector('.lg-move'), d = depth[g.classList[1]] || 0;
+    return { d, x: gsap.quickTo(move, 'x', { duration: 1.1, ease: 'power3' }), y: gsap.quickTo(move, 'y', { duration: 1.1, ease: 'power3' }) };
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (window.scrollY > window.innerHeight) return;
+    const nx = e.clientX / window.innerWidth - 0.5, ny = e.clientY / window.innerHeight - 0.5;
+    parts.forEach((p) => { p.x(nx * p.d * 2); p.y(ny * p.d * 2); });
+  }, { passive: true });
 })();
 
 /* ---------------- Theme toggle ---------------- */
