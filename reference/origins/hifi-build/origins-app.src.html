@@ -950,7 +950,7 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 .rwgrab{width:44px;height:5px;border-radius:3px;background:#DAD3C5;margin:0 auto 12px}
 .rwhead{display:flex;justify-content:space-between;align-items:center}
 .rwhead h3{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:var(--fs-18_0);letter-spacing:.04em;color:var(--ink)}
-.rwhead .x{background:none;border:0;font-size:var(--fs-18_0);color:var(--ink-2);width:36px;height:36px}
+.rwhead .x{background:none;border:0;font-size:var(--fs-18_0);color:var(--ink-2);width:var(--target-size);height:var(--target-size);margin-right:-10px}   /* the app's target size, not 36px */
 .rwbal{font-family:var(--head);font-size:var(--fs-13_0);text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);margin:4px 0 14px}
 .rwbal b{color:var(--olive)}
 .rwopts{display:flex;flex-direction:column;gap:10px}
@@ -1061,7 +1061,9 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 .dpanel{position:absolute;top:0;bottom:0;right:0;width:88%;background:#fff;display:flex;flex-direction:column;border-radius:18px 0 0 18px;overflow:hidden}
 .dhead{display:flex;align-items:center;justify-content:space-between;background:var(--olive);color:#fff;padding:16px}
 .dhead h3{font-size:var(--fs-r1_2);letter-spacing:.12em}
-.dhead .x{border:0;background:none;color:#fff;font-size:var(--fs-20_0);line-height:1}
+/* a full target, not just the glyph (28px in Enlarged); the negative margin
+   keeps the green header its old height */
+.dhead .x{border:0;background:none;color:#fff;font-size:var(--fs-20_0);line-height:1;width:var(--target-size);height:var(--target-size);margin:-10px -10px -10px 0}
 .dbody{flex:1;overflow-y:auto;padding:6px 16px 16px}
 .dsec{border-bottom:1px solid #E5E0D6;padding:13px 0}
 .dsec .dt{display:flex;justify-content:space-between;align-items:center;font-family:var(--head);font-weight:600;text-transform:uppercase;font-size:var(--fs-12_5);letter-spacing:.1em;color:var(--ink)}
@@ -1299,6 +1301,7 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 /* Sections breathe; the drawer's options stack with room between them. */
 #scr.enlarged .pgrid{padding:var(--section-gap) 16px calc(var(--section-gap) + 6px)}
 #scr.enlarged .drawer .dsec{margin-bottom:var(--section-gap)}
+#scr.enlarged .drawer .opt{min-height:var(--target-size)}   /* 50 -> the 52px target */
 
 
 .acchecks{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding-left:14px}
@@ -1460,9 +1463,11 @@ button.prating{background:none;border:0;padding:0 0 0 8px;min-height:var(--targe
 /* Advanced Settings: the switch itself has to grow, not just its hit box. The
    target-size rule gave .sw a 52px min-height while the drawn switch stayed
    46x26, so the knob sat at the top of an empty box. Extend the control. */
-#scr.enlarged .sw{width:72px;height:44px;min-height:44px}
-#scr.enlarged .sw::after{top:4px;left:4px;width:36px;height:36px}
-#scr.enlarged .sw.on::after{left:32px}
+/* the switch meets the Enlarged target (52px) the way every other control
+   does - same proportions as 72x44, scaled (2026-10-26) */
+#scr.enlarged .sw{width:84px;height:var(--target-size);min-height:var(--target-size)}
+#scr.enlarged .sw::after{top:5px;left:5px;width:42px;height:42px}
+#scr.enlarged .sw.on::after{left:37px}
 #scr.enlarged .advrow{align-items:center;gap:16px}
 #scr.enlarged .advrow .sw{margin-top:0}
 
@@ -4509,10 +4514,19 @@ function rwSheet(open){
 }
 $("#rwdim").addEventListener("click",function(){rwSheet(false);});
 $("#rwclose").addEventListener("click",function(){rwSheet(false);});
-$("#rwapply").addEventListener("click",function(){RW.tier=RW.pick;rwSheet(false);renderCart();
+/* Points are never applied to an order nothing can take them on: an all-deal
+   bag used to accept 3,000 points for -$0.00 (and the confirmation said so). */
+$("#rwapply").addEventListener("click",function(){
+  if(RW.pick&&rwEligible()<=0){toast("Nothing in your bag can take rewards — deal and sale items are already discounted");return;}
+  RW.tier=RW.pick;rwSheet(false);renderCart();
   toast(RW.tier?RW.tier[1]+"% off applied":"Rewards removed");});
 function renderCart(){
   var w=$("#cwrap");
+  /* A tier belongs to this bag: it clears when the bag empties (the next bag
+     used to inherit it unasked), and drops - saying so - when what is left
+     is all deal and sale items, rather than showing "-$0.00" for the points. */
+  if(!S.cart.length)RW.tier=null;
+  else if(RW.tier&&rwEligible()<=0){RW.tier=null;toast("Rewards removed — nothing left in your bag that it applies to");}
   if(!S.cart.length){w.innerHTML='<div class="empty"><b>Nothing here yet</b><p>Tap Guide Me or Shop to start exploring.</p></div>';return;}
   var lines=cartLines(),unpaired=lines.reduce(function(a,l){return a+(inPairDeal(l.p,l.c.size)?l.c.q-l.dq:0);},0);
   w.innerHTML=lines.map(function(l){var c=l.c,i=l.i,p=l.p,lp=l.lp,lc=LIFECLASS[p.f[0]]||"soc";

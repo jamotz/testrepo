@@ -68,6 +68,16 @@ const SCREENS = [
   ['acorders','renderAccount()'],['acrecs','renderAccount()'],
   ['acreviews','renderAccount()'],['acsettings','renderAccount()'],
   ['acadv','renderAccount()'],['acabout','renderAccount()'],
+  /* Overlays (2026-10-26): a sheet or drawer opened on top of a screen. The
+     walk above only ever saw screens as they first draw, so the rewards
+     sheet's 36px close button went unseen. Each is walked from its own panel,
+     and held to the app's --target-size (44px, 52px Enlarged) as well as
+     WCAG's 24px - an overlay's controls are all primary actions. */
+  ['cart+rewards','addToCart(0, sizesFor(P[0])[0]||"1 g"); renderCart()',
+     {open:'rwSheet(true)', root:'.rwpanel', close:'rwSheet(false)'}],
+  ['list+filters','S.type="flower"; renderList()',
+     {open:'document.getElementById("drawer").classList.add("on"); drawDrawer()', root:'.dpanel',
+      close:'document.getElementById("drawer").classList.remove("on")'}],
 ];
 
 (async () => {
@@ -112,12 +122,14 @@ const SCREENS = [
 
     // ---- per-screen structural checks, ENLARGED on ------------------------
     let bad = 0; const shrunkNotes = [];
-    for (const [screen, setup] of SCREENS) {
-      const r = await page.evaluate(async ([screen, setup]) => {
-        try { setAdv('enlarged', true); if (setup) eval(setup); nav(screen); }
+    for (const [label, setup, ov] of SCREENS) {
+      const screen = label.split('+')[0];
+      const r = await page.evaluate(async ([screen, setup, ov]) => {
+        try { setAdv('enlarged', true); if (setup) eval(setup); nav(screen); if (ov) eval(ov.open); }
         catch (e) { return { error: String(e && e.message || e) }; }
-        await new Promise(r => setTimeout(r, 150));
-        const root = document.querySelector('.s[data-s="' + screen + '"]');
+        await new Promise(r => setTimeout(r, ov ? 450 : 150));
+        const root = document.querySelector(ov ? ov.root : '.s[data-s="' + screen + '"]');
+        const appMin = ov ? parseFloat(getComputedStyle(document.getElementById('scr')).getPropertyValue('--target-size')) : 0;
         if (!root) return { error: 'no screen' };
         const view = document.getElementById('view') || root;
         const scrEl = document.getElementById('scr');
@@ -153,23 +165,25 @@ const SCREENS = [
           if (el.matches('button,a,[data-nav],[data-p],[data-add],.tap') && bb.height > 0) {
             const design = bb.height / k;
             if (design < 24) small.push(name() + ' ' + design.toFixed(0) + 'px by design');
+            else if (appMin && design < appMin - 0.5) small.push(name() + ' ' + design.toFixed(0) + 'px < app ' + appMin + 'px');
             else if (bb.height < 24) shrunk.push(name() + ' ' + bb.height.toFixed(0) + 'px (' + design.toFixed(0) + 'px by design)');
           }
         }
         const uniq = a => [...new Set(a)];
+        if (ov) eval(ov.close);
         return { pageOverflow: Math.max(0, de.scrollWidth - de.clientWidth),
                  viewOverflow: Math.max(0, view.scrollWidth - view.clientWidth),
                  spill: uniq(spill), small: uniq(small), shrunk: uniq(shrunk) };
-      }, [screen, setup]);
+      }, [screen, setup, ov || null]);
 
-      if (r.error) { console.log(`   ERROR ${screen}: ${r.error}`); bad++; continue; }
+      if (r.error) { console.log(`   ERROR ${label}: ${r.error}`); bad++; continue; }
       const flags = [];
       if (r.pageOverflow > 1) flags.push(`page h-overflow ${r.pageOverflow}px`);
       if (r.viewOverflow > 1) flags.push(`view h-overflow ${r.viewOverflow}px`);
       if (r.spill.length)     flags.push(`spill: ${r.spill.slice(0, 3).join(', ')}`);
-      if (r.small.length)     flags.push(`target<24px: ${r.small.slice(0, 3).join(', ')}`);
-      if (flags.length) { bad++; console.log(`   FLAG  ${screen.padEnd(11)} ${flags.join(' | ')}`); }
-      if (r.shrunk.length) shrunkNotes.push(`${screen}: ${r.shrunk.slice(0, 3).join(', ')}`);
+      if (r.small.length)     flags.push(`small target: ${r.small.slice(0, 3).join(', ')}`);
+      if (flags.length) { bad++; console.log(`   FLAG  ${label.padEnd(11)} ${flags.join(' | ')}`); }
+      if (r.shrunk.length) shrunkNotes.push(`${label}: ${r.shrunk.slice(0, 3).join(', ')}`);
     }
     console.log(`   ${SCREENS.length} screens, ${bad} with findings`);
     if (shrunkNotes.length) {
