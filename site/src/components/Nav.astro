@@ -1,10 +1,11 @@
 ---
 import Logo from './Logo.astro';
+import { PROJECTS } from '../data/site.js';
 // On the landing page use in-page anchors (smooth scroll); on subpages point home.
-const home = Astro.url.pathname === '/';
+const path = Astro.url.pathname.replace(/\/$/, '');
+const home = path === '';
 const base = home ? '' : '/';
 const links = [
-  { href: `${base}#work`, label: 'Work' },
   { href: `${base}#about`, label: 'About' },
   { href: `${base}#contact`, label: 'Contact' },
 ];
@@ -18,7 +19,31 @@ const homeHref = home ? '#top' : '/';
     </a>
     <div class="nav-right">
       <nav class="nav-links" aria-label="Primary">
-        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        <div class="dd" data-dd>
+          <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-projects" data-dd-btn>
+            Projects
+            <svg class="dd-chev" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5l3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <ul class="dd-panel" id="dd-projects" data-dd-panel>
+            {PROJECTS.map((p) => (
+              <li>
+                {p.href ? (
+                  <a class="dd-item" href={p.href} style={`--ac:${p.accent}`} aria-current={path === p.href ? 'page' : undefined}>
+                    <span class="dd-dot" aria-hidden="true"></span>
+                    <span class="dd-t">{p.title}<span class="dd-c">{p.short}</span></span>
+                  </a>
+                ) : (
+                  <span class="dd-item is-soon" style={`--ac:${p.accent}`}>
+                    <span class="dd-dot" aria-hidden="true"></span>
+                    <span class="dd-t">{p.title}<span class="dd-c">Coming soon</span></span>
+                  </span>
+                )}
+              </li>
+            ))}
+            <li class="dd-all"><a href={`${base}#projects`}>All projects</a></li>
+          </ul>
+        </div>
+        {links.map((l) => <a class="nav-a" href={l.href}>{l.label}</a>)}
         <a class="btn btn-primary nav-cta" href={`${base}#contact`}>Get in touch</a>
       </nav>
       <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle light and dark theme">
@@ -35,6 +60,18 @@ const homeHref = home ? '#top' : '/';
      become the containing block for this fixed panel. -->
 <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
   <nav aria-label="Mobile">
+    <div class="mgroup">
+    <p class="mono-label">Projects</p>
+    {PROJECTS.map((p) => p.href ? (
+      <a class="mproj" href={p.href} style={`--ac:${p.accent}`} data-mobile-link>
+        <span class="dd-dot" aria-hidden="true"></span>{p.title}
+      </a>
+    ) : (
+      <span class="mproj is-soon" style={`--ac:${p.accent}`}>
+        <span class="dd-dot" aria-hidden="true"></span>{p.title}<span class="dd-c">Coming soon</span>
+      </span>
+    ))}
+    </div>
     {links.map((l) => <a class="mlink" href={l.href} data-mobile-link>{l.label}</a>)}
     <a class="btn btn-primary mcta" href={`${base}#contact`} data-mobile-link>Get in touch</a>
   </nav>
@@ -54,10 +91,35 @@ const homeHref = home ? '#top' : '/';
 
   .nav-right{display:flex;align-items:center;gap:8px}
   .nav-links{display:flex;align-items:center;gap:8px}
-  .nav-links > a:not(.nav-cta){font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;
+  .nav-a,.dd-btn{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--ink-soft);padding:9px 14px;border-radius:8px;transition:color .2s,background-color .2s}
-  .nav-links > a:not(.nav-cta):hover{color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+  .nav-a:hover,.dd-btn:hover,.dd-btn[aria-expanded="true"]{color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent)}
   .nav-cta{margin-left:8px;padding:11px 18px;font-size:13.5px}
+
+  /* Projects dropdown — a disclosure (button + list of links), opened by click or hover */
+  .dd{position:relative}
+  .dd-btn{display:inline-flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer}
+  .dd-chev{transition:transform .25s var(--ease-out)}
+  .dd-btn[aria-expanded="true"] .dd-chev{transform:rotate(180deg)}
+  .dd-panel{position:absolute;top:calc(100% + 10px);left:-8px;min-width:280px;list-style:none;margin:0;padding:8px;
+    background:var(--panel);border:1px solid var(--line-2);border-radius:14px;
+    box-shadow:0 24px 60px -24px rgba(0,0,0,.6);
+    opacity:0;visibility:hidden;transform:translateY(-6px);
+    transition:opacity .2s var(--ease-out),transform .2s var(--ease-out),visibility 0s linear .2s}
+  .dd-panel::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px}  /* hover bridge */
+  .dd[data-open] .dd-panel{opacity:1;visibility:visible;transform:none;transition-delay:0s}  /* visible at once, so it can take focus */
+  .dd-item{display:flex;align-items:flex-start;gap:12px;padding:11px 12px;border-radius:9px;color:var(--ink);transition:background-color .2s}
+  a.dd-item:hover,a.dd-item:focus-visible{background:color-mix(in srgb,var(--ac) 12%,transparent)}
+  .dd-item[aria-current="page"]{background:color-mix(in srgb,var(--ac) 9%,transparent)}
+  .dd-dot{flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--ac)}
+  .dd-t{display:flex;flex-direction:column;gap:2px;font-family:var(--display);font-weight:700;font-size:15px;line-height:1.3}
+  .dd-c{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg)}
+  .dd-item.is-soon{color:var(--ink-soft)}
+  .dd-item.is-soon .dd-dot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ac)}
+  .dd-all{margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
+  .dd-all a{display:block;padding:10px 12px;border-radius:9px;font-family:var(--mono);font-size:11.5px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  .dd-all a:hover,.dd-all a:focus-visible{color:var(--gold);background:color-mix(in srgb,var(--ink) 5%,transparent)}
 
   .theme-toggle{width:42px;height:42px;display:grid;place-items:center;border-radius:100px;
     border:1px solid var(--line-2);color:var(--ink);background:transparent;
@@ -79,12 +141,20 @@ const homeHref = home ? '#top' : '/';
   @media (max-width:760px){
     .nav-links{display:none}
     .nav-toggle{display:flex}
-    .mobile-menu{display:block;position:fixed;inset:74px 0 0;z-index:99;
+    .mobile-menu{display:block;position:fixed;inset:74px 0 0;z-index:99;overflow-y:auto;
       background:var(--bg);border-top:1px solid var(--line);
       padding:24px var(--pad);transform:translateY(-8px);opacity:0;visibility:hidden;pointer-events:none;
       transition:opacity .3s var(--ease-out),transform .3s var(--ease-out),visibility .3s}
     .mobile-menu[data-open]{opacity:1;visibility:visible;transform:none;pointer-events:auto}
     .mobile-menu nav{display:flex;flex-direction:column;gap:4px}
+    .mgroup{padding-bottom:12px;border-bottom:1px solid var(--line)}
+    .mgroup .mono-label{color:var(--muted-fg);margin:0 0 4px}
+    .mproj{display:flex;align-items:center;gap:12px;padding:12px 0;font-family:var(--display);font-weight:700;
+      font-size:1.15rem;color:var(--ink)}
+    .mproj .dd-dot{margin-top:0}
+    .mproj.is-soon{color:var(--ink-soft)}
+    .mproj.is-soon .dd-dot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ac)}
+    .mproj .dd-c{margin-left:auto}
     .mobile-menu .mlink{font-family:var(--display);font-weight:700;font-size:1.7rem;
       text-transform:uppercase;letter-spacing:-.01em;padding:16px 0;border-bottom:1px solid var(--line);color:var(--ink)}
     .mobile-menu .mcta{margin-top:20px;justify-content:center;font-size:1rem}

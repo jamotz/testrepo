@@ -14,6 +14,7 @@ Writes (default out_dir: ./artifact-bundle):
   origins.html             the Origins case study (built by asm_case.py --site)
   work/oxfam/*.jpg, proto.html      Oxfam images + embedded prototype, as-is
   work/origins/img/*, app.html      Origins images + embedded app, as-is
+  brand/clients/*, about/*          project-card logos + the About photo
 
 CSS, JS and fonts are inlined into both pages (fonts as data: URIs) so each
 page stands alone; only images and the prototype stay separate files. Root-
@@ -106,6 +107,7 @@ if DRAFT:
 # ---- landing page (main page) ----
 landing = inline_head((DIST / "index.html").read_text())
 landing = landing.replace('href="/work/oxfam"', 'href="oxfam.html"').replace('href="/work/origins"', 'href="origins.html"')
+landing = re.sub(r'src="/((?:brand|about)/[^"]+)"', r'src="\1"', landing)
 landing = re.sub(r'href="/#([\w-]+)"', r'href="#\1"', landing)
 landing = landing.replace('href="/"', 'href="#top"')
 landing = fragment(landing)
@@ -115,13 +117,14 @@ oxfam = inline_head((DIST / "work/oxfam/index.html").read_text())
 oxfam = oxfam.replace('"/work/oxfam/', '"work/oxfam/')
 oxfam = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', oxfam)
 oxfam = oxfam.replace('href="/"', 'href="index.html"')
-oxfam = oxfam.replace('href="/work/origins"', 'href="origins.html"')
+oxfam = oxfam.replace('href="/work/origins"', 'href="origins.html"').replace('href="/work/oxfam"', 'href="oxfam.html"')
 
 # ---- Origins case study (third page; already self-contained apart from images + app) ----
 origins = (DIST / "work/origins/index.html").read_text()
 origins = re.sub(r'<link rel="icon"[^>]*>', "", origins)
 origins = origins.replace('"/work/origins/', '"work/origins/')   # app src + image map (in script)
 origins = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', origins)
+origins = origins.replace('href="/work/oxfam"', 'href="oxfam.html"').replace('href="/"', 'href="index.html"')
 
 leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins)
 assert not leftover, f"unrewritten root-absolute refs: {leftover}"
@@ -137,6 +140,8 @@ for f in (DIST / "work/oxfam").iterdir():
         shutil.copy2(f, OUT / "work/oxfam" / f.name)
 shutil.copytree(DIST / "work/origins/img", OUT / "work/origins/img")
 shutil.copy2(DIST / "work/origins/app.html", OUT / "work/origins/app.html")
+shutil.copytree(DIST / "brand/clients", OUT / "brand/clients")
+shutil.copytree(DIST / "about", OUT / "about")
 
 for p in sorted(OUT.rglob("*")):
     if p.is_file():

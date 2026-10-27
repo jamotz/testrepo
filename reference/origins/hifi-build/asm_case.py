@@ -5,7 +5,7 @@ Run: python3 reference/origins/hifi-build/asm_case.py
 Output: <scratchpad>/origins-case.html (or ./origins-case.html).
 
   --site   instead write the portfolio site's copy: site/public/work/origins/index.html
-           (links back to /#work) + app.html beside it, loaded by the iframe as a page
+           (links back to /#projects) + app.html beside it, loaded by the iframe as a page
            rather than an inline data: URI."""
 from PIL import Image
 import base64, io, json, pathlib, re, subprocess, sys
@@ -119,10 +119,12 @@ app_doc = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
            '<title>Origins App</title></head><body>' + app_path.read_text() + '</body></html>')
 if SITE_MODE:
     src = src.replace("/*PROTODOC*/", "").replace("%%APPSRC%%", "/work/origins/app.html")
-    src = src.replace("%%WORK_HREF%%", "/#work").replace("%%NEXT_HREF%%", "/#work")
+    src = src.replace("%%WORK_HREF%%", "/#projects").replace("%%NEXT_HREF%%", "/#projects")
+    src = src.replace("%%HOME_HREF%%", "/").replace("%%OXFAM_HREF%%", "/work/oxfam")
 else:
     src = src.replace("/*PROTODOC*/", base64.b64encode(app_doc.encode()).decode())
     src = src.replace("%%APPSRC%%", "").replace("%%WORK_HREF%%", "#").replace("%%NEXT_HREF%%", "#")
+    src = src.replace("%%HOME_HREF%%", "#top").replace("%%OXFAM_HREF%%", "#")
 
 # ---- encode: entities outside script/style, \u-escapes inside script ----
 def esc_script(block):

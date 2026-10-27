@@ -20,6 +20,23 @@ if (!reduce) {
   gsap.ticker.lagSmoothing(0);
 }
 
+/* ---------------- Fresh visits start at the top ----------------
+   A link to a page (no #hash) should land on its first line. Back/forward and reload
+   keep the browser's restored position. Framed (the portfolio Artifact), the host
+   can keep its own scroll between pages, so also bring the frame's top into view. */
+(function startAtTop() {
+  const nav = performance.getEntriesByType('navigation')[0];
+  if (location.hash || (nav && nav.type !== 'navigate')) return;
+  const top = () => {
+    window.scrollTo(0, 0);
+    if (lenis) lenis.scrollTo(0, { immediate: true });
+  };
+  top();
+  if (window.parent !== window && document.documentElement.hasAttribute('data-accent')) {
+    try { document.body.scrollIntoView({ block: 'start' }); } catch (e) {}
+  }
+})();
+
 /* ---------------- Theme toggle ---------------- */
 (function theme() {
   const btn = document.querySelector('[data-theme-toggle]');
@@ -61,7 +78,57 @@ function closeMenu() {
 navToggle?.addEventListener('click', () =>
   navToggle.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu());
 document.querySelectorAll('[data-mobile-link]').forEach((l) => l.addEventListener('click', closeMenu));
-window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeMenu(); closeDropdown(true); } });
+
+/* ---------------- Projects dropdown (disclosure: click/keys, plus hover on fine pointers) ---------------- */
+const dd = document.querySelector('[data-dd]');
+const ddBtn = dd?.querySelector('[data-dd-btn]');
+let ddHovered = false;   // opened by hover: the first click keeps it open instead of closing it
+function openDropdown() {
+  if (!dd) return;
+  dd.setAttribute('data-open', '');
+  ddBtn.setAttribute('aria-expanded', 'true');
+}
+function closeDropdown(refocus) {
+  if (!dd || !dd.hasAttribute('data-open')) return;
+  const inside = dd.contains(document.activeElement);
+  dd.removeAttribute('data-open');
+  ddBtn.setAttribute('aria-expanded', 'false');
+  ddHovered = false;
+  if (refocus && inside) ddBtn.focus();
+}
+if (dd) {
+  ddBtn.addEventListener('click', () => {
+    if (ddHovered) { ddHovered = false; return; }
+    dd.hasAttribute('data-open') ? closeDropdown() : openDropdown();
+  });
+  ddBtn.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowDown') return;
+    e.preventDefault();
+    e.stopPropagation();   // the panel's own arrow handler would step past the first item
+    openDropdown();
+    dd.querySelector('.dd-panel a')?.focus();
+  });
+  dd.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const items = [...dd.querySelectorAll('.dd-panel a')];
+    const i = items.indexOf(document.activeElement);
+    if (i < 0) return;
+    e.preventDefault();
+    items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus();
+  });
+  dd.addEventListener('focusout', (e) => { if (!dd.contains(e.relatedTarget)) closeDropdown(); });
+  document.addEventListener('click', (e) => { if (!dd.contains(e.target)) closeDropdown(); });
+  dd.querySelectorAll('.dd-panel a').forEach((a) => a.addEventListener('click', () => closeDropdown()));
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let t = 0;
+    dd.addEventListener('mouseenter', () => {
+      clearTimeout(t);
+      if (!dd.hasAttribute('data-open')) { openDropdown(); ddHovered = true; }
+    });
+    dd.addEventListener('mouseleave', () => { t = setTimeout(() => closeDropdown(), 160); });
+  }
+}
 
 /* Anchor links → smooth scroll with nav offset */
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
@@ -72,6 +139,7 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
     if (!el) return;
     e.preventDefault();
     closeMenu();
+    closeDropdown();
     if (lenis) lenis.scrollTo(el, { offset: id === '#top' ? 0 : -64 });
     else el.scrollIntoView({ behavior: 'smooth' });
   });
@@ -201,71 +269,6 @@ if (!coarse && !reduce) {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-})();
-
-/* ---------------- Contact form — validation + submit ---------------- */
-(function contact() {
-  const form = document.querySelector('[data-contact]');
-  if (!form) return;
-  const status = form.querySelector('[data-form-status]');
-  const el = (n) => form.elements[n];
-  const errBox = (n) => form.querySelector(`[data-err-for="${n}"]`);
-
-  function setErr(n, msg) {
-    const field = el(n).closest('.field');
-    const box = errBox(n);
-    if (msg) { field.setAttribute('data-invalid', ''); box.hidden = false; box.textContent = msg; }
-    else { field.removeAttribute('data-invalid'); box.hidden = true; box.textContent = ''; }
-  }
-  function validate() {
-    let ok = true;
-    const name = el('name').value.trim();
-    const email = el('email').value.trim();
-    const message = el('message').value.trim();
-    if (!name) { setErr('name', 'Please enter your name.'); ok = false; } else setErr('name');
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { setErr('email', 'Enter a valid email address.'); ok = false; } else setErr('email');
-    if (!message) { setErr('message', 'Add a short message.'); ok = false; } else setErr('message');
-    return ok;
-  }
-  ['name', 'email', 'message'].forEach((n) => el(n).addEventListener('input', () => setErr(n)));
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    status.removeAttribute('data-ok'); status.removeAttribute('data-bad'); status.textContent = '';
-    if (!validate()) {
-      status.setAttribute('data-bad', '');
-      status.textContent = 'Please fix the highlighted fields.';
-      form.querySelector('[data-invalid] input, [data-invalid] textarea')?.focus();
-      return;
-    }
-    const data = { name: el('name').value.trim(), email: el('email').value.trim(), message: el('message').value.trim() };
-    const endpoint = form.getAttribute('data-endpoint');
-
-    if (endpoint && endpoint !== 'mailto') {
-      const btn = form.querySelector('.contact-submit');
-      btn.disabled = true; status.textContent = 'Sending…';
-      try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(data),
-        });
-        if (!res.ok) throw new Error('bad');
-        form.reset();
-        status.setAttribute('data-ok', '');
-        status.textContent = 'Thanks — your message is on its way. I’ll be in touch soon.';
-      } catch {
-        status.setAttribute('data-bad', '');
-        status.textContent = 'Something went wrong — please email hello@jackmotzkin.com directly.';
-      } finally { btn.disabled = false; }
-    } else {
-      const subject = encodeURIComponent(`Portfolio enquiry — ${data.name}`);
-      const body = encodeURIComponent(`${data.message}\n\n— ${data.name}\n${data.email}`);
-      window.location.href = `mailto:hello@jackmotzkin.com?subject=${subject}&body=${body}`;
-      status.setAttribute('data-ok', '');
-      status.textContent = 'Opening your email app… if nothing happens, email hello@jackmotzkin.com directly.';
-    }
-  });
 })();
 
 window.addEventListener('load', () => ScrollTrigger.refresh());

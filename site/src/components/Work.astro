@@ -1,40 +1,22 @@
 ---
-const projects = [
-  {
-    n: '01', mono: 'Ox', accent: 'var(--ac-oxfam)', href: '/work/oxfam',
-    title: 'Oxfam Support Redesign',
-    role: 'UX Research & Design', client: 'Oxfam Australia', location: 'Melbourne, AU',
-    desc: 'Restructured Oxfam Australia’s support pages and the MyOxfam portal — new information architecture, wireframes, usability testing, and a final design presented to stakeholders.',
-  },
-  {
-    n: '02', mono: 'Or', accent: 'var(--ac-origins)', href: '/work/origins',
-    title: 'Origins App Redesign',
-    role: 'UX Researcher & Designer', client: 'Origins Cannabis', location: 'Redmond, WA',
-    desc: 'Interviewed real dispensary customers in person to learn why the app failed them, then rebuilt the product display and information architecture — validated through hands-on usability testing.',
-  },
-  {
-    n: '03', mono: 'Pr', accent: 'var(--ac-premier)', href: null,
-    title: 'Premier CX Analysis',
-    role: 'CX Researcher', client: 'Premier Packout', location: 'Scottsdale, AZ',
-    desc: 'Partnered with the CEO to map the customer journey of a fire & flood contents company — surfacing pain points across packing, storage, cleaning, and pack-back to shape a white-glove service.',
-  },
-];
+import { PROJECTS } from '../data/site.js';
+const total = String(PROJECTS.length).padStart(2, '0');
 ---
-<section class="section work" id="work">
+<section class="section work" id="projects">
   <div class="wrap">
     <div class="section-head" data-reveal>
-      <h2>Selected<br />Work</h2>
-      <span class="idx">03 — Case studies · 2022–24</span>
+      <h2>Projects</h2>
+      <span class="idx">02 — Case studies · 2022–24</span>
     </div>
 
     <div class="work-grid">
-      {projects.map((p) => {
+      {PROJECTS.map((p, i) => {
         const Tag = p.href ? 'a' : 'div';
         return (
           <Tag class:list={['pcard', { 'is-soon': !p.href }]} href={p.href} style={`--ac:${p.accent}`} data-reveal data-tilt>
-            <div class="pcard-visual" aria-hidden="true">
-              <span class="pcard-mono">{p.mono}</span>
-              <span class="pcard-n mono-label">{p.n} / 03</span>
+            <div class="pcard-visual">
+              <span class="pcard-logo"><img src={p.logo} alt={p.logoAlt} loading="lazy" decoding="async" /></span>
+              <span class="pcard-n mono-label" aria-hidden="true">{String(i + 1).padStart(2, '0')} / {total}</span>
             </div>
             <div class="pcard-body">
               <span class="pcard-role">{p.role}</span>
@@ -46,22 +28,17 @@ const projects = [
               </div>
               {p.href ? (
                 <span class="pcard-go">
-                  View study
+                  View project
                   <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
               ) : (
-                <span class="pcard-go soon">Case study in progress</span>
+                <span class="pcard-go soon">Case study coming soon</span>
               )}
             </div>
           </Tag>
         );
       })}
     </div>
-
-    <p class="work-note" data-reveal>
-      <span class="mono-label">Note</span>
-      The Oxfam and Origins case studies are live — Premier is being brought into the same format next.
-    </p>
   </div>
 </section>
 
@@ -85,10 +62,13 @@ const projects = [
     background-size:26px 26px;
     -webkit-mask:radial-gradient(80% 80% at 78% 20%,#000,transparent 75%);
     mask:radial-gradient(80% 80% at 78% 20%,#000,transparent 75%)}
-  .pcard-mono{font-family:var(--display);font-weight:700;font-size:4.4rem;line-height:1;
-    color:color-mix(in srgb,var(--ac) 82%,#fff);mix-blend-mode:screen;
+  /* Every client logo sits on the same white plate, at the same box size, so marks of
+     different shapes (stacked, badge, wordmark) read as one set in both themes. */
+  .pcard-logo{position:relative;display:flex;align-items:center;justify-content:center;width:176px;height:100px;padding:14px 20px;
+    background:#fff;border-radius:14px;box-shadow:0 14px 34px -16px rgba(0,0,0,.55);
     transition:transform .5s var(--ease-out)}
-  .pcard:hover .pcard-mono{transform:scale(1.06) rotate(-2deg)}
+  .pcard-logo img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+  .pcard:hover .pcard-logo{transform:scale(1.04) rotate(-1.5deg)}
   .pcard-n{position:absolute;top:14px;left:16px;color:color-mix(in srgb,var(--ink) 70%,var(--ac))}
 
   .pcard-body{padding:24px;display:flex;flex-direction:column;flex:1}
@@ -106,7 +86,4 @@ const projects = [
   .pcard:hover .pcard-go svg{transform:translateX(5px)}
   .pcard.is-soon{cursor:default}
   .pcard-go.soon{color:var(--muted-fg)}
-
-  .work-note{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:36px;
-    color:var(--ink-soft);font-size:14px}
 </style>

@@ -92,7 +92,20 @@ Use content from the current site (captured from screenshots earlier: About/Brie
 Role/Client/Location per project + the bio/"My Background/Goals/Work" section). Owner
 will provide images and any deeper copy. Do NOT invent metrics — use real evidence.
 
-## Live reference artifacts (persist across sessions)
+## Shared site details (as of the October 2026 site pass)
+- Email, LinkedIn, résumé links and the project list (titles, roles, logos, locations,
+  which pages are live) all come from **`site/src/data/site.js`**. The nav's Projects
+  dropdown, the Projects cards, About, Contact and the footer read from it.
+- **Résumé:** set `RESUME.pdf` (a file in `site/public/`) and/or `RESUME.web` (a themed
+  page, e.g. `/resume`) and every "Résumé · coming soon" button becomes a real link.
+- The landing's project grid is `#projects` (was `#work`); case pages link "All projects"
+  back to `/#projects`. The Origins page (standalone, `origins-case.src.html`) has its own
+  copy of the Projects dropdown, so keep the two in step.
+- Client logos: `site/public/brand/clients/` (Premier's is cropped from the old site's
+  screenshot). About photo: `site/public/about/jack.jpg`, cropped from a screenshot of
+  the old About page (low-res; swap in the original photo when available).
+- `asm_case.py` needs a working Pillow; if the system one fails to import, use a venv.
+
 - Landing page (Kinetic, canonical): https://claude.ai/code/artifact/fb62ff96-edb1-4670-b9a0-28a104581b23
   ("motz-kinetic-live"). Now a multi-page artifact: landing + the Oxfam case study
   (`oxfam.html`) + the Origins case study (`origins.html`), with their images and live

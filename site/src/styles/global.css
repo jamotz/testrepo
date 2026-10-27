@@ -139,6 +139,8 @@ html.lenis,html.lenis body{height:auto}
 .skip{position:absolute;left:-999px;top:8px;z-index:200;background:var(--gold);color:#141018;
   padding:10px 16px;border-radius:8px;font-family:var(--mono);font-size:13px}
 .skip:focus{left:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 /* ---- Buttons ---- */
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;

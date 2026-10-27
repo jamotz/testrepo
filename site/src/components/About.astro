@@ -1,55 +1,77 @@
 ---
+import ProfileLinks from './ProfileLinks.astro';
+// Credentials live in the profile card only; the copy beside it tells the story
+// without listing them again.
 const spec = [
   { k: 'Based', v: 'Southwest, USA' },
-  { k: 'Foundation', v: 'B.A. Psychology · Sociology minor' },
-  { k: 'Methods', v: 'Interviews · Journeys · Usability testing' },
+  { k: 'Education', v: 'B.A. Psychology · Sociology minor' },
+  { k: 'Training', v: 'PeakXD UX Research & Design' },
   { k: 'Certified', v: 'BCS UX · IBM Data Science' },
-  { k: 'Program', v: 'PeakXD Research & Design' },
+  { k: 'Also', v: 'Eagle Scout' },
   { k: 'Status', v: 'Open to work', live: true },
 ];
-const chips = ['BCS UX Certified', 'IBM Data Science', 'PeakXD Program', 'Psychology & Sociology', 'Eagle Scout'];
 ---
 <section class="section about" id="about">
   <div class="wrap about-grid">
     <div class="about-lead">
-      <p class="eyebrow" data-reveal>02 — About</p>
-      <h2 data-reveal>Behavior is the interface.</h2>
+      <p class="eyebrow" data-reveal>03 — About</p>
+      <h2 data-reveal>Behavior is the <span class="accent">interface.</span></h2>
 
-      <p class="about-p" data-reveal>
-        I’m Jack — an Eagle Scout with a Bachelor’s in Psychology and a minor in Sociology.
-        In my senior year I pointed that human-behavior foundation at User Experience:
-        an international research &amp; design program, then <b>BCS UX</b> and
-        <b>IBM Data Science</b> certifications.
-      </p>
-      <p class="about-p" data-reveal>
-        My edge is reading people. I start with research — interviews, journey maps, usability
-        tests — and let the evidence drive intuitive, integrated design across digital
-        <em>and</em> physical experiences.
-      </p>
+      <div class="about-block" data-reveal>
+        <h3 class="mono-label">Background</h3>
+        <p>
+          I’m Jack. I studied psychology and sociology, and by my senior year I’d noticed that
+          the questions I cared about (why people do what they do, and what gets in their way)
+          are the same ones a good product has to answer. So after graduating I trained in UX
+          research and design and started working with real clients.
+        </p>
+      </div>
 
-      <blockquote class="about-pull" data-reveal>
-        A grandmother with macular degeneration is why accessibility isn’t a checkbox to me —
-        <span class="hl">it’s the point.</span>
-      </blockquote>
+      <div class="about-block" data-reveal>
+        <h3 class="mono-label">How I work</h3>
+        <p>
+          I start with people, not screens: interviews, surveys, card sorts, journey maps and
+          usability tests. The evidence decides what gets designed, whether that’s a support
+          site, an app’s filters, or a service that happens mostly in person.
+        </p>
+        <p>
+          Accessibility matters to me personally. My grandmother has macular degeneration, so
+          I’ve seen how quickly the web gets harder when a design assumes perfect eyesight, and
+          I design with that in mind.
+        </p>
+      </div>
 
-      <ul class="about-chips" data-reveal>
-        {chips.map((c) => <li>{c}</li>)}
-      </ul>
+      <div class="about-block about-goal" data-reveal>
+        <h3 class="mono-label">What I’m looking for</h3>
+        <p>
+          A UX research role, or a research-heavy design role, on a team that builds with its
+          users instead of guessing about them. I want to go deep on research first and grow
+          into design from there, helping companies make digital and in-person experiences that
+          are intuitive, connected and accessible.
+        </p>
+      </div>
+
+      <div data-reveal><ProfileLinks /></div>
     </div>
 
-    <aside class="about-spec" data-reveal aria-label="Profile">
-      <div class="spec-head">
-        <span class="mono-label">profile.json</span>
-        <span class="spec-dots"><i></i><i></i><i></i></span>
+    <aside class="about-side" data-reveal aria-label="Profile">
+      <figure class="about-photo">
+        <img src="/about/jack.jpg" alt="Jack standing in St. Peter’s Square beneath the colonnade" width="500" height="470" loading="lazy" decoding="async" />
+      </figure>
+      <div class="about-spec">
+        <div class="spec-head">
+          <span class="mono-label">profile.json</span>
+          <span class="spec-dots"><i></i><i></i><i></i></span>
+        </div>
+        <dl class="spec-list">
+          {spec.map((s) => (
+            <div class="spec-row">
+              <dt>{s.k}</dt>
+              <dd class={s.live ? 'live' : ''}>{s.live && <span class="dot"></span>}{s.v}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      <dl class="spec-list">
-        {spec.map((s) => (
-          <div class="spec-row">
-            <dt>{s.k}</dt>
-            <dd class={s.live ? 'live' : ''}>{s.live && <span class="dot"></span>}{s.v}</dd>
-          </div>
-        ))}
-      </dl>
     </aside>
   </div>
 </section>
@@ -58,21 +80,21 @@ const chips = ['BCS UX Certified', 'IBM Data Science', 'PeakXD Program', 'Psycho
   .about-grid{display:grid;grid-template-columns:1.3fr .95fr;gap:clamp(32px,5vw,64px);align-items:start}
   @media (max-width:900px){.about-grid{grid-template-columns:1fr;gap:36px}}
 
-  .about-lead h2{font-size:clamp(2.2rem,6vw,4rem);text-transform:uppercase;margin:18px 0 26px}
-  .about-p{max-width:56ch;color:var(--ink-soft);margin-bottom:18px;font-size:1.05rem}
-  .about-p b{color:var(--ink);font-weight:600}
-  .about-p em{color:var(--gold);font-style:normal}
+  .about-lead h2{font-size:clamp(2.2rem,6vw,4rem);text-transform:uppercase;margin:18px 0 34px}
+  .about-lead h2 .accent{color:var(--gold)}
+  .about-block{max-width:58ch;margin-bottom:28px}
+  .about-block h3{margin:0 0 10px;color:var(--gold)}
+  .about-block p{color:var(--ink-soft);font-size:1.05rem;line-height:1.7;margin:0 0 12px}
+  .about-goal{padding:20px 22px;border:1px solid var(--line);border-left:2px solid var(--gold);
+    border-radius:0 var(--radius) var(--radius) 0;background:color-mix(in srgb,var(--gold) 5%,transparent)}
+  .about-goal p{color:var(--ink);margin:0}
 
-  .about-pull{margin:30px 0;padding:0 0 0 24px;border-left:2px solid var(--gold);
-    font-family:var(--display);font-weight:500;font-size:clamp(1.3rem,2.6vw,1.9rem);
-    line-height:1.28;color:var(--ink);max-width:24ch}
-  .about-pull .hl{color:var(--gold)}
+  .about-side{position:sticky;top:100px;display:flex;flex-direction:column;gap:18px}
+  @media (max-width:900px){.about-side{position:static}}
+  .about-photo{margin:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);aspect-ratio:5/4}
+  .about-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 70%;display:block}
 
-  .about-chips{list-style:none;display:flex;flex-wrap:wrap;gap:10px;padding:0;margin:30px 0 0}
-  .about-chips li{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-soft);
-    border:1px solid var(--line-2);border-radius:100px;padding:8px 14px;background:rgba(255,255,255,.02)}
-
-  .about-spec{position:sticky;top:100px;background:linear-gradient(180deg,var(--panel),var(--bg-2));
+  .about-spec{background:linear-gradient(180deg,var(--panel),var(--bg-2));
     border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
   .spec-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
     border-bottom:1px solid var(--line)}
@@ -81,7 +103,7 @@ const chips = ['BCS UX Certified', 'IBM Data Science', 'PeakXD Program', 'Psycho
   .spec-dots i:first-child{background:var(--gold)}
   .spec-dots i:nth-child(2){background:var(--acid)}
   .spec-list{margin:0;padding:8px 18px}
-  .spec-row{display:grid;grid-template-columns:1fr 1.5fr;gap:14px;padding:14px 0;
+  .spec-row{display:grid;grid-template-columns:1fr 1.7fr;gap:14px;padding:12px 0;
     border-bottom:1px solid var(--line)}
   .spec-row:last-child{border-bottom:none}
   .spec-row dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;

@@ -1,7 +1,7 @@
 ---
 // DRAFT — the leading underscore keeps Astro from building this page, so it stays off
 // the live site. Preview it as its own artifact:  python3 site/tools/bundle_artifact.py --draft premier <out>
-// To launch: rename to premier.astro, delete the .mock-badge, give the Work card href '/work/premier'.
+// To launch: rename to premier.astro, delete the .mock-badge, set its href to '/work/premier' in src/data/site.js.
 // Content comes from Jack's Premier page on jackmotzkin.com (reference/premier/current-site/)
 // and his journey map (reference/premier/journey-map/). What's still unknown is marked .draft.
 import Base from '../../layouts/Base.astro';
@@ -9,7 +9,7 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 
 const meta = [
-  { k: 'Role', v: 'CX Researcher' },
+  { k: 'Role', v: 'Business Analyst' },
   { k: 'Client', v: 'Premier Packout' },
   { k: 'Location', v: 'Scottsdale, AZ' },
   { k: 'Partner', v: 'CEO, Premier Packout' },
@@ -137,22 +137,22 @@ const stages = [
 ---
 <Base
   accent="premier"
-  title="Premier CX Analysis — Jack Motzkin"
+  title="Premier Business Analysis — Jack Motzkin"
   description="Case study (draft): mapping the customer journey of Premier Packout, a fire & flood contents company, with its CEO — interviews, contextual inquiry, a 36-homeowner satisfaction survey, and a white-glove plan across the website, staff, and workflow."
 >
   <Nav />
   <p class="mock-badge">Premier · mockup</p>
-  <main>
+  <main id="main">
     <!-- Hero: a finished pack-out, boxed and blanket-wrapped (Jack's photo) -->
     <header class="case-hero" id="case-top">
       <img class="case-hero-img" src="/work/premier/hero.jpg" alt="A room after a Premier pack-out: labeled moving boxes stacked to the ceiling and furniture wrapped in blue moving blankets and plastic" />
       <div class="case-hero-in wrap">
-        <a class="back" href="/#work">
+        <a class="back" href="/#projects">
           <svg width="16" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M17 6H2m0 0 5-5M2 6l5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          All work
+          All projects
         </a>
-        <p class="case-eyebrow"><span class="idx">03</span><span class="rule"></span>Case study · CX Research</p>
-        <h1 class="case-title" data-hero-name><span class="line"><span>Premier CX</span></span><span class="line"><span class="accent">Analysis</span></span></h1>
+        <p class="case-eyebrow"><span class="idx">03</span><span class="rule"></span>Case study · Business Analysis</p>
+        <h1 class="case-title" data-hero-name><span class="line"><span>Premier Business</span></span><span class="line"><span class="accent">Analysis</span></span></h1>
         <p class="case-lead">
           Working with the CEO of a fire &amp; flood contents company to find where homeowners’ stress
           comes from, from pack-out through storage, cleaning, and pack-back, and to turn that into a
@@ -163,7 +163,7 @@ const stages = [
 
     <div class="wrap">
       <div class="snapshot" data-reveal>
-        <div class="snap-row"><span class="mono-label">My role</span><p>CX researcher, working with the CEO. I ran interviews, shadowed crews, analyzed a 36-homeowner satisfaction survey and online reviews, audited the website, and built the end-to-end journey map.</p></div>
+        <div class="snap-row"><span class="mono-label">My role</span><p>Business analyst, working with the CEO. I ran interviews, shadowed crews, analyzed a 36-homeowner satisfaction survey and online reviews, audited the website, and built the end-to-end journey map.</p></div>
         <div class="snap-row"><span class="mono-label">Outcome</span><p>An eight-phase journey map, a 56% satisfaction baseline, and a white-glove plan across the website, staff, and workflow. <a class="jump" href="#results">See results ↓</a></p></div>
       </div>
       <dl class="case-meta" data-reveal>
@@ -350,9 +350,9 @@ const stages = [
 
     <section class="section pager-sec">
       <div class="wrap pager">
-        <a class="pager-link" href="/#work">
+        <a class="pager-link" href="/#projects">
           <span class="mono-label">Back</span>
-          <span class="pager-t">All work</span>
+          <span class="pager-t">All projects</span>
         </a>
         <a class="pager-link next" href="/work/oxfam">
           <span class="mono-label">Next project</span>

@@ -57,7 +57,28 @@ img{display:block;max-width:100%}
 .toggle:hover{border-color:var(--ac);color:var(--ac);transform:rotate(-12deg)}
 .toggle .sun{display:none}:root[data-theme="light"] .toggle .sun{display:block}
 :root[data-theme="light"] .toggle .moon{display:none}
-@media(max-width:900px){.nav-links a{display:none}}
+@media(max-width:900px){.nav-links>a{display:none}}
+/* Projects dropdown: same as the main site's header */
+:root{--ac-oxfam:#77B36A;--ac-premier:#5E79E6}
+:root[data-theme="light"]{--ac-oxfam:#4E7A47;--ac-premier:#3A55B4}
+.dd{position:relative}
+.dd-btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);padding:8px 10px;border-radius:8px;background:none;border:0;cursor:pointer}
+.dd-btn:hover,.dd-btn[aria-expanded="true"]{color:var(--ac);background:color-mix(in srgb,var(--ac) 10%,transparent)}
+.dd-btn svg{transition:transform .25s var(--ease)}
+.dd-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.dd-panel{position:absolute;top:calc(100% + 10px);right:0;min-width:270px;list-style:none;margin:0;padding:8px;background:var(--panel);border:1px solid var(--line-2);border-radius:14px;box-shadow:0 24px 60px -24px rgba(0,0,0,.6);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .2s var(--ease),transform .2s var(--ease),visibility 0s linear .2s}
+.dd-panel::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px}
+.dd.open .dd-panel{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.nav-links .dd-item{display:flex;align-items:flex-start;gap:12px;padding:11px 12px;border-radius:9px;color:var(--ink);font-family:var(--display);font-size:15px;letter-spacing:0;text-transform:none}
+.nav-links a.dd-item:hover,.nav-links a.dd-item:focus-visible{background:color-mix(in srgb,var(--dd) 12%,transparent);color:var(--ink)}
+.dd-item[aria-current="page"]{background:color-mix(in srgb,var(--dd) 9%,transparent)}
+.dd-dot{flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--dd)}
+.dd-t{display:flex;flex-direction:column;gap:2px;font-weight:700;line-height:1.3}
+.dd-c{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dd-item.is-soon{color:var(--ink-soft)}
+.dd-item.is-soon .dd-dot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--dd)}
+.dd-all{margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
+.nav-links .dd-all a{display:block;padding:10px 12px}
 
 .chero{position:relative;min-height:58vh;display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
 .chero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -200,10 +221,19 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 <div class="grid-vignette" aria-hidden="true"></div>
 <div class="page">
 <header class="nav"><div class="wrap row">
-  <a class="brand" href="#top"><span class="mark"><!--LOGO--></span>MOTZ</a>
+  <a class="brand" href="%%HOME_HREF%%" aria-label="Jack Motzkin &mdash; home"><span class="mark"><!--LOGO--></span>MOTZ</a>
   <nav class="nav-links">
     <a href="#problem">Problem</a><a href="#research">Research</a><a href="#decisions">Decisions</a>
     <a href="#iteration">Iteration</a><a href="#testing">Testing</a><a href="#redesign">Redesign</a><a href="#results">Results</a><a href="#explore">App</a>
+    <div class="dd" id="dd">
+      <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-projects">Projects<svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5l3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <ul class="dd-panel" id="dd-projects">
+        <li><a class="dd-item" href="%%OXFAM_HREF%%" style="--dd:var(--ac-oxfam)"><span class="dd-dot"></span><span class="dd-t">Oxfam Support Redesign<span class="dd-c">Oxfam Australia</span></span></a></li>
+        <li><a class="dd-item" href="#top" aria-current="page" style="--dd:var(--ac)"><span class="dd-dot"></span><span class="dd-t">Origins App Redesign<span class="dd-c">Origins Cannabis</span></span></a></li>
+        <li><span class="dd-item is-soon" style="--dd:var(--ac-premier)"><span class="dd-dot"></span><span class="dd-t">Premier Business Analysis<span class="dd-c">Coming soon</span></span></span></li>
+        <li class="dd-all"><a href="%%WORK_HREF%%">All projects</a></li>
+      </ul>
+    </div>
   </nav>
   <button class="toggle" id="toggle" type="button" aria-label="Toggle theme">
     <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -214,7 +244,7 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 <header class="chero" id="top">
   <img class="chero-img" data-img="hero" alt="Mossy Pacific Northwest forest">
   <div class="chero-in wrap">
-    <a class="back" href="%%WORK_HREF%%">&larr; All work</a>
+    <a class="back" href="%%WORK_HREF%%">&larr; All projects</a>
     <p class="h-eyebrow"><span class="idx">02</span><span class="rule"></span>Case Study &middot; UX Research &amp; Design</p>
     <h1 class="title">Origins App <span class="ac">Redesign</span></h1>
     <p class="h-lead">Redesigning a cannabis dispensary&rsquo;s app from behind the counter &mdash; real customers, real inventory, and filters that finally return the right products.</p>
@@ -457,7 +487,7 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 
   <section>
     <div class="pager">
-      <a class="pl" href="%%WORK_HREF%%"><span class="mono">Back</span><span class="t">All work</span></a>
+      <a class="pl" href="%%WORK_HREF%%"><span class="mono">Back</span><span class="t">All projects</span></a>
       <a class="pl n" href="%%NEXT_HREF%%"><span class="mono">Next project</span><span class="t">Premier CX Analysis &rarr;</span></a>
     </div>
   </section>
@@ -476,6 +506,37 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 <script>
 const IMG=/*IMGMAP*/;
 document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribute('data-img'); if(IMG[k]) el.src=IMG[k];});
+/* a link here (no #hash) lands on the first line; back/forward and reload keep their place.
+   Framed (the portfolio Artifact), also bring the frame's top into view. */
+(function(){
+  var n=performance.getEntriesByType("navigation")[0];
+  if(location.hash||(n&&n.type!=="navigate"))return;
+  scrollTo(0,0);
+  if(window.parent!==window){try{document.body.scrollIntoView({block:"start"});}catch(e){}}
+})();
+/* Projects dropdown: click / keys, plus hover on fine pointers */
+(function(){
+  var dd=document.getElementById("dd");if(!dd)return;
+  var btn=dd.querySelector(".dd-btn"),hov=false,t=0;
+  function open(){dd.classList.add("open");btn.setAttribute("aria-expanded","true");}
+  function close(refocus){if(!dd.classList.contains("open"))return;var inside=dd.contains(document.activeElement);dd.classList.remove("open");btn.setAttribute("aria-expanded","false");hov=false;if(refocus&&inside)btn.focus();}
+  btn.addEventListener("click",function(){if(hov){hov=false;return;}dd.classList.contains("open")?close():open();});
+  dd.addEventListener("keydown",function(e){
+    if(e.key==="Escape"){close(true);return;}
+    if(e.key!=="ArrowDown"&&e.key!=="ArrowUp")return;
+    var items=[].slice.call(dd.querySelectorAll(".dd-panel a")),i=items.indexOf(document.activeElement);
+    e.preventDefault();
+    if(i<0){open();items[0].focus();return;}
+    items[(i+(e.key==="ArrowDown"?1:-1)+items.length)%items.length].focus();
+  });
+  dd.addEventListener("focusout",function(e){if(!dd.contains(e.relatedTarget))close();});
+  document.addEventListener("click",function(e){if(!dd.contains(e.target))close();});
+  dd.querySelectorAll(".dd-panel a").forEach(function(a){a.addEventListener("click",function(){close();});});
+  if(matchMedia("(hover: hover) and (pointer: fine)").matches){
+    dd.addEventListener("mouseenter",function(){clearTimeout(t);if(!dd.classList.contains("open")){open();hov=true;}});
+    dd.addEventListener("mouseleave",function(){t=setTimeout(function(){close();},160);});
+  }
+})();
 (function(){
   var r=document.documentElement;
   try{var t=localStorage.getItem("motz-theme");r.setAttribute("data-theme",t==="light"?"light":"dark");}catch(e){r.setAttribute("data-theme","dark");}
