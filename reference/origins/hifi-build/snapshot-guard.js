@@ -21,7 +21,7 @@
  *
  * BUILDING THE TWO SIDES (~2 min each; that cost is why the cheap guard exists)
  *   SP=<scratchpad>
- *   git worktree add -f $SP/base bb2dff0          # see THE BASELINE MOVED below
+ *   git worktree add -f $SP/base 7e27b8c          # see THE BASELINE MOVED below
  *   python3 -m pip install --quiet Pillow
  *   python3 reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/cur.html
  *   python3 $SP/base/reference/origins/hifi-build/asm_app.py && mv $SP/origins-app.html $SP/base.html
@@ -139,7 +139,13 @@ function diff(ca, cb) {                   // multiset ca - cb, both Maps
 }
 
 /* ── THE BASELINE MOVED ───────────────────────────────────────────────────
- * Current baseline: bb2dff0. History, most recent first:
+ * Current baseline: 7e27b8c. History, most recent first:
+ *
+ *   7e27b8c  2026-10-27  ratio pill to the top centre. ONE screen: shop's
+ *            span.ovleft loses the ratio (38 -> 17.5px tall, widths reshuffle
+ *            across cards) and span.ovmid is added. No font-size pair. (The
+ *            status bar, island and rewards-sheet commits since bb2dff0 moved
+ *            nothing this guard sees - all chrome outside the screen roots.)
  *
  *   bb2dff0  2026-10-26  cart rewards. ONE screen: cart gains button.ci.rw
  *            and its spans, so div.cwrap grows 86px. No font-size pair.
