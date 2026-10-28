@@ -1115,6 +1115,23 @@ l5 -34 65 0 65 0 3 453 2 452 -70 0 -70 0 0 -328 c0 -367 0 -366 -74 -427 -33
 <button type="button" class="chat" onclick="toggleChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Chat</button>
 
 <script>
+/* ---- open at the top ----
+   Embedded in the portfolio Artifact, the viewer can restore an old scroll position after
+   the prototype loads. Until the visitor first scrolls, taps, clicks or types inside it
+   (or 8s pass), any scroll that isn't theirs is put back to the top. */
+(function(){
+  var ins = ["wheel", "touchstart", "pointerdown", "keydown"];
+  function top(){ if (window.scrollY !== 0) window.scrollTo({top: 0, left: 0, behavior: "instant"}); }
+  function release(){
+    window.removeEventListener("scroll", top);
+    ins.forEach(function(t){ window.removeEventListener(t, release, true); });
+  }
+  top();
+  window.addEventListener("scroll", top, {passive: true});
+  ins.forEach(function(t){ window.addEventListener(t, release, {capture: true, passive: true}); });
+  setTimeout(release, 8000);
+})();
+
 /* ---- navigation between screens ---- */
 function nav(id){
   var screens = document.querySelectorAll(".screen");

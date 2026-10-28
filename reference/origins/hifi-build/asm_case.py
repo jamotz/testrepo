@@ -119,12 +119,12 @@ app_doc = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
            '<title>Origins App</title></head><body>' + app_path.read_text() + '</body></html>')
 if SITE_MODE:
     src = src.replace("/*PROTODOC*/", "").replace("%%APPSRC%%", "/work/origins/app.html")
-    src = src.replace("%%WORK_HREF%%", "/#projects").replace("%%NEXT_HREF%%", "/#projects")
-    src = src.replace("%%HOME_HREF%%", "/").replace("%%OXFAM_HREF%%", "/work/oxfam")
+    src = src.replace("%%WORK_HREF%%", "/#projects").replace("%%NEXT_HREF%%", "/work/premier")
+    src = src.replace("%%HOME_HREF%%", "/").replace("%%OXFAM_HREF%%", "/work/oxfam").replace("%%PREMIER_HREF%%", "/work/premier")
 else:
     src = src.replace("/*PROTODOC*/", base64.b64encode(app_doc.encode()).decode())
     src = src.replace("%%APPSRC%%", "").replace("%%WORK_HREF%%", "#").replace("%%NEXT_HREF%%", "#")
-    src = src.replace("%%HOME_HREF%%", "#top").replace("%%OXFAM_HREF%%", "#")
+    src = src.replace("%%HOME_HREF%%", "#top").replace("%%OXFAM_HREF%%", "#").replace("%%PREMIER_HREF%%", "#")
 
 # ---- encode: entities outside script/style, \u-escapes inside script ----
 def esc_script(block):

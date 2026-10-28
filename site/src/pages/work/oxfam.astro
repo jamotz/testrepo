@@ -216,6 +216,7 @@ const hifi = [
               <button class="exp-back" id="protohome" type="button">⟲ Home</button>
             </div>
             <iframe id="proto-frame" class="exp-frame" title="Oxfam support MVP / hi-fi build — click through the pages" src="/work/oxfam/proto.html" loading="lazy"></iframe>
+            <div class="exp-shield" id="proto-shield" aria-hidden="true"></div>
           </div>
           <p class="exp-hint">Tip: open <b>MyOxfam</b> (or <b>Login</b>) and sign in with anything to reach the portal. The header menus, FAQ topics, map pins and <b>Chat</b> all work too.</p>
         </div>
@@ -383,7 +384,7 @@ const hifi = [
 
   /* Explorer */
   .explorer{margin-top:22px;display:grid;grid-template-columns:1fr;gap:18px}
-  .exp{border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--panel-2)}
+  .exp{position:relative;border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--panel-2)}
   .exp-bar{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);
     font-family:var(--mono);font-size:11.5px;color:var(--muted-fg)}
   .exp-bar .dots{display:flex;gap:6px}
@@ -406,6 +407,9 @@ const hifi = [
   @media (max-width:400px){.exp-bar .dots{display:none}}
   .exp-crumb{color:var(--ink)}
   .exp-frame{width:100%;height:clamp(460px,80vh,860px);border:0;display:block;background:#e9e9e6}
+  /* covers the prototype only while the page is scrolling, so the wheel keeps scrolling the page */
+  .exp-shield{position:absolute;left:0;right:0;display:none}
+  .exp-shield.on{display:block}
   .exp-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted-fg);margin-top:12px}
   .exp-hint b{color:var(--gold)}
 
@@ -443,6 +447,34 @@ const hifi = [
     const home = document.getElementById('protohome');
     if (!frame || !home) return;
     home.addEventListener('click', () => { frame.src = frame.src; });
+  })();
+
+  // Prototype — open at the top of the mini-site. Scrolling the case study past the frame
+  // used to scroll the prototype instead (it sits under the pointer on the way down), so
+  // visitors met it at its footer. While the page is scrolling, a transparent shield over
+  // the frame takes the wheel so the page keeps moving; it lifts once scrolling stops.
+  // The frame also starts at its top on every load and the first time it comes into view.
+  (function () {
+    const frame = document.getElementById('proto-frame');
+    const shield = document.getElementById('proto-shield');
+    if (!frame || !shield) return;
+    const toTop = () => { try { frame.contentWindow.scrollTo(0, 0); } catch (err) {} };
+    frame.addEventListener('load', toTop);
+    let idle = 0;
+    window.addEventListener('scroll', () => {
+      if (document.documentElement.classList.contains('exp-full')) return;
+      if (!shield.classList.contains('on')) {
+        shield.style.top = frame.offsetTop + 'px';
+        shield.style.height = frame.offsetHeight + 'px';
+        shield.classList.add('on');
+      }
+      clearTimeout(idle);
+      idle = setTimeout(() => shield.classList.remove('on'), 300);
+    }, { passive: true });
+    const seen = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { toTop(); seen.disconnect(); }
+    });
+    seen.observe(frame);
   })();
 
   // Prototype — Full screen / Minimize. Fills the viewport in-page, and also asks the

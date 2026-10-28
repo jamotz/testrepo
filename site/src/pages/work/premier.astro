@@ -1,9 +1,6 @@
 ---
-// DRAFT — the leading underscore keeps Astro from building this page, so it stays off
-// the live site. Preview it as its own artifact:  python3 site/tools/bundle_artifact.py --draft premier <out>
-// To launch: rename to premier.astro, delete the .mock-badge, set its href to '/work/premier' in src/data/site.js.
-// Content comes from Jack's Premier page on jackmotzkin.com (reference/premier/current-site/)
-// and his journey map (reference/premier/journey-map/). What's still unknown is marked .draft.
+// Premier Packout case study. Content comes from Jack's Premier page on jackmotzkin.com
+// (reference/premier/current-site/) and his journey map (reference/premier/journey-map/).
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
@@ -138,10 +135,9 @@ const stages = [
 <Base
   accent="premier"
   title="Premier Business Analysis — Jack Motzkin"
-  description="Case study (draft): mapping the customer journey of Premier Packout, a fire & flood contents company, with its CEO — interviews, contextual inquiry, a 36-homeowner satisfaction survey, and a white-glove plan across the website, staff, and workflow."
+  description="Case study: mapping the customer journey of Premier Packout, a fire and flood pack-out company that works closely with insurance companies, with its CEO: interviews, contextual inquiry, a 36-homeowner satisfaction survey, and a white-glove plan across the website, staff, and workflow."
 >
   <Nav />
-  <p class="mock-badge">Premier · mockup</p>
   <main id="main">
     <!-- Hero: a finished pack-out, boxed and blanket-wrapped (Jack's photo) -->
     <header class="case-hero" id="case-top">
@@ -154,9 +150,9 @@ const stages = [
         <p class="case-eyebrow"><span class="idx">03</span><span class="rule"></span>Case study · Business Analysis</p>
         <h1 class="case-title" data-hero-name><span class="line"><span>Premier Business</span></span><span class="line"><span class="accent">Analysis</span></span></h1>
         <p class="case-lead">
-          Working with the CEO of a fire &amp; flood contents company to find where homeowners’ stress
-          comes from, from pack-out through storage, cleaning, and pack-back, and to turn that into a
-          white-glove service.
+          Premier Packout handles fire and flood pack-outs and works closely with insurance
+          companies. With its CEO, I traced where homeowners’ stress comes from, from pack-out
+          through storage, cleaning, and pack-back, and turned it into a white-glove service.
         </p>
       </div>
     </header>
@@ -177,7 +173,7 @@ const stages = [
         <div class="shead" data-reveal><span class="n">02</span><h2>Problem overview</h2></div>
         <div class="two">
           <div data-reveal>
-            <p class="lead">Premier Packout handles salvageable belongings after a fire or flood. It removes them from the home or business, has them professionally cleaned, stores them securely, and returns them once renovations are done.</p>
+            <p class="lead">Premier Packout handles salvageable belongings after a fire or flood, working closely with the homeowner’s insurance company. It removes them from the home or business, has them professionally cleaned, stores them securely, and returns them once renovations are done.</p>
             <p class="body-p">Insurance companies, restoration companies, adjusters, and homeowners often miscommunicate. Meanwhile homeowners live through fragile items being packed, cleaned, stored, and moved, with no clear end date for the renovation. Coordinating all of that while keeping their belongings safe adds to an already stressful time.</p>
           </div>
           <div class="callout" data-reveal>Nobody chooses to need this service, so every handoff has to earn trust.</div>
@@ -284,16 +280,14 @@ const stages = [
       <!-- 07 Results -->
       <section class="csec" id="results">
         <div class="shead" data-reveal><span class="n">07</span><h2>Results</h2></div>
-        <p class="lead" data-reveal>A shared, evidence-backed picture of the customer’s experience and a white-glove plan across three workstreams, delivered to the CEO. <span class="draft">[Add what Premier adopted, e.g. uniforms, van wraps, storage changes, the website.]</span></p>
+        <p class="lead" data-reveal>A shared, evidence-backed picture of the customer’s experience and a white-glove plan across three workstreams, delivered to the CEO.</p>
         <div class="stats" data-reveal>
           <div class="stat"><div class="big">8</div><div class="statlab">Journey phases mapped, from marketing to aftercare</div></div>
           <div class="stat"><div class="big">56%</div><div class="statlab">Satisfaction baseline across 36 homeowners</div></div>
           <div class="stat"><div class="big">3</div><div class="statlab">Workstreams: website, staff &amp; fleet, operations</div></div>
         </div>
-        <blockquote class="quote" data-reveal>
-          <p><span class="draft">[A line from the CEO, or one thing Premier changed because of this work.]</span></p>
-          <cite class="mono-label">CEO, Premier Packout</cite>
-        </blockquote>
+        <!-- A line from the CEO, or one thing Premier changed because of this work, can go here
+             as <blockquote class="quote"><p>…</p><cite class="mono-label">CEO, Premier Packout</cite></blockquote> -->
       </section>
 
       <!-- 08 Reflection -->
@@ -302,7 +296,7 @@ const stages = [
         <div class="two">
           <div class="callout" data-reveal>What I’d carry forward, and do differently next time.</div>
           <div data-reveal>
-            <p class="body-p">This project showed me how much of an experience happens off-screen: in the truck, the warehouse, and the homeowner’s living room. Next time I’d set up a follow-up satisfaction survey from the start, so the 56% baseline could show whether the changes worked. <span class="draft">[Make it yours.]</span></p>
+            <p class="body-p">This project showed me how much of an experience happens off-screen: in the truck, the warehouse, and the homeowner’s living room. Next time I’d set up a follow-up satisfaction survey from the start, so the 56% baseline could show whether the changes worked.</p>
           </div>
         </div>
       </section>
@@ -385,9 +379,6 @@ const stages = [
 <style>
   main{padding-top:0}
 
-  .mock-badge{position:fixed;left:14px;bottom:14px;z-index:90;margin:0;padding:8px 12px;border-radius:8px;
-    background:var(--gold);color:var(--bg);font-family:var(--mono);font-size:11px;font-weight:500;
-    letter-spacing:.1em;text-transform:uppercase}
 
   /* Hero: no photo yet, so an accent glow sits over the site grid */
   .case-hero{position:relative;min-height:56vh;display:flex;align-items:flex-end;overflow:hidden;
@@ -463,7 +454,6 @@ const stages = [
   .two > *{min-width:0}
   @media (max-width:820px){.two{grid-template-columns:1fr;gap:26px}}
   .body-p{color:var(--ink-soft);max-width:58ch;margin-top:14px}
-  .draft{color:var(--gold)}
   .callout{border-left:2px solid var(--gold);padding-left:22px;font-family:var(--display);font-weight:500;
     font-size:clamp(1.2rem,2.4vw,1.7rem);line-height:1.3;color:var(--ink);max-width:26ch}
 
@@ -522,7 +512,6 @@ const stages = [
   @media (max-width:640px){.stats{grid-template-columns:1fr}}
   .stat{border:1px solid var(--line);border-radius:var(--radius);padding:22px;background:var(--panel)}
   .stat .big{font-family:var(--display);font-weight:800;font-size:2.3rem;color:var(--gold);line-height:1}
-  .stat .big.draft-num{opacity:.55}
   .stat .statlab{color:var(--ink-soft);font-size:13.5px;margin-top:8px}
 
   .quote{margin:22px 0 0;padding:20px 24px;border:1px dashed var(--line-2);border-left:2px solid var(--gold);

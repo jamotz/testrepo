@@ -26,10 +26,10 @@ export const PROJECTS = [
     desc: 'Interviewed dispensary customers in person to learn why the app failed them, then rebuilt its product display and information architecture and tested it hands-on.',
   },
   {
-    slug: 'premier', href: null, accent: 'var(--ac-premier)',
+    slug: 'premier', href: '/work/premier', accent: 'var(--ac-premier)',
     logo: '/brand/clients/premier.png', logoAlt: 'Premier Packout Service',
     title: 'Premier Business Analysis', short: 'Premier Packout',
     role: 'Business Analysis', client: 'Premier Packout', location: 'Scottsdale, AZ',
-    desc: 'Worked with the CEO to map how homeowners experience a fire and flood pack-out, from first call to final delivery, and turned the pain points into service changes.',
+    desc: 'Worked with the CEO of a fire and flood pack-out company that partners closely with insurance companies, mapping how homeowners experience a pack-out from first call to final delivery and turning the pain points into service changes.',
   },
 ];

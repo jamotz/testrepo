@@ -2,18 +2,20 @@
 """Bundle the built site (site/dist) into the "motz-kinetic-live" Artifact.
 
 Run after `npm run build`:  python3 site/tools/bundle_artifact.py [out_dir]
-Draft preview (its own artifact): python3 site/tools/bundle_artifact.py --draft premier [out_dir]
-  builds a scratch copy of the site with src/pages/work/_premier.astro enabled (the
-  underscore keeps it off the live site) and writes <out_dir>/premier.html, plus the
-  page's images (public/work/premier/*) at <out_dir>/work/premier/.
+Draft preview (its own artifact): python3 site/tools/bundle_artifact.py --draft <slug> [out_dir]
+  builds a scratch copy of the site with src/pages/work/_<slug>.astro enabled (the
+  underscore keeps it off the live site) and writes <out_dir>/<slug>.html, plus the
+  page's images (public/work/<slug>/*) at <out_dir>/work/<slug>/.
 
 Writes (default out_dir: ./artifact-bundle):
   motz-kinetic-live.html   landing page as a fragment (the Artifact tool wraps
                            the main page in its own <!doctype>/<head>/<body>)
   oxfam.html               the Oxfam case study, a full standalone document
   origins.html             the Origins case study (built by asm_case.py --site)
+  premier.html             the Premier case study
   work/oxfam/*.jpg, proto.html      Oxfam images + embedded prototype, as-is
   work/origins/img/*, app.html      Origins images + embedded app, as-is
+  work/premier/*                    Premier images, as-is
   brand/clients/*, about/*          project-card logos + the About photo
 
 CSS, JS and fonts are inlined into both pages (fonts as data: URIs) so each
@@ -104,29 +106,42 @@ if DRAFT:
     print(f"{OUT / (DRAFT + '.html')}  {len(page) // 1024} KB")
     sys.exit(0)
 
+CASES = ("oxfam", "origins", "premier")
+
+
+def case_links(html):
+    """/work/<slug> -> <slug>.html for every case study (they sit beside index.html)."""
+    for slug in CASES:
+        html = html.replace(f'href="/work/{slug}"', f'href="{slug}.html"')
+    return html
+
+
 # ---- landing page (main page) ----
-landing = inline_head((DIST / "index.html").read_text())
-landing = landing.replace('href="/work/oxfam"', 'href="oxfam.html"').replace('href="/work/origins"', 'href="origins.html"')
+landing = case_links(inline_head((DIST / "index.html").read_text()))
 landing = re.sub(r'src="/((?:brand|about)/[^"]+)"', r'src="\1"', landing)
 landing = re.sub(r'href="/#([\w-]+)"', r'href="#\1"', landing)
 landing = landing.replace('href="/"', 'href="#top"')
 landing = fragment(landing)
 
-# ---- Oxfam case study (second page) ----
-oxfam = inline_head((DIST / "work/oxfam/index.html").read_text())
-oxfam = oxfam.replace('"/work/oxfam/', '"work/oxfam/')
-oxfam = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', oxfam)
-oxfam = oxfam.replace('href="/"', 'href="index.html"')
-oxfam = oxfam.replace('href="/work/origins"', 'href="origins.html"').replace('href="/work/oxfam"', 'href="oxfam.html"')
+# ---- Oxfam and Premier case studies (Astro pages: inline their CSS/JS, keep images beside) ----
+def astro_case(slug):
+    html = inline_head((DIST / f"work/{slug}/index.html").read_text())
+    html = html.replace(f'"/work/{slug}/', f'"work/{slug}/')
+    html = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', html)
+    return case_links(html.replace('href="/"', 'href="index.html"'))
+
+
+oxfam = astro_case("oxfam")
+premier = astro_case("premier")
 
 # ---- Origins case study (third page; already self-contained apart from images + app) ----
 origins = (DIST / "work/origins/index.html").read_text()
 origins = re.sub(r'<link rel="icon"[^>]*>', "", origins)
 origins = origins.replace('"/work/origins/', '"work/origins/')   # app src + image map (in script)
 origins = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', origins)
-origins = origins.replace('href="/work/oxfam"', 'href="oxfam.html"').replace('href="/"', 'href="index.html"')
+origins = case_links(origins.replace('href="/"', 'href="index.html"'))
 
-leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins)
+leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins + premier)
 assert not leftover, f"unrewritten root-absolute refs: {leftover}"
 
 if OUT.exists():
@@ -135,11 +150,16 @@ if OUT.exists():
 (OUT / "motz-kinetic-live.html").write_text(landing)
 (OUT / "oxfam.html").write_text(oxfam)
 (OUT / "origins.html").write_text(origins)
+(OUT / "premier.html").write_text(premier)
 for f in (DIST / "work/oxfam").iterdir():
     if f.suffix in (".jpg", ".png") or f.name == "proto.html":
         shutil.copy2(f, OUT / "work/oxfam" / f.name)
 shutil.copytree(DIST / "work/origins/img", OUT / "work/origins/img")
 shutil.copy2(DIST / "work/origins/app.html", OUT / "work/origins/app.html")
+(OUT / "work/premier").mkdir(parents=True)
+for f in (DIST / "work/premier").iterdir():
+    if f.name != "index.html":
+        shutil.copy2(f, OUT / "work/premier" / f.name)
 shutil.copytree(DIST / "brand/clients", OUT / "brand/clients")
 shutil.copytree(DIST / "about", OUT / "about")
 

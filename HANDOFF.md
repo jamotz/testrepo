@@ -108,19 +108,16 @@ will provide images and any deeper copy. Do NOT invent metrics — use real evid
 
 - Landing page (Kinetic, canonical): https://claude.ai/code/artifact/fb62ff96-edb1-4670-b9a0-28a104581b23
   ("motz-kinetic-live"). Now a multi-page artifact: landing + the Oxfam case study
-  (`oxfam.html`) + the Origins case study (`origins.html`), with their images and live
-  prototypes. Refresh it from the real site with
+  (`oxfam.html`) + the Origins case study (`origins.html`) + the Premier case study
+  (`premier.html`), with their images and live prototypes. Refresh it from the real site with
   `python3 reference/origins/hifi-build/asm_case.py --site` (only if Origins changed),
   then `cd site && npm run build && python3 tools/bundle_artifact.py <out>`, then publish
   `<out>/motz-kinetic-live.html` to that URL with `root=<out>` and every other file
   in `<out>` as `files`.
-- Premier case study — DRAFT mockup, its own artifact: https://claude.ai/artifact/UwzyTi13HVENSr1Cvo7q8g
-  Source is `site/src/pages/work/_premier.astro` (the underscore keeps it off the live
-  site). Rebuild with `python3 site/tools/bundle_artifact.py --draft premier <out>` and
-  republish `<out>/premier.html` to that URL. `.draft` spans mark placeholder copy and
-  `.slot` boxes mark image slots. To launch: rename to `premier.astro`, delete the
-  `.mock-badge`, set the Premier card's `href` to `/work/premier` in `Work.astro`, add
-  `premier.html` to the kinetic bundle, and point Origins' "next" link at it.
+- Premier case study is LIVE at `/work/premier` (`site/src/pages/work/premier.astro`) and in
+  motz-kinetic-live as `premier.html`. The old draft-only artifact
+  (https://claude.ai/artifact/UwzyTi13HVENSr1Cvo7q8g) is superseded and no longer updated.
+  The Results section has a commented slot for a CEO quote, to fill when Jack has one.
 - Oxfam case-study template (recruiter-optimized): https://claude.ai/code/artifact/0ee77719-44c0-4936-9399-f4694ca3c675
 
 ## Environment note
