@@ -115,9 +115,18 @@ will provide images and any deeper copy. Do NOT invent metrics — use real evid
   `<out>/motz-kinetic-live.html` to that URL with `root=<out>` and every other file
   in `<out>` as `files`.
 - Premier case study is LIVE at `/work/premier` (`site/src/pages/work/premier.astro`) and in
-  motz-kinetic-live as `premier.html`. The old draft-only artifact
-  (https://claude.ai/artifact/UwzyTi13HVENSr1Cvo7q8g) is superseded and no longer updated.
-  The Results section has a commented slot for a CEO quote, to fill when Jack has one.
+  motz-kinetic-live as `premier.html`. The Results section has a commented slot for a CEO
+  quote, to fill when Jack has one.
+- Premier on its own (Jack keeps it as his workspace for the page):
+  https://claude.ai/artifact/UwzyTi13HVENSr1Cvo7q8g. Jack may ask for changes there first.
+  Workflow: `premier.astro` is the single source. Make every change there, then
+  1) `python3 site/tools/bundle_artifact.py --standalone premier <out>` and publish
+     `<out>/premier.html` to the URL above (images: `<out>/work/premier/*`, only if changed);
+  2) when Jack wants it on the main site: `npm run build`, rebuild motz-kinetic-live with
+     `bundle_artifact.py`, republish it, commit `site/dist`, push.
+  If someone edited the artifact's HTML directly, read it, diff it against a fresh
+  `--standalone` build, and port the differences into `premier.astro`; never copy the
+  artifact's HTML over the page.
 - Oxfam case-study template (recruiter-optimized): https://claude.ai/code/artifact/0ee77719-44c0-4936-9399-f4694ca3c675
 
 ## Environment note

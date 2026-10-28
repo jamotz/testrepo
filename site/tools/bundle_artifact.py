@@ -2,10 +2,11 @@
 """Bundle the built site (site/dist) into the "motz-kinetic-live" Artifact.
 
 Run after `npm run build`:  python3 site/tools/bundle_artifact.py [out_dir]
-Draft preview (its own artifact): python3 site/tools/bundle_artifact.py --draft <slug> [out_dir]
-  builds a scratch copy of the site with src/pages/work/_<slug>.astro enabled (the
-  underscore keeps it off the live site) and writes <out_dir>/<slug>.html, plus the
-  page's images (public/work/<slug>/*) at <out_dir>/work/<slug>/.
+One case study as its own artifact: python3 site/tools/bundle_artifact.py --standalone <slug> [out_dir]
+  builds a scratch copy of the site and writes <out_dir>/<slug>.html, plus the page's
+  images (public/work/<slug>/*) at <out_dir>/work/<slug>/. Works for a live page
+  (src/pages/work/<slug>.astro) or a draft (_<slug>.astro, which the underscore keeps off
+  the live site). --draft is the old name for the same thing.
 
 Writes (default out_dir: ./artifact-bundle):
   motz-kinetic-live.html   landing page as a fragment (the Artifact tool wraps
@@ -29,8 +30,9 @@ SITE = pathlib.Path(__file__).resolve().parents[1]
 DIST = SITE / "dist"
 args = sys.argv[1:]
 DRAFT = None
-if "--draft" in args:
-    i = args.index("--draft"); DRAFT = args[i + 1]; del args[i:i + 2]
+for flag in ("--standalone", "--draft"):
+    if flag in args:
+        i = args.index(flag); DRAFT = args[i + 1]; del args[i:i + 2]
 OUT = pathlib.Path(args[0] if args else "artifact-bundle").resolve()
 
 
@@ -84,13 +86,15 @@ if DRAFT:
         shutil.rmtree(tmp)
     shutil.copytree(SITE, tmp, ignore=shutil.ignore_patterns("node_modules", "dist", ".astro"))
     os.symlink(SITE / "node_modules", tmp / "node_modules")
-    (tmp / f"src/pages/work/_{DRAFT}.astro").rename(tmp / f"src/pages/work/{DRAFT}.astro")
+    draft = tmp / f"src/pages/work/_{DRAFT}.astro"
+    if draft.exists():   # a draft: enable it in the scratch copy only
+        draft.rename(tmp / f"src/pages/work/{DRAFT}.astro")
     subprocess.run(["npm", "run", "build"], cwd=tmp, check=True, stdout=subprocess.DEVNULL)
     DIST = tmp / "dist"
     page = fragment(inline_head((DIST / f"work/{DRAFT}/index.html").read_text()))
     # the page's own images ship beside it: /work/<draft>/x -> work/<draft>/x
     page = page.replace(f'"/work/{DRAFT}/', f'"work/{DRAFT}/')
-    # a standalone mockup: links to the rest of the site have nowhere to go, so they return to the top
+    # on its own, links to the rest of the site have nowhere to go, so they return to the top
     page = re.sub(r'href="/[^"]*"', 'href="#case-top"', page)
     title = re.search(r"<title>(.*?)(?: — Jack Motzkin)?</title>", page).group(1)
     page = f"<title>{title}</title>" + re.sub(r"<title>.*?</title>", "", page)
