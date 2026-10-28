@@ -1,5 +1,6 @@
 ---
 import { PROJECTS } from '../data/site.js';
+import Skills from './Skills.astro';
 const total = String(PROJECTS.length).padStart(2, '0');
 ---
 <section class="section work" id="projects">
@@ -39,6 +40,8 @@ const total = String(PROJECTS.length).padStart(2, '0');
         );
       })}
     </div>
+
+    <Skills />
   </div>
 </section>
 
