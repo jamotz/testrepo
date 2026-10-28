@@ -1,0 +1,6 @@
+{
+  "_note": "Each case study's 'Methods & tools' row, in the order the work happened. Read by CaseMethods.astro (Oxfam, Premier) and by reference/origins/hifi-build/asm_case.py (Origins). Keep the wording in step with SKILLS in site.js.",
+  "oxfam": ["User interviews", "Personas", "Card sorting", "Information architecture", "Wireframes in Figma", "Tree testing (Optimal Workshop)", "Usability testing", "Synthesis", "Presented to stakeholders"],
+  "origins": ["Competitive analysis (SWOT)", "Discussion guides", "In-person intercept recruiting", "Surveys", "User interviews", "Session facilitation", "Survey & data analysis", "Synthesis", "Personas", "Mixed methods", "Concept testing", "A/B testing", "Usability testing", "Figma", "FigJam", "Research report", "Presented to shareholders & the COO"],
+  "premier": ["Discussion guides", "In-person intercept recruiting", "User interviews", "Contextual inquiry", "Session facilitation", "Surveys (36 homeowners)", "Mixed methods", "Survey & data analysis", "Synthesis", "Journey mapping", "Research report", "Presented to the CEO"]
+}

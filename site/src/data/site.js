@@ -9,6 +9,15 @@ export const LINKEDIN = 'https://www.linkedin.com/in/jack-motzkin/';
 // switches from "coming soon" to a real link once these are set.
 export const RESUME = { pdf: null, web: null };
 
+// Skills, grouped as on the landing page (foot of About), in the words job posts use.
+// Each case study's own list is in methods.json.
+export const SKILLS = [
+  { group: 'Research methods', items: ['User interviews', 'Usability testing', 'Surveys', 'Card sorting', 'Tree testing', 'Concept testing', 'A/B testing', 'Competitive analysis', 'Mixed methods'] },
+  { group: 'Planning & analysis', items: ['Research plans & discussion guides', 'In-person intercept recruiting', 'Session facilitation', 'Synthesis', 'Survey & data analysis', 'Personas', 'Journey mapping'] },
+  { group: 'Communication', items: ['Research reports', 'Presenting to stakeholders, CEO & COO'] },
+  { group: 'Tools', items: ['Figma', 'FigJam', 'Optimal Workshop'] },
+];
+
 // Projects, in display order. `href: null` = page not live yet (shown as "coming soon").
 export const PROJECTS = [
   {

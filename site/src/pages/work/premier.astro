@@ -4,6 +4,7 @@
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
+import CaseMethods from '../../components/CaseMethods.astro';
 
 const meta = [
   { k: 'Role', v: 'Business Analyst' },
@@ -165,6 +166,7 @@ const stages = [
       <dl class="case-meta" data-reveal>
         {meta.map((m) => (<div><dt>{m.k}</dt><dd>{m.v}</dd></div>))}
       </dl>
+      <CaseMethods slug="premier" />
     </div>
 
     <div class="wrap">

@@ -1,0 +1,19 @@
+---
+// The "Methods & tools" row under a case study's Role / Client / Location strip.
+// The lists live in data/methods.json, shared with the standalone Origins page.
+import methods from '../data/methods.json';
+export interface Props { slug: 'oxfam' | 'origins' | 'premier'; }
+const items: string[] = methods[Astro.props.slug];
+---
+<div class="case-methods" data-reveal>
+  <span class="mono-label">Methods &amp; tools</span>
+  <ul>{items.map((m) => <li>{m}</li>)}</ul>
+</div>
+
+<style>
+  .case-methods{display:grid;grid-template-columns:auto 1fr;gap:12px 24px;align-items:start;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+  .case-methods .mono-label{padding-top:7px;color:var(--gold)}
+  .case-methods ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+  .case-methods li{font-size:13px;line-height:1.3;color:var(--ink-soft);border:1px solid var(--line-2);border-radius:100px;padding:6px 11px}
+  @media (max-width:640px){.case-methods{grid-template-columns:1fr}.case-methods .mono-label{padding-top:0}}
+</style>

@@ -105,6 +105,12 @@ if SITE_MODE:  # real image files instead of a 5 MB page of inline data: URIs
             IMG[k] = f"/work/origins/img/{k}.jpg"
 src = src.replace("/*IMGMAP*/", json.dumps(IMG))
 
+# ---- Methods & tools row (shared list with the Astro case studies) ----
+import html as _html
+_methods = json.loads((site / "src/data/methods.json").read_text())["origins"]
+src = src.replace("<!--METHODS-->", '<div class="case-methods"><span class="mono">Methods &amp; tools</span><ul>'
+                  + "".join(f"<li>{_html.escape(m)}</li>" for m in _methods) + "</ul></div>")
+
 # ---- logo ----
 logo = (site / "public/brand/motz-white.svg").read_text()
 logo = re.sub(r'fill="#[0-9A-Fa-f]{6}"', 'fill="currentColor"', logo)
