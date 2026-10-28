@@ -6,7 +6,7 @@
 
 export const RESUME_DATA = {
   name: 'Jack Motzkin',
-  headline: 'UX Research · Business & Customer Analysis',
+  headline: 'UX Researcher & Designer · Business & Customer Analysis',
   location: 'Greater Phoenix Area, AZ',
   email: 'jackmotzkin@icloud.com',
   phone: null,   // e.g. '(480) 555-0123'; shown in the contact line once set
@@ -47,7 +47,7 @@ export const RESUME_DATA = {
     },
     {
       org: 'Origins Cannabis', where: 'Redmond, WA',
-      roles: [{ title: 'UX Researcher & Designer', dates: 'Jul 2022 – May 2023' }],
+      roles: [{ title: 'Budtender · UX Researcher & Designer', dates: 'Jul 2022 – May 2023' }],
       bullets: [
         'Recruited customers in store for surveys and interviews on why the app failed them; built personas and a competitive SWOT.',
         'Concept- and A/B-tested product displays, then usability-tested a leveled filter system and a reorganized shop and home.',
