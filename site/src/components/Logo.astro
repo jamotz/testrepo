@@ -5,11 +5,12 @@
 // and the ring's mask (below) lets it draw itself on.
 // Sizing/positioning is owned by the PARENT via a wrapper element, so this svg
 // simply fills its container.
-export interface Props { label?: string; }
-const { label } = Astro.props;
+export interface Props { label?: string; id: string; }
+const { label, id } = Astro.props;
 const decorative = !label;
-// the ring's draw-on mask needs an id that's unique per logo on the page (nav, hero, footer)
-const maskId = `lg-ring-${Math.random().toString(36).slice(2, 8)}`;
+// the ring's draw-on mask needs an id that's unique per logo on the page, so each use
+// names itself (nav, hero, footer); a fixed name also keeps rebuilds byte-identical
+const maskId = `lg-ring-${id}`;
 ---
 <svg
   xmlns="http://www.w3.org/2000/svg"
