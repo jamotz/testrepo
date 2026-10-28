@@ -93,6 +93,14 @@ Role/Client/Location per project + the bio/"My Background/Goals/Work" section). 
 will provide images and any deeper copy. Do NOT invent metrics — use real evidence.
 
 ## Shared site details (as of the October 2026 site pass)
+- **Résumé:** content lives in `site/src/data/resume.js` (from Jack's LinkedIn export,
+  aimed at UX research, business analyst and customer insights roles). `/resume` is the web
+  version; its print styles are the one-page PDF. After any résumé change:
+  `cd site && npm run build && node tools/resume_pdf.mjs` (writes
+  `public/resume/jack-motzkin-resume.pdf` and copies it into dist; fails if it runs past one
+  page). In this cloud container pass `PLAYWRIGHT_PATH=/opt/node22/lib/node_modules/playwright
+  CHROMIUM_PATH=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`. The artifact bundle
+  includes `resume.html` but drops the PDF link, since the viewer blocks downloads.
 - Email, LinkedIn, résumé links and the project list (titles, roles, logos, locations,
   which pages are live) all come from **`site/src/data/site.js`**. The nav's Projects
   dropdown, the Projects cards, About, Contact and the footer read from it.

@@ -4,10 +4,9 @@
 export const EMAIL = 'Jackmotzkin@icloud.com';
 export const LINKEDIN = 'https://www.linkedin.com/in/jack-motzkin/';
 
-// Résumé — not ready yet. Set `pdf` to the downloadable file (e.g. '/resume/jack-motzkin-resume.pdf'
-// in public/) and `web` to the themed page (e.g. '/resume'); every résumé link on the site
-// switches from "coming soon" to a real link once these are set.
-export const RESUME = { pdf: null, web: null };
+// Résumé: the themed web page and its one-page PDF, both built from data/resume.js
+// (the PDF by tools/resume_pdf.mjs). Set either to null to hide that link everywhere.
+export const RESUME = { pdf: '/resume/jack-motzkin-resume.pdf', web: '/resume' };
 
 // Skills, grouped as on the landing page (foot of About), in the words job posts use.
 // Each case study's own list is in methods.json.

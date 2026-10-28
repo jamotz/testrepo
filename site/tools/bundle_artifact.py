@@ -17,6 +17,7 @@ Writes (default out_dir: ./artifact-bundle):
   work/oxfam/*.jpg, proto.html      Oxfam images + embedded prototype, as-is
   work/origins/img/*, app.html      Origins images + embedded app, as-is
   work/premier/*                    Premier images, as-is
+  resume.html              the web résumé (the PDF link is dropped: the viewer blocks downloads)
   brand/clients/*, about/*          project-card logos + the About photo
 
 CSS, JS and fonts are inlined into both pages (fonts as data: URIs) so each
@@ -114,10 +115,13 @@ CASES = ("oxfam", "origins", "premier")
 
 
 def case_links(html):
-    """/work/<slug> -> <slug>.html for every case study (they sit beside index.html)."""
+    """/work/<slug> -> <slug>.html for every case study (they sit beside index.html), and the
+    résumé page -> resume.html. The Artifact viewer blocks downloads, so the résumé PDF link
+    (a download) is removed rather than left to do nothing."""
     for slug in CASES:
         html = html.replace(f'href="/work/{slug}"', f'href="{slug}.html"')
-    return html
+    html = re.sub(r'<a [^>]*href="/resume/[^"]+\.pdf"[^>]*>.*?</a>', "", html, flags=re.S)
+    return html.replace('href="/resume"', 'href="resume.html"')
 
 
 # ---- landing page (main page) ----
@@ -137,6 +141,8 @@ def astro_case(slug):
 
 oxfam = astro_case("oxfam")
 premier = astro_case("premier")
+resume = case_links(re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"',
+                           inline_head((DIST / "resume/index.html").read_text())).replace('href="/"', 'href="index.html"'))
 
 # ---- Origins case study (third page; already self-contained apart from images + app) ----
 origins = (DIST / "work/origins/index.html").read_text()
@@ -145,7 +151,7 @@ origins = origins.replace('"/work/origins/', '"work/origins/')   # app src + ima
 origins = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', origins)
 origins = case_links(origins.replace('href="/"', 'href="index.html"'))
 
-leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins + premier)
+leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins + premier + resume)
 assert not leftover, f"unrewritten root-absolute refs: {leftover}"
 
 if OUT.exists():
@@ -155,6 +161,7 @@ if OUT.exists():
 (OUT / "oxfam.html").write_text(oxfam)
 (OUT / "origins.html").write_text(origins)
 (OUT / "premier.html").write_text(premier)
+(OUT / "resume.html").write_text(resume)
 for f in (DIST / "work/oxfam").iterdir():
     if f.suffix in (".jpg", ".png") or f.name == "proto.html":
         shutil.copy2(f, OUT / "work/oxfam" / f.name)
