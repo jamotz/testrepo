@@ -154,23 +154,32 @@ html.lenis,html.lenis body{height:auto}
 .btn:hover svg{transform:translateX(4px)}
 
 /* ---- Logo motion: the mark's four shapes move on their own (see Logo.astro) ----
-   Each shape turns about the ring's centre. In the hero watermark the waves roll in one
-   after another on load, then a slow swell passes through them (same swing, each a beat
-   behind the last: the gaps between waves are only a few degrees wide, so they never
-   swing against each other); the ring rocks on its own. In the nav they ripple on hover. */
+   Hero logo, on load: the ring draws itself on clockwise from its opening (.7s), then the
+   three waves travel clockwise along the ring into place one by one, largest first
+   (.6s each, .2s apart; done at 1.3s). After that a slow swell passes through the waves
+   (same swing, each a beat behind the last: the gaps between waves are only a few degrees
+   wide, so they never swing against each other) while the ring rocks on its own.
+   Nav logo: the waves ripple on hover. Every shape turns about the ring's centre. */
 .lg-part{transform-box:view-box;transform-origin:246px 242px}
-.lg-ring{--in:-50deg;--d0:-2deg;--d1:2deg;--t:11s;--lag:0s;--beat:0s}
-.lg-w1{--in:-40deg;--lag:.12s;--beat:0s}
-.lg-w2{--in:-70deg;--lag:.24s;--beat:.35s}
-.lg-w3{--in:-100deg;--lag:.36s;--beat:.7s}
-.lg-w1,.lg-w2,.lg-w3{--d0:-3deg;--d1:3deg;--t:7s}
-.hero-watermark .lg-part{animation:lg-in 1.5s var(--ease-out) var(--lag) both,
-  lg-drift var(--t) ease-in-out calc(1.9s + var(--beat)) infinite alternate}
-@keyframes lg-in{from{transform:rotate(var(--in));opacity:0}to{transform:rotate(var(--d0));opacity:1}}
+.lg-draw{stroke-dasharray:100 100;stroke-dashoffset:0}
+.lg-ring{--lag:0s;--enter:.7s;--beat:0s;--d0:0deg;--d1:3deg;--t:11s;--rip:-15deg}   /* drawn unrotated, so it rocks from 0 */
+.lg-w1{--lag:.3s;--beat:0s;--rip:-12deg}
+.lg-w2{--lag:.5s;--beat:.35s;--rip:-21deg}
+.lg-w3{--lag:.7s;--beat:.7s;--rip:-30deg}
+.lg-w1,.lg-w2,.lg-w3{--enter:.6s;--d0:-3deg;--d1:3deg;--t:7s}
+.hero-watermark svg{overflow:visible}   /* the waves start partway round, outside the ring */
+.hero-watermark .lg-draw{animation:lg-draw .7s cubic-bezier(.25,1,.5,1) both}
+.hero-watermark .lg-ring{animation:lg-fade .15s linear both,
+  lg-drift var(--t) ease-in-out calc(var(--enter) + var(--beat)) infinite alternate}
+.hero-watermark :is(.lg-w1,.lg-w2,.lg-w3){animation:lg-orbit var(--enter) cubic-bezier(.22,1,.36,1) var(--lag) both,
+  lg-drift var(--t) ease-in-out calc(var(--lag) + var(--enter) + var(--beat)) infinite alternate}
+@keyframes lg-draw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes lg-fade{from{opacity:0}}
+@keyframes lg-orbit{from{transform:rotate(-80deg);opacity:0}30%{opacity:1}to{transform:rotate(var(--d0));opacity:1}}
 @keyframes lg-drift{from{transform:rotate(var(--d0))}to{transform:rotate(var(--d1))}}
-.brand:hover .lg-part{animation:lg-ripple .8s var(--ease-out) calc(var(--lag) * .5)}
-@keyframes lg-ripple{40%{transform:rotate(calc(var(--in) * .3))}}
-@media (prefers-reduced-motion:reduce){.lg-part{animation:none!important}}
+.brand:hover .lg-part{animation:lg-ripple .8s var(--ease-out) calc(var(--lag) * .3)}
+@keyframes lg-ripple{40%{transform:rotate(var(--rip))}}
+@media (prefers-reduced-motion:reduce){.lg-part,.lg-draw{animation:none!important}}
 
 /* ---- Scroll reveal (JS adds .is-in) ---- */
 [data-reveal]{opacity:0;transform:translateY(26px);
