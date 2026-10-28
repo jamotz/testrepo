@@ -9,6 +9,7 @@ export const RESUME_DATA = {
   headline: 'UX Research · Business & Customer Analysis',
   location: 'Greater Phoenix Area, AZ',
   email: 'jackmotzkin@icloud.com',
+  phone: null,   // e.g. '(480) 555-0123'; shown in the contact line once set
   links: [
     { label: 'jackmotzkin.com', href: 'https://jackmotzkin.com' },
     { label: 'linkedin.com/in/jack-motzkin', href: 'https://www.linkedin.com/in/jack-motzkin/' },
@@ -29,7 +30,7 @@ export const RESUME_DATA = {
       ],
       bullets: [
         'Surveyed employees on their time in the office and turned the findings into changes to the workplace and its services.',
-        'Plan layouts, buildouts and furniture exchanges around employee needs, aligning branding, design and operations.',
+        'Helped facilitate office buildouts and furniture exchanges around employee needs, aligning branding, design and operations.',
         'Track purchasing and expenses through a purchase-order system, keeping budgets, approvals and records accurate.',
         'Coordinate vendors and contractors, and resolve facility, security and logistics issues before they disrupt staff.',
       ],
@@ -85,5 +86,5 @@ export const RESUME_DATA = {
     'Career Essentials in Generative AI (Microsoft & LinkedIn)',
     'Design Psychology: Master the Art and Science of UX Design',
   ],
-  also: 'Eagle Scout · Spanish and Italian (elementary)',
+  awards: 'Eagle Scout · Spanish and Italian (elementary)',
 };

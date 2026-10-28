@@ -32,6 +32,7 @@ const span = (roles) => {
         <p class="r-contact">
           <span>{R.location}</span>
           <a href={`mailto:${R.email}`}>{R.email}</a>
+          {R.phone && <a href={`tel:${R.phone.replace(/[^\d+]/g, '')}`}>{R.phone}</a>}
           {R.links.map((l) => <a href={l.href}>{l.label}</a>)}
         </p>
         {RESUME.pdf && (
@@ -82,7 +83,10 @@ const span = (roles) => {
           <ul class="r-plain">{R.certifications.map((c) => <li>{c}</li>)}</ul>
         </section>
       </div>
-      <p class="r-also">{R.also}</p>
+      <section class="r-sec">
+        <h2 class="r-h">Awards &amp; Languages</h2>
+        <p class="r-also">{R.awards}</p>
+      </section>
     </article>
   </main>
   <Footer />
@@ -127,7 +131,7 @@ const span = (roles) => {
   @media (max-width:760px){.r-two{grid-template-columns:1fr}}
   .r-plain{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;color:var(--ink-soft);line-height:1.5}
   .r-plain b{color:var(--ink);font-weight:600}
-  .r-also{margin:28px 0 0;color:var(--ink-soft);font-size:14.5px}
+  .r-also{margin:0;color:var(--ink-soft);font-size:14.5px}
 
   /* ---------- print: the one-page PDF ---------- */
   @page{size:Letter;margin:0.4in 0.5in}
@@ -163,6 +167,6 @@ const span = (roles) => {
     .r-two{grid-template-columns:1fr 1.25fr;gap:0 18pt}
     .r-plain{gap:1.5pt;line-height:1.32;color:#111}
     .r-plain b{color:#111}
-    .r-also{margin-top:6pt;font-size:9pt;color:#222}
+    .r-also{margin:0;font-size:9pt;color:#222}
   }
 </style>
