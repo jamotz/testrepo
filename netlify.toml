@@ -1,0 +1,10 @@
+# Netlify: build the portfolio (Astro) in site/ and publish its output.
+# Everything the build needs is committed (the Origins app, the Oxfam prototype and the
+# résumé PDF live in site/public), so Netlify only runs `npm run build`.
+[build]
+  base = "site"
+  command = "npm run build"
+  publish = "dist"          # relative to base: site/dist
+
+[build.environment]
+  NODE_VERSION = "22"
