@@ -72,7 +72,7 @@ export const RESUME_DATA = {
     { k: 'Research', v: 'User interviews, usability testing, surveys, card sorting, tree testing, concept & A/B testing, competitive analysis, mixed methods' },
     { k: 'Analysis', v: 'Discussion guides, intercept recruiting, facilitation, synthesis, survey & data analysis, personas, journey mapping' },
     { k: 'Communication', v: 'Research reports; presenting to stakeholders, a CEO and a COO' },
-    { k: 'Tools', v: 'Figma, FigJam, Optimal Workshop; coursework in SQL, Excel and data visualization' },
+    { k: 'Tools & AI', v: 'Figma, FigJam, Optimal Workshop; ChatGPT and Claude with prompt engineering; coursework in SQL, Excel and data visualization' },
   ],
 
   education: [
