@@ -1,31 +1,108 @@
 ---
 // Skills, right under the project cards so recruiters reach them without scrolling
-// past About. The groups and wording live in data/site.js (SKILLS).
-import { SKILLS } from '../data/site.js';
+// past About. Three panels of skills, then a "Tools & AI" row of logo tiles and a
+// prompt-engineering bar. Wording lives in data/site.js (SKILLS, TOOLS, PROMPTING);
+// logos in data/tool-logos.js.
+import { SKILLS, TOOLS, PROMPTING } from '../data/site.js';
+import { TOOL_LOGOS } from '../data/tool-logos.js';
+const pad = (n) => String(n).padStart(2, '0');
 ---
 <div class="skills" id="skills" data-reveal>
   <h3 class="mono-label skills-title">Skills</h3>
-  <div class="skills-grid">
-    {SKILLS.map((g) => (
-      <div class="skill-group">
-        <h4 class="skill-head">{g.group}</h4>
-        <ul class="skill-list">{g.items.map((s) => <li>{s}</li>)}</ul>
-      </div>
+
+  <div class="panels">
+    {SKILLS.map((g, i) => (
+      <section class:list={['panel', { 'two-col': i === 0 }]} aria-labelledby={`skill-g${i}`}>
+        <div class="panel-top">
+          <h4 class="panel-head" id={`skill-g${i}`}>{g.group}</h4>
+          <span class="panel-n" aria-hidden="true">{pad(g.items.length)}</span>
+        </div>
+        <ul class="panel-list">{g.items.map((s) => <li>{s}</li>)}</ul>
+      </section>
     ))}
   </div>
+
+  <section class="belt" aria-labelledby="skill-tools">
+    <div class="panel-top">
+      <h4 class="panel-head" id="skill-tools">Tools &amp; AI</h4>
+      <span class="panel-n" aria-hidden="true">{pad(TOOLS.length)} tools</span>
+    </div>
+    <ul class="tools">
+      {TOOLS.map((t) => (
+        <li class:list={['tool', { 'is-ai': t.ai }]}>
+          <span class="tool-mark" aria-hidden="true">
+            {t.logo && TOOL_LOGOS[t.logo]
+              ? <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d={TOOL_LOGOS[t.logo]} /></svg>
+              : <span class="tool-letters">{t.mark}</span>}
+          </span>
+          <span class="tool-text">
+            <b class="tool-name">{t.name}</b>
+            <span class="tool-use">{t.use}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+    <div class="prompt">
+      <b>{PROMPTING.name}</b>
+      <span>{PROMPTING.desc}</span>
+    </div>
+  </section>
 </div>
 
 <style>
   .skills{margin-top:clamp(40px,6vw,64px);padding-top:clamp(28px,4vw,40px);border-top:1px solid var(--line)}
   .skills-title{margin:0 0 22px;color:var(--gold)}
-  /* the two short groups size to their longest chip, so no chip breaks onto two lines */
-  .skills-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) max-content max-content;gap:28px clamp(20px,3vw,40px)}
-  @media (max-width:1100px){.skills-grid{grid-template-columns:1fr 1fr}}
-  @media (max-width:560px){.skills-grid{grid-template-columns:1fr}}
-  .skill-head{margin:0 0 12px;font-family:var(--display);font-weight:700;font-size:1.05rem}
-  .skill-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-  .skill-group:nth-child(n+3) .skill-list{flex-direction:column;align-items:flex-start}
-  .skill-list li{font-size:13.5px;line-height:1.3;color:var(--ink-soft);border:1px solid var(--line-2);border-radius:100px;padding:7px 12px;white-space:nowrap}
-  @media (max-width:560px){.skill-list li{white-space:normal}}
 
+  /* ---- skill panels ---- */
+  .panels{display:grid;grid-template-columns:1.25fr 1fr .8fr;gap:16px}
+  @media (max-width:960px){.panels{grid-template-columns:1fr 1fr}.panel.two-col{grid-column:1/-1}}
+  @media (max-width:560px){.panels{grid-template-columns:1fr}}
+
+  .panel,.belt{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    transition:border-color .35s var(--ease-out)}
+  .panel:hover,.belt:hover{border-color:var(--line-2)}
+  .panel{padding:24px 24px 26px;display:flex;flex-direction:column;gap:18px;min-width:0}
+  .panel-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .panel-head{margin:0;font-family:var(--display);font-weight:700;font-size:1.1rem;text-wrap:balance}
+  .panel-n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted-fg);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .panel-list{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:14.5px;line-height:1.35;color:var(--ink-soft)}
+  .two-col .panel-list{grid-template-columns:1fr 1fr;column-gap:20px}
+  @media (max-width:420px){.two-col .panel-list{grid-template-columns:1fr}}
+  .panel-list li{display:flex;gap:10px;align-items:flex-start;min-width:0}
+  .panel-list li::before{content:"";flex:none;width:7px;height:2px;background:var(--gold);align-self:center;margin-top:-1px}
+
+  /* ---- tools & AI ---- */
+  .belt{margin-top:16px;padding:24px;display:grid;gap:20px}
+  .tools{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+  /* tablets: three tools, then the two AI tools sharing the second row */
+  @media (max-width:1000px){.tools{grid-template-columns:repeat(6,minmax(0,1fr))}.tool{grid-column:span 2}.tool.is-ai{grid-column:span 3}}
+
+  .tool{display:flex;flex-direction:column;gap:14px;padding:16px;border-radius:12px;min-width:0;
+    background:var(--panel-2);border:1px solid var(--line);
+    transition:transform .35s var(--ease-out),border-color .35s var(--ease-out)}
+  .tool:hover{transform:translateY(-2px);border-color:var(--line-3)}
+  .tool-mark{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none;
+    border:1px solid var(--line-2);color:var(--ink)}
+  .tool-letters{font:700 13px/1 var(--display);letter-spacing:.02em}
+  .is-ai .tool-mark{background:color-mix(in srgb,var(--gold) 10%,transparent);border-color:color-mix(in srgb,var(--gold) 40%,transparent)}
+  .tool-text{display:grid;gap:3px;min-width:0}
+  .tool-name{font:600 14.5px/1.25 var(--body);color:var(--ink)}
+  .tool-use{font-size:12.5px;line-height:1.4;color:var(--muted-fg)}
+  /* phones: one row per tool, logo beside the name, so five tools don't leave an orphan */
+  @media (max-width:560px){
+    .tools{grid-template-columns:1fr;gap:8px}
+    .tool,.tool.is-ai{grid-column:auto}
+    .tool{flex-direction:row;align-items:center;gap:14px;padding:12px 14px}
+  }
+
+  .prompt{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 28px;
+    padding:14px 18px;border-radius:12px;
+    background:color-mix(in srgb,var(--gold) 9%,transparent);border:1px solid color-mix(in srgb,var(--gold) 38%,transparent)}
+  .prompt b{font:700 15px/1.25 var(--display);color:var(--ink)}
+  .prompt span{font-size:13.5px;line-height:1.45;color:var(--ink-soft);max-width:80ch}
+  @media (max-width:700px){.prompt{grid-template-columns:1fr}}
+
+  @media (prefers-reduced-motion:reduce){.tool,.tool:hover{transition:none;transform:none}}
 </style>

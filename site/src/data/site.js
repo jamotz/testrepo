@@ -14,8 +14,22 @@ export const SKILLS = [
   { group: 'Research methods', items: ['User interviews', 'Usability testing', 'Surveys', 'Card sorting', 'Tree testing', 'Concept testing', 'A/B testing', 'Competitive analysis', 'Mixed methods'] },
   { group: 'Planning & analysis', items: ['Research plans & discussion guides', 'In-person intercept recruiting', 'Session facilitation', 'Synthesis', 'Survey & data analysis', 'Personas', 'Journey mapping'] },
   { group: 'Communication', items: ['Research reports', 'Presenting to stakeholders, CEO & COO'] },
-  { group: 'Tools', items: ['Figma', 'FigJam', 'Optimal Workshop'] },
 ];
+
+// The "Tools & AI" row under the skill panels. `logo` is a key in data/tool-logos.js;
+// a tool without one shows its `mark` (two or three letters) until a logo is added.
+// `ai: true` gives the tile the gold accent.
+export const TOOLS = [
+  { name: 'Figma', logo: 'figma', use: 'Wireframes & prototypes' },
+  { name: 'FigJam', mark: 'Fj', use: 'Affinity maps & workshops' },
+  { name: 'Optimal Workshop', mark: 'OW', use: 'Card sorts & tree tests' },
+  { name: 'ChatGPT', logo: 'openai', use: 'Drafting & synthesis support', ai: true },
+  { name: 'Claude', logo: 'claude', use: 'Drafting & synthesis support', ai: true },
+];
+export const PROMPTING = {
+  name: 'Prompt engineering',
+  desc: 'Structured prompts with context, constraints and examples, written to get usable research output from ChatGPT and Claude.',
+};
 
 // Projects, in display order. `href: null` = page not live yet (shown as "coming soon").
 export const PROJECTS = [
