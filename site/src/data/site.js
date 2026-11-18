@@ -22,7 +22,7 @@ export const SKILLS = [
 export const TOOLS = [
   { name: 'Figma', logo: 'figma', use: 'Wireframes & prototypes' },
   { name: 'FigJam', mark: 'Fj', use: 'Affinity maps & workshops' },
-  { name: 'Optimal Workshop', mark: 'OW', use: 'Card sorts & tree tests' },
+  { name: 'Optimal Workshop', logo: 'optimalworkshop', use: 'Card sorts & tree tests' },
   { name: 'ChatGPT', logo: 'openai', use: 'Drafting & synthesis support', ai: true },
   { name: 'Claude', logo: 'claude', use: 'Drafting & synthesis support', ai: true },
 ];

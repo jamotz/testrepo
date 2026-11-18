@@ -6,6 +6,14 @@
 import { SKILLS, TOOLS, PROMPTING } from '../data/site.js';
 import { TOOL_LOGOS } from '../data/tool-logos.js';
 const pad = (n) => String(n).padStart(2, '0');
+// A logo is a 24x24 path string, or { d, vb, w } for a wide mark; height follows the viewBox.
+const logoOf = (t) => {
+  const L = t.logo && TOOL_LOGOS[t.logo];
+  if (!L) return null;
+  if (typeof L === 'string') return { d: L, vb: '0 0 24 24', w: 20, h: 20 };
+  const [, , vw, vh] = L.vb.split(' ').map(Number);
+  return { d: L.d, vb: L.vb, w: L.w, h: Math.round((L.w * vh / vw) * 10) / 10 };
+};
 ---
 <div class="skills" id="skills" data-reveal>
   <h3 class="mono-label skills-title">Skills</h3>
@@ -31,8 +39,8 @@ const pad = (n) => String(n).padStart(2, '0');
       {TOOLS.map((t) => (
         <li class:list={['tool', { 'is-ai': t.ai }]}>
           <span class="tool-mark" aria-hidden="true">
-            {t.logo && TOOL_LOGOS[t.logo]
-              ? <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d={TOOL_LOGOS[t.logo]} /></svg>
+            {logoOf(t)
+              ? <svg viewBox={logoOf(t).vb} width={logoOf(t).w} height={logoOf(t).h}><path fill="currentColor" fill-rule="evenodd" d={logoOf(t).d} /></svg>
               : <span class="tool-letters">{t.mark}</span>}
           </span>
           <span class="tool-text">
