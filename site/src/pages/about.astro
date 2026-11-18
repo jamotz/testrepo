@@ -1,0 +1,186 @@
+---
+// The full About page. The landing page's About section is the short version and
+// links here. The photo and profile card are shared (components/AboutCard.astro).
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ProfileLinks from '../components/ProfileLinks.astro';
+import AboutCard from '../components/AboutCard.astro';
+import { PROJECTS } from '../data/site.js';
+
+const bySlug = Object.fromEntries(PROJECTS.map((p) => [p.slug, p]));
+// The work so far, newest first. Case studies link to their pages.
+const work = [
+  { org: 'Veeam Software', where: 'Tempe, AZ', what: 'Site Experience Specialist. I survey employees about their time in the office and turn the findings into changes to the workplace.', when: '2025 – now' },
+  { org: 'Premier Packout', where: 'Scottsdale, AZ', what: 'With the CEO of a fire and flood pack-out company, I mapped how homeowners experience a pack-out and turned the pain points into a service plan.', when: '2024 – 25', p: bySlug.premier },
+  { org: 'Origins Cannabis', where: 'Redmond, WA', what: 'I interviewed customers in the store to learn why the app failed them, then rebuilt its product display and tested it.', when: '2022 – 23', p: bySlug.origins },
+  { org: 'Oxfam Australia', where: 'Remote', what: 'For my PeakXD certification project, I redesigned Oxfam’s support pages and MyOxfam portal, from interviews to a tested final design.', when: '2022', p: bySlug.oxfam },
+];
+const a11y = [
+  'Text people can read without zooming in',
+  'Contrast that holds up for low vision',
+  'Layouts that make sense without fine detail',
+];
+---
+<Base
+  title="About — Jack Motzkin"
+  description="About Jack Motzkin: a UX researcher with a background in psychology and sociology, a PeakXD UX research and design graduate, and an Eagle Scout, based in the Southwest."
+>
+  <Nav />
+  <main id="main" class="about-page">
+    <div class="wrap">
+      <header class="ap-head">
+        <p class="eyebrow" data-reveal>About</p>
+        <h1 data-reveal>Hi, I’m <span class="accent">Jack.</span></h1>
+        <p class="ap-lede" data-reveal>
+          I’m a UX researcher based in the Southwest. I want to help companies build
+          intuitive, connected and accessible experiences, online and in person, from a real
+          understanding of their customers’ behaviors, preferences and needs.
+        </p>
+      </header>
+
+      <div class="ap-grid">
+        <div class="ap-main">
+          <section class="ap-block" data-reveal>
+            <h2 class="mono-label">Background</h2>
+            <p>
+              I’m an Eagle Scout, and I earned a B.A. in Psychology with a minor in Sociology
+              from the University of Arizona. In my senior year I realized the questions I cared
+              about most, why people do what they do and what gets in their way, are the same
+              ones a good product has to answer.
+            </p>
+            <p>
+              So after graduating I completed PeakXD’s international UX research and design
+              program, worked with real clients, and earned my BCS Foundation Certificate in
+              User Experience and the IBM Data Science Professional Certificate.
+            </p>
+          </section>
+
+          <section class="ap-block" data-reveal>
+            <h2 class="mono-label">Why research first</h2>
+            <p>
+              I enjoy every part of the design process, but I want to start by going deep on
+              research. You can’t design well for people until you’ve walked in their shoes and
+              understand how they live, what they prefer and what they need. Psychology and
+              sociology taught me to look for the reasons behind what people do, and research is
+              where I get to use that every day.
+            </p>
+          </section>
+
+          <section class="ap-block ap-a11y" data-reveal>
+            <h2 class="mono-label">Why accessibility is personal</h2>
+            <p class="ap-a11y-lead">
+              My grandmother has macular degeneration.
+            </p>
+            <p>
+              The condition takes away the center of your vision, the part you use to read and
+              pick out detail. Seeing what that does to everyday things online, like small
+              text, faint buttons and crowded pages, is what got me interested in how people
+              with disabilities experience the web. It’s the part of UX I most want to grow in.
+            </p>
+            <p>When I look at a design, I start with her in mind:</p>
+            <ul class="ap-checks">{a11y.map((t) => <li>{t}</li>)}</ul>
+          </section>
+
+          <section class="ap-block" data-reveal>
+            <h2 class="mono-label">My work so far</h2>
+            <p>
+              It’s early in my UX career, and I’ve already had the chance to apply what I
+              learned with three real clients, plus my current role.
+            </p>
+            <ol class="ap-work">
+              {work.map((w) => {
+                const Tag = w.p?.href ? 'a' : 'div';
+                return (
+                  <li>
+                    <Tag class:list={['ap-job', { 'is-link': w.p?.href }]} href={w.p?.href} style={w.p ? `--ac:${w.p.accent}` : undefined}>
+                      <span class="ap-job-top">
+                        <span class="ap-org">{w.org}<span class="ap-where"> · {w.where}</span></span>
+                        <span class="ap-when">{w.when}</span>
+                      </span>
+                      <span class="ap-what">{w.what}</span>
+                      {w.p?.href && <span class="ap-go">Read the case study<svg width="16" height="10" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>}
+                    </Tag>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+
+          <section class="ap-block" data-reveal>
+            <h2 class="mono-label">Before UX</h2>
+            <p>
+              Before UX, I worked as a lifeguard, a swim instructor, and a shift lead and
+              trainer. Those jobs, along with scouting, taught me to learn quickly, solve
+              problems, lead, coach, teach and work well with other people. I also speak some
+              Spanish and Italian.
+            </p>
+          </section>
+
+          <section class="ap-block about-goal" data-reveal>
+            <h2 class="mono-label">What I’m looking for</h2>
+            <p>
+              A UX research role, or a research-heavy design role, at a company that builds
+              with its users instead of guessing about them. I want to go deep on research
+              first and grow into design from there.
+            </p>
+          </section>
+
+          <div class="ap-actions" data-reveal>
+            <a class="btn btn-primary" href="/#contact">Get in touch</a>
+            <ProfileLinks />
+          </div>
+        </div>
+
+        <AboutCard />
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .about-page{padding:120px 0 clamp(64px,9vw,110px)}
+  .ap-head{display:grid;gap:18px;padding-bottom:clamp(32px,5vw,48px);margin-bottom:clamp(32px,5vw,48px);border-bottom:1px solid var(--line)}
+  .ap-head h1{font-size:clamp(2.6rem,8vw,5.2rem);text-transform:uppercase;line-height:.95;letter-spacing:-.02em;margin:0}
+  .ap-head h1 .accent{color:var(--gold)}
+  .ap-lede{margin:0;max-width:60ch;font-size:clamp(1.1rem,1.6vw,1.3rem);line-height:1.6;color:var(--ink)}
+
+  .ap-grid{display:grid;grid-template-columns:1.3fr .95fr;gap:clamp(32px,5vw,64px);align-items:start}
+  @media (max-width:900px){.ap-grid{grid-template-columns:1fr;gap:40px}}
+  .ap-main{display:flex;flex-direction:column;gap:clamp(30px,4vw,40px);min-width:0}
+
+  .ap-block{max-width:62ch}
+  .ap-block h2{margin:0 0 12px;color:var(--gold)}
+  .ap-block p{color:var(--ink-soft);font-size:1.05rem;line-height:1.7;margin:0 0 12px}
+  .ap-block p:last-child{margin-bottom:0}
+
+  /* accessibility: the personal story gets its own panel */
+  .ap-a11y{padding:24px 24px 26px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--line)}
+  .ap-a11y .ap-a11y-lead{font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,2.2vw,1.6rem);line-height:1.25;color:var(--ink);margin-bottom:12px}
+  .ap-checks{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:10px}
+  .ap-checks li{display:flex;gap:12px;align-items:flex-start;color:var(--ink);font-size:15px;line-height:1.45}
+  .ap-checks li::before{content:"";flex:none;width:16px;height:16px;margin-top:2px;border-radius:50%;
+    border:1.5px solid var(--gold);background:radial-gradient(circle,var(--gold) 0 3px,transparent 3.5px)}
+
+  /* work list */
+  .ap-work{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+  .ap-job{display:grid;gap:6px;padding:16px 18px;border-radius:12px;border:1px solid var(--line);background:var(--panel);
+    color:inherit;text-decoration:none;transition:border-color .3s var(--ease-out),transform .3s var(--ease-out)}
+  .ap-job.is-link:hover{border-color:color-mix(in srgb,var(--ac) 55%,var(--line-2));transform:translateY(-2px)}
+  .ap-job-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px 16px;flex-wrap:wrap}
+  .ap-org{font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--ink)}
+  .ap-where{font-family:var(--body);font-weight:400;font-size:.9rem;color:var(--muted-fg)}
+  .ap-when{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted-fg);white-space:nowrap}
+  .ap-what{font-size:14.5px;line-height:1.55;color:var(--ink-soft)}
+  .ap-go{display:inline-flex;align-items:center;gap:8px;margin-top:4px;font-size:13.5px;font-weight:600;color:var(--ac,var(--gold))}
+
+  .about-goal{padding:20px 22px;border:1px solid var(--line);border-left:2px solid var(--gold);
+    border-radius:0 var(--radius) var(--radius) 0;background:color-mix(in srgb,var(--gold) 5%,transparent)}
+  .about-goal p{color:var(--ink)}
+
+  .ap-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .ap-actions .btn-primary{padding:11px 18px;font-size:14px}
+
+  @media (prefers-reduced-motion:reduce){.ap-job,.ap-job.is-link:hover{transition:none;transform:none}}
+</style>

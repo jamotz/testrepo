@@ -1,15 +1,9 @@
 ---
 import ProfileLinks from './ProfileLinks.astro';
-// Credentials live in the profile card only; the copy beside it tells the story
-// without listing them again.
-const spec = [
-  { k: 'Based', v: 'Southwest, USA' },
-  { k: 'Education', v: 'B.A. Psychology · Sociology minor' },
-  { k: 'Training', v: 'PeakXD UX Research & Design' },
-  { k: 'Certified', v: 'BCS UX · IBM Data Science' },
-  { k: 'Also', v: 'Eagle Scout' },
-  { k: 'Status', v: 'Open to entry-level UX research roles', live: true },
-];
+import AboutCard from './AboutCard.astro';
+// The short version for the landing page. The full story (background, why research,
+// accessibility, work, life outside UX) lives on /about. Keep this column about as
+// tall as the photo and profile card beside it.
 ---
 <section class="section about" id="about">
   <div class="wrap about-grid">
@@ -20,61 +14,41 @@ const spec = [
       <div class="about-block" data-reveal>
         <h3 class="mono-label">Background</h3>
         <p>
-          I’m Jack. I studied psychology and sociology, and by my senior year I’d noticed that
-          the questions I cared about (why people do what they do, and what gets in their way)
-          are the same ones a good product has to answer. So after graduating I trained in UX
-          research and design and started working with real clients.
+          I’m Jack. Before I knew what UX was, I was an Eagle Scout, a lifeguard and a swim
+          instructor, and all three came down to paying close attention to people. Studying
+          psychology and sociology gave that habit a name, so after graduating I trained in UX
+          research and design with PeakXD.
         </p>
       </div>
 
       <div class="about-block" data-reveal>
-        <h3 class="mono-label">How I work</h3>
+        <h3 class="mono-label">My work so far</h3>
         <p>
-          I start with people, not screens: interviews, surveys, card sorts, journey maps and
-          usability tests. The evidence decides what gets designed, whether that’s a support
-          site, an app’s filters, or a service that happens mostly in person.
-        </p>
-        <p>
-          Accessibility matters to me personally. My grandmother has macular degeneration, so
-          I’ve seen how quickly the web gets harder when a design assumes perfect eyesight, and
-          I design with that in mind.
+          I’ve done research for a charity in Australia, a dispensary in Washington and a
+          pack-out company in Arizona. At Veeam I do the same kind of work with employees,
+          using surveys to find out what isn’t working in the office and changing it.
         </p>
       </div>
 
       <div class="about-block about-goal" data-reveal>
         <h3 class="mono-label">What I’m looking for</h3>
         <p>
-          A UX research role, or a research-heavy design role, on a team that builds with its
-          users instead of guessing about them. I want to go deep on research first and grow
-          into design from there, helping companies make digital and in-person experiences that
-          are intuitive, connected and accessible.
+          A UX research role on a team that builds with its users, not around them. I want to
+          go deep on research first and grow into design from there.
         </p>
       </div>
 
-      <div data-reveal><ProfileLinks /></div>
+      <div class="about-actions" data-reveal>
+        <a class="btn btn-primary" href="/about">
+          More about me
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <ProfileLinks />
+      </div>
     </div>
 
-    <aside class="about-side" data-reveal aria-label="Profile">
-      <figure class="about-photo">
-        <img src="/about/jack.jpg" alt="Jack standing in St. Peter’s Square beneath the colonnade" width="500" height="470" loading="lazy" decoding="async" />
-      </figure>
-      <div class="about-spec">
-        <div class="spec-head">
-          <span class="mono-label">profile.json</span>
-          <span class="spec-dots"><i></i><i></i><i></i></span>
-        </div>
-        <dl class="spec-list">
-          {spec.map((s) => (
-            <div class="spec-row">
-              <dt>{s.k}</dt>
-              <dd class={s.live ? 'live' : ''}>{s.live && <span class="dot"></span>}{s.v}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </aside>
+    <AboutCard />
   </div>
-
 </section>
 
 <style>
@@ -89,28 +63,6 @@ const spec = [
   .about-goal{padding:20px 22px;border:1px solid var(--line);border-left:2px solid var(--gold);
     border-radius:0 var(--radius) var(--radius) 0;background:color-mix(in srgb,var(--gold) 5%,transparent)}
   .about-goal p{color:var(--ink);margin:0}
-
-  .about-side{position:sticky;top:100px;display:flex;flex-direction:column;gap:18px}
-  @media (max-width:900px){.about-side{position:static}}
-  .about-photo{margin:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);aspect-ratio:5/4}
-  .about-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 70%;display:block}
-
-  .about-spec{background:linear-gradient(180deg,var(--panel),var(--bg-2));
-    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-  .spec-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
-    border-bottom:1px solid var(--line)}
-  .spec-dots{display:flex;gap:6px}
-  .spec-dots i{width:9px;height:9px;border-radius:50%;background:var(--line-3)}
-  .spec-dots i:first-child{background:var(--gold)}
-  .spec-dots i:nth-child(2){background:var(--acid)}
-  .spec-list{margin:0;padding:8px 18px}
-  .spec-row{display:grid;grid-template-columns:1fr 1.7fr;gap:14px;padding:12px 0;
-    border-bottom:1px solid var(--line)}
-  .spec-row:last-child{border-bottom:none}
-  .spec-row dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--muted-fg);margin:0}
-  .spec-row dd{margin:0;font-size:14.5px;color:var(--ink)}
-  .spec-row dd.live{display:inline-flex;align-items:center;gap:8px;color:var(--acid)}
-  .spec-row dd .dot{width:7px;height:7px;border-radius:50%;background:var(--acid);
-    box-shadow:0 0 8px var(--acid)}
+  .about-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .about-actions .btn-primary{padding:11px 18px;font-size:14px}
 </style>

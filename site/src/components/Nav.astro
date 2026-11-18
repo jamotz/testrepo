@@ -6,7 +6,7 @@ const path = Astro.url.pathname.replace(/\/$/, '');
 const home = path === '';
 const base = home ? '' : '/';
 const links = [
-  { href: `${base}#about`, label: 'About' },
+  { href: '/about', label: 'About' },
   { href: `${base}#contact`, label: 'Contact' },
 ];
 const homeHref = home ? '#top' : '/';
@@ -43,7 +43,7 @@ const homeHref = home ? '#top' : '/';
             <li class="dd-all"><a href={`${base}#projects`}>All projects</a></li>
           </ul>
         </div>
-        {links.map((l) => <a class="nav-a" href={l.href}>{l.label}</a>)}
+        {links.map((l) => <a class="nav-a" href={l.href} aria-current={path === l.href ? 'page' : undefined}>{l.label}</a>)}
         <a class="btn btn-primary nav-cta" href={`${base}#contact`}>Get in touch</a>
       </nav>
       <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle light and dark theme">
@@ -93,6 +93,7 @@ const homeHref = home ? '#top' : '/';
   .nav-a,.dd-btn{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--ink-soft);padding:9px 14px;border-radius:8px;transition:color .2s,background-color .2s}
   .nav-a:hover,.dd-btn:hover,.dd-btn[aria-expanded="true"]{color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+  .nav-a[aria-current="page"]{color:var(--gold)}
   .nav-cta{margin-left:8px;padding:11px 18px;font-size:13.5px}
 
   /* Projects dropdown — a disclosure (button + list of links), opened by click or hover */

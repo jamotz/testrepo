@@ -1,0 +1,57 @@
+---
+// The About photo and the profile.json card, shared by the home page's About section
+// and the /about page. Sticks beside the text on wide screens.
+const spec = [
+  { k: 'Based', v: 'Southwest, USA' },
+  { k: 'Education', v: 'B.A. Psychology · Sociology minor' },
+  { k: 'Training', v: 'PeakXD UX Research & Design' },
+  { k: 'Certified', v: 'BCS UX · IBM Data Science' },
+  { k: 'Also', v: 'Eagle Scout' },
+  { k: 'Status', v: 'Open to entry-level UX research roles', live: true },
+];
+---
+<aside class="about-side" data-reveal aria-label="Profile">
+  <figure class="about-photo">
+    <img src="/about/jack.jpg" alt="Jack standing in St. Peter’s Square beneath the colonnade" width="500" height="470" loading="lazy" decoding="async" />
+  </figure>
+  <div class="about-spec">
+    <div class="spec-head">
+      <span class="mono-label">profile.json</span>
+      <span class="spec-dots"><i></i><i></i><i></i></span>
+    </div>
+    <dl class="spec-list">
+      {spec.map((s) => (
+        <div class="spec-row">
+          <dt>{s.k}</dt>
+          <dd class={s.live ? 'live' : ''}>{s.live && <span class="dot"></span>}{s.v}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</aside>
+
+<style>
+  .about-side{position:sticky;top:100px;display:flex;flex-direction:column;gap:18px}
+  @media (max-width:900px){.about-side{position:static}}
+  .about-photo{margin:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);aspect-ratio:5/4}
+  .about-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 70%;display:block}
+
+  .about-spec{background:linear-gradient(180deg,var(--panel),var(--bg-2));
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .spec-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
+    border-bottom:1px solid var(--line)}
+  .spec-dots{display:flex;gap:6px}
+  .spec-dots i{width:9px;height:9px;border-radius:50%;background:var(--line-3)}
+  .spec-dots i:first-child{background:var(--gold)}
+  .spec-dots i:nth-child(2){background:var(--acid)}
+  .spec-list{margin:0;padding:8px 18px}
+  .spec-row{display:grid;grid-template-columns:1fr 1.7fr;gap:14px;padding:12px 0;
+    border-bottom:1px solid var(--line)}
+  .spec-row:last-child{border-bottom:none}
+  .spec-row dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted-fg);margin:0}
+  .spec-row dd{margin:0;font-size:14.5px;color:var(--ink)}
+  .spec-row dd.live{display:inline-flex;align-items:center;gap:8px;color:var(--acid)}
+  .spec-row dd .dot{width:7px;height:7px;border-radius:50%;background:var(--acid);
+    box-shadow:0 0 8px var(--acid)}
+</style>

@@ -17,6 +17,7 @@ Writes (default out_dir: ./artifact-bundle):
   work/oxfam/*.jpg, proto.html      Oxfam images + embedded prototype, as-is
   work/origins/img/*, app.html      Origins images + embedded app, as-is
   work/premier/*                    Premier images, as-is
+  about.html               the full About page
   resume.html              the web résumé (the PDF link is dropped: the viewer blocks downloads)
   brand/clients/*, about/*          project-card logos + the About photo
 
@@ -121,6 +122,7 @@ def case_links(html):
     for slug in CASES:
         html = html.replace(f'href="/work/{slug}"', f'href="{slug}.html"')
     html = re.sub(r'<a [^>]*href="/resume/[^"]+\.pdf"[^>]*>.*?</a>', "", html, flags=re.S)
+    html = html.replace('href="/about"', 'href="about.html"')
     return html.replace('href="/resume"', 'href="resume.html"')
 
 
@@ -141,6 +143,9 @@ def astro_case(slug):
 
 oxfam = astro_case("oxfam")
 premier = astro_case("premier")
+about = case_links(re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"',
+                          inline_head((DIST / "about/index.html").read_text())).replace('href="/"', 'href="index.html"'))
+about = about.replace('src="/about/', 'src="about/')
 resume = case_links(re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"',
                            inline_head((DIST / "resume/index.html").read_text())).replace('href="/"', 'href="index.html"'))
 
@@ -151,7 +156,7 @@ origins = origins.replace('"/work/origins/', '"work/origins/')   # app src + ima
 origins = re.sub(r'href="/#([\w-]+)"', r'href="index.html#\1"', origins)
 origins = case_links(origins.replace('href="/"', 'href="index.html"'))
 
-leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins + premier + resume)
+leftover = re.findall(r'(?:href|src)="/[^"]*"|"/work/[^"]*"', landing + oxfam + origins + premier + resume + about)
 assert not leftover, f"unrewritten root-absolute refs: {leftover}"
 
 if OUT.exists():
@@ -162,6 +167,7 @@ if OUT.exists():
 (OUT / "origins.html").write_text(origins)
 (OUT / "premier.html").write_text(premier)
 (OUT / "resume.html").write_text(resume)
+(OUT / "about.html").write_text(about)
 for f in (DIST / "work/oxfam").iterdir():
     if f.suffix in (".jpg", ".png") or f.name == "proto.html":
         shutil.copy2(f, OUT / "work/oxfam" / f.name)
@@ -172,7 +178,7 @@ for f in (DIST / "work/premier").iterdir():
     if f.name != "index.html":
         shutil.copy2(f, OUT / "work/premier" / f.name)
 shutil.copytree(DIST / "brand/clients", OUT / "brand/clients")
-shutil.copytree(DIST / "about", OUT / "about")
+shutil.copytree(DIST / "about", OUT / "about", ignore=shutil.ignore_patterns("index.html"))
 
 for p in sorted(OUT.rglob("*")):
     if p.is_file():
