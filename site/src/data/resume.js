@@ -69,9 +69,9 @@ export const RESUME_DATA = {
     'Earlier experience (2016–2021): five roles in food service, construction and aquatics, including shift lead and trainer, lifeguard and swim instructor.',
 
   skills: [
-    { k: 'Research', v: 'User interviews, usability testing, surveys, card sorting, tree testing, concept & A/B testing, competitive analysis, mixed methods' },
+    { k: 'Research', v: 'User interviews, usability testing, surveys, card sorting, tree testing, concept & A/B testing, contextual inquiry, competitive analysis, mixed methods' },
     { k: 'Analysis', v: 'Discussion guides, intercept recruiting, facilitation, synthesis, survey & data analysis, personas, journey mapping' },
-    { k: 'Communication', v: 'Research reports; presenting to stakeholders, a CEO and a COO' },
+    { k: 'Communication', v: 'Stakeholder interviews, research reports and storytelling, recommendations; presenting to a CEO and a COO' },
     { k: 'Tools & AI', v: 'Figma, FigJam, Optimal Workshop; ChatGPT and Claude with prompt engineering; coursework in SQL, Excel and data visualization' },
   ],
 
