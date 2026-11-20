@@ -177,6 +177,14 @@ figure{margin:0}
 .trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:8px}
 @media(max-width:760px){.trio{grid-template-columns:1fr}}
 .quad{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+/* Phone screenshots: every one the same size, on white like the other frames. Long captures
+   show from the top (the rest is a click away); short ones sit centered without cropping. */
+.phones{display:flex;flex-wrap:wrap;gap:20px;margin-top:8px}
+.phones figure{margin:0;width:min(210px,calc(50% - 10px))}
+.frame.phone{padding:10px;background:#fff}
+.frame.phone img{width:100%;height:auto;aspect-ratio:1/2;object-fit:cover;object-position:top center}
+.frame.phone img.short{object-fit:contain;object-position:center}
+.lofi-pair{margin-top:26px}
 @media(max-width:900px){.quad{grid-template-columns:1fr 1fr}}
 .viewhint{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;
   text-transform:uppercase;color:var(--muted);margin-top:16px}
@@ -247,9 +255,10 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 .lightbox{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;gap:14px;
   padding:clamp(14px,3.5vw,44px);background:color-mix(in srgb,#05060a 84%,transparent);backdrop-filter:blur(5px)}
 .lightbox.open{display:flex}
-.lb-stage{flex:1;width:min(1120px,100%);overflow:auto;border-radius:14px;border:1px solid rgba(255,255,255,.16);
-  background:#fff;-webkit-overflow-scrolling:touch;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.lb-stage img{width:100%;display:block}
+/* the stage fills the screen; the picture inside it shrinks to fit, so nothing white shows around it */
+.lb-stage{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;-webkit-overflow-scrolling:touch}
+.lb-stage img{display:block;width:auto;height:auto;max-width:min(1120px,100%);max-height:100%;border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.5)}
 .lb-cap{color:#d5d8d1;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-align:center;max-width:86ch}
 .lb-cap b{color:var(--ac-soft);font-weight:500}
 .lb-close{position:absolute;top:16px;right:18px;width:44px;height:44px;border-radius:100px;cursor:pointer;
@@ -348,9 +357,9 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
         <p class="body-p">Take user feedback and create an interface that displays information properly while keeping an organized appearance. Make sure the inventory, server, and in-house systems are properly connected so information stays correct. Add a new section that creates real interaction with the app &mdash; education and reviews.</p>
       </div>
       <div>
-        <div class="compare">
-          <figure><div class="frame"><img data-img="cluttered" alt="Cluttered home screen"></div><figcaption class="cap"><b>&ldquo;Cluttered home&rdquo;</b> &mdash; the original home page</figcaption></figure>
-          <figure><div class="frame"><img data-img="pricing" alt="Contradictory pricing deal"></div><figcaption class="cap"><b>&ldquo;Incorrect price&rdquo;</b> &mdash; deals that contradict themselves</figcaption></figure>
+        <div class="phones">
+          <figure><div class="frame phone"><img data-img="cluttered" alt="Cluttered home screen"></div><figcaption class="cap"><b>&ldquo;Cluttered home&rdquo;</b> &mdash; the original home page</figcaption></figure>
+          <figure><div class="frame phone"><img data-img="pricing" alt="Contradictory pricing deal"></div><figcaption class="cap"><b>&ldquo;Incorrect price&rdquo;</b> &mdash; deals that contradict themselves</figcaption></figure>
         </div>
         <div class="callout" style="margin-top:26px">I wasn&rsquo;t guessing at the pain points &mdash; I rang them up at the register every day.</div>
       </div>
@@ -413,16 +422,21 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
   <section id="iteration">
     <div class="shead"><span class="n">05</span><h2>Design iterations</h2></div>
     <p class="lead">My lo-fi iterations helped me design the base of the final product. I crafted the main product screens and gathered feedback from customers and shareholders before committing to visuals.</p>
-    <p class="subh">Low-fidelity &mdash; the Guide page, three ways</p>
-    <div class="trio">
-      <figure><div class="frame fit"><img data-img="lofi_g1a" alt="Lo-fi guide V1a"></div><figcaption class="cap"><b>V1a</b> &mdash; recommendations under the feeling picker</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="lofi_g1b" alt="Lo-fi guide V1b"></div><figcaption class="cap"><b>V1b</b> &mdash; reframed as a &ldquo;Virtual Guide&rdquo;</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="lofi_g2" alt="Lo-fi guide V2"></div><figcaption class="cap"><b>V2</b> &mdash; results first, picker below</figcaption></figure>
-    </div>
-    <p class="subh">Low-fidelity &mdash; the main shop</p>
-    <div class="compare">
-      <figure><div class="frame fit"><img data-img="lofi_shop" alt="Lo-fi main shop"></div><figcaption class="cap"><b>Main shop</b> &mdash; feelings chips, clean category circles, aligned sale rows</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="lofi_scroll" alt="Lo-fi main shop scrolled"></div><figcaption class="cap"><b>Scrolled</b> &mdash; Sales &rarr; Flower &rarr; Concentrate, in tidy tiles</figcaption></figure>
+    <div class="two lofi-pair">
+      <div>
+        <p class="subh">Low-fidelity &mdash; the Guide page, two ways</p>
+        <div class="phones">
+          <figure><div class="frame phone"><img data-img="lofi_g1a" alt="Lo-fi guide V1"></div><figcaption class="cap"><b>V1</b> &mdash; recommendations under the feeling picker</figcaption></figure>
+          <figure><div class="frame phone"><img data-img="lofi_g2" alt="Lo-fi guide V2"></div><figcaption class="cap"><b>V2</b> &mdash; results first, picker below</figcaption></figure>
+        </div>
+      </div>
+      <div>
+        <p class="subh">Low-fidelity &mdash; the main shop</p>
+        <div class="phones">
+          <figure><div class="frame phone"><img data-img="lofi_shop" alt="Lo-fi main shop"></div><figcaption class="cap"><b>Main shop</b> &mdash; feelings chips, clean category circles, aligned sale rows</figcaption></figure>
+          <figure><div class="frame phone"><img data-img="lofi_scroll" alt="Lo-fi main shop scrolled"></div><figcaption class="cap"><b>Scrolled</b> &mdash; Sales &rarr; Flower &rarr; Concentrate, in tidy tiles</figcaption></figure>
+        </div>
+      </div>
     </div>
     <div class="two" style="margin-top:30px">
       <div>
@@ -464,18 +478,23 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
       </div>
     </div>
     <p class="subh">The home page, three candidates</p>
-    <div class="trio">
-      <figure><div class="frame fit"><img data-img="home_v1" alt="Hi-fi home V1"></div><figcaption class="cap"><b>Home V1</b> &mdash; snowfield hero, deals calendar up top</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="home_v1b" alt="Hi-fi home V1b"></div><figcaption class="cap"><b>Home V1b</b> &mdash; bigger hero image</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="home_v2" alt="Hi-fi home V2"></div><figcaption class="cap"><b>Home V2</b> &mdash; forest hero, tested variant</figcaption></figure>
+    <div class="phones">
+      <figure><div class="frame phone"><img data-img="home_v1" alt="Hi-fi home V1"></div><figcaption class="cap"><b>Home V1</b> &mdash; snowfield hero, deals calendar up top</figcaption></figure>
+      <figure><div class="frame phone"><img data-img="home_v1b" alt="Hi-fi home V1b"></div><figcaption class="cap"><b>Home V1b</b> &mdash; bigger hero image</figcaption></figure>
+      <figure><div class="frame phone"><img data-img="home_v2" alt="Hi-fi home V2"></div><figcaption class="cap"><b>Home V2</b> &mdash; forest hero, tested variant</figcaption></figure>
     </div>
     <div class="two" style="margin-top:26px">
-      <figure><div class="frame fit"><img data-img="abtest" alt="User testing hi-fi shop variation"></div><figcaption class="cap"><b>User testing</b> &mdash; hi-fi shop variation (flower), tested at the counter</figcaption></figure>
+      <div>
+        <p class="subh">User testing</p>
+        <div class="phones">
+          <figure><div class="frame phone"><img data-img="abtest" alt="User testing hi-fi shop variation"></div><figcaption class="cap"><b>Shop variation</b> &mdash; hi-fi flower page, tested at the counter</figcaption></figure>
+        </div>
+      </div>
       <div>
         <p class="subh">Settings, refined</p>
-        <div class="compare">
-          <figure><div class="frame fit"><img data-img="acct_v1" alt="Account settings V1"></div><figcaption class="cap"><b>Settings V1</b></figcaption></figure>
-          <figure><div class="frame fit"><img data-img="acct_v2" alt="Account settings V2"></div><figcaption class="cap"><b>Settings V2</b> &mdash; after feedback</figcaption></figure>
+        <div class="phones">
+          <figure><div class="frame phone"><img data-img="acct_v1" alt="Account settings V1"></div><figcaption class="cap"><b>Settings V1</b></figcaption></figure>
+          <figure><div class="frame phone"><img data-img="acct_v2" alt="Account settings V2"></div><figcaption class="cap"><b>Settings V2</b> &mdash; after feedback</figcaption></figure>
         </div>
         <div class="callout" style="margin-top:22px">Tested at the counter, with the people who&rsquo;d actually use it.</div>
       </div>
@@ -513,11 +532,11 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
       <div class="frame fit"><img data-img="hifi_over" alt="Hi-fi frame overview map"></div>
       <figcaption class="cap"><b>Hi-fi overview</b> &mdash; the full frame map: landing &rarr; home &rarr; guide/shop &rarr; product &rarr; education &rarr; account &rarr; cart</figcaption>
     </figure>
-    <div class="quad">
-      <figure><div class="frame fit"><img data-img="hifi_land" alt="Hi-fi landing &#8212; store picker"></div><figcaption class="cap"><b>Landing</b> &mdash; pick a store, no location grab</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="home_v2b" alt="Hi-fi home final"></div><figcaption class="cap"><b>Home</b> &mdash; deals front and center</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="hifi_prod" alt="Hi-fi product page &#8212; concentrate"></div><figcaption class="cap"><b>Product</b> &mdash; reviews, feelings &amp; taste chips</figcaption></figure>
-      <figure><div class="frame fit"><img data-img="hifi_acct" alt="Hi-fi account page"></div><figcaption class="cap"><b>Account</b> &mdash; points, orders, reviews in reach</figcaption></figure>
+    <div class="phones">
+      <figure><div class="frame phone"><img data-img="hifi_land" alt="Hi-fi landing &#8212; store picker"></div><figcaption class="cap"><b>Landing</b> &mdash; pick a store, no location grab</figcaption></figure>
+      <figure><div class="frame phone"><img data-img="home_v2b" alt="Hi-fi home final"></div><figcaption class="cap"><b>Home</b> &mdash; deals front and center</figcaption></figure>
+      <figure><div class="frame phone"><img data-img="hifi_prod" alt="Hi-fi product page &#8212; concentrate"></div><figcaption class="cap"><b>Product</b> &mdash; reviews, feelings &amp; taste chips</figcaption></figure>
+      <figure><div class="frame phone"><img data-img="hifi_acct" alt="Hi-fi account page"></div><figcaption class="cap"><b>Account</b> &mdash; points, orders, reviews in reach</figcaption></figure>
     </div>
     <p class="viewhint"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Click any frame to view it full size</p>
   </section>
@@ -569,7 +588,7 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 </div>
 
 <script>
-const IMG={"hero": "/work/origins/img/hero.jpg", "cluttered": "/work/origins/img/cluttered.jpg", "pricing": "/work/origins/img/pricing.jpg", "survey_u": "/work/origins/img/survey_u.jpg", "survey_n": "/work/origins/img/survey_n.jpg", "persona1": "/work/origins/img/persona1.jpg", "persona2": "/work/origins/img/persona2.jpg", "flow_pain": "/work/origins/img/flow_pain.jpg", "filt_pain": "/work/origins/img/filt_pain.jpg", "lofi_new": "/work/origins/img/lofi_new.jpg", "lofi_g1a": "/work/origins/img/lofi_g1a.jpg", "lofi_g1b": "/work/origins/img/lofi_g1b.jpg", "lofi_g2": "/work/origins/img/lofi_g2.jpg", "lofi_shop": "/work/origins/img/lofi_shop.jpg", "lofi_scroll": "/work/origins/img/lofi_scroll.jpg", "lifestyle": "/work/origins/img/lifestyle.jpg", "sizetoggle": "/work/origins/img/sizetoggle.jpg", "home_v1": "/work/origins/img/home_v1.jpg", "home_v1b": "/work/origins/img/home_v1b.jpg", "home_v2": "/work/origins/img/home_v2.jpg", "acct_v1": "/work/origins/img/acct_v1.jpg", "acct_v2": "/work/origins/img/acct_v2.jpg", "abtest": "/work/origins/img/abtest.jpg", "flow_rec": "/work/origins/img/flow_rec.jpg", "filt_rec": "/work/origins/img/filt_rec.jpg", "hifi_over": "/work/origins/img/hifi_over.jpg", "hifi_land": "/work/origins/img/hifi_land.jpg", "hifi_prod": "/work/origins/img/hifi_prod.jpg", "hifi_acct": "/work/origins/img/hifi_acct.jpg", "home_v2b": "/work/origins/img/home_v2b.jpg"};
+const IMG={"hero": "/work/origins/img/hero.jpg", "cluttered": "/work/origins/img/cluttered.jpg", "pricing": "/work/origins/img/pricing.jpg", "survey_u": "/work/origins/img/survey_u.jpg", "survey_n": "/work/origins/img/survey_n.jpg", "persona1": "/work/origins/img/persona1.jpg", "persona2": "/work/origins/img/persona2.jpg", "flow_pain": "/work/origins/img/flow_pain.jpg", "filt_pain": "/work/origins/img/filt_pain.jpg", "lofi_new": "/work/origins/img/lofi_new.jpg", "lofi_g1a": "/work/origins/img/lofi_g1a.jpg", "lofi_g2": "/work/origins/img/lofi_g2.jpg", "lofi_shop": "/work/origins/img/lofi_shop.jpg", "lofi_scroll": "/work/origins/img/lofi_scroll.jpg", "lifestyle": "/work/origins/img/lifestyle.jpg", "sizetoggle": "/work/origins/img/sizetoggle.jpg", "home_v1": "/work/origins/img/home_v1.jpg", "home_v1b": "/work/origins/img/home_v1b.jpg", "home_v2": "/work/origins/img/home_v2.jpg", "acct_v1": "/work/origins/img/acct_v1.jpg", "acct_v2": "/work/origins/img/acct_v2.jpg", "abtest": "/work/origins/img/abtest.jpg", "flow_rec": "/work/origins/img/flow_rec.jpg", "filt_rec": "/work/origins/img/filt_rec.jpg", "hifi_over": "/work/origins/img/hifi_over.jpg", "hifi_land": "/work/origins/img/hifi_land.jpg", "hifi_prod": "/work/origins/img/hifi_prod.jpg", "hifi_acct": "/work/origins/img/hifi_acct.jpg", "home_v2b": "/work/origins/img/home_v2b.jpg"};
 document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribute('data-img'); if(IMG[k]) el.src=IMG[k];});
 /* a link here (no #hash) opens at the top; browser back/forward keeps its place. The
    portfolio Artifact's viewer restores its own scroll after load (dropping visitors
@@ -680,7 +699,12 @@ document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribu
     f.addEventListener("click",function(){var im=f.querySelector("img"); if(im&&im.src) open(im.src,capOf(f));});
   });
   document.getElementById("lbclose").addEventListener("click",close);
-  lb.addEventListener("click",function(e){if(e.target===lb)close();});
+  lb.addEventListener("click",function(e){if(e.target===lb||e.target===lbstage)close();});
+  /* a screenshot shorter than the 1:2 phone frame is centered whole instead of cropped at the sides */
+  document.querySelectorAll(".frame.phone img").forEach(function(im){
+    function mark(){if(im.naturalWidth&&im.naturalHeight/im.naturalWidth<2)im.classList.add("short");}
+    im.addEventListener("load",mark); if(im.complete)mark();
+  });
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&lb.classList.contains("open"))close();});
 })();
 (function grid(){

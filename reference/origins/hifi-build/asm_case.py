@@ -67,7 +67,6 @@ M = {
  "filt_pain": ("flow/Filter - Pain Points.png", 1500, 84),
  "lofi_new":  ("lofi/Low-Fi New Sections .png", 1100, 84),
  "lofi_g1a":  ("lofi/Lo-Fi Guide Page V1a.png", 760, 82),
- "lofi_g1b":  ("lofi/Lo-Fi Guide Page V1b .png", 760, 82),
  "lofi_g2":   ("lofi/Lo-Fi Guide Page V2.png", 760, 82),
  "lofi_shop": ("lofi/Lo-Fi Main Shop Page.png", 760, 82),
  "lofi_scroll":("lofi/Lo-Fi Main Shop Page - Scrolled Down.png", 760, 82),
