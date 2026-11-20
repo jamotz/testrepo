@@ -72,7 +72,6 @@ M = {
  "lofi_scroll":("lofi/Lo-Fi Main Shop Page - Scrolled Down.png", 760, 82),
  "lifestyle": ("assets/Brand Identity/Lifestyle Overview.png", 900, 84),
  "sizetoggle":("hifi/Hi-Fi Full Size Toggle.png", 900, 84),
- "home_v1":   ("hifi/Hi-Fi Home Page V1.png", 760, 82),
  "home_v1b":  ("hifi/Hi-Fi Home Page V1b - Bigger Image.png", 760, 82),
  "home_v2":   ("hifi/Hi-Fi Home Page V2.png", 760, 82),
  "acct_v1":   ("hifi/Hi-Fi Account Settings V1.png", 760, 82),

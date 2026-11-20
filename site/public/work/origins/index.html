@@ -185,6 +185,12 @@ figure{margin:0}
 .frame.phone img{width:100%;height:auto;aspect-ratio:1/2;object-fit:cover;object-position:top center}
 .frame.phone img.short{object-fit:contain;object-position:center}
 .lofi-pair{margin-top:26px}
+.tests+.tests{margin-top:clamp(34px,5vw,52px)}
+/* A/B block: the screen with its finding beside it */
+.ab{display:flex;gap:22px;align-items:flex-start;margin-top:8px}
+.ab figure{margin:0;flex:none;width:210px}
+.ab .body-p{flex:1;min-width:0}
+@media(max-width:560px){.ab{flex-direction:column}.ab figure{width:min(210px,calc(50% - 10px))}}
 @media(max-width:900px){.quad{grid-template-columns:1fr 1fr}}
 .viewhint{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;
   text-transform:uppercase;color:var(--muted);margin-top:16px}
@@ -465,27 +471,27 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 
   <section id="testing">
     <div class="shead"><span class="n">06</span><h2>Prototype testing</h2></div>
-    <div class="two">
+    <!-- two rows of two: each block is a heading, a line or two, and its screens -->
+    <div class="two tests">
       <div>
         <p class="subh">A/B testing &mdash; product display</p>
-        <p class="body-p">I crafted multiple variations of product displays to gather opinions on what customers liked. Customers preferred the version with the review system displayed.</p>
+        <div class="ab">
+          <figure><div class="frame phone"><img data-img="abtest" alt="User testing hi-fi shop variation"></div><figcaption class="cap"><b>Shop variation</b> &mdash; hi-fi flower page, tested at the counter</figcaption></figure>
+          <p class="body-p">I crafted multiple variations of product displays to gather opinions on what customers liked. Customers preferred the version with the review system displayed.</p>
+        </div>
       </div>
       <div>
         <p class="subh">Guide Me results</p>
         <p class="body-p">I gathered feedback on the depth of the &ldquo;Guide Me&rdquo; section and created a more in-depth system with a new layout for its results.</p>
+        <div class="callout" style="margin-top:22px">Tested at the counter, with the people who&rsquo;d actually use it.</div>
       </div>
     </div>
-    <p class="subh">The home page, three candidates</p>
-    <div class="phones">
-      <figure><div class="frame phone"><img data-img="home_v1" alt="Hi-fi home V1"></div><figcaption class="cap"><b>Home V1</b> &mdash; snowfield hero, deals calendar up top</figcaption></figure>
-      <figure><div class="frame phone"><img data-img="home_v1b" alt="Hi-fi home V1b"></div><figcaption class="cap"><b>Home V1b</b> &mdash; bigger hero image</figcaption></figure>
-      <figure><div class="frame phone"><img data-img="home_v2" alt="Hi-fi home V2"></div><figcaption class="cap"><b>Home V2</b> &mdash; forest hero, tested variant</figcaption></figure>
-    </div>
-    <div class="two" style="margin-top:26px">
+    <div class="two tests">
       <div>
-        <p class="subh">User testing</p>
+        <p class="subh">The home page, two candidates</p>
         <div class="phones">
-          <figure><div class="frame phone"><img data-img="abtest" alt="User testing hi-fi shop variation"></div><figcaption class="cap"><b>Shop variation</b> &mdash; hi-fi flower page, tested at the counter</figcaption></figure>
+          <figure><div class="frame phone"><img data-img="home_v1b" alt="Hi-fi home V1"></div><figcaption class="cap"><b>Home V1</b> &mdash; snowfield hero, deals calendar up top</figcaption></figure>
+          <figure><div class="frame phone"><img data-img="home_v2" alt="Hi-fi home V2"></div><figcaption class="cap"><b>Home V2</b> &mdash; forest hero, tested variant</figcaption></figure>
         </div>
       </div>
       <div>
@@ -494,7 +500,6 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
           <figure><div class="frame phone"><img data-img="acct_v1" alt="Account settings V1"></div><figcaption class="cap"><b>Settings V1</b></figcaption></figure>
           <figure><div class="frame phone"><img data-img="acct_v2" alt="Account settings V2"></div><figcaption class="cap"><b>Settings V2</b> &mdash; after feedback</figcaption></figure>
         </div>
-        <div class="callout" style="margin-top:22px">Tested at the counter, with the people who&rsquo;d actually use it.</div>
       </div>
     </div>
   </section>
@@ -586,7 +591,7 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;c
 </div>
 
 <script>
-const IMG={"hero": "/work/origins/img/hero.jpg", "cluttered": "/work/origins/img/cluttered.jpg", "pricing": "/work/origins/img/pricing.jpg", "survey_u": "/work/origins/img/survey_u.jpg", "survey_n": "/work/origins/img/survey_n.jpg", "persona1": "/work/origins/img/persona1.jpg", "persona2": "/work/origins/img/persona2.jpg", "flow_pain": "/work/origins/img/flow_pain.jpg", "filt_pain": "/work/origins/img/filt_pain.jpg", "lofi_new": "/work/origins/img/lofi_new.jpg", "lofi_g1a": "/work/origins/img/lofi_g1a.jpg", "lofi_g2": "/work/origins/img/lofi_g2.jpg", "lofi_shop": "/work/origins/img/lofi_shop.jpg", "lofi_scroll": "/work/origins/img/lofi_scroll.jpg", "lifestyle": "/work/origins/img/lifestyle.jpg", "sizetoggle": "/work/origins/img/sizetoggle.jpg", "home_v1": "/work/origins/img/home_v1.jpg", "home_v1b": "/work/origins/img/home_v1b.jpg", "home_v2": "/work/origins/img/home_v2.jpg", "acct_v1": "/work/origins/img/acct_v1.jpg", "acct_v2": "/work/origins/img/acct_v2.jpg", "abtest": "/work/origins/img/abtest.jpg", "flow_rec": "/work/origins/img/flow_rec.jpg", "filt_rec": "/work/origins/img/filt_rec.jpg", "hifi_over": "/work/origins/img/hifi_over.jpg", "hifi_land": "/work/origins/img/hifi_land.jpg", "hifi_prod": "/work/origins/img/hifi_prod.jpg", "hifi_acct": "/work/origins/img/hifi_acct.jpg", "home_v2b": "/work/origins/img/home_v2b.jpg"};
+const IMG={"hero": "/work/origins/img/hero.jpg", "cluttered": "/work/origins/img/cluttered.jpg", "pricing": "/work/origins/img/pricing.jpg", "survey_u": "/work/origins/img/survey_u.jpg", "survey_n": "/work/origins/img/survey_n.jpg", "persona1": "/work/origins/img/persona1.jpg", "persona2": "/work/origins/img/persona2.jpg", "flow_pain": "/work/origins/img/flow_pain.jpg", "filt_pain": "/work/origins/img/filt_pain.jpg", "lofi_new": "/work/origins/img/lofi_new.jpg", "lofi_g1a": "/work/origins/img/lofi_g1a.jpg", "lofi_g2": "/work/origins/img/lofi_g2.jpg", "lofi_shop": "/work/origins/img/lofi_shop.jpg", "lofi_scroll": "/work/origins/img/lofi_scroll.jpg", "lifestyle": "/work/origins/img/lifestyle.jpg", "sizetoggle": "/work/origins/img/sizetoggle.jpg", "home_v1b": "/work/origins/img/home_v1b.jpg", "home_v2": "/work/origins/img/home_v2.jpg", "acct_v1": "/work/origins/img/acct_v1.jpg", "acct_v2": "/work/origins/img/acct_v2.jpg", "abtest": "/work/origins/img/abtest.jpg", "flow_rec": "/work/origins/img/flow_rec.jpg", "filt_rec": "/work/origins/img/filt_rec.jpg", "hifi_over": "/work/origins/img/hifi_over.jpg", "hifi_land": "/work/origins/img/hifi_land.jpg", "hifi_prod": "/work/origins/img/hifi_prod.jpg", "hifi_acct": "/work/origins/img/hifi_acct.jpg", "home_v2b": "/work/origins/img/home_v2b.jpg"};
 document.querySelectorAll('[data-img]').forEach(function(el){var k=el.getAttribute('data-img'); if(IMG[k]) el.src=IMG[k];});
 /* a link here (no #hash) opens at the top; browser back/forward keeps its place. The
    portfolio Artifact's viewer restores its own scroll after load (dropping visitors
