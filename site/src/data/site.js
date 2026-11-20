@@ -26,6 +26,13 @@ export const TOOLS = [
   { name: 'ChatGPT', logo: 'openai', use: 'Drafting & synthesis support', ai: true },
   { name: 'Claude', logo: 'claude', use: 'Drafting & synthesis support', ai: true },
 ];
+// Below prompt engineering in the Tools & AI panel.
+export const DATA_SCIENCE = {
+  name: 'Data science foundations',
+  badge: 'IBM certified · Foundational',
+  desc: 'Introductory coursework in programming, data analysis, visualization and machine learning through the IBM Data Science Professional Certificate.',
+  items: ['Python', 'SQL', 'Pandas', 'NumPy', 'Jupyter', 'Matplotlib', 'Scikit-learn'],
+};
 export const PROMPTING = {
   name: 'Prompt engineering',
   desc: 'Structured prompts with context, constraints and examples, written to get usable research output from ChatGPT and Claude.',

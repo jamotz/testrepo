@@ -32,7 +32,7 @@ import Logo from './Logo.astro';
       <div class="hero-actions" data-reveal>
         <a class="btn btn-primary" href="#projects">
           View projects
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-4-4m4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="i-down" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a class="btn btn-ghost" href="#skills">View skills</a>
         <a class="btn btn-ghost" href="#contact">Get in touch</a>
@@ -71,6 +71,8 @@ import Logo from './Logo.astro';
     line-height:1.7;color:var(--ink-soft)}
 
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+  /* the caret points down the page, so it nudges down on hover (other buttons nudge right) */
+  .btn:hover .i-down{transform:translateY(3px)}
 
 
 

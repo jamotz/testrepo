@@ -3,7 +3,7 @@
 // past About. Three panels of skills, then a "Tools & AI" row of logo tiles and a
 // prompt-engineering bar. Wording lives in data/site.js (SKILLS, TOOLS, PROMPTING);
 // logos in data/tool-logos.js.
-import { SKILLS, TOOLS, PROMPTING } from '../data/site.js';
+import { SKILLS, TOOLS, PROMPTING, DATA_SCIENCE } from '../data/site.js';
 import { TOOL_LOGOS } from '../data/tool-logos.js';
 const pad = (n) => String(n).padStart(2, '0');
 // A logo is a 24x24 path string, or { d, vb, w } for a wide mark; height follows the viewBox.
@@ -53,6 +53,14 @@ const logoOf = (t) => {
     <div class="prompt">
       <b>{PROMPTING.name}</b>
       <span>{PROMPTING.desc}</span>
+    </div>
+    <div class="ds">
+      <div class="ds-top">
+        <b class="ds-name">{DATA_SCIENCE.name}</b>
+        <span class="ds-badge">{DATA_SCIENCE.badge}</span>
+      </div>
+      <p class="ds-desc">{DATA_SCIENCE.desc}</p>
+      <ul class="ds-list" aria-label="Tools covered">{DATA_SCIENCE.items.map((s) => <li>{s}</li>)}</ul>
     </div>
   </section>
 </div>
@@ -111,6 +119,16 @@ const logoOf = (t) => {
   .prompt b{font:700 15px/1.25 var(--display);color:var(--ink)}
   .prompt span{font-size:13.5px;line-height:1.45;color:var(--ink-soft);max-width:80ch}
   @media (max-width:700px){.prompt{grid-template-columns:1fr}}
+
+  /* data science foundations: same tile surface as the tools, list in the panel style */
+  .ds{display:grid;gap:10px;padding:16px 18px 18px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line)}
+  .ds-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 20px}
+  .ds-name{font:700 15px/1.25 var(--display);color:var(--ink)}
+  .ds-badge{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .ds-desc{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-soft);max-width:80ch}
+  .ds-list{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--ink-soft)}
+  .ds-list li{display:flex;gap:9px;align-items:flex-start}
+  .ds-list li::before{content:"";flex:none;width:7px;height:2px;background:var(--gold);align-self:center;margin-top:-1px}
 
   @media (prefers-reduced-motion:reduce){.tool,.tool:hover{transition:none;transform:none}}
 </style>
