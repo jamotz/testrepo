@@ -127,10 +127,12 @@ if SITE_MODE:
     src = src.replace("/*PROTODOC*/", "").replace("%%APPSRC%%", "/work/origins/app.html")
     src = src.replace("%%WORK_HREF%%", "/#projects").replace("%%NEXT_HREF%%", "/work/premier")
     src = src.replace("%%HOME_HREF%%", "/").replace("%%OXFAM_HREF%%", "/work/oxfam").replace("%%PREMIER_HREF%%", "/work/premier")
+    src = src.replace("%%ABOUT_HREF%%", "/#about").replace("%%RESUME_HREF%%", "/resume").replace("%%CONTACT_HREF%%", "/#contact")
 else:
     src = src.replace("/*PROTODOC*/", base64.b64encode(app_doc.encode()).decode())
     src = src.replace("%%APPSRC%%", "").replace("%%WORK_HREF%%", "#").replace("%%NEXT_HREF%%", "#")
     src = src.replace("%%HOME_HREF%%", "#top").replace("%%OXFAM_HREF%%", "#").replace("%%PREMIER_HREF%%", "#")
+    src = src.replace("%%ABOUT_HREF%%", "#").replace("%%RESUME_HREF%%", "#").replace("%%CONTACT_HREF%%", "#")
 
 # ---- encode: entities outside script/style, \u-escapes inside script ----
 def esc_script(block):
