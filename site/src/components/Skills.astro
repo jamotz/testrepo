@@ -7,12 +7,14 @@ import { SKILLS, TOOLS, PROMPTING, DATA_SCIENCE } from '../data/site.js';
 import { TOOL_LOGOS } from '../data/tool-logos.js';
 const pad = (n) => String(n).padStart(2, '0');
 // A logo is a 24x24 path string, or { d, vb, w } for a wide mark; height follows the viewBox.
-const logoOf = (t) => {
+// `size` is the drawn size of a square logo (20 in the tool tiles); wide marks scale with it.
+const logoOf = (t, size = 20) => {
   const L = t.logo && TOOL_LOGOS[t.logo];
   if (!L) return null;
-  if (typeof L === 'string') return { d: L, vb: '0 0 24 24', w: 20, h: 20 };
+  if (typeof L === 'string') return { d: L, vb: '0 0 24 24', w: size, h: size };
   const [, , vw, vh] = L.vb.split(' ').map(Number);
-  return { d: L.d, vb: L.vb, w: L.w, h: Math.round((L.w * vh / vw) * 10) / 10 };
+  const w = Math.round(L.w * size / 20 * 10) / 10;
+  return { d: L.d, vb: L.vb, w, h: Math.round((w * vh / vw) * 10) / 10 };
 };
 ---
 <div class="skills" id="skills" data-reveal>
@@ -60,7 +62,18 @@ const logoOf = (t) => {
         <span class="ds-badge">{DATA_SCIENCE.badge}</span>
       </div>
       <p class="ds-desc">{DATA_SCIENCE.desc}</p>
-      <ul class="ds-list" aria-label="Tools covered">{DATA_SCIENCE.items.map((s) => <li>{s}</li>)}</ul>
+      <ul class="ds-list" aria-label="Tools covered">
+        {DATA_SCIENCE.items.map((t) => (
+          <li class="ds-item">
+            <span class="ds-mark" aria-hidden="true">
+              {logoOf(t)
+                ? <svg viewBox={logoOf(t).vb} width={logoOf(t, 17).w} height={logoOf(t, 17).h}><path fill="currentColor" fill-rule="evenodd" d={logoOf(t).d} /></svg>
+                : <span class="tool-letters">{t.name.slice(0, 2)}</span>}
+            </span>
+            <span class="ds-item-name">{t.name}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 </div>
@@ -126,9 +139,19 @@ const logoOf = (t) => {
   .ds-name{font:700 15px/1.25 var(--display);color:var(--ink)}
   .ds-badge{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
   .ds-desc{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-soft);max-width:80ch}
-  .ds-list{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--ink-soft)}
-  .ds-list li{display:flex;gap:9px;align-items:flex-start}
-  .ds-list li::before{content:"";flex:none;width:7px;height:2px;background:var(--gold);align-self:center;margin-top:-1px}
+  .ds-list{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(136px,1fr));gap:8px}
+  .ds-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;min-width:0;
+    background:var(--panel);border:1px solid var(--line);transition:border-color .3s var(--ease-out)}
+  .ds-item:hover{border-color:var(--line-3)}
+  .ds-mark{width:32px;height:32px;flex:none;border-radius:8px;display:grid;place-items:center;
+    border:1px solid var(--line-2);color:var(--ink)}
+  .ds-item-name{font:600 13.5px/1.2 var(--body);color:var(--ink);min-width:0}
+  /* phones: tiles size to their content and wrap, so seven tools don't stack seven rows deep */
+  @media (max-width:560px){
+    .ds-list{display:flex;flex-wrap:wrap}
+    .ds-item{padding:6px 10px 6px 6px;gap:8px}
+    .ds-mark{width:28px;height:28px;border-radius:7px}
+  }
 
   @media (prefers-reduced-motion:reduce){.tool,.tool:hover{transition:none;transform:none}}
 </style>

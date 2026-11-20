@@ -31,7 +31,12 @@ export const DATA_SCIENCE = {
   name: 'Data science foundations',
   badge: 'IBM certified · Foundational',
   desc: 'Introductory coursework in programming, data analysis, visualization and machine learning through the IBM Data Science Professional Certificate.',
-  items: ['Python', 'SQL', 'Pandas', 'NumPy', 'Jupyter', 'Matplotlib', 'Scikit-learn'],
+  // `logo` is a key in data/tool-logos.js, as for TOOLS
+  items: [
+    { name: 'Python', logo: 'python' }, { name: 'SQL', logo: 'sql' }, { name: 'Pandas', logo: 'pandas' },
+    { name: 'NumPy', logo: 'numpy' }, { name: 'Jupyter', logo: 'jupyter' }, { name: 'Matplotlib', logo: 'matplotlib' },
+    { name: 'Scikit-learn', logo: 'scikitlearn' },
+  ],
 };
 export const PROMPTING = {
   name: 'Prompt engineering',
