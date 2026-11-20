@@ -12,7 +12,7 @@ export const RESUME = { pdf: '/resume/jack-motzkin-resume.pdf', web: '/resume' }
 // Each case study's own list is in methods.json.
 export const SKILLS = [
   { group: 'Research methods', items: ['User interviews', 'Usability testing', 'Surveys', 'Card sorting', 'Tree testing', 'Concept testing', 'A/B testing', 'Contextual inquiry', 'Competitive analysis', 'Mixed methods'] },
-  { group: 'Planning & analysis', items: ['Research plans & discussion guides', 'In-person intercept recruiting', 'Session facilitation', 'Synthesis', 'Survey & data analysis', 'Personas', 'Journey mapping'] },
+  { group: 'Planning & analysis', items: ['Research plans & discussion guides', 'In-person intercept recruiting', 'Session facilitation', 'Synthesis', 'Survey & data analysis', 'Personas', 'Journey mapping', 'IA analysis & restructuring'] },
   { group: 'Communication', items: ['Research reports', 'Presenting to stakeholders, CEO & COO', 'Stakeholder interviews', 'Actionable recommendations', 'Research storytelling'] },
 ];
 

@@ -70,7 +70,7 @@ export const RESUME_DATA = {
 
   skills: [
     { k: 'Research', v: 'User interviews, usability testing, surveys, card sorting, tree testing, concept & A/B testing, contextual inquiry, competitive analysis, mixed methods' },
-    { k: 'Analysis', v: 'Discussion guides, intercept recruiting, facilitation, synthesis, survey & data analysis, personas, journey mapping' },
+    { k: 'Analysis', v: 'Discussion guides, intercept recruiting, facilitation, synthesis, survey & data analysis, personas, journey mapping, IA analysis & restructuring' },
     { k: 'Communication', v: 'Stakeholder interviews, research reports and storytelling, recommendations; presenting to a CEO and a COO' },
     { k: 'Tools & AI', v: 'Figma, FigJam, Optimal Workshop; ChatGPT and Claude with prompt engineering; coursework in SQL, Excel and data visualization' },
   ],
