@@ -5,9 +5,9 @@ const total = String(PROJECTS.length).padStart(2, '0');
 ---
 <section class="section work" id="projects">
   <div class="wrap">
-    <div class="section-head" data-reveal>
+    <div class="section-head work-head" data-reveal>
+      <p class="sec-eyebrow"><span class="n">02</span><span class="rule"></span>Case studies · 2022–2024</p>
       <h2>Projects</h2>
-      <span class="idx">02 — Case studies · 2022–24</span>
     </div>
 
     <div class="work-grid">
@@ -46,6 +46,7 @@ const total = String(PROJECTS.length).padStart(2, '0');
 </section>
 
 <style>
+  .work-head{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:18px}
   .work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
   @media (max-width:960px){.work-grid{grid-template-columns:1fr;gap:18px}}
 

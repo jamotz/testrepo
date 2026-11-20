@@ -195,6 +195,11 @@ html.lenis,html.lenis body{height:auto}
   margin-bottom:clamp(36px,5vw,64px);flex-wrap:wrap}
 .section-head h2{font-size:clamp(2rem,5.5vw,3.6rem);text-transform:uppercase}
 .section-head .idx{font-family:var(--mono);font-size:13px;letter-spacing:.14em;color:var(--muted-fg)}
+/* section label, same shape as the hero's: "02 ——— Case studies · 2022–2024" */
+.sec-eyebrow{display:flex;align-items:center;gap:14px;margin:0;font-family:var(--mono);font-weight:500;
+  font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.sec-eyebrow .n{font-family:var(--display);font-weight:700;letter-spacing:.04em;color:var(--ink);font-size:14px}
+.sec-eyebrow .rule{flex:none;height:1px;width:min(120px,16vw);background:var(--line-2)}
 
 /* ---- Reduced motion ---- */
 @media (prefers-reduced-motion:reduce){

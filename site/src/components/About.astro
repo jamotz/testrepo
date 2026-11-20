@@ -1,14 +1,13 @@
 ---
 import ProfileLinks from './ProfileLinks.astro';
 import AboutCard from './AboutCard.astro';
-// The short version for the landing page. The full story (background, why research,
-// accessibility, work, life outside UX) lives on /about. Keep this column about as
-// tall as the photo and profile card beside it.
+// The About section. Keep this column about as tall as the photo and profile card
+// beside it.
 ---
 <section class="section about" id="about">
   <div class="wrap about-grid">
     <div class="about-lead">
-      <p class="eyebrow" data-reveal>03 — About</p>
+      <p class="sec-eyebrow" data-reveal><span class="n">03</span><span class="rule"></span>About</p>
       <h2 data-reveal>Behavior is the <span class="accent">interface.</span></h2>
 
       <div class="about-block" data-reveal>
@@ -41,10 +40,6 @@ import AboutCard from './AboutCard.astro';
       </div>
 
       <div class="about-actions" data-reveal>
-        <a class="btn btn-primary" href="/about">
-          More about me
-          <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
         <ProfileLinks />
       </div>
     </div>
@@ -66,5 +61,4 @@ import AboutCard from './AboutCard.astro';
     border-radius:0 var(--radius) var(--radius) 0;background:color-mix(in srgb,var(--gold) 5%,transparent)}
   .about-goal p{color:var(--ink);margin:0}
   .about-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-  .about-actions .btn-primary{padding:11px 18px;font-size:14px}
 </style>

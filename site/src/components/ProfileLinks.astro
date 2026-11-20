@@ -1,6 +1,7 @@
 ---
-// LinkedIn + résumé buttons, shared by About and Contact. Résumé links switch on
-// automatically once RESUME.pdf / RESUME.web are set in data/site.js.
+// LinkedIn + one split résumé button, shared by About and Contact: "Résumé" opens the
+// web page, the icon beside it downloads the PDF. Either half switches off when its
+// RESUME.web / RESUME.pdf in data/site.js is null.
 import { LINKEDIN, RESUME } from '../data/site.js';
 ---
 <div class="plinks">
@@ -9,12 +10,15 @@ import { LINKEDIN, RESUME } from '../data/site.js';
     LinkedIn
     <span class="sr-only">(opens in a new tab)</span>
   </a>
-  {RESUME.web && <a class="btn btn-ghost plink" href={RESUME.web}>View résumé</a>}
-  {RESUME.pdf && (
-    <a class="btn btn-ghost plink" href={RESUME.pdf} download>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3.5-3.5M8 10l3.5-3.5M2.5 13.5h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Résumé (PDF)
-    </a>
+  {(RESUME.web || RESUME.pdf) && (
+    <span class="split" role="group" aria-label="Résumé">
+      {RESUME.web && <a class="split-main" href={RESUME.web}>Résumé</a>}
+      {RESUME.pdf && (
+        <a class="split-dl" href={RESUME.pdf} download aria-label="Download résumé (PDF)" title="Download PDF">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0-3.5-3.5M8 10l3.5-3.5M2.5 13.5h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      )}
+    </span>
   )}
   {!RESUME.web && !RESUME.pdf && (
     <span class="btn btn-ghost plink is-soon" aria-disabled="true">Résumé <span class="soon">Coming soon</span></span>
@@ -27,5 +31,15 @@ import { LINKEDIN, RESUME } from '../data/site.js';
   .plink:hover svg{transform:none}
   .plink.is-soon{cursor:default;color:var(--muted-fg);border-style:dashed}
   .plink.is-soon:hover{transform:none;border-color:var(--line-2);color:var(--muted-fg);background:transparent}
+  /* split résumé button: one pill, two targets */
+  .split{display:inline-flex;align-items:stretch;border:1px solid var(--line-2);border-radius:12px;
+    background:rgba(255,255,255,.02);overflow:hidden;transition:border-color .25s}
+  .split:hover,.split:focus-within{border-color:var(--gold)}
+  .split a{display:inline-flex;align-items:center;justify-content:center;color:var(--ink);
+    font-family:var(--display);font-weight:700;font-size:14px;transition:color .2s,background-color .2s}
+  .split-main{padding:11px 16px 11px 18px}
+  .split-dl{padding:11px 15px 11px 13px;border-left:1px solid var(--line-2)}
+  .split a:hover{color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,transparent)}
+  .split a:focus-visible{outline:2px solid var(--gold);outline-offset:-3px;border-radius:10px}
   .plink .soon{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
 </style>

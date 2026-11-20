@@ -9,7 +9,7 @@ import Logo from './Logo.astro';
       <span>[ Portfolio / ’26 ]</span>
       <span class="hero-top-right">
         <span>Southwest · USA</span>
-        <span class="live"><span class="dot"></span>Open to entry-level UX research roles</span>
+        <span class="live"><span class="dot"></span>Open to UX research opportunities</span>
       </span>
     </div>
 
@@ -20,16 +20,6 @@ import Logo from './Logo.astro';
         <span class="line"><span>Jack</span></span>
         <span class="line"><span class="accent">Motzkin</span></span>
       </h1>
-
-      <div class="hero-sub" data-reveal>
-        <span class="tag">User interviews</span>
-        <span class="tag">Usability testing</span>
-        <span class="tag">Surveys</span>
-        <span class="tag">Card sorting &amp; tree testing</span>
-        <span class="tag">Journey mapping</span>
-        <span class="tag">Accessibility</span>
-        <span class="tag">Business analysis</span>
-      </div>
 
       <p class="hero-desc" data-reveal>
         Entry-level UX researcher who turns interviews, surveys and usability tests into clear
@@ -44,6 +34,7 @@ import Logo from './Logo.astro';
           View projects
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m0 0-4-4m4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
+        <a class="btn btn-ghost" href="#skills">View skills</a>
         <a class="btn btn-ghost" href="#contact">Get in touch</a>
       </div>
     </div>
@@ -76,11 +67,7 @@ import Logo from './Logo.astro';
   .hero-name .line{display:block;overflow:hidden;padding-bottom:.02em}
   .hero-name .accent{color:var(--gold)}
 
-  .hero-sub{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:28px}
-  .hero-sub .tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--ink-soft);border:1px solid var(--line-2);border-radius:100px;padding:7px 12px}
-
-  .hero-desc{max-width:66ch;margin-top:22px;font-size:clamp(1rem,1.6vw,1.15rem);
+  .hero-desc{max-width:66ch;margin-top:28px;font-size:clamp(1rem,1.6vw,1.15rem);
     line-height:1.7;color:var(--ink-soft)}
 
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
@@ -93,8 +80,7 @@ import Logo from './Logo.astro';
     .hero-body{padding:12px 0 32px}
     .hero-eyebrow{margin-bottom:14px}
     .hero-name{font-size:clamp(3.4rem,min(15.5vw,20vh),13rem)}
-    .hero-sub{margin-top:20px}
-    .hero-desc{margin-top:16px}
+    .hero-desc{margin-top:20px}
     .hero-actions{margin-top:24px}
   }
   @media (max-width:760px){

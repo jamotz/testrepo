@@ -14,7 +14,8 @@ const base = home ? '' : '/';
     <p class="footer-tag">UX Researcher &amp; Designer · Southwest, USA</p>
     <nav class="footer-links" aria-label="Footer">
       <a href={`${base}#projects`}>Projects</a>
-      <a href="/about">About</a>
+      <a href={`${base}#about`}>About</a>
+      <a href="/resume">Résumé</a>
       <a href={`${base}#contact`}>Contact</a>
       <a href={LINKEDIN} target="_blank" rel="noopener">LinkedIn</a>
     </nav>
@@ -28,7 +29,7 @@ const base = home ? '' : '/';
   .footer-brand{display:flex;align-items:center;gap:11px;color:var(--ink);font-family:var(--display);font-weight:700}
   .footer-mark{display:block;width:26px;height:26px;color:var(--ink)}
   .footer-tag{color:var(--muted-fg);font-size:13.5px}
-  .footer-links{display:flex;gap:20px}
+  .footer-links{display:flex;gap:20px;flex-wrap:wrap;row-gap:10px}
   .footer-links a{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
   .footer-links a:hover{color:var(--gold)}
   .footer-copy{color:var(--muted-fg)}
