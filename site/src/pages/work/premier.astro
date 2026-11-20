@@ -241,7 +241,7 @@ const stages = [
             <ul class="dlist">{facility.map((f) => (<li>{f}</li>))}</ul>
           </div>
           <figure>
-            <div class="frame light"><img src="/work/premier/van.jpg" alt="Proposed Premier Packout van wrap on a Mercedes Sprinter: a large logo on both sides and the rear doors, a sweeping blue lower wrap, the phone number, and the line Fire • Water • Contents" loading="lazy" /></div>
+            <div class="frame light"><img src="/work/premier/van.jpg" alt="Proposed Premier Packout van wrap on a 2017 Mercedes-Benz Sprinter, shown from both sides, the front and the rear: the Premier logo, a sweeping blue lower wrap, the phone number, and the line Fire • Water • Contents" loading="lazy" /></div>
             <figcaption class="cap"><b>Van wrap concept</b> that turns the fleet into mobile advertising</figcaption>
           </figure>
         </div>
@@ -287,6 +287,20 @@ const stages = [
           <div class="stat"><div class="big">8</div><div class="statlab">Journey phases mapped, from marketing to aftercare</div></div>
           <div class="stat"><div class="big">56%</div><div class="statlab">Satisfaction baseline across 36 homeowners</div></div>
           <div class="stat"><div class="big">3</div><div class="statlab">Workstreams: website, staff &amp; fleet, operations</div></div>
+        </div>
+        <div class="ads" data-reveal>
+          <div class="ads-copy">
+            <h3 class="subhead">Advertising that helps first</h3>
+            <p class="body-p">Most of Premier’s work came from recommendations, and nobody plans to need a pack-out company, so an ad that just says “call us” gets ignored until the worst day. I put together a set that earns attention before then: a service flyer for homeowners who already have damage, a trade-referral card for the restoration and repair pros who send work Premier’s way, and a prevention checklist.</p>
+            <p class="body-p">The checklist does the quiet work. Tips like testing smoke alarms and knowing where the water shutoff is are useful whether or not anyone ever calls, so people keep it and pass it on, and they remember the name on it. That gets Premier known without being in anyone’s face, and the wrapped vans carry the same look on every job.</p>
+          </div>
+          <figure class="ads-fig">
+          <button class="map-thumb ads-thumb" type="button" data-zoom-src="/work/premier/ads.jpg" data-zoom-title="Advertising set" aria-haspopup="dialog">
+            <img src="/work/premier/ads.jpg" alt="Three Premier Packout print pieces. A homeowner flyer: Fire or water damage? We help you recover what matters most, with the four services (pack out and inventory, clean and restore, secure storage, return and reinstall) and an emergency service number. A trade-referral card for restoration and repair pros: Your client may need contents support. A prevention poster: Prevent avoidable damage, with checklists to prevent water damage and reduce fire risk, and a QR code for the home prevention checklist." loading="lazy" />
+            <span class="map-open" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>View full size</span>
+          </button>
+          <figcaption class="cap"><b>Service flyer, trade-referral card and prevention checklist</b>, in the same look as the van wrap</figcaption>
+          </figure>
         </div>
         <!-- A line from the CEO, or one thing Premier changed because of this work, can go here
              as <blockquote class="quote"><p>…</p><cite class="mono-label">CEO, Premier Packout</cite></blockquote> -->
@@ -609,6 +623,14 @@ const stages = [
   .map-thumb{position:relative;display:block;width:100%;padding:0;border:1px solid var(--line-2);border-radius:14px;
     overflow:hidden;background:#fff;cursor:zoom-in;transition:border-color .2s}
   .map-thumb img{display:block;width:100%;height:auto}
+  /* Results: the advertising set */
+  /* copy beside the picture, like the van wrap; the full-size view is for reading the details */
+  .ads{margin-top:clamp(36px,5vw,56px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(26px,4vw,52px);align-items:start}
+  @media (max-width:900px){.ads{grid-template-columns:1fr}}
+  .ads-copy{max-width:62ch;min-width:0}
+  .ads-copy .subhead{margin-top:0}
+  .ads-fig{margin:0;min-width:0}
+  .ads-thumb{background:#fff}
   .map-thumb:hover,.map-thumb:focus-visible{border-color:var(--gold)}
   .map-thumb:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
   .map-open{position:absolute;right:12px;bottom:12px;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;
@@ -732,6 +754,9 @@ const stages = [
       dlg.hidden = false;
       document.body.style.overflow = 'hidden';
       img.alt = alt || '';
+      const title = (from && from.dataset.zoomTitle) || 'Journey map';
+      dlg.querySelector('.zoom-title').textContent = title;
+      dlg.setAttribute('aria-label', `${title}, full size`);
       const ready = () => { toFit(); dlg.querySelector('[data-zoom="in"]').focus(); };
       if (img.getAttribute('src') === src && img.complete) ready();
       else { img.onload = ready; img.src = src; }
